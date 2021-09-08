@@ -27,7 +27,7 @@ fn find(name: &str) -> String {
 
 fn find_jar_classpath() -> String {
     let mut jars = Vec::new();
-    let pattern = format!("{}/*.jar", root_dir().display());
+    let pattern = format!("{}*.jar", root_dir().display());
 
     let paths = glob(&pattern).expect("Failed to glob.");
     for entry in paths {
