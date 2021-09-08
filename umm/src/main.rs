@@ -4,6 +4,8 @@
 // clean
 use clap::{App, SubCommand};
 use glob::glob;
+use std::fs::File;
+use std::io::{Read, Write};
 use std::{path::PathBuf, process::Command};
 
 fn root_dir() -> PathBuf {
@@ -33,6 +35,18 @@ fn find_jar_classpath() -> String {
     let mut jars = Vec::new();
     let pattern = format!("{}*.jar", root_dir().display());
 
+    let paths = glob(&pattern).expect("Failed to glob.");
+    for entry in paths {
+        match entry {
+            Ok(path) => {
+                let path = format!("{}", path.display());
+                jars.push(path)
+            }
+            Err(e) => println!("{:?}", e),
+        }
+    }
+
+    let pattern = format!("{}*.jar", &umm_files().join("lib/").display());
     let paths = glob(&pattern).expect("Failed to glob.");
     for entry in paths {
         match entry {
@@ -176,40 +190,55 @@ fn create_app() -> App<'static, 'static> {
 }
 
 fn clean(path: &PathBuf) {
-    std::fs::remove_dir_all(path).expect(
-        format!(
-            "Failed to remove {} directory for cleaning.",
-            build_dir().display()
-        )
-        .as_str(),
-    );
-    std::fs::create_dir_all(path).expect(
-        format!(
-            "Failed to create {} directory after cleaning.",
-            build_dir().display()
-        )
-        .as_str(),
-    );
+    std::fs::remove_dir_all(path).unwrap_or(());
+    std::fs::create_dir_all(path).unwrap_or(());
+}
+
+fn download(url: &str, path: &PathBuf) {
+    let resp = ureq::get(url)
+        .call()
+        .expect(format!("Could not download file at {}", url).as_str());
+
+    let len = resp
+        .header("Content-Length")
+        .and_then(|s| s.parse::<usize>().ok())
+        .unwrap();
+
+    let mut bytes: Vec<u8> = Vec::with_capacity(len);
+    resp.into_reader()
+        .take(10_000_000)
+        .read_to_end(&mut bytes)
+        .expect("Failed to read response till the end.");
+
+    let mut file = File::create(path).expect("Failed to create file.");
+    file.write_all(&bytes).expect("Failed to write to file.");
 }
 
 fn init() {
-    clean(&umm_files());
-    std::fs::create_dir_all(&umm_files().join("lib")).expect(
-        format!(
-            "Failed to create {} directory during init",
-            build_dir().display()
-        )
-        .as_str(),
-    );
+    std::fs::create_dir_all(&umm_files().join("lib")).unwrap_or(());
 
-    println!("Downloading junit.jar...");
+    if !umm_files().join("lib/junit.jar").as_path().exists() {
+        println!("Downloading junit.jar...");
+        download(
+            "https://github.com/DhruvDh/umm/raw/main/jars_files/junit.jar",
+            &umm_files().join("lib/junit.jar"),
+        );
+    }
+
+    if !umm_files().join("lib/hamcrest.jar").as_path().exists() {
+        println!("Downloading hamcrest-core.jar...");
+        download(
+            "https://github.com/DhruvDh/umm/raw/main/jars_files/hamcrest.jar",
+            &umm_files().join("lib/hamcrest.jar"),
+        );
+    }
 }
 
 fn main() {
     let app = create_app();
     let matches = app.get_matches();
 
-
+    init();
 
     match matches.subcommand_name() {
         Some("check") => {
@@ -239,7 +268,10 @@ fn main() {
             compile(&root_dir().join(path));
             test(&root_dir().join(path));
         }
-        Some("clean") => clean(&build_dir()),
+        Some("clean") => {
+            clean(&build_dir());
+            clean(&umm_files());
+        }
         _ => {
             create_app().print_long_help().unwrap();
         }
