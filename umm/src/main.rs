@@ -7,7 +7,7 @@ use glob::glob;
 use std::{path::PathBuf, process::Command};
 
 fn root_dir() -> PathBuf {
-    PathBuf::from("../umm_test/")
+    PathBuf::from("./")
 }
 
 fn build_dir() -> PathBuf {
@@ -142,35 +142,55 @@ fn run(path: &PathBuf) {
     }
 }
 
-fn main() {
-    let matches = App::new("Umm")
+fn create_app() -> App<'static, 'static> {
+    App::new("Umm")
         .version("0.0.1")
-        .author("dhruvdh\nAnh")
         .about("A Java build for novices")
         .subcommand(
             SubCommand::with_name("check")
-                .about("checks the java file for syntax errors")
+                .about("Checks the java file for syntax errors.")
                 .version("0.0.1")
                 .args_from_usage("<FILE_NAME>              'the Java file to check'"),
         )
         .subcommand(
             SubCommand::with_name("run")
-                .about("runs the java file and shows the output")
+                .about("Runs the java file and shows the output.")
                 .version("0.0.1")
                 .args_from_usage("<FILE_NAME>              'the Java file to run'"),
         )
         .subcommand(
             SubCommand::with_name("test")
-                .about("runs the given junit test file")
+                .about("Runs the given junit test file.")
                 .version("0.0.1")
                 .args_from_usage("<FILE_NAME>              'the Java file to test'"),
         )
         .subcommand(
             SubCommand::with_name("clean")
-                .about("cleans all compiled classes")
+                .about("Cleans all compiled classes")
                 .version("0.0.1"),
         )
-        .get_matches();
+}
+
+fn clean() {
+    std::fs::remove_dir_all(build_dir()).expect(
+        format!(
+            "Failed to remove {} directory for cleaning.",
+            build_dir().display()
+        )
+        .as_str(),
+    );
+    std::fs::create_dir_all(build_dir()).expect(
+        format!(
+            "Failed to create {} directory after cleaning.",
+            build_dir().display()
+        )
+        .as_str(),
+    );
+}
+
+fn main() {
+    let app = create_app();
+    let matches = app.get_matches();
 
     match matches.subcommand_name() {
         Some("check") => {
@@ -200,17 +220,9 @@ fn main() {
             compile(&root_dir().join(path));
             test(&root_dir().join(path));
         }
-        Some("clean") => {
-            std::fs::remove_dir_all(build_dir())
-                .expect(format!("Failed to remove {} directory.", build_dir().display()).as_str());
-            std::fs::create_dir_all(build_dir()).expect(
-                format!(
-                    "Failed to create {} directory after cleaning.",
-                    build_dir().display()
-                )
-                .as_str(),
-            );
+        Some("clean") => clean(),
+        _ => {
+            create_app().print_long_help().unwrap();
         }
-        _ => {}
     };
 }
