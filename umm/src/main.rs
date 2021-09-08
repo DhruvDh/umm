@@ -14,6 +14,10 @@ fn build_dir() -> PathBuf {
     root_dir().join("bin")
 }
 
+fn umm_files() -> PathBuf {
+    root_dir().join(".umm_files")
+}
+
 fn find(name: &str) -> String {
     let output = Command::new("which")
         .arg(name)
@@ -171,15 +175,15 @@ fn create_app() -> App<'static, 'static> {
         )
 }
 
-fn clean() {
-    std::fs::remove_dir_all(build_dir()).expect(
+fn clean(path: &PathBuf) {
+    std::fs::remove_dir_all(path).expect(
         format!(
             "Failed to remove {} directory for cleaning.",
             build_dir().display()
         )
         .as_str(),
     );
-    std::fs::create_dir_all(build_dir()).expect(
+    std::fs::create_dir_all(path).expect(
         format!(
             "Failed to create {} directory after cleaning.",
             build_dir().display()
@@ -188,9 +192,24 @@ fn clean() {
     );
 }
 
+fn init() {
+    clean(&umm_files());
+    std::fs::create_dir_all(&umm_files().join("lib")).expect(
+        format!(
+            "Failed to create {} directory during init",
+            build_dir().display()
+        )
+        .as_str(),
+    );
+
+    println!("Downloading junit.jar...");
+}
+
 fn main() {
     let app = create_app();
     let matches = app.get_matches();
+
+
 
     match matches.subcommand_name() {
         Some("check") => {
@@ -220,7 +239,7 @@ fn main() {
             compile(&root_dir().join(path));
             test(&root_dir().join(path));
         }
-        Some("clean") => clean(),
+        Some("clean") => clean(&build_dir()),
         _ => {
             create_app().print_long_help().unwrap();
         }
