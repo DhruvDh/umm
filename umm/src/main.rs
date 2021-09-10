@@ -57,6 +57,7 @@ fn find_jar_classpath() -> String {
             Err(e) => println!("{:?}", e),
         }
     }
+
     jars.join(":")
 }
 
@@ -102,6 +103,7 @@ fn test(path: &PathBuf) {
     let output = Command::new(java_path)
         .arg("-cp")
         .arg(classpath)
+        .arg("-jar")
         .arg("org.junit.runner.JUnitCore")
         .arg(path.file_stem().unwrap().to_str().unwrap())
         .output()
@@ -230,6 +232,14 @@ fn init() {
         download(
             "https://github.com/DhruvDh/umm/raw/main/jars_files/hamcrest.jar",
             &umm_files().join("lib/hamcrest.jar"),
+        );
+    }
+
+    if !umm_files().join("lib/junit-platform-console.jar").as_path().exists() {
+        println!("Downloading hamcrest-core.jar...");
+        download(
+            "https://github.com/DhruvDh/umm/raw/main/jars_files/junit-platform-console.jar",
+            &umm_files().join("lib/junit-platform-console.jar"),
         );
     }
 }

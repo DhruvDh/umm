@@ -1,42 +1,13 @@
-import org.junit.*;
-import static org.junit.Assert.*;
-import java.util.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import example.util.Calculator;
 
-import m.Main;
+import org.junit.jupiter.api.Test;
 
-public class MainTest {
- 
-    private Collection collection;
-    
-    @BeforeClass
-    public static void oneTimeSetUp() {
-        // one-time initialization code        
-    }
- 
-    @AfterClass
-    public static void oneTimeTearDown() {
-        // one-time cleanup code
-    }
- 
-    @Before
-    public void setUp() {
-        collection = new ArrayList();
-    }
-    
-    @After
-    public void tearDown() {
-        collection.clear();
-    }
- 
+class MyFirstJUnitJupiterTests {
     @Test
-    public void testEmptyCollection() {
-        assertTrue(collection.isEmpty());
+    void addition() {
+        assertEquals(2, 2);
     }
-    
-    @Test
-    public void testOneItemCollection() {
-        collection.add("itemA");
-        assertEquals(1, collection.size());
-    }
+
 }
