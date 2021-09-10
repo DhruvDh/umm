@@ -111,11 +111,11 @@ fn test(path: &PathBuf) {
                 .to_str()
                 .unwrap(),
         )
-        // .arg("-f")
-        // .arg(path.to_str().unwrap())
+        .arg("-f")
+        .arg(path.to_str().unwrap())
         .arg("--disable-banner")
-        .arg("--scan-classpath")
-        .arg(&classpath)
+        // .arg("--scan-classpath")
+        // .arg(&classpath)
         .arg("--include-classname=.*")
         .output()
         .expect(format!("Failed to compile {}.", path.display()).as_str());
