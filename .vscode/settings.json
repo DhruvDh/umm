@@ -3,7 +3,8 @@
     "java.project.referencedLibraries": {
         "include": [
             "lib/**/*.jar",
-            "jars_files/junit-platform-console-standalone-1.8.0-RC1.jar"
+            "jars_files/junit-platform-console-standalone-1.8.0-RC1.jar",
+            "jars_files/junit-platform-runner-1.8.0.jar"
         ],
         "exclude": [
             "jars_files/junit-platform-console.jar"
