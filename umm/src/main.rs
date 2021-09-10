@@ -102,10 +102,21 @@ fn test(path: &PathBuf) {
 
     let output = Command::new(java_path)
         .arg("-cp")
-        .arg(classpath)
+        .arg(&classpath)
         .arg("-jar")
-        .arg("org.junit.runner.JUnitCore")
-        .arg(path.file_stem().unwrap().to_str().unwrap())
+        .arg(
+            &umm_files()
+                .join("lib/junit-platform-console.jar")
+                .as_path()
+                .to_str()
+                .unwrap(),
+        )
+        .arg("-f")
+        .arg(path.to_str().unwrap())
+        .arg("--disable-banner")
+        // .arg("--scan-classpath")
+        // .arg(&classpath)
+        .arg("--include-classname=.*")
         .output()
         .expect(format!("Failed to compile {}.", path.display()).as_str());
 
@@ -235,7 +246,11 @@ fn init() {
         );
     }
 
-    if !umm_files().join("lib/junit-platform-console.jar").as_path().exists() {
+    if !umm_files()
+        .join("lib/junit-platform-console.jar")
+        .as_path()
+        .exists()
+    {
         println!("Downloading hamcrest-core.jar...");
         download(
             "https://github.com/DhruvDh/umm/raw/main/jars_files/junit-platform-console.jar",

@@ -1,3 +1,7 @@
 {
-    "workbench.colorTheme": "Pale Fire Dark"
+    "workbench.colorTheme": "Pale Fire Dark",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "jars_files/junit-platform-console.jar"
+    ]
 }
