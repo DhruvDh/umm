@@ -1,7 +1,12 @@
 {
     "workbench.colorTheme": "Pale Fire Dark",
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "jars_files/junit-platform-console.jar"
-    ]
+    "java.project.referencedLibraries": {
+        "include": [
+            "lib/**/*.jar",
+            "jars_files/junit-platform-console-standalone-1.8.0-RC1.jar"
+        ],
+        "exclude": [
+            "jars_files/junit-platform-console.jar"
+        ]
+    }
 }

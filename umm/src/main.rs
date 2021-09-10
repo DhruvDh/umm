@@ -106,16 +106,16 @@ fn test(path: &PathBuf) {
         .arg("-jar")
         .arg(
             &umm_files()
-                .join("lib/junit-platform-console.jar")
+                .join("lib/junit-platform-console-standalone-1.8.0-RC1.jar")
                 .as_path()
                 .to_str()
                 .unwrap(),
         )
-        .arg("-f")
-        .arg(path.to_str().unwrap())
+        // .arg("-f")
+        // .arg(path.to_str().unwrap())
         .arg("--disable-banner")
-        // .arg("--scan-classpath")
-        // .arg(&classpath)
+        .arg("--scan-classpath")
+        .arg(&classpath)
         .arg("--include-classname=.*")
         .output()
         .expect(format!("Failed to compile {}.", path.display()).as_str());
@@ -230,32 +230,21 @@ fn download(url: &str, path: &PathBuf) {
 fn init() {
     std::fs::create_dir_all(&umm_files().join("lib")).unwrap_or(());
 
-    if !umm_files().join("lib/junit.jar").as_path().exists() {
-        println!("Downloading junit.jar...");
-        download(
-            "https://github.com/DhruvDh/umm/raw/main/jars_files/junit.jar",
-            &umm_files().join("lib/junit.jar"),
-        );
-    }
+    let files = vec![
+        "hamcrest-core-1.3.jar",
+        "junit-4.13.2.jar",
+        "junit-platform-console-standalone-1.8.0-RC1.jar",
+        "junit-platform-runner-1.8.0.jar"
+    ];
 
-    if !umm_files().join("lib/hamcrest.jar").as_path().exists() {
-        println!("Downloading hamcrest-core.jar...");
-        download(
-            "https://github.com/DhruvDh/umm/raw/main/jars_files/hamcrest.jar",
-            &umm_files().join("lib/hamcrest.jar"),
-        );
-    }
-
-    if !umm_files()
-        .join("lib/junit-platform-console.jar")
-        .as_path()
-        .exists()
-    {
-        println!("Downloading hamcrest-core.jar...");
-        download(
-            "https://github.com/DhruvDh/umm/raw/main/jars_files/junit-platform-console.jar",
-            &umm_files().join("lib/junit-platform-console.jar"),
-        );
+    for file in files {
+        if !umm_files().join("lib/").join(file).as_path().exists() {
+            println!("Downloading {}...", file);
+            download(
+                format!("https://github.com/DhruvDh/umm/raw/main/jars_files/{}", file).as_str(),
+                &umm_files().join("lib/").join(file),
+            );
+        }
     }
 }
 
@@ -263,10 +252,10 @@ fn main() {
     let app = create_app();
     let matches = app.get_matches();
 
-    init();
-
     match matches.subcommand_name() {
         Some("check") => {
+            init();
+
             let path = matches
                 .subcommand_matches("check")
                 .unwrap()
@@ -276,6 +265,8 @@ fn main() {
             compile(&root_dir().join(path));
         }
         Some("run") => {
+            init();
+
             let path = matches
                 .subcommand_matches("run")
                 .unwrap()
@@ -285,6 +276,8 @@ fn main() {
             run(&root_dir().join(path));
         }
         Some("test") => {
+            init();
+
             let path = matches
                 .subcommand_matches("test")
                 .unwrap()
