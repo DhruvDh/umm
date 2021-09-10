@@ -7,17 +7,18 @@ use glob::glob;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::{path::PathBuf, process::Command};
+use colored::*;
 
 fn root_dir() -> PathBuf {
     PathBuf::from("./")
 }
 
 fn build_dir() -> PathBuf {
-    root_dir().join("bin")
+    root_dir().join("bin/")
 }
 
 fn umm_files() -> PathBuf {
-    root_dir().join(".umm_files")
+    root_dir().join(".umm_files/")
 }
 
 fn find(name: &str) -> String {
@@ -31,50 +32,45 @@ fn find(name: &str) -> String {
     output.trim().to_string()
 }
 
-fn find_jar_classpath() -> String {
-    let mut jars = Vec::new();
-    let pattern = format!("{}*.jar", root_dir().display());
+fn find_classpath() -> String {
+    let mut files = Vec::new();
 
-    let paths = glob(&pattern).expect("Failed to glob.");
+    files.push(root_dir().display().to_string());
+    files.push(build_dir().display().to_string());
+
+    let pattern_1 = format!("{}**/**/*.class", build_dir().display());
+    let pattern_2 = format!("{}**/**/*.jar", umm_files().display());
+
+    let paths = glob(&pattern_1).expect("Failed to glob.");
+    let paths = paths.chain(glob(&pattern_2).expect("Failed to glob."));
+
     for entry in paths {
         match entry {
             Ok(path) => {
                 let path = format!("{}", path.display());
-                jars.push(path)
+                files.push(path)
             }
             Err(e) => println!("{:?}", e),
         }
     }
 
-    let pattern = format!("{}*.jar", &umm_files().join("lib/").display());
-    let paths = glob(&pattern).expect("Failed to glob.");
-    for entry in paths {
-        match entry {
-            Ok(path) => {
-                let path = format!("{}", path.display());
-                jars.push(path)
-            }
-            Err(e) => println!("{:?}", e),
-        }
-    }
-
-    jars.join(":")
+    files.join(":")
 }
 
-fn compile(path: &PathBuf) {
+fn compile(path: &PathBuf, quiet: bool) {
     let javac_path = find("javac");
 
     let output = Command::new(javac_path)
         .arg("-cp")
-        .arg(find_jar_classpath())
+        .arg(find_classpath())
         .arg("-d")
         .arg(build_dir().as_path().to_str().unwrap())
         .arg("-sourcepath")
         .arg(root_dir().as_path().to_str().unwrap())
         .arg("-Xlint:unchecked")
         .arg(path)
-        .output()
-        .expect(format!("Failed to compile {}.", path.display()).as_str());
+    .output()
+    .expect(format!("Failed to compile {}.", path.display()).as_str());
 
     let err = String::from_utf8(output.stderr).expect("Failed to parse stderr.");
     let err = err.trim();
@@ -83,7 +79,7 @@ fn compile(path: &PathBuf) {
 
     if err.len() > 0 {
         println!("{}", err);
-    } else {
+    } else if(!quiet) {
         println!(
             "Note: There were no errors or warnings while compiling {}!",
             path.display()
@@ -97,12 +93,8 @@ fn compile(path: &PathBuf) {
 
 fn test(path: &PathBuf) {
     let java_path = find("java");
-    let classpath = find_jar_classpath();
-    let classpath = format!("{}:{}", classpath, build_dir().as_path().to_str().unwrap());
 
-    let output = Command::new(java_path)
-        .arg("-cp")
-        .arg(&classpath)
+    let output = Command::new(&java_path)
         .arg("-jar")
         .arg(
             &umm_files()
@@ -111,19 +103,17 @@ fn test(path: &PathBuf) {
                 .to_str()
                 .unwrap(),
         )
-        .arg("-f")
-        .arg(path.to_str().unwrap())
         .arg("--disable-banner")
-        // .arg("--scan-classpath")
-        // .arg(&classpath)
-        .arg("--include-classname=.*")
+        .arg("-cp")
+        .arg(find_classpath())
+        .arg("--scan-classpath")
+        .arg("--details=tree")
         .output()
         .expect(format!("Failed to compile {}.", path.display()).as_str());
 
     let err = String::from_utf8(output.stderr).expect("Failed to parse stderr.");
     let err = err.trim();
-    let output = String::from_utf8(output.stdout).expect("Failed to parse stdout.");
-    let output = output.trim();
+    let mut output = String::from_utf8(output.stdout).expect("Failed to parse stdout.");
 
     if err.len() > 0 {
         println!("{}", err);
@@ -136,14 +126,16 @@ fn test(path: &PathBuf) {
     // }
 
     if output.len() > 0 {
-        println!("--------------- OUTPUT ---------------");
-        println!("{}", output);
+        if let Some(location) = output.find("Test run finished after") {
+            output.truncate(location);
+            println!("{}", output.trim());
+        }
     }
 }
 
 fn run(path: &PathBuf) {
     let java_path = find("java");
-    let classpath = find_jar_classpath();
+    let classpath = find_classpath();
     let classpath = format!("{}:{}", classpath, build_dir().as_path().to_str().unwrap());
 
     let output = Command::new(java_path)
@@ -234,16 +226,21 @@ fn init() {
         "hamcrest-core-1.3.jar",
         "junit-4.13.2.jar",
         "junit-platform-console-standalone-1.8.0-RC1.jar",
-        "junit-platform-runner-1.8.0.jar"
+        "junit-platform-runner-1.8.0.jar",
     ];
 
     for file in files {
         if !umm_files().join("lib/").join(file).as_path().exists() {
-            println!("Downloading {}...", file);
+            println!("\r{} {}", "Downloading".bright_yellow().bold(), file);
             download(
-                format!("https://github.com/DhruvDh/umm/raw/main/jars_files/{}", file).as_str(),
+                format!(
+                    "https://github.com/DhruvDh/umm/raw/main/jars_files/{}",
+                    file
+                )
+                .as_str(),
                 &umm_files().join("lib/").join(file),
             );
+            std::io::stdout().flush().unwrap();
         }
     }
 }
@@ -262,7 +259,7 @@ fn main() {
                 .value_of("FILE_NAME")
                 .unwrap();
 
-            compile(&root_dir().join(path));
+            compile(&root_dir().join(path), false);
         }
         Some("run") => {
             init();
@@ -272,7 +269,7 @@ fn main() {
                 .unwrap()
                 .value_of("FILE_NAME")
                 .unwrap();
-            compile(&root_dir().join(path));
+            compile(&root_dir().join(path), true);
             run(&root_dir().join(path));
         }
         Some("test") => {
@@ -283,7 +280,7 @@ fn main() {
                 .unwrap()
                 .value_of("FILE_NAME")
                 .unwrap();
-            compile(&root_dir().join(path));
+            compile(&root_dir().join(path), true);
             test(&root_dir().join(path));
         }
         Some("clean") => {

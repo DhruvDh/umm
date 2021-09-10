@@ -1,13 +1,20 @@
 import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
-@RunWith(JUnitPlatform.class)
 public class MainTest {
     @Test
-    void testAddition() {
-        assertEquals(2, 2);
+    void succeedingTest1() {
+        /* no-op */
+    }
+    @Test
+    void succeedingTest2() {
+        /* no-op */
+    }    @Test
+    void succeedingTest3() {
+        /* no-op */
+    }    @Test
+    void succeedingTest4() {
+        assertEquals(3, 4);
     }
 }
