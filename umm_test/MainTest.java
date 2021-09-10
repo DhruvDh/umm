@@ -1,7 +1,10 @@
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.*;
- 
+
+
+import m.Main;
+
 public class MainTest {
  
     private Collection collection;
