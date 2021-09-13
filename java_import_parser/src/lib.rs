@@ -1,20 +1,10 @@
-use anyhow::Result;
-use thiserror::Error;
-
-#[derive(Error, Debug)]
-pub enum ParseError {
-    #[error("Cannot find class declaration statement in file `{0}`")]
-    NoClassFound(String),
-    #[error(
-        "Cannot parse Package Name or Import statements for file `{0}`. ErrorMessage is:\n`{1}`"
-    )]
-    PegParserError(String, String),
-}
+use anyhow::{bail, Result};
 
 #[derive(Debug)]
 pub struct ParseResult {
-    package_name: Option<String>,
-    imports: Vec<Vec<String>>,
+    pub package_name: Option<String>,
+    pub imports: Option<Vec<Vec<String>>>,
+    pub class_name: String,
 }
 
 peg::parser! {
@@ -31,47 +21,49 @@ peg::parser! {
     pub rule alphanumeric() -> String
         = s:$(['A'..='Z' | 'a'..='z' | '0'..='9']*) { s.to_string() }
 
-    pub rule whitespace()
-        = [' ' | '\t' | '\n' | '\r']+
+    pub rule __whitespace()
+        = [' ' | '\t' | '\n' | '\r']* 
+    
+    pub rule _whitespace()
+        = __whitespace() __whitespace()
 
     pub rule class_name() -> String
         =  a:upper_alphabet() b:alphanumeric() { a + &b }
 
     pub rule class_path() -> Vec<String>
-        = s:(class_name() ++ ".") { s }
+        = s:(alphanumeric() ++ ".") { s }
 
     pub rule import_statement() -> Vec<String>
-        = "import" whitespace() s:class_path() ";" { s }
+        = "import" _whitespace() "static"? _whitespace() s:class_path() ";" { s }
 
     pub rule multiple_import_statements() -> Vec<Vec<String>>
-        = s:(import_statement() ** whitespace()) { s }
+        = s:(import_statement() ** _whitespace()) _whitespace() { s }
 
     pub rule package_statement() -> String
-        = "package" whitespace() s:alphanumeric() ";" whitespace()? { s }
+        = "package" _whitespace() s:alphanumeric() ";" _whitespace() { s }
 
+    pub rule class_declaration() -> String
+        = "public"? _whitespace() "class" _whitespace() c:class_name() _whitespace() { c }
+    
+    #[no_eof]
     pub rule file() -> ParseResult
-        = s:(package_statement()?) i:multiple_import_statements()
+        = s:(package_statement()?) i:multiple_import_statements()? c:class_declaration() 
         {
-            ParseResult { package_name: s, imports: i }
+            ParseResult { package_name: s, imports: i, class_name: c }
         }
     }
 }
 
-pub fn parse(input: &str, file_name: &str) -> Result<ParseResult, ParseError> {
-    let input = match input.strip_suffix("public class") {
-        Some(s) => s,
-        None => return Err(ParseError::NoClassFound(file_name.to_string())),
-    };
-
+pub fn parse(input: &str, file_name: &str) -> Result<ParseResult> {
     match parser::file(input) {
         Ok(r) => return Ok(r),
         Err(e) => {
-            return Err(ParseError::PegParserError(
+            bail!("Cannot parse Package Name, Import statements, or Class declaration for file {}. ErrorMessage is:\n{}",
                 file_name.to_string(),
-                e.to_string(),
-            ))
+                e.to_string()
+            )
         }
-    };
+    }
 }
 
 #[cfg(test)]
@@ -115,8 +107,22 @@ mod tests {
 
     #[test]
     fn file() {
-        assert!(
-            parser::file("package graphics; import ADTs.StackADT; import AnotherClass;").is_ok()
-        );
+        let inputs = vec![
+            "public class ABC {}",
+            "class ABC {}",
+            "package graphics; import ADTs.StackADT; import AnotherClass; class ABC {}",
+            "package graphics; import ADTs.StackADT; import AnotherClass; public class ABC {}",
+            r#"public class Main {
+                public static void main(String[] args) {
+                    System.out.println("Hello World!");
+                }
+            }"#
+        ];
+
+        for input in inputs {
+            assert!(
+                dbg!(parser::file(input)).is_ok()
+            );
+        }
     }
 }

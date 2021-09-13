@@ -6,6 +6,7 @@ use std::io::{Read, Write};
 use std::{path::PathBuf, process::Command};
 
 use anyhow::{bail, Context, Result};
+use java_import_parser::*;
 
 fn root_dir() -> PathBuf {
     PathBuf::from("./")
@@ -32,7 +33,7 @@ fn find(name: &str) -> Result<String> {
     if output.is_empty() {
         bail!("Failed to find {} executable", name);
     }
-    
+
     Ok(String::from_utf8(output)
         .context("Failed to parse output.")?
         .trim()
@@ -65,6 +66,23 @@ fn find_classpath() -> Result<String> {
     Ok(files.join(":"))
 }
 
+fn get_parse_result(path: &PathBuf) -> Result<ParseResult> {
+    let name = path.file_name().unwrap().to_str().unwrap();
+
+    let source = std::fs::read_to_string(path).context("Failed to read file.")?;
+    parse(&source, name)
+}
+
+fn starts_with_one_of(s: &String, prefixes: &[&str]) -> bool {
+    for prefix in prefixes {
+        if s.starts_with(prefix) {
+            return true;
+        }
+    }
+
+    false
+}
+
 fn compile(path: &PathBuf) -> Result<()> {
     let name = path.file_name().unwrap().to_str().unwrap();
 
@@ -72,11 +90,59 @@ fn compile(path: &PathBuf) -> Result<()> {
 
     if !path.exists() {
         bail!(
-            "{}: {} does not exist.\n {}: All source files must be inside the src directory",
-            "Fail".bright_red().bold(),
+            "{} does not exist.\n{}: All source files must be inside the {} directory",
             path.display(),
-            "Note".bright_yellow().bold()
+            "Note".bright_green().bold(),
+            source_dir().display()
         );
+    }
+
+    let result = get_parse_result(path)?;
+    let package = result.package_name.unwrap_or("".to_string());
+    let imports = result.imports.unwrap_or(Vec::new());
+    let class_name = result.class_name;
+
+    if name.strip_suffix(".java").unwrap_or(name) != class_name {
+        bail!(
+            "{} should have a class name which is same as this file name for this tool to work. Current name is {}",
+            path.display(),
+            name
+        );
+    }
+
+    if !package.is_empty() {
+        if path
+            .parent()
+            .unwrap()
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            != package
+        {
+            bail!(
+                "{} belongs to package {} but is not in a folder called {}\n{}: All source files for package {} be inside a {} directory",
+                path.display(),
+                package,
+                package,
+                "Note".bright_green().bold(),
+                package,
+                package
+            );
+        }
+    }
+
+    for import in imports {
+        if starts_with_one_of(&import[0], &["java", "org", "com", "edu"]) {
+            continue;
+        } else {
+            let mut new_path = source_dir();
+            for part in import {
+                new_path = new_path.join(part);
+            }
+
+            compile(&new_path)?;
+        }
     }
 
     let javac_path = find("javac")?;
@@ -123,6 +189,8 @@ fn test(path: &PathBuf) -> Result<()> {
     let name = path.file_name().unwrap().to_str().unwrap();
     let java_path = find("java")?;
 
+    let class_name = get_parse_result(path)?.class_name;
+
     let output = match Command::new(&java_path)
         .arg("-jar")
         .arg(
@@ -135,8 +203,9 @@ fn test(path: &PathBuf) -> Result<()> {
         .arg("--disable-banner")
         .arg("-cp")
         .arg(find_classpath()?)
-        .arg("--scan-classpath")
-        .arg("--details=tree")
+        // .arg("--scan-classpath")
+        .arg("-c")
+        .arg(class_name)
         .output()
     {
         Ok(output) => output,
@@ -190,7 +259,8 @@ fn run(path: &PathBuf) -> Result<()> {
                 println!("{}", err);
             } else {
                 println!(
-                    "Note: There were no errors or warnings while running\t{}!",
+                    "{}: There were no errors or warnings while running {}!",
+                    "Note".bright_green().bold(),
                     path.display()
                 );
             }
@@ -201,7 +271,7 @@ fn run(path: &PathBuf) -> Result<()> {
     match String::from_utf8(output.stdout) {
         Ok(out) => {
             if out.len() > 0 {
-                println!("--------------- OUTPUT ---------------");
+                println!("\n--------------- OUTPUT ---------------");
                 println!("{}", out);
             }
         }
@@ -321,7 +391,7 @@ fn main() -> Result<()> {
                 .value_of("FILE_NAME")
                 .unwrap();
 
-            compile(&source_dir().join(path))?;
+            compile(&root_dir().join(path))?;
         }
         Some("run") => {
             init()?;
@@ -331,8 +401,8 @@ fn main() -> Result<()> {
                 .unwrap()
                 .value_of("FILE_NAME")
                 .unwrap();
-            compile(&source_dir().join(path))?;
-            run(&source_dir().join(path))?;
+            compile(&root_dir().join(path))?;
+            run(&root_dir().join(path))?;
         }
         Some("test") => {
             init()?;
@@ -342,8 +412,8 @@ fn main() -> Result<()> {
                 .unwrap()
                 .value_of("FILE_NAME")
                 .unwrap();
-            compile(&source_dir().join(path))?;
-            test(&source_dir().join(path))?;
+            compile(&root_dir().join(path))?;
+            test(&root_dir().join(path))?;
         }
         Some("clean") => {
             clean(&build_dir());
