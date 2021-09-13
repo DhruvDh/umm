@@ -1,4 +1,6 @@
-use anyhow::{bail, Result};
+use miette::{Result};
+use miette::{Diagnostic, NamedSource, SourceSpan};
+use thiserror::Error;
 
 #[derive(Debug)]
 pub struct ParseResult {
@@ -19,11 +21,11 @@ peg::parser! {
         = n:$(['0'..='9']+) { n.parse::<u32>().unwrap() }
 
     pub rule alphanumeric() -> String
-        = s:$(['A'..='Z' | 'a'..='z' | '0'..='9']*) { s.to_string() }
+        = s:$(['A'..='Z' | 'a'..='z' | '0'..='9' | '*']+ ) { s.to_string() }
 
     pub rule __whitespace()
-        = [' ' | '\t' | '\n' | '\r']* 
-    
+        = [' ' | '\t' | '\n' | '\r']*
+
     pub rule _whitespace()
         = __whitespace() __whitespace()
 
@@ -42,9 +44,10 @@ peg::parser! {
     pub rule package_statement() -> String
         = "package" _whitespace() s:alphanumeric() ";" _whitespace() { s }
 
+    #[no_eof]
     pub rule class_declaration() -> String
         = "public"? _whitespace() "class" _whitespace() c:class_name() _whitespace() { c }
-    
+
     #[no_eof]
     pub rule file() -> ParseResult
         = s:(package_statement()?) i:multiple_import_statements()? c:class_declaration() 
@@ -54,14 +57,42 @@ peg::parser! {
     }
 }
 
+#[derive(Error, Debug, Diagnostic)]
+#[error("parser oopsie!")]
+#[diagnostic(
+    code(oops::my::bad),
+    help("there could be something wrong with your package/import/class declaration statement, or my parser has a bug."),
+)]
+struct ParserError {
+    // The Source that we're gonna be printing snippets out of.
+    // This can be a String if you don't have or care about file names.
+    src: NamedSource,
+    // Snippets and highlights can be included in the diagnostic!
+    #[snippet(src, message("Something went wrong here!"))]
+    snip: SourceSpan,
+    #[highlight(snip, label("This bit here"))]
+    bad_bit: SourceSpan,
+}
+
 pub fn parse(input: &str, file_name: &str) -> Result<ParseResult> {
+    let re = regex::Regex::new(r"/\*(.|[\r\n])*?\*/").unwrap();
+    let input = re.replace_all(input, "");
+    let input = input.trim();
+
     match parser::file(input) {
         Ok(r) => return Ok(r),
         Err(e) => {
-            bail!("Cannot parse Package Name, Import statements, or Class declaration for file {}. ErrorMessage is:\n{}",
-                file_name.to_string(),
-                e.to_string()
-            )
+            //     bail!("Cannot parse Package Name, Import statements, or Class declaration for file {}. ErrorMessage is:\n{}",
+            //     file_name.to_string(),
+            //     e.to_string()
+            // )
+
+            let offset = e.location.offset;
+            Err(ParserError {
+                src: NamedSource::new(file_name.to_string(), input.to_string()),
+                snip: ((offset - 8, offset + 8)).into(),
+                bad_bit: ((offset - 1, offset + 1)).into()
+            })?
         }
     }
 }
@@ -102,21 +133,45 @@ mod tests {
     #[test]
     fn file() {
         let inputs = vec![
-            "public class ABC {}",
-            "class ABC {}",
-            "package graphics; import ADTs.StackADT; import AnotherClass; class ABC {}",
-            "package graphics; import ADTs.StackADT; import AnotherClass; public class ABC {}",
-            r#"public class Main {
-                public static void main(String[] args) {
-                    System.out.println("Hello World!");
-                }
-            }"#
+            // "public class ABC {}",
+            // "class ABC {}",
+            // "package graphics; import ADTs.StackADT; import AnotherClass; class ABC {}",
+            // "package graphics; import ADTs.StackADT; import AnotherClass; public class ABC {}",
+            // r#"public class Main {
+            //     public static void main(String[] args) {
+            //         System.out.println("Hello World!");
+            //     }
+            // }"#,
+            r#"
+            /*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ConcertTicket;
+
+import java.util.Date;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+/**
+ *
+ * @author Manuel Perez-quinones
+ * @version Fall 2019
+ */
+public class WalletTest {
+     /**
+     * Constructor
+     */
+    public WalletTest() {
+        // The class is only for test usage
+    }
+}
+            "#,
         ];
 
         for input in inputs {
-            assert!(
-                dbg!(parser::file(input)).is_ok()
-            );
+            assert!(dbg!(parser::file(input)).is_ok());
         }
     }
 }

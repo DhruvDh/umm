@@ -1,12 +1,13 @@
 use clap::{App, SubCommand};
 use colored::*;
 use glob::glob;
+use std::collections::BTreeSet;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::{path::PathBuf, process::Command};
 
-use anyhow::{bail, Context, Result};
 use java_import_parser::*;
+use miette::{bail, Result};
 
 fn root_dir() -> PathBuf {
     PathBuf::from("./")
@@ -38,10 +39,39 @@ fn find(name: &str) -> Result<String> {
         bail!("Failed to find {} executable", name);
     }
 
-    Ok(String::from_utf8(output)
-        .context("Failed to parse output.")?
-        .trim()
-        .to_string())
+    match String::from_utf8(output) {
+        Ok(s) => Ok(s.trim().to_string()),
+        Err(_) => bail!("Failed to parse output."),
+    }
+}
+
+fn find_sourcepath() -> Result<String> {
+    let mut files = Vec::new();
+
+    files.push(root_dir().display().to_string());
+    files.push(build_dir().display().to_string());
+
+    let pattern_1 = format!("{}**/**/**/**/*.java", root_dir().display());
+
+    let paths = match glob(&pattern_1) {
+        Ok(paths) => paths,
+        Err(_e) => bail!("Failed to glob for pattern {build_dir}**/**/*.class."),
+    };
+
+    for entry in paths {
+        match entry {
+            Ok(path) => {
+                let path = format!("{}", path.parent().unwrap_or(&root_dir()).display());
+                files.push(path)
+            }
+            Err(e) => bail!("while globbing: {}", e),
+        }
+    }
+
+    let files: BTreeSet<String> = files.iter().map(|s| s.to_string()).collect();
+    let files: Vec<String> = files.into_iter().collect();
+
+    Ok(files.join(":"))
 }
 
 fn find_classpath() -> Result<String> {
@@ -50,22 +80,38 @@ fn find_classpath() -> Result<String> {
     files.push(root_dir().display().to_string());
     files.push(build_dir().display().to_string());
 
-    let pattern_1 = format!("{}**/**/*.class", build_dir().display());
-    let pattern_2 = format!("{}**/**/*.jar", umm_files().display());
+    let pattern_1 = format!("{}**/**/**/**/*.class", build_dir().display());
+    let pattern_2 = format!("{}**/**/**/**/*.jar", umm_files().display());
 
-    let paths = glob(&pattern_1).context("Failed to glob for pattern {build_dir}**/**/*.class.")?;
-    let paths = paths
-        .chain(glob(&pattern_2).context("Failed to glob for pattern {build_dir}**/**/*.jar.")?);
+    let paths = match glob(&pattern_1) {
+        Ok(paths) => paths,
+        Err(_e) => bail!("Failed to glob for pattern {build_dir}**/**/*.class."),
+    };
+
+    let paths = paths.chain(match glob(&pattern_2) {
+        Ok(paths) => paths,
+        Err(_e) => bail!("Failed to glob for pattern {umm_files}**/**/*.jar."),
+    });
 
     for entry in paths {
         match entry {
             Ok(path) => {
-                let path = format!("{}", path.display());
-                files.push(path)
+                if path.extension().unwrap() == "jar" {
+                    let path = format!("{}", path.display());
+                    files.push(path)
+                } else {
+                    let path = format!("{}", path.parent().unwrap_or(&root_dir()).display());
+                    files.push(path)
+                }
             }
             Err(e) => bail!("while globbing: {}", e),
         }
     }
+
+    files.push(build_dir().as_path().to_str().unwrap().to_string());
+
+    let files: BTreeSet<String> = files.iter().map(|s| s.to_string()).collect();
+    let files: Vec<String> = files.into_iter().collect();
 
     Ok(files.join(":"))
 }
@@ -73,8 +119,12 @@ fn find_classpath() -> Result<String> {
 fn get_parse_result(path: &PathBuf) -> Result<ParseResult> {
     let name = path.file_name().unwrap().to_str().unwrap();
 
-    let source = std::fs::read_to_string(path).context("Failed to read file.")?;
-    parse(&source, name)
+    let source = match std::fs::read_to_string(path) {
+        Ok(source) => source,
+        Err(e) => bail!("Failed to read {}: {}", name, e),
+    };
+
+    parse(&source, name).into()
 }
 
 fn starts_with_one_of(s: &String, prefixes: &[&str]) -> bool {
@@ -87,10 +137,8 @@ fn starts_with_one_of(s: &String, prefixes: &[&str]) -> bool {
     false
 }
 
-fn compile(path: &PathBuf) -> Result<()> {
+fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
     let name = path.file_name().unwrap().to_str().unwrap();
-
-    print!("{} {}", "Compiling".bright_green().bold(), path.display());
 
     if !path.exists() {
         bail!(
@@ -104,7 +152,7 @@ fn compile(path: &PathBuf) -> Result<()> {
     let result = get_parse_result(path)?;
     let package = result.package_name.unwrap_or("".to_string());
     let imports = result.imports.unwrap_or(Vec::new());
-    let class_name = result.class_name;
+    let mut class_name = result.class_name;
 
     if name.strip_suffix(".java").unwrap_or(name) != class_name {
         bail!(
@@ -134,6 +182,28 @@ fn compile(path: &PathBuf) -> Result<()> {
                 package
             );
         }
+
+        if look_at_package && source_dir().join(&package).exists() {
+            let pattern_1 = format!("{}/**/**/*.java", source_dir().join(&package).display());
+            let pattern_2 = format!("{}/**/**/*.java", test_dir().join(&package).display());
+
+            let paths = match glob(&pattern_1) {
+                Ok(paths) => paths,
+                Err(_) => bail!("Failed to glob for pattern {build_dir}**/**/*.java."),
+            };
+
+            let paths = paths.chain(match glob(&pattern_2) {
+                Ok(paths) => paths,
+                Err(_e) => bail!("Failed to glob for pattern {umm_files}**/**/*.jar."),
+            });
+
+            for entry in paths {
+                match entry {
+                    Ok(path) => compile(&path, false)?,
+                    Err(e) => bail!("while globbing: {}", e),
+                }
+            }
+        }
     }
 
     for import in imports {
@@ -145,7 +215,7 @@ fn compile(path: &PathBuf) -> Result<()> {
                 new_path = new_path.join(part);
             }
 
-            compile(&new_path)?;
+            compile(&new_path, true)?;
         }
     }
 
@@ -157,8 +227,9 @@ fn compile(path: &PathBuf) -> Result<()> {
         .arg("-d")
         .arg(build_dir().as_path().to_str().unwrap())
         .arg("-sourcepath")
-        .arg(root_dir().as_path().to_str().unwrap())
+        .arg(find_sourcepath()?)
         .arg("-Xlint:unchecked")
+        .arg("-Xlint:deprecation")
         .arg(path)
         .output()
     {
@@ -170,9 +241,10 @@ fn compile(path: &PathBuf) -> Result<()> {
         Ok(err) => {
             if err.len() > 0 {
                 print!("\n{}", err);
-            } else {
-                println!(" {}", "✔".bright_green());
             }
+            // } else {
+            //     println!(" {}", "✔".bright_green());
+            // }
         }
         Err(e) => bail!("Failed to parse stderr for {}: {}", name, e),
     };
@@ -186,6 +258,22 @@ fn compile(path: &PathBuf) -> Result<()> {
         Err(e) => bail!("Failed to parse stderr for {}: {}", name, e),
     };
 
+    if output.status.success() {
+        println!(
+            "{} {}\tExit status: {}",
+            "Compiled".bright_green().bold(),
+            path.display(),
+            "✔".bright_green()
+        );
+    } else {
+        println!(
+            "{} {}\tExit status: {}",
+            "Compiled".bright_red().bold(),
+            path.display(),
+            "✘".bright_red()
+        );
+    };
+
     Ok(())
 }
 
@@ -193,7 +281,19 @@ fn test(path: &PathBuf) -> Result<()> {
     let name = path.file_name().unwrap().to_str().unwrap();
     let java_path = find("java")?;
 
-    let class_name = get_parse_result(path)?.class_name;
+    let result = get_parse_result(path)?;
+    let mut class_name = result.class_name;
+    let package = result.package_name.unwrap_or("".to_string());
+
+    if package.trim().len() > 0 {
+        class_name = format!("{}.{}", package, class_name);
+    }
+
+    println!(
+        "{} tests for class {}",
+        "Running".bright_yellow().bold(),
+        class_name,
+    );
 
     let output = match Command::new(&java_path)
         .arg("-jar")
@@ -395,7 +495,7 @@ fn main() -> Result<()> {
                 .value_of("FILE_NAME")
                 .unwrap();
 
-            compile(&root_dir().join(path))?;
+            compile(&root_dir().join(path), false)?;
         }
         Some("run") => {
             init()?;
@@ -405,7 +505,7 @@ fn main() -> Result<()> {
                 .unwrap()
                 .value_of("FILE_NAME")
                 .unwrap();
-            compile(&root_dir().join(path))?;
+            compile(&root_dir().join(path), true)?;
             run(&root_dir().join(path))?;
         }
         Some("test") => {
@@ -416,7 +516,7 @@ fn main() -> Result<()> {
                 .unwrap()
                 .value_of("FILE_NAME")
                 .unwrap();
-            compile(&root_dir().join(path))?;
+            compile(&root_dir().join(path), true)?;
             test(&root_dir().join(path))?;
         }
         Some("clean") => {
