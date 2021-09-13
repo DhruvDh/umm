@@ -495,7 +495,7 @@ fn main() -> Result<()> {
                 .value_of("FILE_NAME")
                 .unwrap();
 
-            compile(&root_dir().join(path), false)?;
+            compile(&root_dir().join(path), true)?;
         }
         Some("run") => {
             init()?;
