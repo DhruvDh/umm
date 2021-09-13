@@ -12,4 +12,3 @@ ureq = "2.2.0"
 colored = "2.0.0"
 java_import_parser = { path = "../java_import_parser" }
 anyhow = "1.0.44"
-thiserror = "1.0.29"

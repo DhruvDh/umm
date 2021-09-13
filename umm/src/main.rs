@@ -5,6 +5,8 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::{path::PathBuf, process::Command};
 
+use anyhow::{bail, Context, Result};
+
 fn root_dir() -> PathBuf {
     PathBuf::from("./")
 }
@@ -21,18 +23,23 @@ fn umm_files() -> PathBuf {
     root_dir().join(".umm_files/")
 }
 
-fn find(name: &str) -> String {
-    let output = Command::new("which")
-        .arg(name)
-        .output()
-        .expect(format!("Failed to find {} executable.", name).as_str())
-        .stdout;
+fn find(name: &str) -> Result<String> {
+    let output = match Command::new("which").arg(name).output() {
+        Ok(output) => output.stdout,
+        Err(e) => bail!("Failed to find {} executable: {}", name, e),
+    };
 
-    let output = String::from_utf8(output).expect("Failed to parse output.");
-    output.trim().to_string()
+    if output.is_empty() {
+        bail!("Failed to find {} executable", name);
+    }
+    
+    Ok(String::from_utf8(output)
+        .context("Failed to parse output.")?
+        .trim()
+        .to_string())
 }
 
-fn find_classpath() -> String {
+fn find_classpath() -> Result<String> {
     let mut files = Vec::new();
 
     files.push(root_dir().display().to_string());
@@ -41,8 +48,9 @@ fn find_classpath() -> String {
     let pattern_1 = format!("{}**/**/*.class", build_dir().display());
     let pattern_2 = format!("{}**/**/*.jar", umm_files().display());
 
-    let paths = glob(&pattern_1).expect("Failed to glob.");
-    let paths = paths.chain(glob(&pattern_2).expect("Failed to glob."));
+    let paths = glob(&pattern_1).context("Failed to glob for pattern {build_dir}**/**/*.class.")?;
+    let paths = paths
+        .chain(glob(&pattern_2).context("Failed to glob for pattern {build_dir}**/**/*.jar.")?);
 
     for entry in paths {
         match entry {
@@ -50,20 +58,32 @@ fn find_classpath() -> String {
                 let path = format!("{}", path.display());
                 files.push(path)
             }
-            Err(e) => println!("{:?}", e),
+            Err(e) => bail!("while globbing: {}", e),
         }
     }
 
-    files.join(":")
+    Ok(files.join(":"))
 }
 
-fn compile(path: &PathBuf) {
-    print!("{} {}", "Compiling".bright_green().bold(), path.display());
-    let javac_path = find("javac");
+fn compile(path: &PathBuf) -> Result<()> {
+    let name = path.file_name().unwrap().to_str().unwrap();
 
-    let output = Command::new(javac_path)
+    print!("{} {}", "Compiling".bright_green().bold(), path.display());
+
+    if !path.exists() {
+        bail!(
+            "{}: {} does not exist.\n {}: All source files must be inside the src directory",
+            "Fail".bright_red().bold(),
+            path.display(),
+            "Note".bright_yellow().bold()
+        );
+    }
+
+    let javac_path = find("javac")?;
+
+    let output = match Command::new(javac_path)
         .arg("-cp")
-        .arg(find_classpath())
+        .arg(find_classpath()?)
         .arg("-d")
         .arg(build_dir().as_path().to_str().unwrap())
         .arg("-sourcepath")
@@ -71,28 +91,39 @@ fn compile(path: &PathBuf) {
         .arg("-Xlint:unchecked")
         .arg(path)
         .output()
-        .expect(format!("Failed to compile {}.", path.display()).as_str());
+    {
+        Ok(output) => output,
+        Err(e) => bail!("Failed to execute javac for {}: {}", name, e),
+    };
 
-    let err = String::from_utf8(output.stderr).expect("Failed to parse stderr.");
-    let err = err.trim();
-    let output = String::from_utf8(output.stdout).expect("Failed to parse stdout.");
-    let output = output.trim();
+    match String::from_utf8(output.stderr) {
+        Ok(err) => {
+            if err.len() > 0 {
+                print!("\n{}", err);
+            } else {
+                println!(" {}", "✔".bright_green());
+            }
+        }
+        Err(e) => bail!("Failed to parse stderr for {}: {}", name, e),
+    };
 
-    if err.len() > 0 {
-        print!("\n{}", err);
-    } else {
-        println!(" {}", "✔".bright_green());
-    }
+    match String::from_utf8(output.stdout) {
+        Ok(out) => {
+            if out.len() > 0 {
+                println!("{}", out);
+            }
+        }
+        Err(e) => bail!("Failed to parse stderr for {}: {}", name, e),
+    };
 
-    if output.len() > 0 {
-        println!("{}", output);
-    }
+    Ok(())
 }
 
-fn test(path: &PathBuf) {
-    let java_path = find("java");
+fn test(path: &PathBuf) -> Result<()> {
+    let name = path.file_name().unwrap().to_str().unwrap();
+    let java_path = find("java")?;
 
-    let output = Command::new(&java_path)
+    let output = match Command::new(&java_path)
         .arg("-jar")
         .arg(
             &umm_files()
@@ -103,64 +134,81 @@ fn test(path: &PathBuf) {
         )
         .arg("--disable-banner")
         .arg("-cp")
-        .arg(find_classpath())
+        .arg(find_classpath()?)
         .arg("--scan-classpath")
         .arg("--details=tree")
         .output()
-        .expect(format!("Failed to compile {}.", path.display()).as_str());
+    {
+        Ok(output) => output,
+        Err(e) => bail!("Failed to execute java test command for {}: {}", name, e),
+    };
 
-    let err = String::from_utf8(output.stderr).expect("Failed to parse stderr.");
-    let err = err.trim();
-    let mut output = String::from_utf8(output.stdout).expect("Failed to parse stdout.");
-
-    if err.len() > 0 {
-        println!("{}", err);
-    }
-    // } else {
-    //     println!(
-    //         "Note: There were no errors or warnings while testing\t{}!",
-    //         path.display()
-    //     );
-    // }
-
-    if output.len() > 0 {
-        if let Some(location) = output.find("Test run finished after") {
-            output.truncate(location);
-            println!("{}", output.trim());
+    match String::from_utf8(output.stderr) {
+        Ok(err) => {
+            if err.len() > 0 {
+                println!("{}", err);
+            }
         }
-    }
+        Err(e) => bail!("Failed to parse stderr for {}: {}", name, e),
+    };
+
+    match String::from_utf8(output.stdout) {
+        Ok(out) => {
+            if out.len() > 0 {
+                let mut out = out;
+                if let Some(location) = out.find("Test run finished after") {
+                    out.truncate(location);
+                    println!("{}", out.trim());
+                }
+            }
+        }
+        Err(e) => bail!("Failed to parse stderr for {}: {}", name, e),
+    };
+
+    Ok(())
 }
 
-fn run(path: &PathBuf) {
-    let java_path = find("java");
-    let classpath = find_classpath();
+fn run(path: &PathBuf) -> Result<()> {
+    let name = path.file_name().unwrap().to_str().unwrap();
+    let java_path = find("java")?;
+    let classpath = find_classpath()?;
     let classpath = format!("{}:{}", classpath, build_dir().as_path().to_str().unwrap());
 
-    let output = Command::new(java_path)
+    let output = match Command::new(java_path)
         .arg("-cp")
         .arg(classpath)
         .arg(path.file_stem().unwrap().to_str().unwrap())
         .output()
-        .expect(format!("Failed to compile {}.", path.display()).as_str());
+    {
+        Ok(output) => output,
+        Err(e) => bail!("Failed to execute java run command for {}: {}", name, e),
+    };
 
-    let err = String::from_utf8(output.stderr).expect("Failed to parse stderr.");
-    let err = err.trim();
-    let output = String::from_utf8(output.stdout).expect("Failed to parse stdout.");
-    let output = output.trim();
+    match String::from_utf8(output.stderr) {
+        Ok(err) => {
+            if err.len() > 0 {
+                println!("{}", err);
+            } else {
+                println!(
+                    "Note: There were no errors or warnings while running\t{}!",
+                    path.display()
+                );
+            }
+        }
+        Err(e) => bail!("Failed to parse stderr for {}: {}", name, e),
+    };
 
-    if err.len() > 0 {
-        println!("{}", err);
-    } else {
-        println!(
-            "Note: There were no errors or warnings while running\t{}!",
-            path.display()
-        );
-    }
+    match String::from_utf8(output.stdout) {
+        Ok(out) => {
+            if out.len() > 0 {
+                println!("--------------- OUTPUT ---------------");
+                println!("{}", out);
+            }
+        }
+        Err(e) => bail!("Failed to parse stderr for {}: {}", name, e),
+    };
 
-    if output.len() > 0 {
-        println!("--------------- OUTPUT ---------------");
-        println!("{}", output);
-    }
+    Ok(())
 }
 
 fn create_app() -> App<'static, 'static> {
@@ -197,10 +245,11 @@ fn clean(path: &PathBuf) {
     std::fs::create_dir_all(path).unwrap_or(());
 }
 
-fn download(url: &str, path: &PathBuf) {
-    let resp = ureq::get(url)
-        .call()
-        .expect(format!("Could not download file at {}", url).as_str());
+fn download(url: &str, path: &PathBuf) -> Result<()> {
+    let resp = match ureq::get(url).call() {
+        Ok(resp) => resp,
+        Err(e) => bail!("Failed to download {}: {}", url, e),
+    };
 
     let len = resp
         .header("Content-Length")
@@ -208,16 +257,30 @@ fn download(url: &str, path: &PathBuf) {
         .unwrap();
 
     let mut bytes: Vec<u8> = Vec::with_capacity(len);
-    resp.into_reader()
-        .take(10_000_000)
-        .read_to_end(&mut bytes)
-        .expect("Failed to read response till the end.");
 
-    let mut file = File::create(path).expect("Failed to create file.");
-    file.write_all(&bytes).expect("Failed to write to file.");
+    match resp.into_reader().take(10_000_000).read_to_end(&mut bytes) {
+        Ok(bytes) => bytes,
+        Err(e) => bail!(
+            "Failed to read response till the end while downloading file at {}: {}",
+            url,
+            e
+        ),
+    };
+
+    let name = path.file_name().unwrap().to_str().unwrap();
+
+    let mut file = match File::create(path) {
+        Ok(file) => file,
+        Err(e) => bail!("Failed to create file at {}: {}", name, e),
+    };
+
+    match file.write_all(&bytes) {
+        Ok(_) => Ok(()),
+        Err(e) => bail!("Failed to write to file at {}: {}", name, e),
+    }
 }
 
-fn init() {
+fn init() -> Result<()> {
     std::fs::create_dir_all(&umm_files().join("lib")).unwrap_or(());
 
     let files = vec![
@@ -237,18 +300,20 @@ fn init() {
                 )
                 .as_str(),
                 &umm_files().join("lib/").join(file),
-            );
+            )?;
         }
     }
+
+    Ok(())
 }
 
-fn main() {
+fn main() -> Result<()> {
     let app = create_app();
     let matches = app.get_matches();
 
     match matches.subcommand_name() {
         Some("check") => {
-            init();
+            init()?;
 
             let path = matches
                 .subcommand_matches("check")
@@ -256,29 +321,29 @@ fn main() {
                 .value_of("FILE_NAME")
                 .unwrap();
 
-            compile(&source_dir().join(path));
+            compile(&source_dir().join(path))?;
         }
         Some("run") => {
-            init();
+            init()?;
 
             let path = matches
                 .subcommand_matches("run")
                 .unwrap()
                 .value_of("FILE_NAME")
                 .unwrap();
-            compile(&source_dir().join(path));
-            run(&source_dir().join(path));
+            compile(&source_dir().join(path))?;
+            run(&source_dir().join(path))?;
         }
         Some("test") => {
-            init();
+            init()?;
 
             let path = matches
                 .subcommand_matches("test")
                 .unwrap()
                 .value_of("FILE_NAME")
                 .unwrap();
-            compile(&source_dir().join(path));
-            test(&source_dir().join(path));
+            compile(&source_dir().join(path))?;
+            test(&source_dir().join(path))?;
         }
         Some("clean") => {
             clean(&build_dir());
@@ -288,4 +353,6 @@ fn main() {
             create_app().print_long_help().unwrap();
         }
     };
+
+    Ok(())
 }

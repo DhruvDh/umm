@@ -342,7 +342,6 @@ dependencies = [
  "colored",
  "glob",
  "java_import_parser",
- "thiserror",
  "ureq",
 ]
 
