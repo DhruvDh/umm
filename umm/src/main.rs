@@ -1,20 +1,20 @@
-// check
-// run
-// test
-// clean
 use clap::{App, SubCommand};
+use colored::*;
 use glob::glob;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::{path::PathBuf, process::Command};
-use colored::*;
 
 fn root_dir() -> PathBuf {
     PathBuf::from("./")
 }
 
 fn build_dir() -> PathBuf {
-    root_dir().join("bin/")
+    root_dir().join("target/")
+}
+
+fn source_dir() -> PathBuf {
+    root_dir().join("src/")
 }
 
 fn umm_files() -> PathBuf {
@@ -57,7 +57,8 @@ fn find_classpath() -> String {
     files.join(":")
 }
 
-fn compile(path: &PathBuf, quiet: bool) {
+fn compile(path: &PathBuf) {
+    print!("{} {}", "Compiling".bright_green().bold(), path.display());
     let javac_path = find("javac");
 
     let output = Command::new(javac_path)
@@ -69,8 +70,8 @@ fn compile(path: &PathBuf, quiet: bool) {
         .arg(root_dir().as_path().to_str().unwrap())
         .arg("-Xlint:unchecked")
         .arg(path)
-    .output()
-    .expect(format!("Failed to compile {}.", path.display()).as_str());
+        .output()
+        .expect(format!("Failed to compile {}.", path.display()).as_str());
 
     let err = String::from_utf8(output.stderr).expect("Failed to parse stderr.");
     let err = err.trim();
@@ -78,12 +79,9 @@ fn compile(path: &PathBuf, quiet: bool) {
     let output = output.trim();
 
     if err.len() > 0 {
-        println!("{}", err);
-    } else if(!quiet) {
-        println!(
-            "Note: There were no errors or warnings while compiling {}!",
-            path.display()
-        );
+        print!("\n{}", err);
+    } else {
+        println!(" {}", "✔".bright_green());
     }
 
     if output.len() > 0 {
@@ -231,7 +229,7 @@ fn init() {
 
     for file in files {
         if !umm_files().join("lib/").join(file).as_path().exists() {
-            println!("\r{} {}", "Downloading".bright_yellow().bold(), file);
+            println!("{} {}", "Downloading".bright_yellow().bold(), file);
             download(
                 format!(
                     "https://github.com/DhruvDh/umm/raw/main/jars_files/{}",
@@ -240,7 +238,6 @@ fn init() {
                 .as_str(),
                 &umm_files().join("lib/").join(file),
             );
-            std::io::stdout().flush().unwrap();
         }
     }
 }
@@ -259,7 +256,7 @@ fn main() {
                 .value_of("FILE_NAME")
                 .unwrap();
 
-            compile(&root_dir().join(path), false);
+            compile(&source_dir().join(path));
         }
         Some("run") => {
             init();
@@ -269,8 +266,8 @@ fn main() {
                 .unwrap()
                 .value_of("FILE_NAME")
                 .unwrap();
-            compile(&root_dir().join(path), true);
-            run(&root_dir().join(path));
+            compile(&source_dir().join(path));
+            run(&source_dir().join(path));
         }
         Some("test") => {
             init();
@@ -280,8 +277,8 @@ fn main() {
                 .unwrap()
                 .value_of("FILE_NAME")
                 .unwrap();
-            compile(&root_dir().join(path), true);
-            test(&root_dir().join(path));
+            compile(&source_dir().join(path));
+            test(&source_dir().join(path));
         }
         Some("clean") => {
             clean(&build_dir());
