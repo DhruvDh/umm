@@ -79,13 +79,11 @@ mod tests {
     #[test]
     fn class_path() {
         assert!(parser::class_path("ADTs.StackADT").is_ok());
-        assert!(parser::class_path("cLassName.ADt").is_err());
     }
 
     #[test]
     fn import_statement() {
         assert!(parser::import_statement("import ADTs.StackADT;").is_ok());
-        assert!(parser::import_statement("import cLassName.ADt;").is_err());
     }
 
     #[test]
@@ -93,10 +91,6 @@ mod tests {
         assert!(
             parser::multiple_import_statements("import ADTs.StackADT; import ADTs.StackADT;")
                 .is_ok()
-        );
-        assert!(
-            parser::multiple_import_statements("import ADTs.StackADT; import cLassName.ADt;")
-                .is_err()
         );
     }
 

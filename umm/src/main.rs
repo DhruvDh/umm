@@ -20,6 +20,10 @@ fn source_dir() -> PathBuf {
     root_dir().join("src/")
 }
 
+fn test_dir() -> PathBuf {
+    root_dir().join("test/")
+}
+
 fn umm_files() -> PathBuf {
     root_dir().join(".umm_files/")
 }
