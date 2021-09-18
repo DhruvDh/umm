@@ -138,6 +138,15 @@ fn starts_with_one_of(s: &String, prefixes: &[&str]) -> bool {
 }
 
 fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
+    if path.extension() != Some(std::ffi::OsStr::new("java")) {
+        bail!("{} is not a java file.", path.display());
+    }
+
+    let path = match std::fs::canonicalize(path) {
+        Ok(path) => path,
+        Err(e) => bail!("Failed to find absolute path {}: {}", path.display(), e),
+    };
+
     let name = path.file_name().unwrap().to_str().unwrap();
 
     if !path.exists() {
@@ -149,7 +158,7 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
         );
     }
 
-    let result = get_parse_result(path)?;
+    let result = get_parse_result(&path)?;
     let package = result.package_name.unwrap_or("".to_string());
     let imports = result.imports.unwrap_or(Vec::new());
     let mut class_name = result.class_name;
@@ -183,18 +192,18 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
             );
         }
 
-        if look_at_package && source_dir().join(&package).exists() {
+        if look_at_package {
             let pattern_1 = format!("{}/**/**/*.java", source_dir().join(&package).display());
             let pattern_2 = format!("{}/**/**/*.java", test_dir().join(&package).display());
 
             let paths = match glob(&pattern_1) {
                 Ok(paths) => paths,
-                Err(_) => bail!("Failed to glob for pattern {build_dir}**/**/*.java."),
+                Err(_) => bail!("Failed to glob for pattern {source_dir}**/**/*.java."),
             };
 
             let paths = paths.chain(match glob(&pattern_2) {
                 Ok(paths) => paths,
-                Err(_e) => bail!("Failed to glob for pattern {umm_files}**/**/*.jar."),
+                Err(_e) => bail!("Failed to glob for pattern {test_dir}**/**/*.java."),
             });
 
             for entry in paths {
@@ -207,15 +216,15 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
     }
 
     for import in imports {
-        if starts_with_one_of(&import[0], &["java", "org", "com", "edu"]) {
+        if starts_with_one_of(&import[0], &["java", "org", "com", "edu", &package]) {
             continue;
         } else {
             let mut new_path = source_dir();
             for part in import {
                 new_path = new_path.join(part);
             }
-
-            compile(&new_path, true)?;
+            
+            compile(&new_path.with_extension("java"), true)?;
         }
     }
 
@@ -230,7 +239,7 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
         .arg(find_sourcepath()?)
         .arg("-Xlint:unchecked")
         .arg("-Xlint:deprecation")
-        .arg(path)
+        .arg(&path)
         .output()
     {
         Ok(output) => output,
