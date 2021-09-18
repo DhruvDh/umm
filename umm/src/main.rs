@@ -142,11 +142,6 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
         bail!("{} is not a java file.", path.display());
     }
 
-    let path = match std::fs::canonicalize(path) {
-        Ok(path) => path,
-        Err(e) => bail!("Failed to find absolute path {}: {}", path.display(), e),
-    };
-
     let name = path.file_name().unwrap().to_str().unwrap();
 
     if !path.exists() {
