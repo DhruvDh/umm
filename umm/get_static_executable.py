@@ -1,9 +1,18 @@
+import subprocess
 import os
 
 def do():
-    os.system("cargo clean")
-    os.system("cargo build --release --target=x86_64-unknown-linux-musl")
-    os.system("cp target/x86_64-unknown-linux-musl/release/umm ./umm")
+    env = os.environ
+    subprocess.call([
+        '''
+        cargo clean
+        cargo build --release
+        cp target/release/umm ./umm
+        cargo clean
+        exit
+        '''
+    ], shell=True, cwd=".", env=env)
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     do()
