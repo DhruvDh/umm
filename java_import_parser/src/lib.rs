@@ -43,10 +43,13 @@ peg::parser! {
 
     pub rule package_statement() -> String
         = "package" _whitespace() s:alphanumeric() ";" _whitespace() { s }
+    
+    pub rule class_keyword() 
+        = ("class" / "interface") _whitespace()
 
     #[no_eof]
     pub rule class_declaration() -> String
-        = "public"? _whitespace() "class" _whitespace() c:class_name() _whitespace() { c }
+        = "public"? _whitespace() class_keyword() _whitespace() c:class_name() _whitespace() { c }
 
     #[no_eof]
     pub rule file() -> ParseResult

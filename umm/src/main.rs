@@ -211,7 +211,7 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
     }
 
     for import in imports {
-        if starts_with_one_of(&import[0], &["java", "org", "com", "edu", &package]) {
+        if starts_with_one_of(&import[0], &["java", "org", "com", "edu", &package, "DataStructures"]) {
             continue;
         } else {
             let mut new_path = source_dir();
@@ -225,7 +225,7 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
 
     let javac_path = find("javac")?;
 
-    let output = match Command::new(javac_path)
+    let output = match dbg!(Command::new(javac_path)
         .arg("-cp")
         .arg(find_classpath()?)
         .arg("-d")
@@ -234,7 +234,7 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
         .arg(find_sourcepath()?)
         .arg("-Xlint:unchecked")
         .arg("-Xlint:deprecation")
-        .arg(&path)
+        .arg(&path))
         .output()
     {
         Ok(output) => output,
