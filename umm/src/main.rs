@@ -225,7 +225,7 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
 
     let javac_path = find("javac")?;
 
-    let output = match dbg!(Command::new(javac_path)
+    let output = match Command::new(javac_path)
         .arg("-cp")
         .arg(find_classpath()?)
         .arg("-d")
@@ -234,7 +234,7 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
         .arg(find_sourcepath()?)
         .arg("-Xlint:unchecked")
         .arg("-Xlint:deprecation")
-        .arg(&path))
+        .arg(&path)
         .output()
     {
         Ok(output) => output,
@@ -350,11 +350,19 @@ fn run(path: &PathBuf) -> Result<()> {
     let java_path = find("java")?;
     let classpath = find_classpath()?;
     let classpath = format!("{}:{}", classpath, build_dir().as_path().to_str().unwrap());
+    
+    let result = get_parse_result(&path)?;
+    let package = result.package_name.unwrap_or("".to_string());
+    let mut class_name = result.class_name;
 
-    let output = match Command::new(java_path)
+    if !package.trim().is_empty() {
+        class_name = format!("{}.{}", package, class_name);
+    }
+    
+    let output = match dbg!(Command::new(java_path)
         .arg("-cp")
         .arg(classpath)
-        .arg(path.file_stem().unwrap().to_str().unwrap())
+        .arg(class_name))
         .output()
     {
         Ok(output) => output,
