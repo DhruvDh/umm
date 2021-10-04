@@ -436,7 +436,6 @@ fn create_app() -> App<'static, 'static> {
             SubCommand::with_name("check")
                 .about("Checks the java file for syntax errors.")
                 .version("0.0.1")
-                .args_from_usage("<FILE_NAME>              'the Java file to check'"),
         )
         .subcommand(
             SubCommand::with_name("run")
@@ -448,7 +447,6 @@ fn create_app() -> App<'static, 'static> {
             SubCommand::with_name("test")
                 .about("Runs the given junit test file.")
                 .version("0.0.1")
-                .args_from_usage("<FILE_NAME>              'the Java file to test'"),
         )
         .subcommand(
             SubCommand::with_name("clean")
@@ -529,14 +527,12 @@ fn main() -> Result<()> {
     match matches.subcommand_name() {
         Some("check") => {
             init()?;
+            println!("{}", "For this lab, I will always only check DataStructures.LinkedStack when you say `umm check`.".bright_yellow().bold());
 
-            let path = matches
-                .subcommand_matches("check")
-                .unwrap()
-                .value_of("FILE_NAME")
-                .unwrap();
-
-            compile(&root_dir().join(path), true)?;
+            compile(
+                &source_dir().join("DataStructures").join("LinkedStack.java"),
+                false,
+            )?;
         }
         Some("run") => {
             init()?;
@@ -551,14 +547,19 @@ fn main() -> Result<()> {
         }
         Some("test") => {
             init()?;
+            println!("{}", "For this lab, I will always only test DataStructures.LinkedStackTest when you say `umm test`.".bright_yellow().bold());
 
-            let path = matches
-                .subcommand_matches("test")
-                .unwrap()
-                .value_of("FILE_NAME")
-                .unwrap();
-            compile(&root_dir().join(path), true)?;
-            test(&root_dir().join(path))?;
+            compile(
+                &test_dir()
+                    .join("DataStructures")
+                    .join("LinkedStackTest.java"),
+                true,
+            )?;
+            test(
+                &test_dir()
+                    .join("DataStructures")
+                    .join("LinkedStackTest.java"),
+            )?;
         }
         Some("clean") => {
             clean(&build_dir());
