@@ -6,9 +6,7 @@ def do():
     subprocess.call([
         '''
         cargo clean
-        cargo build --release
-        cp target/release/umm ./umm
-        cargo clean
+        cargo install --path=. && cp (which umm) ./umm
         exit
         '''
     ], shell=True, cwd=".", env=env)
