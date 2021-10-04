@@ -359,10 +359,10 @@ fn run(path: &PathBuf) -> Result<()> {
         class_name = format!("{}.{}", package, class_name);
     }
     
-    let output = match dbg!(Command::new(java_path)
+    let output = match Command::new(java_path)
         .arg("-cp")
         .arg(classpath)
-        .arg(class_name))
+        .arg(class_name)
         .output()
     {
         Ok(output) => output,
@@ -470,10 +470,9 @@ fn init() -> Result<()> {
     std::fs::create_dir_all(&umm_files().join("lib")).unwrap_or(());
 
     let files = vec![
-        "hamcrest-core-1.3.jar",
-        "junit-4.13.2.jar",
         "junit-platform-console-standalone-1.8.0-RC1.jar",
         "junit-platform-runner-1.8.0.jar",
+        "DataStructures.jar"
     ];
 
     for file in files {
