@@ -562,7 +562,6 @@ fn main() -> Result<()> {
             )?;
         }
         Some("clean") => {
-            clean(&build_dir());
             clean(&umm_files());
         }
         _ => {
