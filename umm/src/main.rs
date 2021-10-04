@@ -144,6 +144,27 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
 
     let name = path.file_name().unwrap().to_str().unwrap();
 
+    if starts_with_one_of(
+        &String::from(name),
+        &[
+            "ArrayListStack.java",
+            "ArrayStack.java",
+            "CArrayList.java",
+            "DoublyLinkedList.java",
+            "DoublyLinkedNode.java",
+            "DoublyLinkedListTest.java",
+            "SinglyLinkedList.java",
+            "SinglyLinkedNode.java",
+            "SinglyLinkedListTest.java",
+        ],
+    ) {
+        return Ok(());
+    }
+
+    if name == "*.java" {
+        return Ok(());
+    }
+
     if !path.exists() {
         bail!(
             "{} does not exist.\n{}: All source files must be inside the {} directory",
@@ -211,14 +232,26 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
     }
 
     for import in imports {
-        if starts_with_one_of(&import[0], &["java", "org", "com", "edu", &package, "DataStructures"]) {
+        if starts_with_one_of(
+            &import[0],
+            &[
+                "java",
+                "org",
+                "com",
+                "edu",
+                &package,
+                "DataStructures",
+                "Exceptions",
+                "ADTs",
+            ],
+        ) {
             continue;
         } else {
             let mut new_path = source_dir();
             for part in import {
                 new_path = new_path.join(part);
             }
-            
+
             compile(&new_path.with_extension("java"), true)?;
         }
     }
@@ -232,8 +265,6 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
         .arg(build_dir().as_path().to_str().unwrap())
         .arg("-sourcepath")
         .arg(find_sourcepath()?)
-        .arg("-Xlint:unchecked")
-        .arg("-Xlint:deprecation")
         .arg(&path)
         .output()
     {
@@ -350,7 +381,7 @@ fn run(path: &PathBuf) -> Result<()> {
     let java_path = find("java")?;
     let classpath = find_classpath()?;
     let classpath = format!("{}:{}", classpath, build_dir().as_path().to_str().unwrap());
-    
+
     let result = get_parse_result(&path)?;
     let package = result.package_name.unwrap_or("".to_string());
     let mut class_name = result.class_name;
@@ -358,7 +389,7 @@ fn run(path: &PathBuf) -> Result<()> {
     if !package.trim().is_empty() {
         class_name = format!("{}.{}", package, class_name);
     }
-    
+
     let output = match Command::new(java_path)
         .arg("-cp")
         .arg(classpath)
@@ -472,7 +503,6 @@ fn init() -> Result<()> {
     let files = vec![
         "junit-platform-console-standalone-1.8.0-RC1.jar",
         "junit-platform-runner-1.8.0.jar",
-        "DataStructures.jar"
     ];
 
     for file in files {
