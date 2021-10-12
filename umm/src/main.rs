@@ -235,10 +235,7 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
         if starts_with_one_of(
             &import[0],
             &[
-                "java",
-                "org",
-                "com",
-                "edu",
+                "java", "org", "com", "edu",
                 &package,
                 "DataStructures",
                 "Exceptions",
@@ -439,13 +436,12 @@ fn create_app() -> App<'static, 'static> {
         )
         .subcommand(
             SubCommand::with_name("run")
-                .about("Runs the java file and shows the output.")
+                .about("Runs the java file and shows the output. (For this lab there is no need to specify a file path)")
                 .version("0.0.1")
-                .args_from_usage("<FILE_NAME>              'the Java file to run'"),
         )
         .subcommand(
             SubCommand::with_name("test")
-                .about("Runs the given junit test file. (For this lab there is no need to specify a file path)")
+                .about("Runs the given junit test file. (For this lab there is nothing to test)")
                 .version("0.0.1"),
         )
         .subcommand(
@@ -527,7 +523,7 @@ fn init() -> Result<()> {
             "Downloading pre-compiled files".bright_yellow().bold()
         );
         download(
-            format!("https://github.com/DhruvDh/lab_2_2214/blob/master/target.zip?raw=true")
+            format!("https://www.dropbox.com/s/t7n89fv1887hacx/target.zip?raw=true")
                 .as_str(),
             &umm_files().join("target.zip"),
         )?;
@@ -558,39 +554,68 @@ fn main() -> Result<()> {
     match matches.subcommand_name() {
         Some("check") => {
             init()?;
-            println!("{}", "For this lab, I will always only check DataStructures.LinkedStack when you say `umm check`.".bright_yellow().bold());
+            println!("{}", "For this lab, I will always only check the following files when you say `umm check`.".bright_yellow().bold());
+            println!(
+                "{}",
+                "1. DataStructures.LinkedStack (The file you completed in Lab 2)"
+                    .bright_green()
+                    .bold()
+            );
+            println!(
+                "{}",
+                "2. DataStructures.LinkedQueue (File you need to complete in Lab 3)"
+                    .bright_green()
+                    .bold()
+            );
+            println!(
+                "{}",
+                "3. DataStructures.ArrayQueue (File you need to complete in Lab 3)"
+                    .bright_green()
+                    .bold()
+            );
+            println!(
+                "{}",
+                "4. Apps.RepeatStrings class (File you need to complete in Lab 3)"
+                    .bright_green()
+                    .bold()
+            );
 
             compile(
                 &source_dir().join("DataStructures").join("LinkedStack.java"),
                 false,
             )?;
+            compile(
+                &source_dir().join("DataStructures").join("LinkedQueue.java"),
+                false,
+            )?;
+            compile(
+                &source_dir().join("DataStructures").join("ArrayQueue.java"),
+                false,
+            )?;
+            compile(&source_dir().join("Apps").join("RepeatStrings.java"), false)?;
         }
         Some("run") => {
             init()?;
 
-            let path = matches
-                .subcommand_matches("run")
-                .unwrap()
-                .value_of("FILE_NAME")
-                .unwrap();
-            compile(&root_dir().join(path), true)?;
-            run(&root_dir().join(path))?;
+            println!(
+                "{}",
+                "For this lab, I will always only run the following files when you say `umm run`."
+                    .bright_yellow()
+                    .bold()
+            );
+            println!(
+                "{}",
+                "1. Apps.RepeatStrings (The file you have to complete in Lab 3)"
+                    .bright_green()
+                    .bold()
+            );
+
+            compile(&source_dir().join("Apps").join("RepeatStrings.java"), false)?;
+            run(&source_dir().join("Apps").join("RepeatStrings.java"))?;
         }
         Some("test") => {
             init()?;
-            println!("{}", "For this lab, I will always only test DataStructures.LinkedStackTest when you say `umm test`.".bright_yellow().bold());
-
-            compile(
-                &test_dir()
-                    .join("DataStructures")
-                    .join("LinkedStackTest.java"),
-                true,
-            )?;
-            test(
-                &test_dir()
-                    .join("DataStructures")
-                    .join("LinkedStackTest.java"),
-            )?;
+            println!("{}", "For this lab, there is nothing to test.".bright_yellow().bold());
         }
         Some("clean") => {
             clean(&umm_files());
