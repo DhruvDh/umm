@@ -434,8 +434,8 @@ fn create_app() -> App<'static, 'static> {
         .about("A Java build for novices")
         .subcommand(
             SubCommand::with_name("check")
-                .about("Checks the java file for syntax errors.")
-                .version("0.0.1")
+                .about("Checks the java file for syntax errors. (For this lab there is no need to specify a file path)")
+                .version("0.0.1"),
         )
         .subcommand(
             SubCommand::with_name("run")
@@ -445,8 +445,8 @@ fn create_app() -> App<'static, 'static> {
         )
         .subcommand(
             SubCommand::with_name("test")
-                .about("Runs the given junit test file.")
-                .version("0.0.1")
+                .about("Runs the given junit test file. (For this lab there is no need to specify a file path)")
+                .version("0.0.1"),
         )
         .subcommand(
             SubCommand::with_name("clean")
@@ -497,6 +497,10 @@ fn download(url: &str, path: &PathBuf) -> Result<()> {
 
 fn init() -> Result<()> {
     std::fs::create_dir_all(&umm_files().join("lib")).unwrap_or(());
+    std::fs::create_dir_all(&umm_files().join("target")).unwrap_or(());
+    std::fs::create_dir_all(&umm_files().join("target").join("ADTs")).unwrap_or(());
+    std::fs::create_dir_all(&umm_files().join("target").join("DataStructures")).unwrap_or(());
+    std::fs::create_dir_all(&umm_files().join("target").join("Exceptions")).unwrap_or(());
 
     let files = vec![
         "junit-platform-console-standalone-1.8.0-RC1.jar",
@@ -515,6 +519,33 @@ fn init() -> Result<()> {
                 &umm_files().join("lib/").join(file),
             )?;
         }
+    }
+
+    if !umm_files().join("target.zip").exists() {
+        println!(
+            "{}",
+            "Downloading pre-compiled files".bright_yellow().bold()
+        );
+        download(
+            format!("https://github.com/DhruvDh/lab_2_2214/blob/master/target.zip?raw=true")
+                .as_str(),
+            &umm_files().join("target.zip"),
+        )?;
+    }
+
+    let output = Command::new("unzip")
+        .arg("-n")
+        .arg(&umm_files().join("target.zip"))
+        .output()
+        .unwrap();
+
+    if output.status.success() {
+        println!("{}", "Extracting them..".bright_yellow().bold());
+    } else {
+        bail!(
+            "Failed to unzip target.zip: {}",
+            String::from_utf8(output.stderr).unwrap()
+        );
     }
 
     Ok(())
