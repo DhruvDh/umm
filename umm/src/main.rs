@@ -4,6 +4,7 @@ use glob::glob;
 use std::collections::BTreeSet;
 use std::fs::File;
 use std::io::{Read, Write};
+use std::process::Stdio;
 use std::{path::PathBuf, process::Command};
 
 use java_import_parser::*;
@@ -235,7 +236,10 @@ fn compile(path: &PathBuf, look_at_package: bool) -> Result<()> {
         if starts_with_one_of(
             &import[0],
             &[
-                "java", "org", "com", "edu",
+                "java",
+                "org",
+                "com",
+                "edu",
                 &package,
                 "DataStructures",
                 "Exceptions",
@@ -387,39 +391,62 @@ fn run(path: &PathBuf) -> Result<()> {
         class_name = format!("{}.{}", package, class_name);
     }
 
-    let output = match Command::new(java_path)
+    let mut child = match Command::new(java_path)
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::inherit())
         .arg("-cp")
         .arg(classpath)
         .arg(class_name)
-        .output()
+        .spawn()
     {
-        Ok(output) => output,
+        Ok(c) => c,
         Err(e) => bail!("Failed to execute java run command for {}: {}", name, e),
     };
 
-    match String::from_utf8(output.stderr) {
-        Ok(err) => {
-            if err.len() > 0 {
-                println!("{}", err);
+    // match String::from_utf8(output.stderr) {
+    //     Ok(err) => {
+    //         if err.len() > 0 {
+    //             println!("{}", err);
+    //         } else {
+    //             println!(
+    //                 "{}: There were no errors or warnings while running {}!",
+    //                 "Note".bright_green().bold(),
+    //                 path.display()
+    //             );
+    //         }
+    //     }
+    //     Err(e) => bail!("Failed to parse stderr for {}: {}", name, e),
+    // };
+
+    // match String::from_utf8(output.stdout) {
+    //     Ok(out) => {
+    //         if out.len() > 0 {
+    //             println!("\n--------------- OUTPUT ---------------");
+    //             println!("{}", out);
+    //         }
+    //     }
+    //     Err(e) => bail!("Failed to parse stderr for {}: {}", name, e),
+    // };
+
+    match child.wait_with_output() {
+        Ok(status) => {
+            if status.status.success() {
+                println!(
+                    "{} {}\tExit status: {}",
+                    "Ran".bright_green().bold(),
+                    path.display(),
+                    "✔".bright_green()
+                );
             } else {
                 println!(
-                    "{}: There were no errors or warnings while running {}!",
-                    "Note".bright_green().bold(),
-                    path.display()
+                    "{} {}\tExit status: {}",
+                    "Ran".bright_red().bold(),
+                    path.display(),
+                    "✘".bright_red()
                 );
             }
         }
-        Err(e) => bail!("Failed to parse stderr for {}: {}", name, e),
-    };
-
-    match String::from_utf8(output.stdout) {
-        Ok(out) => {
-            if out.len() > 0 {
-                println!("\n--------------- OUTPUT ---------------");
-                println!("{}", out);
-            }
-        }
-        Err(e) => bail!("Failed to parse stderr for {}: {}", name, e),
+        Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),
     };
 
     Ok(())
@@ -523,8 +550,7 @@ fn init() -> Result<()> {
             "Downloading pre-compiled files".bright_yellow().bold()
         );
         download(
-            format!("https://www.dropbox.com/s/t7n89fv1887hacx/target.zip?raw=true")
-                .as_str(),
+            format!("https://www.dropbox.com/s/t7n89fv1887hacx/target.zip?raw=true").as_str(),
             &umm_files().join("target.zip"),
         )?;
     }
@@ -615,7 +641,12 @@ fn main() -> Result<()> {
         }
         Some("test") => {
             init()?;
-            println!("{}", "For this lab, there is nothing to test.".bright_yellow().bold());
+            println!(
+                "{}",
+                "For this lab, there is nothing to test."
+                    .bright_yellow()
+                    .bold()
+            );
         }
         Some("clean") => {
             clean(&umm_files());
