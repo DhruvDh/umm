@@ -635,7 +635,15 @@ fn main() -> Result<()> {
                     .bright_green()
                     .bold()
             );
-
+            
+            compile(
+                &source_dir().join("DataStructures").join("ArrayQueue.java"),
+                false,
+            )?;
+            compile(
+                &source_dir().join("DataStructures").join("LinkedQueue.java"),
+                false,
+            )?;
             compile(&source_dir().join("Apps").join("RepeatStrings.java"), false)?;
             run(&source_dir().join("Apps").join("RepeatStrings.java"))?;
         }
