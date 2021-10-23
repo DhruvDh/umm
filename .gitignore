@@ -2,3 +2,7 @@ umm_test/.umm_files
 umm/.umm_files
 umm/target
 java_import_parser/target
+
+# Added by cargo
+
+/target
