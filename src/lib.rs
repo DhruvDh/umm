@@ -1,13 +1,14 @@
-use std::{
-    collections::HashMap,
-    path::{Path, PathBuf},
-};
-
 use anyhow::{bail, ensure, Context, Result};
+use colored::*;
 use glob::glob;
 use inquire::{error::InquireError, Select};
 use java_dependency_analyzer::*;
 use lazy_static::lazy_static;
+use petgraph::Graph;
+use std::{
+    collections::HashMap,
+    path::{Path, PathBuf},
+};
 use which::which;
 
 lazy_static! {
@@ -27,19 +28,29 @@ lazy_static! {
 
 type Dict = HashMap<String, String>;
 
-struct JavaFile<'a> {
-    path: &'a Path,
-    file_name: &'a str,
-    package_name: Option<&'a String>,
-    imports: Option<Vec<Dict>>,
-    class_name: Option<&'a String>,
-    test_methods: Option<Vec<Dict>>,
+#[derive(Debug, Clone)]
+enum JavaFileType {
+    Interface,
+    Class,
+    Test,
 }
 
-impl<'a> JavaFile<'a> {
-    fn new(path: &'a Path) -> Result<Self> {
-        let source_code = std::fs::read_to_string(path)
-            .with_context(|| format!("Could not read file: {:?}", path))?;
+#[derive(Debug, Clone)]
+struct JavaFile {
+    path: PathBuf,
+    file_name: String,
+    package_name: Option<String>,
+    imports: Option<Vec<Dict>>,
+    name: Option<String>,
+    proper_name: Option<String>,
+    test_methods: Option<Vec<Dict>>,
+    kind: JavaFileType,
+}
+
+impl JavaFile {
+    fn new(path: PathBuf) -> Result<Self> {
+        let source_code = std::fs::read_to_string(&path)
+            .with_context(|| format!("Could not read file: {:?}", &path))?;
 
         let parser = Parser::new(source_code, *JAVA_TS_LANG)?;
 
@@ -57,32 +68,79 @@ impl<'a> JavaFile<'a> {
             package_name.len()
         );
 
-        let package_name = package_name[0].get("name");
-
-        let class_name = parser.query(CLASSNAME_QUERY)?;
+        let package_name = package_name[0].get("name").map(String::to_owned);
+        let mut kind = JavaFileType::Class;
+        let name = {
+            let class = parser.query(CLASSNAME_QUERY)?;
+            if class.is_empty() {
+                kind = JavaFileType::Interface;
+                parser.query(INTERFACENAME_QUERY)?
+            } else {
+                class
+            }
+        };
 
         ensure!(
-            class_name.len() == 1,
-            "Expected exactly one class name, found {}.",
-            class_name.len()
+            name.len() == 1,
+            "Expected exactly one class/interface name, found {}.",
+            name.len()
         );
-
-        let class_name = class_name[0].get("name");
+        let name = name[0].get("name").map(String::to_owned);
 
         let test_methods = parser.query(TEST_ANNOTATION_QUERY)?;
         let test_methods = if test_methods.is_empty() {
             None
         } else {
+            kind = JavaFileType::Test;
             Some(test_methods)
         };
 
+        let proper_name = if package_name.is_some() {
+            format!(
+                "{}.{}",
+                package_name.as_ref().unwrap().yellow(),
+                name.as_ref().unwrap().blue()
+            )
+        } else {
+            format!("{}", name.as_ref().unwrap().blue())
+        };
+
         Ok(Self {
-            path,
-            file_name: path.file_name().unwrap().to_str().unwrap(),
+            path: path.to_owned(),
+            file_name: path.file_name().unwrap().to_str().unwrap().to_string(),
             package_name,
             imports,
-            class_name,
+            proper_name: Some(proper_name),
+            name,
             test_methods,
+            kind,
+        })
+    }
+}
+
+struct JavaProject {
+    files: Vec<JavaFile>,
+    names: Vec<String>,
+    depends_on: Vec<Vec<JavaFile>>,
+    graph: Graph<JavaFile, ()>,
+}
+
+impl JavaProject {
+    fn new() -> Result<Self> {
+        let mut files = vec![];
+        let mut names = vec![];
+
+        for path in find_files("java", 5, &ROOT_DIR)? {
+            let file = JavaFile::new(path)?;
+            names.push(file.proper_name.clone().unwrap());
+            files.push(file);
+        }
+
+        Ok(Self {
+            files,
+            names,
+            depends_on: vec![vec![]],
+            graph: Graph::new(),
         })
     }
 }
@@ -92,17 +150,10 @@ pub fn run_prompt() -> Result<()> {
 }
 
 pub fn check_prompt() -> Result<()> {
-    // for r in find_files("java", 5, &ROOT_DIR)? {
-    //     for result in analyze_file(&r)? {
-    //         println!(
-    //             "For {:?} -> {:?}; with asterik?: {}",
-    //             r,
-    //             result.get("path").unwrap(),
-    //             result.get("asterik").is_some()
-    //         );
-    //     }
-    // }
+    //     let ans: Result<String, InquireError> = Select::new("Which file to check?", names).prompt();
+    //     let ans = ans.context("Failed to get answer for some reason.")?;
 
+    //     println!("Okay, will check {}.", ans);
     Ok(())
 }
 
