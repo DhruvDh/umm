@@ -5,8 +5,10 @@ use inquire::{error::InquireError, Select};
 use java_dependency_analyzer::*;
 use lazy_static::lazy_static;
 use std::{
-    collections::HashMap,
+    collections::{HashMap, HashSet},
+    ffi::OsString,
     path::{Path, PathBuf},
+    process::{Command, Stdio},
 };
 use which::which;
 
@@ -17,13 +19,10 @@ lazy_static! {
     static ref TEST_DIR: PathBuf = PathBuf::from(".").join("test");
     static ref LIB_DIR: PathBuf = PathBuf::from(".").join("lib");
     static ref UMM_DIR: PathBuf = PathBuf::from(".").join(".umm");
-    static ref JAVA_PATH: Result<PathBuf> =
-        which("java").context("Failed to find `java` executable on path.");
-    static ref JAVAC_PATH: Result<PathBuf> =
-        which("javac").context("Failed to find `javac` executable on path.");
     static ref SEPARATOR: &'static str = if cfg!(windows) { ";" } else { ":" };
     static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
-    static ref PROJECT: Result<JavaProject> = JavaProject::new();
+    static ref PROJECT: Result<JavaProject> =
+        JavaProject::new().context("Fatal Error initializing the Java Project.");
 }
 type Dict = HashMap<String, String>;
 
@@ -44,6 +43,14 @@ struct JavaFile {
     proper_name: Option<String>,
     test_methods: Option<Vec<Dict>>,
     kind: JavaFileType,
+}
+
+fn javac_path() -> Result<OsString> {
+    Ok(which("javac").map(PathBuf::into_os_string)?)
+}
+
+fn java_path() -> Result<OsString> {
+    Ok(which("javac").map(PathBuf::into_os_string)?)
 }
 
 impl JavaFile {
@@ -120,20 +127,55 @@ impl JavaFile {
 struct JavaProject {
     files: Vec<JavaFile>,
     names: Vec<String>,
+    source_path: HashSet<String>,
+    class_path: HashSet<String>,
 }
 
 impl JavaProject {
     fn new() -> Result<Self> {
         let mut files = vec![];
         let mut names = vec![];
+        let mut source_path = HashSet::<String>::new();
+        let mut class_path = HashSet::<String>::new();
 
-        for path in find_files("java", 5, &ROOT_DIR)? {
+        for path in find_files("java", 15, &ROOT_DIR)? {
+            let root = path.clone();
+            let root = root.parent();
+
+            if let Some(r) = root {
+                source_path.insert(r.display().to_string());
+            }
+
             let file = JavaFile::new(path)?;
+            if let Some(p) = file.package_name.clone() {
+                let mut _p = BUILD_DIR.clone();
+                _p.push(p);
+                class_path.insert(_p.display().to_string());
+            }
+
             names.push(file.proper_name.clone().unwrap());
+
             files.push(file);
         }
 
-        Ok(Self { files, names })
+        Ok(Self {
+            files,
+            names,
+            source_path,
+            class_path,
+        })
+    }
+
+    fn check(&self, name: String) -> Result<()> {
+        let index = self.names.iter().position(|n| n.eq(&name)).unwrap();
+        let file = &self.files.get(index).unwrap().path;
+
+        let child = Command::new(javac_path()?)
+            .stdin(Stdio::inherit())
+            .stdout(Stdio::inherit())
+            .args(["-sourcepath"]);
+
+        Ok(())
     }
 }
 
