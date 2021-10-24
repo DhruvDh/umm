@@ -4,7 +4,6 @@ use glob::glob;
 use inquire::{error::InquireError, Select};
 use java_dependency_analyzer::*;
 use lazy_static::lazy_static;
-use petgraph::Graph;
 use std::{
     collections::HashMap,
     path::{Path, PathBuf},
@@ -24,8 +23,8 @@ lazy_static! {
         which("javac").context("Failed to find `javac` executable on path.");
     static ref SEPARATOR: &'static str = if cfg!(windows) { ";" } else { ":" };
     static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
+    static ref PROJECT: Result<JavaProject> = JavaProject::new();
 }
-
 type Dict = HashMap<String, String>;
 
 #[derive(Debug, Clone)]
@@ -121,8 +120,6 @@ impl JavaFile {
 struct JavaProject {
     files: Vec<JavaFile>,
     names: Vec<String>,
-    depends_on: Vec<Vec<JavaFile>>,
-    graph: Graph<JavaFile, ()>,
 }
 
 impl JavaProject {
@@ -136,12 +133,7 @@ impl JavaProject {
             files.push(file);
         }
 
-        Ok(Self {
-            files,
-            names,
-            depends_on: vec![vec![]],
-            graph: Graph::new(),
-        })
+        Ok(Self { files, names })
     }
 }
 
@@ -150,10 +142,6 @@ pub fn run_prompt() -> Result<()> {
 }
 
 pub fn check_prompt() -> Result<()> {
-    //     let ans: Result<String, InquireError> = Select::new("Which file to check?", names).prompt();
-    //     let ans = ans.context("Failed to get answer for some reason.")?;
-
-    //     println!("Okay, will check {}.", ans);
     Ok(())
 }
 

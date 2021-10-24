@@ -19,4 +19,3 @@ java_dependency_analyzer = { path = "../java_dependency_analyzer" }
 # TODO: Change this after the release of tree-sitter-java
 tree-sitter-java = { git = "https://github.com/Luni-4/tree-sitter-java.git", branch = "update-0.20" }
 tree-sitter = "0.20.0"
-petgraph = "0.6.0"
