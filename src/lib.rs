@@ -1,7 +1,7 @@
 use anyhow::{bail, ensure, Context, Result};
 use colored::*;
 use glob::glob;
-use inquire::{error::InquireError, Select};
+use inquire::{error::InquireError, MultiSelect, Select};
 use java_dependency_analyzer::*;
 use lazy_static::lazy_static;
 use std::{
@@ -21,8 +21,6 @@ lazy_static! {
     static ref UMM_DIR: PathBuf = PathBuf::from(".").join(".umm");
     static ref SEPARATOR: &'static str = if cfg!(windows) { ";" } else { ":" };
     static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
-    static ref PROJECT: Result<JavaProject> =
-        JavaProject::new().context("Fatal Error initializing the Java Project.");
 }
 type Dict = HashMap<String, String>;
 
@@ -30,6 +28,7 @@ type Dict = HashMap<String, String>;
 enum JavaFileType {
     Interface,
     Class,
+    ClassWithMain,
     Test,
 }
 
@@ -40,8 +39,9 @@ struct JavaFile {
     package_name: Option<String>,
     imports: Option<Vec<Dict>>,
     name: Option<String>,
+    pretty_name: Option<String>,
     proper_name: Option<String>,
-    test_methods: Option<Vec<Dict>>,
+    test_methods: Vec<String>,
     kind: JavaFileType,
 }
 
@@ -51,6 +51,22 @@ fn javac_path() -> Result<OsString> {
 
 fn java_path() -> Result<OsString> {
     Ok(which("javac").map(PathBuf::into_os_string)?)
+}
+
+fn classpath() -> Result<String> {
+    let mut path: Vec<String> = vec![
+        BUILD_DIR.display().to_string(),
+        LIB_DIR.display().to_string(),
+    ];
+
+    path.append(
+        &mut find_files("jar", 4, &LIB_DIR)?
+            .iter()
+            .map(|p| p.as_path().display().to_string())
+            .collect(),
+    );
+
+    Ok(path.join(&SEPARATOR))
 }
 
 impl JavaFile {
@@ -86,22 +102,24 @@ impl JavaFile {
             }
         };
 
+        let main_method_result = parser.query(MAIN_METHOD_QUERY)?;
+
+        ensure!(
+            main_method_result.len() <= 1,
+            "Number of main methods should be 0 or 1."
+        );
+        if !main_method_result.is_empty() {
+            kind = JavaFileType::ClassWithMain;
+        }
+
         ensure!(
             name.len() == 1,
             "Expected exactly one class/interface name, found {}.",
             name.len()
         );
+
         let name = name[0].get("name").map(String::to_owned);
-
-        let test_methods = parser.query(TEST_ANNOTATION_QUERY)?;
-        let test_methods = if test_methods.is_empty() {
-            None
-        } else {
-            kind = JavaFileType::Test;
-            Some(test_methods)
-        };
-
-        let proper_name = if package_name.is_some() {
+        let pretty_name = if package_name.is_some() {
             format!(
                 "{}.{}",
                 package_name.as_ref().unwrap().yellow(),
@@ -111,88 +129,263 @@ impl JavaFile {
             format!("{}", name.as_ref().unwrap().blue())
         };
 
+        let proper_name = if package_name.is_some() {
+            format!(
+                "{}.{}",
+                package_name.as_ref().unwrap(),
+                name.as_ref().unwrap()
+            )
+        } else {
+            name.as_ref().unwrap().to_string()
+        };
+
+        let test_methods = parser.query(TEST_ANNOTATION_QUERY)?;
+
+        let test_methods = {
+            let mut tests = vec![];
+            for t in test_methods {
+                if let Some(t) = t.get("name") {
+                    tests.push(format!("{}.{}", proper_name, t));
+                }
+            }
+
+            if !tests.is_empty() {
+                kind = JavaFileType::Test;
+            }
+            tests
+        };
+
         Ok(Self {
             path: path.to_owned(),
             file_name: path.file_name().unwrap().to_str().unwrap().to_string(),
             package_name,
             imports,
-            proper_name: Some(proper_name),
+            pretty_name: Some(pretty_name),
             name,
             test_methods,
             kind,
+            proper_name: Some(proper_name),
         })
     }
 }
 
 struct JavaProject {
     files: Vec<JavaFile>,
+    pretty_names: Vec<String>,
     names: Vec<String>,
-    source_path: HashSet<String>,
-    class_path: HashSet<String>,
 }
 
 impl JavaProject {
     fn new() -> Result<Self> {
         let mut files = vec![];
+        let mut pretty_names = vec![];
         let mut names = vec![];
-        let mut source_path = HashSet::<String>::new();
-        let mut class_path = HashSet::<String>::new();
 
         for path in find_files("java", 15, &ROOT_DIR)? {
-            let root = path.clone();
-            let root = root.parent();
-
-            if let Some(r) = root {
-                source_path.insert(r.display().to_string());
-            }
-
             let file = JavaFile::new(path)?;
-            if let Some(p) = file.package_name.clone() {
-                let mut _p = BUILD_DIR.clone();
-                _p.push(p);
-                class_path.insert(_p.display().to_string());
-            }
-
+            pretty_names.push(file.pretty_name.clone().unwrap());
             names.push(file.proper_name.clone().unwrap());
-
             files.push(file);
         }
 
         Ok(Self {
             files,
+            pretty_names,
             names,
-            source_path,
-            class_path,
         })
     }
 
     fn check(&self, name: String) -> Result<()> {
-        let index = self.names.iter().position(|n| n.eq(&name)).unwrap();
-        let file = &self.files.get(index).unwrap().path;
+        let index = self.pretty_names.iter().position(|x| x == &name);
+        ensure!(
+            index.is_some(),
+            "Could not find class/interface with name {}.",
+            name
+        );
+        let path = self.files[index.unwrap()].path.display().to_string();
+        let name = self.names[index.unwrap()].clone();
 
         let child = Command::new(javac_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
-            .args(["-sourcepath"]);
+            .args([
+                "--source-path",
+                SOURCE_DIR.to_str().unwrap(),
+                "-g",
+                "--class-path",
+                classpath()?.as_str(),
+                "-d",
+                BUILD_DIR.to_str().unwrap(),
+                path.as_str(),
+                "-Xdiags:verbose",
+                // "-Xdoclint:missing",
+                // "-Xlint",
+                "-Xprefer:source",
+            ])
+            .spawn()
+            .context("Failed to spawn javac process.")?;
+
+        match child.wait_with_output() {
+            Ok(status) => {
+                if status.status.success() {
+                    println!(
+                        "{}",
+                        "No compiler errors in checked file or other source files it imports."
+                            .bright_green()
+                            .bold(),
+                    );
+                } else {
+                    bail!("There were compiler errors in checked file or other source files it imports.".bright_red().bold());
+                }
+            }
+            Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),
+        };
+        Ok(())
+    }
+
+    fn run(&self, name: String) -> Result<()> {
+        self.check(name.clone())?;
+
+        let index = self.pretty_names.iter().position(|x| x == &name);
+        ensure!(
+            index.is_some(),
+            "Could not find class/interface with name {}.",
+            name
+        );
+        let path = self.files[index.unwrap()].path.display().to_string();
+        let name = self.names[index.unwrap()].clone();
+
+        let child = Command::new(java_path()?)
+            .stdin(Stdio::inherit())
+            .stdout(Stdio::inherit())
+            .args(["--class-path", classpath()?.as_str(), path.as_str()])
+            .spawn()
+            .context("Failed to spawn javac process.")?;
+
+        match child.wait_with_output() {
+            Ok(status) => {
+                if status.status.success() {
+                    println!("{}", "Ran and exited successfully.".bright_green().bold(),);
+                } else {
+                    println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
+                }
+            }
+            Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),
+        };
 
         Ok(())
+    }
+
+    fn test(&self, name: String) -> Result<()> {
+        self.check(name.clone())?;
+
+        let index = self.pretty_names.iter().position(|x| x == &name);
+        ensure!(
+            index.is_some(),
+            "Could not find class/interface with name {}.",
+            name
+        );
+        let file = &self.files[index.unwrap()];
+        let path = file.path.display().to_string();
+        let name = file.clone();
+
+        let tests = file.test_methods.clone();
+
+        let ans: Result<Vec<String>, InquireError> =
+            MultiSelect::new("Which tests to run?", tests).prompt();
+        let ans = ans.context("Failed to get answer for some reason.")?;
+
+        bail!("Not implemented yet, sorry.");
     }
 }
 
 pub fn run_prompt() -> Result<()> {
+    let project =
+        JavaProject::new().context("Something went wrong while discovering the project.")?;
+
+    let mut indices = vec![];
+
+    for (i, f) in project.files.iter().enumerate() {
+        if let JavaFileType::ClassWithMain = f.kind {
+            indices.push(i)
+        };
+    }
+
+    let names: Vec<String> = project
+        .pretty_names
+        .iter()
+        .enumerate()
+        .filter(|x| indices.contains(&x.0))
+        .map(|x| x.1.clone())
+        .collect();
+
+    if names.is_empty() {
+        println!(
+            "{}",
+            "No classes with tests methods found.".bright_red().bold()
+        );
+    } else {
+        let ans: Result<String, InquireError> = Select::new("Which file?", names).prompt();
+        let ans = ans.context("Failed to get answer for some reason.")?;
+
+        project.run(ans)?;
+    }
+
     Ok(())
 }
 
 pub fn check_prompt() -> Result<()> {
+    let project =
+        JavaProject::new().context("Something went wrong while discovering the project.")?;
+
+    let names = project.pretty_names.clone();
+    let ans: Result<String, InquireError> = Select::new("Which file?", names).prompt();
+    let ans = ans.context("Failed to get answer for some reason.")?;
+
+    project.check(ans)?;
+
     Ok(())
 }
 
 pub fn test_prompt() -> Result<()> {
+    let project =
+        JavaProject::new().context("Something went wrong while discovering the project.")?;
+
+    let mut indices = vec![];
+
+    for (i, f) in project.files.iter().enumerate() {
+        if let JavaFileType::Test = f.kind {
+            indices.push(i)
+        };
+    }
+
+    let names: Vec<String> = project
+        .pretty_names
+        .iter()
+        .enumerate()
+        .filter(|x| indices.contains(&x.0))
+        .map(|x| x.1.clone())
+        .collect();
+
+    if names.is_empty() {
+        println!(
+            "{}",
+            "No classes with JUnit annotated test methods found."
+                .bright_red()
+                .bold()
+        );
+    } else {
+        let ans: Result<String, InquireError> = Select::new("Which file?", names).prompt();
+        let ans = ans.context("Failed to get answer for some reason.")?;
+
+        project.test(ans)?;
+    }
+
     Ok(())
 }
 
 pub fn clean() -> Result<()> {
-    Ok(())
+    bail!("This is not yet implemented! Sorry.");
 }
 
 fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<Vec<PathBuf>> {
