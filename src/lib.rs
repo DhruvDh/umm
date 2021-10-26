@@ -1,3 +1,6 @@
+#![feature(slice_pattern)]
+#![feature(array_methods)]
+
 use anyhow::{bail, ensure, Context, Result};
 use colored::*;
 use glob::glob;
@@ -5,7 +8,7 @@ use inquire::{error::InquireError, MultiSelect, Select};
 use java_dependency_analyzer::*;
 use lazy_static::lazy_static;
 use std::{
-    collections::{HashMap, HashSet},
+    collections::HashMap,
     ffi::OsString,
     path::{Path, PathBuf},
     process::{Command, Stdio},
@@ -50,7 +53,7 @@ fn javac_path() -> Result<OsString> {
 }
 
 fn java_path() -> Result<OsString> {
-    Ok(which("javac").map(PathBuf::into_os_string)?)
+    Ok(which("java").map(PathBuf::into_os_string)?)
 }
 
 fn classpath() -> Result<String> {
@@ -122,8 +125,8 @@ impl JavaFile {
         let pretty_name = if package_name.is_some() {
             format!(
                 "{}.{}",
-                package_name.as_ref().unwrap().yellow(),
-                name.as_ref().unwrap().blue()
+                package_name.as_ref().unwrap().bright_yellow().bold(),
+                name.as_ref().unwrap().bright_blue().bold()
             )
         } else {
             format!("{}", name.as_ref().unwrap().blue())
@@ -145,7 +148,7 @@ impl JavaFile {
             let mut tests = vec![];
             for t in test_methods {
                 if let Some(t) = t.get("name") {
-                    tests.push(format!("{}.{}", proper_name, t));
+                    tests.push(format!("{}#{}", &proper_name, t));
                 }
             }
 
@@ -208,6 +211,7 @@ impl JavaProject {
         let child = Command::new(javac_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
+            .stderr(Stdio::inherit())
             .args([
                 "--source-path",
                 SOURCE_DIR.to_str().unwrap(),
@@ -258,6 +262,7 @@ impl JavaProject {
         let child = Command::new(java_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
+            .stderr(Stdio::inherit())
             .args(["--class-path", classpath()?.as_str(), path.as_str()])
             .spawn()
             .context("Failed to spawn javac process.")?;
@@ -286,8 +291,7 @@ impl JavaProject {
             name
         );
         let file = &self.files[index.unwrap()];
-        let path = file.path.display().to_string();
-        let name = file.clone();
+        let name = file.proper_name.clone().unwrap();
 
         let tests = file.test_methods.clone();
 
@@ -295,7 +299,57 @@ impl JavaProject {
             MultiSelect::new("Which tests to run?", tests).prompt();
         let ans = ans.context("Failed to get answer for some reason.")?;
 
-        bail!("Not implemented yet, sorry.");
+        ensure!(!ans.is_empty(), "Must select at least one test to run");
+
+        let mut methods = vec![];
+        for a in ans {
+            methods.push("-m".to_string());
+            methods.push(a);
+        }
+
+        let methods: Vec<&str> = methods.iter().map(String::as_str).collect();
+
+        let child = Command::new(java_path()?)
+            .stdin(Stdio::inherit())
+            .stdout(Stdio::inherit())
+            .stderr(Stdio::inherit())
+            .args(
+                [
+                    [
+                        "-jar",
+                        ROOT_DIR
+                            .join("lib/junit-platform-console-standalone-1.8.0-RC1.jar")
+                            .as_path()
+                            .to_str()
+                            .unwrap(),
+                        "--disable-banner",
+                        "--reports-dir",
+                        "test_reports",
+                        "--details",
+                        "tree",
+                        "-cp",
+                        &classpath()?,
+                    ]
+                    .as_slice(),
+                    methods.as_slice(),
+                ]
+                .concat(),
+            )
+            .spawn()
+            .context("Could not issue java command to run the tests for some reason.")?;
+
+        match child.wait_with_output() {
+            Ok(status) => {
+                if status.status.success() {
+                    println!("{}", "Ran and exited successfully.".bright_green().bold(),);
+                } else {
+                    println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
+                }
+            }
+            Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),
+        };
+
+        Ok(())
     }
 }
 
@@ -384,8 +438,8 @@ pub fn test_prompt() -> Result<()> {
     Ok(())
 }
 
-pub fn clean() -> Result<()> {
-    bail!("This is not yet implemented! Sorry.");
+pub fn clean() {
+    std::fs::remove_dir_all(BUILD_DIR.as_path()).unwrap_or(());
 }
 
 fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<Vec<PathBuf>> {

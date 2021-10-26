@@ -12,7 +12,7 @@ clap = "2.33.3"
 colored = "2.0.0"
 which = "4.2.2"
 inquire = "0.2.1"
-ureq = "2.2.0"
+# ureq = "2.2.0"
 glob = "0.3.0"
 lazy_static = "1.4.0"
 java_dependency_analyzer = { path = "../java_dependency_analyzer" }

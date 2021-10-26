@@ -12,7 +12,7 @@ fn main() -> Result<()> {
         "check" => check_prompt(),
         "run" => run_prompt(),
         "test" => test_prompt(),
-        "clean" => clean(),
+        "clean" => Ok(clean()),
         _ => bail!("For some reason, I don't know what you want me to do."),
     }
 }
