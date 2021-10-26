@@ -45,6 +45,7 @@ struct JavaFile {
     pretty_name: Option<String>,
     proper_name: Option<String>,
     test_methods: Vec<String>,
+    pretty_test_methods: Vec<String>,
     kind: JavaFileType,
 }
 
@@ -144,6 +145,24 @@ impl JavaFile {
 
         let test_methods = parser.query(TEST_ANNOTATION_QUERY)?;
 
+        let mut pretty_test_methods = vec![];
+        for test_method in test_methods.clone() {
+            let method_name = test_method
+                .get("name")
+                .map(String::to_owned)
+                .unwrap_or_default();
+
+            let method_name = if method_name.starts_with("test") {
+                let method_name = method_name.replace("test", "");
+                let method_name = method_name.bright_green().bold();
+                format!("test{}", method_name)
+            } else {
+                method_name.bright_green().bold().to_string()
+            };
+
+            pretty_test_methods.push(method_name);
+        }
+
         let test_methods = {
             let mut tests = vec![];
             for t in test_methods {
@@ -166,6 +185,7 @@ impl JavaFile {
             pretty_name: Some(pretty_name),
             name,
             test_methods,
+            pretty_test_methods,
             kind,
             proper_name: Some(proper_name),
         })
@@ -294,15 +314,31 @@ impl JavaProject {
         let name = file.proper_name.clone().unwrap();
 
         let tests = file.test_methods.clone();
+        let pretty_tests = file.pretty_test_methods.clone();
 
         let ans: Result<Vec<String>, InquireError> =
-            MultiSelect::new("Which tests to run?", tests).prompt();
+            MultiSelect::new("Which tests to run?", pretty_tests.clone()).prompt();
         let ans = ans.context("Failed to get answer for some reason.")?;
 
         ensure!(!ans.is_empty(), "Must select at least one test to run");
 
+        let mut indices = vec![];
+
+        for (i, f) in pretty_tests.iter().enumerate() {
+            if ans.contains(f) {
+                indices.push(i);
+            }
+        }
+
+        let names: Vec<String> = tests
+            .iter()
+            .enumerate()
+            .filter(|x| indices.contains(&x.0))
+            .map(|x| x.1.clone())
+            .collect();
+
         let mut methods = vec![];
-        for a in ans {
+        for a in names {
             methods.push("-m".to_string());
             methods.push(a);
         }
