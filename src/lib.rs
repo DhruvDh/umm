@@ -86,15 +86,20 @@ impl JavaFile {
         } else {
             Some(imports)
         };
-        let package_name = parser.query(PACKAGE_QUERY)?;
+        let _package_name = parser.query(PACKAGE_QUERY)?;
 
         ensure!(
-            package_name.len() == 1,
-            "Expected exactly one package name, found {}.",
-            package_name.len()
+            _package_name.len() == 1 || _package_name.is_empty(),
+            "Expected 0 or 1 package declaration statements, found {}.",
+            _package_name.len()
         );
 
-        let package_name = package_name[0].get("name").map(String::to_owned);
+        let package_name = if _package_name.is_empty() {
+            None
+        } else {
+            _package_name[0].get("name").map(String::to_owned)
+        };
+
         let mut kind = JavaFileType::Class;
         let name = {
             let class = parser.query(CLASSNAME_QUERY)?;
