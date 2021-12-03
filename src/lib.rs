@@ -13,6 +13,7 @@ use std::{
     path::{Path, PathBuf},
     process::{Command, Stdio},
 };
+use tabled::{Table, Tabled};
 use which::which;
 
 lazy_static! {
@@ -47,6 +48,7 @@ struct JavaFile {
     test_methods: Vec<String>,
     pretty_test_methods: Vec<String>,
     kind: JavaFileType,
+    source_code: String,
 }
 
 fn javac_path() -> Result<OsString> {
@@ -78,7 +80,7 @@ impl JavaFile {
         let source_code = std::fs::read_to_string(&path)
             .with_context(|| format!("Could not read file: {:?}", &path))?;
 
-        let parser = Parser::new(source_code, *JAVA_TS_LANG)?;
+        let parser = Parser::new(source_code.clone(), *JAVA_TS_LANG)?;
 
         let imports = parser.query(IMPORT_QUERY)?;
         let imports = if imports.is_empty() {
@@ -193,6 +195,7 @@ impl JavaFile {
             pretty_test_methods,
             kind,
             proper_name: Some(proper_name),
+            source_code: source_code.clone(),
         })
     }
 }
@@ -326,7 +329,6 @@ impl JavaProject {
         let ans = ans.context("Failed to get answer for some reason.")?;
 
         ensure!(!ans.is_empty(), "Must select at least one test to run");
-
         let mut indices = vec![];
 
         for (i, f) in pretty_tests.iter().enumerate() {
@@ -500,3 +502,286 @@ fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<Vec<
         .filter_map(Result::ok)
         .collect())
 }
+
+pub fn grade() -> Result<()> {
+    let mut result = vec![];
+    clean();
+
+    let ans = vec![
+        String::from("test\u{1b}[1;92m1A\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m1B\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m1C\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m2A\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m2B\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m2C\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m3A\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m3B\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m3C\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m4A\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m4B\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m4C\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m5A\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m5B\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m5C\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m6A\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m6B\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m6C\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m7A\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m7B\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m7C\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m8A\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m8B\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m8C\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m9A\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m9B\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m9C\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m10A\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m10B\u{1b}[0m"),
+        String::from("test\u{1b}[1;92m10C\u{1b}[0m"),
+    ];
+
+    let project =
+        JavaProject::new().context("Something went wrong while discovering the project.")?;
+
+    let index = project.names.iter().position(|x| x == "Project4.ArrayUtil");
+    ensure!(
+        index.is_some(),
+        "There is no Project4.ArrayUtil class file I can find."
+    );
+    let solution = project.files[index.unwrap()].source_code.clone();
+    let parser = Parser::new(solution, *JAVA_TS_LANG)?;
+
+    let mut reasons = vec![];
+
+    if parser.query(CLASS_ARRAYUTIL)?.is_empty() {
+        reasons.push("- No class with name 'ArrayUtil'");
+    }
+
+    if parser.query(INTARRAY)?.is_empty() {
+        reasons.push("- No class member with name 'intArray' of type int[]");
+    }
+
+    if parser.query(DEFAULT_CONSTRUCTOR)?.is_empty() {
+        reasons.push("- No default constructor");
+    }
+
+    if parser.query(CONSTRUCTOR_INT)?.is_empty() {
+        reasons.push("- No constructor that takes an integer arguement");
+    }
+
+    if parser.query(GETTER)?.is_empty() {
+        reasons.push("- No appropriate getter.");
+    }
+
+    if parser.query(SETTER)?.is_empty() {
+        reasons.push("- No appropriate setter.");
+    }
+
+    if parser.query(MINVALUE)?.is_empty() {
+        reasons.push("- No appropriate minValue method.");
+    }
+    if parser.query(MAXVALUE)?.is_empty() {
+        reasons.push("- No appropriate maxValue method.");
+    }
+    if parser.query(COUNTUNIQUE)?.is_empty() {
+        reasons.push("- No appropriate countUniqueIntegers method.");
+    }
+
+    let grade = 9 - reasons.len();
+
+    result.push(GradeResult {
+        Part: "B - Class and Members",
+        Grade: format!("{}.00", grade),
+        Reason: if reasons.is_empty() {
+            format!("Everything checks out")
+        } else {
+            reasons.join("\n")
+        },
+    });
+
+    project.check(project.pretty_names[index.unwrap()].clone());
+
+    let name = String::from("\u{1b}[1;93mProject4\u{1b}[0m.\u{1b}[1;94mArrayUtilTest\u{1b}[0m");
+    let index = project.pretty_names.iter().position(|x| x == &name);
+    ensure!(
+        index.is_some(),
+        "Could not find class/interface with name {}.",
+        name
+    );
+    project.check(name);
+
+    let file = &project.files[index.unwrap()];
+
+    let tests = file.test_methods.clone();
+    let pretty_tests = file.pretty_test_methods.clone();
+
+    ensure!(!ans.is_empty(), "Must select at least one test to run");
+    let mut indices = vec![];
+
+    for (i, f) in pretty_tests.iter().enumerate() {
+        if ans.contains(f) {
+            indices.push(i);
+        }
+    }
+
+    let names: Vec<String> = tests
+        .iter()
+        .enumerate()
+        .filter(|x| indices.contains(&x.0))
+        .map(|x| x.1.clone())
+        .collect();
+
+    let mut methods = vec![];
+    for a in names {
+        methods.push("-m".to_string());
+        methods.push(a);
+    }
+
+    let methods: Vec<&str> = methods.iter().map(String::as_str).collect();
+
+    let child = Command::new(java_path()?)
+        .args(
+            [
+                [
+                    "-jar",
+                    ROOT_DIR
+                        .join("lib/junit-platform-console-standalone-1.8.0-RC1.jar")
+                        .as_path()
+                        .to_str()
+                        .unwrap(),
+                    "--disable-banner",
+                    "--reports-dir",
+                    "test_reports",
+                    "--details",
+                    "tree",
+                    "-cp",
+                    &classpath()?,
+                ]
+                .as_slice(),
+                methods.as_slice(),
+            ]
+            .concat(),
+        )
+        .output()
+        .context("Could not issue java command to run the tests for some reason.")?;
+
+    if child.status.success() {
+    } else {
+        println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
+    }
+
+    let mut num_tests_passed = 0;
+    for line in std::str::from_utf8(&child.stdout)?.lines() {
+        let parse_result = junit_summary_parser::num_tests_passed(line)
+            .context("While parsing Junit summary table");
+        if let Ok(n) = parse_result {
+            num_tests_passed = n;
+        }
+    }
+    result.push(GradeResult {
+        Part: "B - Array Operations",
+        Grade: format!("{:.2}", (num_tests_passed as f32 / 30.0) * 12.0),
+        Reason: format!("{}/30 unit tests passed", num_tests_passed),
+    });
+    println!("{}", Table::new(result).with(tabled::Style::pseudo()));
+
+    Ok(())
+}
+
+#[derive(Tabled)]
+struct GradeResult<'a> {
+    Part: &'a str,
+    Grade: String,
+    Reason: String,
+}
+
+peg::parser! {
+    grammar junit_summary_parser() for str {
+        rule number() -> u32
+            = n:$(['0'..='9']+) {? n.parse().or(Err("u32")) }
+        rule whitespace() = quiet!{[' ' | '\n' | '\t']+}
+        rule type_name()
+            = "tests successful"
+        pub rule num_tests_passed() -> u32
+            = "[" whitespace()? l:number() whitespace()? type_name() whitespace()? "]" { l }
+    }
+}
+
+const CLASS_ARRAYUTIL: &str = r#"
+    (class_declaration
+        name: (identifier) @name
+        (#eq? @name "ArrayUtil")
+    )
+"#;
+
+const INTARRAY: &str = r#"
+(field_declaration
+	type: (array_type
+    element: (integral_type)
+    )
+    declarator: (variable_declarator
+    	name: (identifier) @name
+        )
+    (#eq? @name "intArray")
+)
+"#;
+
+const CONSTRUCTOR_INT: &str = r#"
+(constructor_declaration 
+	(formal_parameters
+    (formal_parameter
+    	type: (integral_type) @type
+    ))
+	(#eq? @type "int")
+)
+"#;
+const DEFAULT_CONSTRUCTOR: &str = r#"
+(constructor_declaration 
+	parameters: (formal_parameters) @para
+    (#eq? @para "()")
+)
+"#;
+
+const GETTER: &str = r#"
+(method_declaration
+	type: (array_type element: (integral_type))
+ 	name: (identifier) @ident
+	(#eq? @ident "getIntArray")
+)
+"#;
+
+const SETTER: &str = r#"
+(method_declaration
+	type: (void_type)
+ 	name: (identifier) @ident
+	(#eq? @ident "setIntArray")
+)
+"#;
+
+const MINVALUE: &str = r#"
+(method_declaration
+    type: (integral_type)
+    name: (identifier) @ident
+	parameters: (formal_parameters) @para
+    (#eq? @ident "minValue")
+    (#eq? @para "()")
+)
+"#;
+const MAXVALUE: &str = r#"
+(method_declaration
+    type: (integral_type)
+    name: (identifier) @ident
+	parameters: (formal_parameters) @para
+    (#eq? @ident "maxValue")
+    (#eq? @para "()")
+)
+"#;
+const COUNTUNIQUE: &str = r#"
+(method_declaration
+    type: (integral_type)
+    name: (identifier) @ident
+	parameters: (formal_parameters) @para
+    (#eq? @ident "countUniqueIntegers")
+    (#eq? @para "()")
+)
+"#;
