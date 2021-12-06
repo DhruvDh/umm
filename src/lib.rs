@@ -288,7 +288,7 @@ impl JavaProject {
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
-            .args(["--class-path", classpath()?.as_str(), path.as_str()])
+            .args(["--class-path", classpath()?.as_str(), name.as_str()])
             .spawn()
             .context("Failed to spawn javac process.")?;
 
