@@ -71,7 +71,6 @@ fn classpath() -> Result<String> {
             .map(|p| p.as_path().display().to_string())
             .collect(),
     );
-
     Ok(path.join(&SEPARATOR))
 }
 
@@ -125,7 +124,8 @@ impl JavaFile {
 
         ensure!(
             name.len() == 1,
-            "Expected exactly one class/interface name, found {}.",
+            "For file: {} Expected exactly one class/interface name, found {}.",
+            path.as_path().display(),
             name.len()
         );
 
