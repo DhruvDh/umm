@@ -15,7 +15,7 @@ inquire = "0.2.1"
 # ureq = "2.2.0"
 glob = "0.3.0"
 lazy_static = "1.4.0"
-java_dependency_analyzer = { path = "../java_dependency_analyzer" }
+java_dependency_analyzer = { git = "https://github.com/DhruvDh/java_dependency_analyzer.git", branch = "main" }
 # TODO: Change this after the release of tree-sitter-java
 tree-sitter-java = { git = "https://github.com/Luni-4/tree-sitter-java.git", branch = "update-0.20" }
 tree-sitter = "0.20.0"

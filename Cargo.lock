@@ -154,6 +154,7 @@ dependencies = [
 [[package]]
 name = "java_dependency_analyzer"
 version = "0.0.1"
+source = "git+https://github.com/DhruvDh/java_dependency_analyzer.git?branch=main#3468ba502883bb485122e00b94c221be6f69be85"
 dependencies = [
  "anyhow",
  "tree-sitter",
