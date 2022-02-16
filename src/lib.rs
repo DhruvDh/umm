@@ -1,32 +1,38 @@
-#![feature(slice_pattern)]
-#![feature(array_methods)]
+// TODO Add file documentation
+// TODO fix JavaFile impl
+// TODO remove java_dependency_analyzer dependency
 
 use anyhow::{bail, ensure, Context, Result};
 use colored::*;
 use glob::glob;
-use inquire::{error::InquireError, MultiSelect, Select};
 use java_dependency_analyzer::*;
 use lazy_static::lazy_static;
 use std::{
-    collections::HashMap,
     ffi::OsString,
     path::{Path, PathBuf},
     process::{Command, Stdio},
 };
-use tabled::{Table, Tabled};
 use which::which;
 
 lazy_static! {
-    static ref ROOT_DIR: PathBuf = PathBuf::from(".");
+    /// Path to project root
+    pub static ref ROOT_DIR: PathBuf = PathBuf::from(".");
+    /// Directory for source files
     static ref SOURCE_DIR: PathBuf = PathBuf::from(".").join("src");
-    static ref BUILD_DIR: PathBuf = PathBuf::from(".").join("target");
+    /// Directory to store compiler artifacts
+    pub static ref BUILD_DIR: PathBuf = PathBuf::from(".").join("target");
+    /// Directory for test files
     static ref TEST_DIR: PathBuf = PathBuf::from(".").join("test");
+    /// Directory for libraries, jars
     static ref LIB_DIR: PathBuf = PathBuf::from(".").join("lib");
+    /// Directory for `umm` artifacts
     static ref UMM_DIR: PathBuf = PathBuf::from(".").join(".umm");
+    /// Platform specific separator charactor for javac paths
     static ref SEPARATOR: &'static str = if cfg!(windows) { ";" } else { ":" };
+    /// Reference to treesitter language struct
     static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
 }
-type Dict = HashMap<String, String>;
+type Dict = std::collections::HashMap<String, String>;
 
 #[derive(Debug, Clone)]
 enum JavaFileType {
@@ -35,30 +41,65 @@ enum JavaFileType {
     ClassWithMain,
     Test,
 }
-
 #[derive(Debug, Clone)]
-struct JavaFile {
+pub struct JavaFile {
     path: PathBuf,
-    file_name: String,
+    pub file_name: String,
     package_name: Option<String>,
     imports: Option<Vec<Dict>>,
-    name: Option<String>,
+    pub name: Option<String>,
     pretty_name: Option<String>,
-    proper_name: Option<String>,
+    pub proper_name: Option<String>,
     test_methods: Vec<String>,
     pretty_test_methods: Vec<String>,
     kind: JavaFileType,
     source_code: String,
 }
 
+pub struct JavaProject {
+    pub files: Vec<JavaFile>,
+    pretty_names: Vec<String>,
+    names: Vec<String>,
+}
+
+/// Finds an returns the path to javac binary
 fn javac_path() -> Result<OsString> {
-    Ok(which("javac").map(PathBuf::into_os_string)?)
+    Ok(which("javac")
+        .map(PathBuf::into_os_string)
+        .context("Cannot find a Java Compiler on path (javac)")?)
 }
 
+/// Finds an returns the path to java binary
 fn java_path() -> Result<OsString> {
-    Ok(which("java").map(PathBuf::into_os_string)?)
+    Ok(which("java")
+        .map(PathBuf::into_os_string)
+        .context("Cannot find a Java runtime on path (java)")?)
 }
 
+/// A glob utility function to find paths to files with certain extension
+///
+/// * `extension`: the file extension to find paths for
+/// * `search_depth`: how many folders deep to search for
+/// * `root_dir`: the root directory where search starts
+fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<Vec<PathBuf>> {
+    let mut root_dir = PathBuf::from(root_dir);
+
+    for _ in 0..search_depth {
+        root_dir.push("**");
+    }
+
+    root_dir.push(format!("*.{}", extension));
+    let root_dir = root_dir
+        .to_str()
+        .context("Could not convert root_dir to string")?;
+
+    Ok(glob(root_dir)
+        .context("Could not create glob")?
+        .filter_map(Result::ok)
+        .collect())
+}
+
+/// Find class, jar files in library path and build directory to populate classpath and return it
 fn classpath() -> Result<String> {
     let mut path: Vec<String> = vec![
         BUILD_DIR.display().to_string(),
@@ -71,6 +112,7 @@ fn classpath() -> Result<String> {
             .map(|p| p.as_path().display().to_string())
             .collect(),
     );
+
     Ok(path.join(&SEPARATOR))
 }
 
@@ -200,17 +242,16 @@ impl JavaFile {
     }
 }
 
-struct JavaProject {
-    files: Vec<JavaFile>,
-    pretty_names: Vec<String>,
-    names: Vec<String>,
-}
-
 impl JavaProject {
-    fn new() -> Result<Self> {
+    pub fn new() -> Result<Self> {
         let mut files = vec![];
         let mut pretty_names = vec![];
         let mut names = vec![];
+
+        println!(
+            "Discovering project at {}",
+            std::fs::canonicalize(ROOT_DIR.as_path())?.display()
+        );
 
         for path in find_files("java", 15, &ROOT_DIR)? {
             let file = JavaFile::new(path)?;
@@ -226,8 +267,8 @@ impl JavaProject {
         })
     }
 
-    fn check(&self, name: String) -> Result<()> {
-        let index = self.pretty_names.iter().position(|x| x == &name);
+    pub fn check(&self, name: String) -> Result<()> {
+        let index = self.names.iter().position(|x| x == &name);
         ensure!(
             index.is_some(),
             "Could not find class/interface with name {}.",
@@ -275,16 +316,15 @@ impl JavaProject {
         Ok(())
     }
 
-    fn run(&self, name: String) -> Result<()> {
+    pub fn run(&self, name: String) -> Result<()> {
         self.check(name.clone())?;
 
-        let index = self.pretty_names.iter().position(|x| x == &name);
+        let index = self.names.iter().position(|x| x == &name);
         ensure!(
             index.is_some(),
             "Could not find class/interface with name {}.",
             name
         );
-        let path = self.files[index.unwrap()].path.display().to_string();
         let name = self.names[index.unwrap()].clone();
 
         let child = Command::new(java_path()?)
@@ -312,7 +352,7 @@ impl JavaProject {
     fn test(&self, name: String) -> Result<()> {
         self.check(name.clone())?;
 
-        let index = self.pretty_names.iter().position(|x| x == &name);
+        let index = self.names.iter().position(|x| x == &name);
         ensure!(
             index.is_some(),
             "Could not find class/interface with name {}.",
@@ -322,35 +362,8 @@ impl JavaProject {
         let name = file.proper_name.clone().unwrap();
 
         let tests = file.test_methods.clone();
-        let pretty_tests = file.pretty_test_methods.clone();
 
-        let ans: Result<Vec<String>, InquireError> =
-            MultiSelect::new("Which tests to run?", pretty_tests.clone()).prompt();
-        let ans = ans.context("Failed to get answer for some reason.")?;
-
-        ensure!(!ans.is_empty(), "Must select at least one test to run");
-        let mut indices = vec![];
-
-        for (i, f) in pretty_tests.iter().enumerate() {
-            if ans.contains(f) {
-                indices.push(i);
-            }
-        }
-
-        let names: Vec<String> = tests
-            .iter()
-            .enumerate()
-            .filter(|x| indices.contains(&x.0))
-            .map(|x| x.1.clone())
-            .collect();
-
-        let mut methods = vec![];
-        for a in names {
-            methods.push("-m".to_string());
-            methods.push(a);
-        }
-
-        let methods: Vec<&str> = methods.iter().map(String::as_str).collect();
+        let methods: Vec<&str> = tests.iter().map(String::as_str).collect();
 
         let child = Command::new(java_path()?)
             .stdin(Stdio::inherit())
@@ -394,111 +407,4 @@ impl JavaProject {
 
         Ok(())
     }
-}
-
-pub fn run_prompt() -> Result<()> {
-    let project =
-        JavaProject::new().context("Something went wrong while discovering the project.")?;
-
-    let mut indices = vec![];
-
-    for (i, f) in project.files.iter().enumerate() {
-        if let JavaFileType::ClassWithMain = f.kind {
-            indices.push(i)
-        };
-    }
-
-    let names: Vec<String> = project
-        .pretty_names
-        .iter()
-        .enumerate()
-        .filter(|x| indices.contains(&x.0))
-        .map(|x| x.1.clone())
-        .collect();
-
-    if names.is_empty() {
-        println!(
-            "{}",
-            "No classes with tests methods found.".bright_red().bold()
-        );
-    } else {
-        let ans: Result<String, InquireError> = Select::new("Which file?", names).prompt();
-        let ans = ans.context("Failed to get answer for some reason.")?;
-
-        project.run(ans)?;
-    }
-
-    Ok(())
-}
-
-pub fn check_prompt() -> Result<()> {
-    let project =
-        JavaProject::new().context("Something went wrong while discovering the project.")?;
-
-    let names = project.pretty_names.clone();
-    let ans: Result<String, InquireError> = Select::new("Which file?", names).prompt();
-    let ans = ans.context("Failed to get answer for some reason.")?;
-
-    project.check(ans)?;
-
-    Ok(())
-}
-
-pub fn test_prompt() -> Result<()> {
-    let project =
-        JavaProject::new().context("Something went wrong while discovering the project.")?;
-
-    let mut indices = vec![];
-
-    for (i, f) in project.files.iter().enumerate() {
-        if let JavaFileType::Test = f.kind {
-            indices.push(i)
-        };
-    }
-
-    let names: Vec<String> = project
-        .pretty_names
-        .iter()
-        .enumerate()
-        .filter(|x| indices.contains(&x.0))
-        .map(|x| x.1.clone())
-        .collect();
-
-    if names.is_empty() {
-        println!(
-            "{}",
-            "No classes with JUnit annotated test methods found."
-                .bright_red()
-                .bold()
-        );
-    } else {
-        let ans: Result<String, InquireError> = Select::new("Which file?", names).prompt();
-        let ans = ans.context("Failed to get answer for some reason.")?;
-
-        project.test(ans)?;
-    }
-
-    Ok(())
-}
-
-pub fn clean() {
-    std::fs::remove_dir_all(BUILD_DIR.as_path()).unwrap_or(());
-}
-
-fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<Vec<PathBuf>> {
-    let mut root_dir = PathBuf::from(root_dir);
-
-    for _ in 0..search_depth {
-        root_dir.push("**");
-    }
-
-    root_dir.push(format!("*.{}", extension));
-    let root_dir = root_dir
-        .to_str()
-        .context("Could not convert root_dir to string")?;
-
-    Ok(glob(root_dir)
-        .context("Could not create glob")?
-        .filter_map(Result::ok)
-        .collect())
 }
