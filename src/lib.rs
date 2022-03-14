@@ -73,7 +73,7 @@ pub struct JavaFile {
     pub name: Option<String>,
     pretty_name: Option<String>,
     pub proper_name: Option<String>,
-    test_methods: Vec<String>,
+    pub test_methods: Vec<String>,
     pretty_test_methods: Vec<String>,
     kind: JavaFileType,
     source_code: String,
@@ -89,18 +89,18 @@ pub struct JavaFile {
 pub struct JavaProject {
     pub files: Vec<JavaFile>,
     pretty_names: Vec<String>,
-    names: Vec<String>,
+    pub names: Vec<String>,
 }
 
 /// Finds an returns the path to javac binary
-fn javac_path() -> Result<OsString> {
+pub fn javac_path() -> Result<OsString> {
     Ok(which("javac")
         .map(PathBuf::into_os_string)
         .context("Cannot find a Java Compiler on path (javac)")?)
 }
 
 /// Finds an returns the path to java binary
-fn java_path() -> Result<OsString> {
+pub fn java_path() -> Result<OsString> {
     Ok(which("java")
         .map(PathBuf::into_os_string)
         .context("Cannot find a Java runtime on path (java)")?)
@@ -130,7 +130,7 @@ fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<Vec<
 }
 
 /// Find class, jar files in library path and build directory to populate classpath and return it
-fn classpath() -> Result<String> {
+pub fn classpath() -> Result<String> {
     let mut path: Vec<String> = vec![
         BUILD_DIR.display().to_string(),
         LIB_DIR.display().to_string(),
@@ -462,7 +462,8 @@ impl JavaProject {
             names,
         })
     }
-    pub fn check(&self, name: String, documentation: bool) -> Result<()> {
+
+    pub fn doc_check(&self, name: String) -> Result<()> {
         let index = self.names.iter().position(|x| x == &name);
         ensure!(
             index.is_some(),
@@ -471,7 +472,6 @@ impl JavaProject {
         );
         let path = self.files[index.unwrap()].path.display().to_string();
         let name = self.names[index.unwrap()].clone();
-        let doc_check = if documentation { "-Xdoclint" } else { "" };
         let child = Command::new(javac_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
@@ -486,7 +486,55 @@ impl JavaProject {
                 BUILD_DIR.to_str().unwrap(),
                 path.as_str(),
                 "-Xdiags:verbose",
-                doc_check,
+                "-Xdoclint",
+                "-Werror",
+                // "-Xlint",
+                "-Xprefer:source",
+            ])
+            .spawn()
+            .context("Failed to spawn javac process.")?;
+
+        match child.wait_with_output() {
+            Ok(status) => {
+                if status.status.success() {
+                    println!(
+                        "{}",
+                        "No compiler errors in checked file or other source files it imports."
+                            .bright_green()
+                            .bold(),
+                    );
+                } else {
+                    bail!("There were compiler errors and/or missing documentation in checked file or other source files it imports.".bright_red().bold());
+                }
+            }
+            Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),
+        };
+        Ok(())
+    }
+
+    pub fn check(&self, name: String) -> Result<()> {
+        let index = self.names.iter().position(|x| x == &name);
+        ensure!(
+            index.is_some(),
+            "Could not find class/interface with name {}.",
+            name
+        );
+        let path = self.files[index.unwrap()].path.display().to_string();
+        let name = self.names[index.unwrap()].clone();
+        let child = Command::new(javac_path()?)
+            .stdin(Stdio::inherit())
+            .stdout(Stdio::inherit())
+            .stderr(Stdio::inherit())
+            .args([
+                "--source-path",
+                SOURCE_DIR.to_str().unwrap(),
+                "-g",
+                "--class-path",
+                classpath()?.as_str(),
+                "-d",
+                BUILD_DIR.to_str().unwrap(),
+                path.as_str(),
+                "-Xdiags:verbose",
                 // "-Xlint",
                 "-Xprefer:source",
             ])
@@ -512,7 +560,7 @@ impl JavaProject {
     }
 
     pub fn run(&self, name: String) -> Result<()> {
-        self.check(name.clone(), false)?;
+        self.check(name.clone())?;
 
         let index = self.names.iter().position(|x| x == &name);
         ensure!(
@@ -544,8 +592,8 @@ impl JavaProject {
         Ok(())
     }
 
-    pub fn test(&self, name: String) -> Result<()> {
-        self.check(name.clone(), false)?;
+    pub fn test(&self, name: String) -> Result<String> {
+        self.check(name.clone())?;
 
         let index = self.names.iter().position(|x| x == &name);
         ensure!(
@@ -564,9 +612,9 @@ impl JavaProject {
         let methods: Vec<&str> = tests.iter().map(String::as_str).collect();
 
         let child = Command::new(java_path()?)
-            .stdin(Stdio::inherit())
-            .stdout(Stdio::inherit())
-            .stderr(Stdio::inherit())
+            // .stdin(Stdio::inherit())
+            // .stdout(Stdio::inherit())
+            // .stderr(Stdio::inherit())
             .args(
                 [
                     [
@@ -589,20 +637,17 @@ impl JavaProject {
                 ]
                 .concat(),
             )
-            .spawn()
+            .output()
             .context("Could not issue java command to run the tests for some reason.")?;
 
-        match child.wait_with_output() {
-            Ok(status) => {
-                if status.status.success() {
-                    println!("{}", "Ran and exited successfully.".bright_green().bold(),);
-                } else {
-                    println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
-                }
-            }
-            Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),
-        };
+        if child.status.success() {
+            println!("{}", "Ran and exited successfully.".bright_green().bold(),);
+        } else {
+            println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
+        }
+        let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
+        println!("{}", output);
 
-        Ok(())
+        return Ok(output);
     }
 }

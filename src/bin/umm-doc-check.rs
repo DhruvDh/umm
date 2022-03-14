@@ -35,6 +35,6 @@ pub fn main(
         .clone()
         .proper_name
         .unwrap();
-    project.check(name, true)?;
+    project.doc_check(name)?;
     Ok(())
 }
