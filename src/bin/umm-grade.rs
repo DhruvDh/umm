@@ -151,16 +151,22 @@ pub fn main() -> Result<()> {
                 "--reportDir",
                 "test_reports",
                 "--failWhenNoMutations",
-                "true",
+                "false",
                 "--targetClasses",
                 "Shopping.ShoppingListArrayList",
+                "--targetTests",
+                "Shopping.*",
                 "--sourceDirs",
                 SOURCE_DIR.to_str().unwrap(),
-                "--skipFailingTests",
-                "true",
             ])
             .output()
             .context("Failed to spawn javac process.")?;
+
+        GradeResult {
+            Requirement: 3,
+            Grade: format!("40/40"),
+            Reason: format!(""),
+        }
     };
     println!(
         "{}",
