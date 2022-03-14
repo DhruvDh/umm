@@ -1,34 +1,48 @@
-#![feature(slice_pattern)]
-#![feature(array_methods)]
-
+// TODO Add file documentation
+// TODO fix JavaFile impl
 use anyhow::{bail, ensure, Context, Result};
 use colored::*;
 use glob::glob;
-use inquire::{error::InquireError, MultiSelect, Select};
-use java_dependency_analyzer::*;
 use lazy_static::lazy_static;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::{
-    collections::HashMap,
     ffi::OsString,
     path::{Path, PathBuf},
     process::{Command, Stdio},
 };
 use tabled::{Table, Tabled};
+use tree_sitter::{Query, QueryCursor, Tree};
 use which::which;
 
 lazy_static! {
-    static ref ROOT_DIR: PathBuf = PathBuf::from(".");
-    static ref SOURCE_DIR: PathBuf = PathBuf::from(".").join("src");
-    static ref BUILD_DIR: PathBuf = PathBuf::from(".").join("target");
-    static ref TEST_DIR: PathBuf = PathBuf::from(".").join("test");
-    static ref LIB_DIR: PathBuf = PathBuf::from(".").join("lib");
-    static ref UMM_DIR: PathBuf = PathBuf::from(".").join(".umm");
-    static ref SEPARATOR: &'static str = if cfg!(windows) { ";" } else { ":" };
-    static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
+    /// Path to project root
+    pub static ref ROOT_DIR: PathBuf = PathBuf::from(".");
+    /// Directory for source files
+    pub static ref SOURCE_DIR: PathBuf = PathBuf::from(".").join("src");
+    /// Directory to store compiler artifacts
+    pub static ref BUILD_DIR: PathBuf = PathBuf::from(".").join("target");
+    /// Directory for test files
+    pub static ref TEST_DIR: PathBuf = PathBuf::from(".").join("test");
+    /// Directory for libraries, jars
+    pub static ref LIB_DIR: PathBuf = PathBuf::from(".").join("lib");
+    /// Directory for `umm` artifacts
+    pub static ref UMM_DIR: PathBuf = PathBuf::from(".").join(".umm");
+    /// Platform specific separator charactor for javac paths
+    pub static ref SEPARATOR: &'static str = if cfg!(windows) { ";" } else { ":" };
+    /// Reference to treesitter language struct
+    pub static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
 }
-type Dict = HashMap<String, String>;
 
-#[derive(Debug, Clone)]
+/// Defined for convenience
+type Dict = std::collections::HashMap<String, String>;
+
+/// Types of Java files -
+/// - Interface
+/// - Class
+/// - Class with a main method
+/// - JUnit test class
+#[derive(Debug, Clone, Serialize, Deserialize)]
 enum JavaFileType {
     Interface,
     Class,
@@ -36,29 +50,86 @@ enum JavaFileType {
     Test,
 }
 
-#[derive(Debug, Clone)]
-struct JavaFile {
+#[derive(Debug, Clone, Serialize, Deserialize)]
+/// Struct representing a java file
+///
+/// * `path`: path to java file
+/// * `file_name`: name of file
+/// * `package_name`: package the java file belongs to
+/// * `imports`: imports made by the java file
+/// * `name`: name of the file TODO: How does this differ from `file_name`?
+/// * `pretty_name`: colored terminal string representing java file name
+/// * `proper_name`: proper name of the file as understood by the java compiler
+/// * `test_methods`: Name of tests methods in this file, as understood by JUnit
+/// * `pretty_test_methods`: Name of tests methods in this file, colored using terminal color codes
+/// * `kind`: `JavaFileType` variant for this java file
+/// * `source_code`: Source code as a string for this java file
+pub struct JavaFile {
     path: PathBuf,
-    file_name: String,
+    pub file_name: String,
     package_name: Option<String>,
     imports: Option<Vec<Dict>>,
-    name: Option<String>,
+    /// TODO: How does this differ from `file_name`?
+    pub name: Option<String>,
     pretty_name: Option<String>,
-    proper_name: Option<String>,
+    pub proper_name: Option<String>,
     test_methods: Vec<String>,
     pretty_test_methods: Vec<String>,
     kind: JavaFileType,
     source_code: String,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+/// Struct representing a Java project.
+/// Any index `i` in any collection in this struct always refers to the same JavaFile.
+///
+/// * `files`: Collection of java files in this project
+/// * `pretty_names`: Names of java files in this projects, colored using terminal color codes
+/// * `names`: Names of java files in this project.
+pub struct JavaProject {
+    pub files: Vec<JavaFile>,
+    pretty_names: Vec<String>,
+    names: Vec<String>,
+}
+
+/// Finds an returns the path to javac binary
 fn javac_path() -> Result<OsString> {
-    Ok(which("javac").map(PathBuf::into_os_string)?)
+    Ok(which("javac")
+        .map(PathBuf::into_os_string)
+        .context("Cannot find a Java Compiler on path (javac)")?)
 }
 
+/// Finds an returns the path to java binary
 fn java_path() -> Result<OsString> {
-    Ok(which("java").map(PathBuf::into_os_string)?)
+    Ok(which("java")
+        .map(PathBuf::into_os_string)
+        .context("Cannot find a Java runtime on path (java)")?)
 }
 
+/// A glob utility function to find paths to files with certain extension
+///
+/// * `extension`: the file extension to find paths for
+/// * `search_depth`: how many folders deep to search for
+/// * `root_dir`: the root directory where search starts
+fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<Vec<PathBuf>> {
+    let mut root_dir = PathBuf::from(root_dir);
+
+    for _ in 0..search_depth {
+        root_dir.push("**");
+    }
+
+    root_dir.push(format!("*.{}", extension));
+    let root_dir = root_dir
+        .to_str()
+        .context("Could not convert root_dir to string")?;
+
+    Ok(glob(root_dir)
+        .context("Could not create glob")?
+        .filter_map(Result::ok)
+        .collect())
+}
+
+/// Find class, jar files in library path and build directory to populate classpath and return it
 fn classpath() -> Result<String> {
     let mut path: Vec<String> = vec![
         BUILD_DIR.display().to_string(),
@@ -71,10 +142,176 @@ fn classpath() -> Result<String> {
             .map(|p| p.as_path().display().to_string())
             .collect(),
     );
+    path.append(
+        &mut find_files("java", 4, &SOURCE_DIR)?
+            .iter()
+            .map(|p| p.as_path().display().to_string())
+            .collect(),
+    );
 
     Ok(path.join(&SEPARATOR))
 }
 
+/// Tree-sitter query that returns imports made
+/// * `path`: java name of the import as it appears in the source code.
+/// * `asterisk`: true if the import path ends in an asterisk
+pub const IMPORT_QUERY: &str = r#"
+(import_declaration 
+    (
+        [	
+        	(scoped_identifier) @path           	
+        	(identifier) @path
+        ]
+        (asterisk)? @asterisk
+    )
+)
+"#;
+
+/// Tree-sitter query that returns name of the package
+/// * `name`: name of the package
+pub const PACKAGE_QUERY: &str = r#"
+(package_declaration 
+    (identifier) @name
+)
+"#;
+
+/// Tree-sitter query that returns name of the class
+/// * `name`: name of the class
+pub const CLASSNAME_QUERY: &str = r#"
+(
+    class_declaration
+    name: (identifier) @name
+)
+"#;
+
+/// Tree-sitter query that returns name of the interface
+/// * `name`: name of the interface
+pub const INTERFACENAME_QUERY: &str = r#"
+(
+    interface_declaration
+    name: (identifier) @name
+)
+"#;
+
+/// Tree-sitter query that returns name of the JUnit `@Test` annotated methods
+/// * `name`: name of the test method
+pub const TEST_ANNOTATION_QUERY: &str = r#"
+(method_declaration
+	(modifiers
+	(marker_annotation
+    	name: (identifier) @annotation))
+    name: (identifier) @name
+    (#eq? @annotation "Test")
+)
+"#;
+
+/// Tree-sitter query to check the existence of a main method.
+pub const MAIN_METHOD_QUERY: &str = r#"
+(method_declaration
+	(modifiers) @modifier
+    type: (void_type) @return_type
+    name: (identifier) @name
+    parameters: (formal_parameters
+      (formal_parameter
+          type: (array_type
+          	element: (type_identifier) @para_type
+            dimensions: (dimensions) @dim
+          )
+          name: (identifier) @para_name
+      )
+    )
+    (#eq? @name "main")
+    (#eq? @return_type "void")
+    (#eq? @para_type "String")
+    (#eq? @dim "[]")
+)
+"#;
+
+/// A struct that wraps a tree-sitter parser object and source code
+///
+/// TODO: The source code should not be in here, extract it out
+///
+/// * `code`: the source code being parsed
+/// * `_parser`: the tree-sitter parser object
+/// * `_tree`: the parse tree
+/// * `lang`: the tree-sitter java grammar language
+pub struct Parser {
+    code: String,
+    _parser: tree_sitter::Parser,
+    _tree: Tree,
+    lang: tree_sitter::Language,
+}
+
+impl Parser {
+    /// Returns a new parser object
+    ///
+    /// * `source_code`: the source code to be parsed
+    /// * `lang`: the tree-sitter grammar to use
+    pub fn new(source_code: String, lang: tree_sitter::Language) -> Result<Self> {
+        let mut parser = tree_sitter::Parser::new();
+
+        parser
+            .set_language(lang)
+            .expect("Error loading Java grammar");
+        let tree = parser
+            .parse(source_code.clone(), None)
+            .context("Error parsing Java code")?;
+
+        Ok(Self {
+            code: source_code,
+            _parser: parser,
+            _tree: tree,
+            lang,
+        })
+    }
+
+    /// Applies a tree sitter query and returns the result as a collection of HashMaps
+    ///
+    /// * `q`: the tree-sitter query to be applied
+    pub fn query(&self, q: &str) -> Result<Vec<HashMap<String, String>>> {
+        let mut results = vec![];
+
+        let query = Query::new(self.lang, q).unwrap();
+
+        let mut cursor = QueryCursor::new();
+        let matches = cursor.matches(&query, self._tree.root_node(), self.code.as_bytes());
+        let capture_names = query.capture_names();
+
+        for m in matches {
+            let mut result = HashMap::new();
+
+            for name in capture_names {
+                let index = query.capture_index_for_name(name);
+                let index = match index {
+                        Some(i) => i,
+                        None => bail!("Error while querying source code. Capture name: {} has no index associated.",
+                        name),
+                    };
+
+                let value = m.captures.iter().find(|c| c.index == index);
+                let value = match value {
+                    Some(v) => v,
+                    None => continue,
+                };
+
+                let value = value
+                        .node
+                        .utf8_text(self.code.as_bytes())
+                        .with_context(|| {
+                            format!(
+                            "Cannot match query result indices with source code for capture name: {}.",
+                            name
+                        )
+                        })?;
+
+                result.insert(name.clone(), value.to_string());
+            }
+            results.push(result);
+        }
+
+        Ok(results)
+    }
+}
 impl JavaFile {
     fn new(path: PathBuf) -> Result<Self> {
         let source_code = std::fs::read_to_string(&path)
@@ -125,7 +362,8 @@ impl JavaFile {
 
         ensure!(
             name.len() == 1,
-            "Expected exactly one class/interface name, found {}.",
+            "For file: {} Expected exactly one class/interface name, found {}.",
+            path.as_path().display(),
             name.len()
         );
 
@@ -200,17 +438,16 @@ impl JavaFile {
     }
 }
 
-struct JavaProject {
-    files: Vec<JavaFile>,
-    pretty_names: Vec<String>,
-    names: Vec<String>,
-}
-
 impl JavaProject {
-    fn new() -> Result<Self> {
+    pub fn new() -> Result<Self> {
         let mut files = vec![];
         let mut pretty_names = vec![];
         let mut names = vec![];
+
+        println!(
+            "Discovering project at {}",
+            std::fs::canonicalize(ROOT_DIR.as_path())?.display()
+        );
 
         for path in find_files("java", 15, &ROOT_DIR)? {
             let file = JavaFile::new(path)?;
@@ -225,9 +462,8 @@ impl JavaProject {
             names,
         })
     }
-
-    fn check(&self, name: String) -> Result<()> {
-        let index = self.pretty_names.iter().position(|x| x == &name);
+    pub fn check(&self, name: String, documentation: bool) -> Result<()> {
+        let index = self.names.iter().position(|x| x == &name);
         ensure!(
             index.is_some(),
             "Could not find class/interface with name {}.",
@@ -235,7 +471,7 @@ impl JavaProject {
         );
         let path = self.files[index.unwrap()].path.display().to_string();
         let name = self.names[index.unwrap()].clone();
-
+        let doc_check = if documentation { "-Xdoclint" } else { "" };
         let child = Command::new(javac_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
@@ -250,7 +486,7 @@ impl JavaProject {
                 BUILD_DIR.to_str().unwrap(),
                 path.as_str(),
                 "-Xdiags:verbose",
-                // "-Xdoclint:missing",
+                doc_check,
                 // "-Xlint",
                 "-Xprefer:source",
             ])
@@ -275,23 +511,22 @@ impl JavaProject {
         Ok(())
     }
 
-    fn run(&self, name: String) -> Result<()> {
-        self.check(name.clone())?;
+    pub fn run(&self, name: String) -> Result<()> {
+        self.check(name.clone(), false)?;
 
-        let index = self.pretty_names.iter().position(|x| x == &name);
+        let index = self.names.iter().position(|x| x == &name);
         ensure!(
             index.is_some(),
             "Could not find class/interface with name {}.",
             name
         );
-        let path = self.files[index.unwrap()].path.display().to_string();
         let name = self.names[index.unwrap()].clone();
 
         let child = Command::new(java_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
-            .args(["--class-path", classpath()?.as_str(), path.as_str()])
+            .args(["--class-path", classpath()?.as_str(), name.as_str()])
             .spawn()
             .context("Failed to spawn javac process.")?;
 
@@ -309,10 +544,10 @@ impl JavaProject {
         Ok(())
     }
 
-    fn test(&self, name: String) -> Result<()> {
-        self.check(name.clone())?;
+    pub fn test(&self, name: String) -> Result<()> {
+        self.check(name.clone(), false)?;
 
-        let index = self.pretty_names.iter().position(|x| x == &name);
+        let index = self.names.iter().position(|x| x == &name);
         ensure!(
             index.is_some(),
             "Could not find class/interface with name {}.",
@@ -322,35 +557,11 @@ impl JavaProject {
         let name = file.proper_name.clone().unwrap();
 
         let tests = file.test_methods.clone();
-        let pretty_tests = file.pretty_test_methods.clone();
-
-        let ans: Result<Vec<String>, InquireError> =
-            MultiSelect::new("Which tests to run?", pretty_tests.clone()).prompt();
-        let ans = ans.context("Failed to get answer for some reason.")?;
-
-        ensure!(!ans.is_empty(), "Must select at least one test to run");
-        let mut indices = vec![];
-
-        for (i, f) in pretty_tests.iter().enumerate() {
-            if ans.contains(f) {
-                indices.push(i);
-            }
-        }
-
-        let names: Vec<String> = tests
+        let tests = tests
             .iter()
-            .enumerate()
-            .filter(|x| indices.contains(&x.0))
-            .map(|x| x.1.clone())
-            .collect();
-
-        let mut methods = vec![];
-        for a in names {
-            methods.push("-m".to_string());
-            methods.push(a);
-        }
-
-        let methods: Vec<&str> = methods.iter().map(String::as_str).collect();
+            .map(|s| "-m ".to_owned() + s)
+            .collect::<Vec<String>>();
+        let methods: Vec<&str> = tests.iter().map(String::as_str).collect();
 
         let child = Command::new(java_path()?)
             .stdin(Stdio::inherit())
@@ -395,393 +606,3 @@ impl JavaProject {
         Ok(())
     }
 }
-
-pub fn run_prompt() -> Result<()> {
-    let project =
-        JavaProject::new().context("Something went wrong while discovering the project.")?;
-
-    let mut indices = vec![];
-
-    for (i, f) in project.files.iter().enumerate() {
-        if let JavaFileType::ClassWithMain = f.kind {
-            indices.push(i)
-        };
-    }
-
-    let names: Vec<String> = project
-        .pretty_names
-        .iter()
-        .enumerate()
-        .filter(|x| indices.contains(&x.0))
-        .map(|x| x.1.clone())
-        .collect();
-
-    if names.is_empty() {
-        println!(
-            "{}",
-            "No classes with tests methods found.".bright_red().bold()
-        );
-    } else {
-        let ans: Result<String, InquireError> = Select::new("Which file?", names).prompt();
-        let ans = ans.context("Failed to get answer for some reason.")?;
-
-        project.run(ans)?;
-    }
-
-    Ok(())
-}
-
-pub fn check_prompt() -> Result<()> {
-    let project =
-        JavaProject::new().context("Something went wrong while discovering the project.")?;
-
-    let names = project.pretty_names.clone();
-    let ans: Result<String, InquireError> = Select::new("Which file?", names).prompt();
-    let ans = ans.context("Failed to get answer for some reason.")?;
-
-    project.check(ans)?;
-
-    Ok(())
-}
-
-pub fn test_prompt() -> Result<()> {
-    let project =
-        JavaProject::new().context("Something went wrong while discovering the project.")?;
-
-    let mut indices = vec![];
-
-    for (i, f) in project.files.iter().enumerate() {
-        if let JavaFileType::Test = f.kind {
-            indices.push(i)
-        };
-    }
-
-    let names: Vec<String> = project
-        .pretty_names
-        .iter()
-        .enumerate()
-        .filter(|x| indices.contains(&x.0))
-        .map(|x| x.1.clone())
-        .collect();
-
-    if names.is_empty() {
-        println!(
-            "{}",
-            "No classes with JUnit annotated test methods found."
-                .bright_red()
-                .bold()
-        );
-    } else {
-        let ans: Result<String, InquireError> = Select::new("Which file?", names).prompt();
-        let ans = ans.context("Failed to get answer for some reason.")?;
-
-        project.test(ans)?;
-    }
-
-    Ok(())
-}
-
-pub fn clean() {
-    std::fs::remove_dir_all(BUILD_DIR.as_path()).unwrap_or(());
-}
-
-fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<Vec<PathBuf>> {
-    let mut root_dir = PathBuf::from(root_dir);
-
-    for _ in 0..search_depth {
-        root_dir.push("**");
-    }
-
-    root_dir.push(format!("*.{}", extension));
-    let root_dir = root_dir
-        .to_str()
-        .context("Could not convert root_dir to string")?;
-
-    Ok(glob(root_dir)
-        .context("Could not create glob")?
-        .filter_map(Result::ok)
-        .collect())
-}
-
-pub fn grade() -> Result<()> {
-    let mut result = vec![];
-    clean();
-
-    let ans = vec![
-        String::from("test\u{1b}[1;92m1A\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m1B\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m1C\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m2A\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m2B\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m2C\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m3A\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m3B\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m3C\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m4A\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m4B\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m4C\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m5A\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m5B\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m5C\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m6A\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m6B\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m6C\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m7A\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m7B\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m7C\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m8A\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m8B\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m8C\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m9A\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m9B\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m9C\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m10A\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m10B\u{1b}[0m"),
-        String::from("test\u{1b}[1;92m10C\u{1b}[0m"),
-    ];
-
-    let project =
-        JavaProject::new().context("Something went wrong while discovering the project.")?;
-
-    let index = project.names.iter().position(|x| x == "Project4.ArrayUtil");
-    ensure!(
-        index.is_some(),
-        "There is no Project4.ArrayUtil class file I can find."
-    );
-    let solution = project.files[index.unwrap()].source_code.clone();
-    let parser = Parser::new(solution, *JAVA_TS_LANG)?;
-
-    let mut reasons = vec![];
-
-    if parser.query(CLASS_ARRAYUTIL)?.is_empty() {
-        reasons.push("- No class with name 'ArrayUtil'");
-    }
-
-    if parser.query(INTARRAY)?.is_empty() {
-        reasons.push("- No class member with name 'intArray' of type int[]");
-    }
-
-    if parser.query(DEFAULT_CONSTRUCTOR)?.is_empty() {
-        reasons.push("- No default constructor");
-    }
-
-    if parser.query(CONSTRUCTOR_INT)?.is_empty() {
-        reasons.push("- No constructor that takes an integer arguement");
-    }
-
-    if parser.query(GETTER)?.is_empty() {
-        reasons.push("- No appropriate getter.");
-    }
-
-    if parser.query(SETTER)?.is_empty() {
-        reasons.push("- No appropriate setter.");
-    }
-
-    if parser.query(MINVALUE)?.is_empty() {
-        reasons.push("- No appropriate minValue method.");
-    }
-    if parser.query(MAXVALUE)?.is_empty() {
-        reasons.push("- No appropriate maxValue method.");
-    }
-    if parser.query(COUNTUNIQUE)?.is_empty() {
-        reasons.push("- No appropriate countUniqueIntegers method.");
-    }
-
-    let grade = 9 - reasons.len();
-
-    result.push(GradeResult {
-        Part: "B - Class and Members",
-        Grade: format!("{}.00", grade),
-        Reason: if reasons.is_empty() {
-            format!("Everything checks out")
-        } else {
-            reasons.join("\n")
-        },
-    });
-
-    project.check(project.pretty_names[index.unwrap()].clone());
-
-    let name = String::from("\u{1b}[1;93mProject4\u{1b}[0m.\u{1b}[1;94mArrayUtilTest\u{1b}[0m");
-    let index = project.pretty_names.iter().position(|x| x == &name);
-    ensure!(
-        index.is_some(),
-        "Could not find class/interface with name {}.",
-        name
-    );
-    project.check(name);
-
-    let file = &project.files[index.unwrap()];
-
-    let tests = file.test_methods.clone();
-    let pretty_tests = file.pretty_test_methods.clone();
-
-    ensure!(!ans.is_empty(), "Must select at least one test to run");
-    let mut indices = vec![];
-
-    for (i, f) in pretty_tests.iter().enumerate() {
-        if ans.contains(f) {
-            indices.push(i);
-        }
-    }
-
-    let names: Vec<String> = tests
-        .iter()
-        .enumerate()
-        .filter(|x| indices.contains(&x.0))
-        .map(|x| x.1.clone())
-        .collect();
-
-    let mut methods = vec![];
-    for a in names {
-        methods.push("-m".to_string());
-        methods.push(a);
-    }
-
-    let methods: Vec<&str> = methods.iter().map(String::as_str).collect();
-
-    let child = Command::new(java_path()?)
-        .args(
-            [
-                [
-                    "-jar",
-                    ROOT_DIR
-                        .join("lib/junit-platform-console-standalone-1.8.0-RC1.jar")
-                        .as_path()
-                        .to_str()
-                        .unwrap(),
-                    "--disable-banner",
-                    "--reports-dir",
-                    "test_reports",
-                    "--details",
-                    "tree",
-                    "-cp",
-                    &classpath()?,
-                ]
-                .as_slice(),
-                methods.as_slice(),
-            ]
-            .concat(),
-        )
-        .output()
-        .context("Could not issue java command to run the tests for some reason.")?;
-
-    if child.status.success() {
-    } else {
-        println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
-    }
-
-    let mut num_tests_passed = 0;
-    for line in std::str::from_utf8(&child.stdout)?.lines() {
-        let parse_result = junit_summary_parser::num_tests_passed(line)
-            .context("While parsing Junit summary table");
-        if let Ok(n) = parse_result {
-            num_tests_passed = n;
-        }
-    }
-    result.push(GradeResult {
-        Part: "B - Array Operations",
-        Grade: format!("{:.2}", (num_tests_passed as f32 / 30.0) * 12.0),
-        Reason: format!("{}/30 unit tests passed", num_tests_passed),
-    });
-    println!("{}", Table::new(result).with(tabled::Style::pseudo()));
-
-    Ok(())
-}
-
-#[derive(Tabled)]
-struct GradeResult<'a> {
-    Part: &'a str,
-    Grade: String,
-    Reason: String,
-}
-
-peg::parser! {
-    grammar junit_summary_parser() for str {
-        rule number() -> u32
-            = n:$(['0'..='9']+) {? n.parse().or(Err("u32")) }
-        rule whitespace() = quiet!{[' ' | '\n' | '\t']+}
-        rule type_name()
-            = "tests successful"
-        pub rule num_tests_passed() -> u32
-            = "[" whitespace()? l:number() whitespace()? type_name() whitespace()? "]" { l }
-    }
-}
-
-const CLASS_ARRAYUTIL: &str = r#"
-    (class_declaration
-        name: (identifier) @name
-        (#eq? @name "ArrayUtil")
-    )
-"#;
-
-const INTARRAY: &str = r#"
-(field_declaration
-	type: (array_type
-    element: (integral_type)
-    )
-    declarator: (variable_declarator
-    	name: (identifier) @name
-        )
-    (#eq? @name "intArray")
-)
-"#;
-
-const CONSTRUCTOR_INT: &str = r#"
-(constructor_declaration 
-	(formal_parameters
-    (formal_parameter
-    	type: (integral_type) @type
-    ))
-	(#eq? @type "int")
-)
-"#;
-const DEFAULT_CONSTRUCTOR: &str = r#"
-(constructor_declaration 
-	parameters: (formal_parameters) @para
-    (#eq? @para "()")
-)
-"#;
-
-const GETTER: &str = r#"
-(method_declaration
-	type: (array_type element: (integral_type))
- 	name: (identifier) @ident
-	(#eq? @ident "getIntArray")
-)
-"#;
-
-const SETTER: &str = r#"
-(method_declaration
-	type: (void_type)
- 	name: (identifier) @ident
-	(#eq? @ident "setIntArray")
-)
-"#;
-
-const MINVALUE: &str = r#"
-(method_declaration
-    type: (integral_type)
-    name: (identifier) @ident
-	parameters: (formal_parameters) @para
-    (#eq? @ident "minValue")
-    (#eq? @para "()")
-)
-"#;
-const MAXVALUE: &str = r#"
-(method_declaration
-    type: (integral_type)
-    name: (identifier) @ident
-	parameters: (formal_parameters) @para
-    (#eq? @ident "maxValue")
-    (#eq? @para "()")
-)
-"#;
-const COUNTUNIQUE: &str = r#"
-(method_declaration
-    type: (integral_type)
-    name: (identifier) @ident
-	parameters: (formal_parameters) @para
-    (#eq? @ident "countUniqueIntegers")
-    (#eq? @para "()")
-)
-"#;

@@ -1,23 +1,37 @@
 [package]
 name = "umm"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
-authors = ["Dhruv Dhamani <ddhamani@uncc.edu>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.44"
-clap = "2.33.3"
-colored = "2.0.0"
-which = "4.2.2"
-inquire = "0.2.1"
-# ureq = "2.2.0"
+anyhow = "1.0.53"
+fncmd = "1.2.4"
 glob = "0.3.0"
 lazy_static = "1.4.0"
-java_dependency_analyzer = { path = "../java_dependency_analyzer" }
-# TODO: Change this after the release of tree-sitter-java
+tree-sitter = "0.20.4"
+which = "4.2.4"
 tree-sitter-java = { git = "https://github.com/Luni-4/tree-sitter-java.git", branch = "update-0.20" }
-tree-sitter = "0.20.0"
-peg = "0.7.0"
-tabled = "*"
+colored = "2.0.0"
+serde_json = "1.0.79"
+serde = { version = "1.0.136", features = ["derive"] }
+tabled = "0.5.0"
+peg = "0.8.0"
+
+
+# [[bin]]
+# name = "umm"
+# path = "src/bin/umm.rs"
+# [[bin]]
+# name = "umm-check"
+# path = "src/bin/umm-check.rs"
+# [[bin]]
+# name = "umm-run"
+# path = "src/bin/umm-run.rs"
+# [[bin]]
+# name = "umm-test"
+# path = "src/bin/umm-test.rs"
+# [[bin]]
+# name = "umm-clean"
+# path = "src/bin/umm-clean.rs"
