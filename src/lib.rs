@@ -134,6 +134,8 @@ pub fn classpath() -> Result<String> {
     let mut path: Vec<String> = vec![
         BUILD_DIR.display().to_string(),
         LIB_DIR.display().to_string(),
+        SOURCE_DIR.display().to_string(),
+        ROOT_DIR.display().to_string(),
     ];
 
     path.append(
@@ -142,12 +144,12 @@ pub fn classpath() -> Result<String> {
             .map(|p| p.as_path().display().to_string())
             .collect(),
     );
-    path.append(
-        &mut find_files("java", 4, &SOURCE_DIR)?
-            .iter()
-            .map(|p| p.as_path().display().to_string())
-            .collect(),
-    );
+    // path.append(
+    //     &mut find_files("java", 4, &SOURCE_DIR)?
+    //         .iter()
+    //         .map(|p| p.as_path().display().to_string())
+    //         .collect(),
+    // );
 
     Ok(path.join(&SEPARATOR))
 }

@@ -158,7 +158,6 @@ pub fn main() -> Result<()> {
                 SOURCE_DIR.to_str().unwrap(),
                 "--skipFailingTests",
                 "true",
-                "--verbose"
             ])
             .output()
             .context("Failed to spawn javac process.")?;
