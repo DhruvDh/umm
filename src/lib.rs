@@ -489,7 +489,6 @@ impl JavaProject {
                 path.as_str(),
                 "-Xdiags:verbose",
                 "-Xdoclint",
-                "-Werror",
                 // "-Xlint",
                 "-Xprefer:source",
             ])
