@@ -77,7 +77,7 @@ pub fn main() -> Result<()> {
         ];
         expected_tests.sort();
 
-        let index = project.names.iter().position(|x| x == &name);
+        let index = project.names.iter().position(|x| x == name);
         ensure!(
             index.is_some(),
             "Could not find class/interface with name {}.",
