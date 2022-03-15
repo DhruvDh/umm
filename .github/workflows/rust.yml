@@ -26,4 +26,11 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build
       run: |
-        cargo build --release --verbose
+        cargo +nightly build --release --verbose
+        cp ./target/release/umm-check ./umm-check
+        cp ./target/release/umm-info ./umm-info
+        cp ./target/release/umm-doc-check ./umm-doc-check
+        cp ./target/release/umm-grade ./umm-grade
+        cp ./target/release/umm-clean ./umm-clean
+        cp ./target/release/umm-run ./umm-run
+        cp ./target/release/umm-test ./umm-test
