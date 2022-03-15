@@ -6,6 +6,8 @@ use glob::glob;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::fs::File;
+use std::io::{Read, Write};
 use std::{
     ffi::OsString,
     path::{Path, PathBuf},
@@ -651,4 +653,32 @@ impl JavaProject {
 
         return Ok(output);
     }
+}
+
+pub fn download(url: &str, path: &PathBuf) -> Result<()> {
+    let resp = ureq::get(url)
+        .call()
+        .context(format!("Failed to download {}", url))?;
+
+    let len = resp
+        .header("Content-Length")
+        .and_then(|s| s.parse::<usize>().ok())
+        .unwrap();
+
+    let mut bytes: Vec<u8> = Vec::with_capacity(len);
+
+    resp.into_reader()
+        .take(10_000_000)
+        .read_to_end(&mut bytes)
+        .context(format!(
+            "Failed to read response till the end while downloading file at {}",
+            url,
+        ))?;
+
+    let name = path.file_name().unwrap().to_str().unwrap();
+
+    let mut file = File::create(path).context(format!("Failed to create file at {}", name))?;
+
+    file.write_all(&bytes)
+        .context(format!("Failed to write to file at {}", name))
 }
