@@ -448,6 +448,31 @@ impl JavaProject {
         let mut pretty_names = vec![];
         let mut names = vec![];
 
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/DataStructures.jar?raw=true",
+        &LIB_DIR.join("DataStructures.jar"),
+    )?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/junit-platform-console-standalone-1.8.0-RC1.jar?raw=true",
+        &LIB_DIR.join("junit-platform-console-standalone-1.8.0-RC1.jar"),
+    )?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-1.7.4.jar?raw=true",
+        &LIB_DIR.join("pitest.jar"),
+    )?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-command-line-1.7.4.jar?raw=true",
+        &LIB_DIR.join("pitest-command-line.jar"),
+    )?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-entry-1.7.4.jar?raw=true",
+        &LIB_DIR.join("pitest-entry.jar"),
+    )?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-junit5-plugin-0.14.jar?raw=true",
+        &LIB_DIR.join("pitest-junit5-plugin.jar"),
+    )?;
+
         println!(
             "Discovering project at {}",
             std::fs::canonicalize(ROOT_DIR.as_path())?.display()
