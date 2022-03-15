@@ -27,7 +27,7 @@ jobs:
     - name: Build
       run: |
         rustup toolchain install nightly
-        cargo build --release --verbose
+        cargo +nightly build --release --verbose
         cp ./target/release/umm-check ./umm-check
         cp ./target/release/umm-info ./umm-info
         cp ./target/release/umm-doc-check ./umm-doc-check
