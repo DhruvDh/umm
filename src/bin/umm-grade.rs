@@ -51,7 +51,10 @@ pub fn main() -> Result<()> {
             grade = grade - 10;
             reasons.push("- Incomplete documentation for ShoppingListArrayList.");
         }
-        if project.doc_check("ShoppingListArray".to_string()).is_err() {
+        if project
+            .doc_check("Shopping.ShoppingListArray".to_string())
+            .is_err()
+        {
             grade = grade - 10;
             reasons.push("- Incomplete documentation for ShoppingListArray.");
         }
@@ -127,13 +130,13 @@ pub fn main() -> Result<()> {
                 }
             }
             let grade = if num_tests_total != 0.0 {
-                (num_tests_passed / num_tests_total) * 40.0
+                (num_tests_passed / num_tests_total) * 80.0
             } else {
                 0.0
             };
             GradeResult {
                 Requirement: 1,
-                Grade: format!("{:.2}/40.0", grade),
+                Grade: format!("{:.2}/80.0", grade),
                 Reason: format!("- {}/{} tests passing.", num_tests_passed, num_tests_total),
             }
         }
