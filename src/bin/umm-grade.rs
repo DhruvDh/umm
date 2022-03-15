@@ -1,13 +1,10 @@
-use anyhow::{anyhow, ensure, Context, Result};
-use junit_summary_parser::num_tests_found;
-use std::{
-    path::PathBuf,
-    process::{Command, Stdio},
-};
+use anyhow::{ensure, Context, Result};
+use std::process::{Command, Stdio};
 use tabled::{Table, Tabled};
 use umm::*;
 
 #[derive(Tabled)]
+#[allow(non_snake_case)]
 /// A struct to store grading results and display them
 ///
 /// * `Requirement`: refers to Requirement ID  
@@ -48,14 +45,14 @@ pub fn main() -> Result<()> {
             .doc_check("Shopping.ShoppingListArrayList".to_string())
             .is_err()
         {
-            grade = grade - 10;
+            grade -= 10;
             reasons.push("- Incomplete documentation for ShoppingListArrayList.");
         }
         if project
             .doc_check("Shopping.ShoppingListArray".to_string())
             .is_err()
         {
-            grade = grade - 10;
+            grade -= 10;
             reasons.push("- Incomplete documentation for ShoppingListArray.");
         }
 
@@ -87,7 +84,6 @@ pub fn main() -> Result<()> {
             name
         );
         let file = &project.files[index.unwrap()];
-        let name = file.proper_name.clone().unwrap();
 
         let mut tests = file.test_methods.clone();
         tests.sort();
@@ -107,10 +103,10 @@ pub fn main() -> Result<()> {
             }
         }
 
-        if reasons.len() != 0 {
+        if reasons.is_empty() {
             GradeResult {
                 Requirement: 1,
-                Grade: format!("0/40"),
+                Grade: "0/40".to_string(),
                 Reason: reasons.join("\n"),
             }
         } else {
@@ -143,7 +139,7 @@ pub fn main() -> Result<()> {
     };
 
     let req_3 = {
-        let child = Command::new(java_path()?)
+        Command::new(java_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
@@ -171,8 +167,8 @@ pub fn main() -> Result<()> {
 
         GradeResult {
             Requirement: 3,
-            Grade: format!("40/40"),
-            Reason: format!(""),
+            Grade: "40/40".to_string(),
+            Reason: String::new(),
         }
     };
     println!(

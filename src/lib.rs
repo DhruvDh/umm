@@ -13,7 +13,6 @@ use std::{
     path::{Path, PathBuf},
     process::{Command, Stdio},
 };
-use tabled::{Table, Tabled};
 use tree_sitter::{Query, QueryCursor, Tree};
 use which::which;
 
@@ -96,16 +95,16 @@ pub struct JavaProject {
 
 /// Finds an returns the path to javac binary
 pub fn javac_path() -> Result<OsString> {
-    Ok(which("javac")
+    which("javac")
         .map(PathBuf::into_os_string)
-        .context("Cannot find a Java Compiler on path (javac)")?)
+        .context("Cannot find a Java Compiler on path (javac)")
 }
 
 /// Finds an returns the path to java binary
 pub fn java_path() -> Result<OsString> {
-    Ok(which("java")
+    which("java")
         .map(PathBuf::into_os_string)
-        .context("Cannot find a Java runtime on path (java)")?)
+        .context("Cannot find a Java runtime on path (java)")
 }
 
 /// A glob utility function to find paths to files with certain extension
@@ -492,7 +491,7 @@ impl JavaProject {
         })
     }
 
-    pub fn doc_check(&self, name: String) -> Result<()> {
+    pub fn doc_check(&self, name: String) -> Result<String> {
         let index = self.names.iter().position(|x| x == &name);
         ensure!(
             index.is_some(),
@@ -500,7 +499,6 @@ impl JavaProject {
             name
         );
         let path = self.files[index.unwrap()].path.display().to_string();
-        let name = self.names[index.unwrap()].clone();
         let child = Command::new(javac_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
@@ -519,25 +517,23 @@ impl JavaProject {
                 // "-Xlint",
                 "-Xprefer:source",
             ])
-            .spawn()
+            .output()
             .context("Failed to spawn javac process.")?;
 
-        match child.wait_with_output() {
-            Ok(status) => {
-                if status.status.success() {
-                    println!(
-                        "{}",
-                        "No compiler errors in checked file or other source files it imports."
-                            .bright_green()
-                            .bold(),
-                    );
-                } else {
-                    bail!("There were compiler errors and/or missing documentation in checked file or other source files it imports.".bright_red().bold());
-                }
-            }
-            Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),
-        };
-        Ok(())
+        if child.status.success() {
+            println!(
+                "{}",
+                "No compiler errors in checked file or other source files it imports."
+                    .bright_green()
+                    .bold(),
+            );
+        } else {
+            bail!("There were compiler errors and/or missing documentation in checked file or other source files it imports.".bright_red().bold());
+        }
+        let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
+        println!("{}", output);
+
+        Ok(output)
     }
 
     pub fn check(&self, name: String) -> Result<()> {
@@ -676,7 +672,7 @@ impl JavaProject {
         let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
         println!("{}", output);
 
-        return Ok(output);
+        Ok(output)
     }
 }
 
