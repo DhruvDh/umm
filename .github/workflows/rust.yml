@@ -26,6 +26,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build
       run: |
+        rustup toolchain install nightly
         cargo +nightly build --release --verbose
         cp ./target/release/umm-check ./umm-check
         cp ./target/release/umm-info ./umm-info
