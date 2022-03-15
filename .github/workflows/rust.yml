@@ -26,11 +26,21 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build
       run: |
-        cargo build +nightly --release --verbose
-        cp ./target/release/umm-check ./umm-check
-        cp ./target/release/umm-info ./umm-info
-        cp ./target/release/umm-doc-check ./umm-doc-check
-        cp ./target/release/umm-grade ./umm-grade
-        cp ./target/release/umm-clean ./umm-clean
-        cp ./target/release/umm-run ./umm-run
-        cp ./target/release/umm-test ./umm-test
+        rustup toolchain install nightly
+        cargo +nightly build --release
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        prerelease: true
+        name: ${{ github.ref }}
+        tag_name: ${{ github.ref }}
+        generate_release_notes: true
+        files: |
+          ./target/release/umm-info
+          ./target/release/umm-clean
+          ./target/release/umm-check
+          ./target/release/umm-doc-check
+          ./target/release/umm-run
+          ./target/release/umm-test
+          ./target/release/umm-grade
+          
