@@ -7,12 +7,14 @@ on:
       - master
       - next
       - next-assign1-spring-22
+      - next-lab3-spring-22
   pull_request:
     branches:
       - main
       - master
       - next
       - next-assign1-spring-22
+      - next-lab3-spring-22
 
 env:
   CARGO_TERM_COLOR: always

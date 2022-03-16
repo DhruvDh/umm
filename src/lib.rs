@@ -436,73 +436,12 @@ impl JavaFile {
             pretty_test_methods,
             kind,
             proper_name: Some(proper_name),
-            source_code: source_code.clone(),
-        })
-    }
-}
-
-impl JavaProject {
-    pub fn new() -> Result<Self> {
-        let mut files = vec![];
-        let mut pretty_names = vec![];
-        let mut names = vec![];
-
-        download(
-        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/DataStructures.jar?raw=true",
-        &LIB_DIR.join("DataStructures.jar"),
-    )?;
-        download(
-        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/junit-platform-console-standalone-1.8.0-RC1.jar?raw=true",
-        &LIB_DIR.join("junit-platform-console-standalone-1.8.0-RC1.jar"),
-    )?;
-        download(
-        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-1.7.4.jar?raw=true",
-        &LIB_DIR.join("pitest.jar"),
-    )?;
-        download(
-        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-command-line-1.7.4.jar?raw=true",
-        &LIB_DIR.join("pitest-command-line.jar"),
-    )?;
-        download(
-        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-entry-1.7.4.jar?raw=true",
-        &LIB_DIR.join("pitest-entry.jar"),
-    )?;
-        download(
-        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-junit5-plugin-0.14.jar?raw=true",
-        &LIB_DIR.join("pitest-junit5-plugin.jar"),
-    )?;
-
-        println!(
-            "Discovering project at {}",
-            std::fs::canonicalize(ROOT_DIR.as_path())?.display()
-        );
-
-        for path in find_files("java", 15, &ROOT_DIR)? {
-            let file = JavaFile::new(path)?;
-            pretty_names.push(file.pretty_name.clone().unwrap());
-            names.push(file.proper_name.clone().unwrap());
-            files.push(file);
-        }
-
-        Ok(Self {
-            files,
-            pretty_names,
-            names,
+            source_code,
         })
     }
 
-    pub fn doc_check(&self, name: String) -> Result<String> {
-        let index = self.names.iter().position(|x| x == &name);
-        ensure!(
-            index.is_some(),
-            "Could not find class/interface with name {}.",
-            name
-        );
-        let path = self.files[index.unwrap()].path.display().to_string();
+    pub fn doc_check(&self) -> Result<String> {
         let child = Command::new(javac_path()?)
-            .stdin(Stdio::inherit())
-            .stdout(Stdio::inherit())
-            .stderr(Stdio::inherit())
             .args([
                 "--source-path",
                 SOURCE_DIR.to_str().unwrap(),
@@ -511,7 +450,7 @@ impl JavaProject {
                 classpath()?.as_str(),
                 "-d",
                 BUILD_DIR.to_str().unwrap(),
-                path.as_str(),
+                self.path.as_path().to_str().unwrap(),
                 "-Xdiags:verbose",
                 "-Xdoclint",
                 // "-Xlint",
@@ -520,31 +459,14 @@ impl JavaProject {
             .output()
             .context("Failed to spawn javac process.")?;
 
-        if child.status.success() {
-            println!(
-                "{}",
-                "No compiler errors in checked file or other source files it imports."
-                    .bright_green()
-                    .bold(),
-            );
-        } else {
-            bail!("There were compiler errors and/or missing documentation in checked file or other source files it imports.".bright_red().bold());
-        }
         let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
-        println!("{}", output);
 
         Ok(output)
     }
 
-    pub fn check(&self, name: String) -> Result<()> {
-        let index = self.names.iter().position(|x| x == &name);
-        ensure!(
-            index.is_some(),
-            "Could not find class/interface with name {}.",
-            name
-        );
-        let path = self.files[index.unwrap()].path.display().to_string();
-        let name = self.names[index.unwrap()].clone();
+    pub fn check(&self) -> Result<()> {
+        let path = self.path.display().to_string();
+
         let child = Command::new(javac_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
@@ -578,22 +500,18 @@ impl JavaProject {
                     bail!("There were compiler errors in checked file or other source files it imports.".bright_red().bold());
                 }
             }
-            Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),
+            Err(e) => bail!(
+                "Failed to wait for child process for {}: {}",
+                self.proper_name.clone().unwrap(),
+                e
+            ),
         };
         Ok(())
     }
 
-    pub fn run(&self, name: String) -> Result<()> {
-        self.check(name.clone())?;
-
-        let index = self.names.iter().position(|x| x == &name);
-        ensure!(
-            index.is_some(),
-            "Could not find class/interface with name {}.",
-            name
-        );
-        let name = self.names[index.unwrap()].clone();
-
+    pub fn run(&self) -> Result<()> {
+        self.check()?;
+        let name = self.proper_name.clone().unwrap();
         let child = Command::new(java_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
@@ -616,19 +534,10 @@ impl JavaProject {
         Ok(())
     }
 
-    pub fn test(&self, name: String) -> Result<String> {
-        self.check(name.clone())?;
+    pub fn test(&self) -> Result<String> {
+        self.check()?;
 
-        let index = self.names.iter().position(|x| x == &name);
-        ensure!(
-            index.is_some(),
-            "Could not find class/interface with name {}.",
-            name
-        );
-        let file = &self.files[index.unwrap()];
-        let name = file.proper_name.clone().unwrap();
-
-        let tests = file.test_methods.clone();
+        let tests = self.test_methods.clone();
         let tests = tests
             .iter()
             .map(|s| "-m ".to_owned() + s)
@@ -670,36 +579,114 @@ impl JavaProject {
             println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
         }
         let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
-        println!("{}", output);
 
         Ok(output)
     }
 }
 
-pub fn download(url: &str, path: &PathBuf) -> Result<()> {
-    let resp = ureq::get(url)
-        .call()
-        .context(format!("Failed to download {}", url))?;
+impl JavaProject {
+    pub fn new() -> Result<Self> {
+        let mut files = vec![];
+        let mut pretty_names = vec![];
+        let mut names = vec![];
 
-    let len = resp
-        .header("Content-Length")
-        .and_then(|s| s.parse::<usize>().ok())
-        .unwrap();
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/DataStructures.jar?raw=true",
+        &LIB_DIR.join("DataStructures.jar"),
+    false)?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/junit-platform-console-standalone-1.8.0-RC1.jar?raw=true",
+        &LIB_DIR.join("junit-platform-console-standalone-1.8.0-RC1.jar"),
+false    )?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-1.7.4.jar?raw=true",
+        &LIB_DIR.join("pitest.jar"),
+    false)?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-command-line-1.7.4.jar?raw=true",
+        &LIB_DIR.join("pitest-command-line.jar"),
+    false)?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-entry-1.7.4.jar?raw=true",
+        &LIB_DIR.join("pitest-entry.jar"),
+    false)?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-junit5-plugin-0.14.jar?raw=true",
+        &LIB_DIR.join("pitest-junit5-plugin.jar"),
+   false )?;
 
-    let mut bytes: Vec<u8> = Vec::with_capacity(len);
+        println!(
+            "Discovering project at {}",
+            std::fs::canonicalize(ROOT_DIR.as_path())?.display()
+        );
 
-    resp.into_reader()
-        .take(10_000_000)
-        .read_to_end(&mut bytes)
-        .context(format!(
-            "Failed to read response till the end while downloading file at {}",
-            url,
-        ))?;
+        for path in find_files("java", 15, &ROOT_DIR)? {
+            let file = JavaFile::new(path)?;
+            pretty_names.push(file.pretty_name.clone().unwrap());
+            names.push(file.proper_name.clone().unwrap());
+            files.push(file);
+        }
 
-    let name = path.file_name().unwrap().to_str().unwrap();
+        Ok(Self {
+            files,
+            pretty_names,
+            names,
+        })
+    }
 
-    let mut file = File::create(path).context(format!("Failed to create file at {}", name))?;
+    pub fn identify<T: Into<String>>(&self, name: T) -> Result<JavaFile> {
+        let name: String = name.into();
 
-    file.write_all(&bytes)
-        .context(format!("Failed to write to file at {}", name))
+        if let Some(i) = self.names.iter().position(|n| *n == name) {
+            Ok(self.files[i].clone())
+        } else if let Some(i) = self.files.iter().position(|n| n.file_name == name) {
+            Ok(self.files[i].clone())
+        } else if let Some(i) = self
+            .files
+            .iter()
+            .position(|n| n.name.clone().unwrap() == name)
+        {
+            Ok(self.files[i].clone())
+        } else if let Some(i) = self
+            .files
+            .iter()
+            .position(|n| n.path.display().to_string() == name)
+        {
+            Ok(self.files[i].clone())
+        } else {
+            bail!("Could not find {} in the project", name)
+        }
+    }
+}
+
+pub fn download(url: &str, path: &PathBuf, replace: bool) -> Result<()> {
+    if !replace && path.exists() {
+        Ok(())
+    } else {
+        let resp = ureq::get(url)
+            .call()
+            .context(format!("Failed to download {}", url))?;
+
+        let len = resp
+            .header("Content-Length")
+            .and_then(|s| s.parse::<usize>().ok())
+            .unwrap();
+
+        let mut bytes: Vec<u8> = Vec::with_capacity(len);
+
+        resp.into_reader()
+            .take(10_000_000)
+            .read_to_end(&mut bytes)
+            .context(format!(
+                "Failed to read response till the end while downloading file at {}",
+                url,
+            ))?;
+
+        let name = path.file_name().unwrap().to_str().unwrap();
+
+        let mut file = File::create(path).context(format!("Failed to create file at {}", name))?;
+
+        file.write_all(&bytes)
+            .context(format!("Failed to write to file at {}", name))
+    }
 }

@@ -5,37 +5,12 @@ use umm::*;
 /// Run JUnit tests from a JUnit test class (source) file
 #[fncmd::fncmd]
 pub fn main(
-    /// Path to file
+    /// Path to file or Name of file to check
     #[opt()]
-    file: String,
+    name: String,
 ) -> Result<()> {
     let project = JavaProject::new()?;
-    let file = PathBuf::from(file);
-    let file = file
-        .file_name()
-        .ok_or(anyhow!(
-            "Could not get file name from discovered project object",
-        ))?
-        .to_str()
-        .ok_or(anyhow!(
-            "Could not convert file name from discovered project object to str"
-        ))?
-        .to_string();
-
-    let index = project
-        .files
-        .iter()
-        .position(|x| x.file_name == file)
-        .ok_or(anyhow!("Cannot find specified file in discovered project"))?;
-
-    let name = project
-        .files
-        .get(index)
-        .unwrap()
-        .clone()
-        .proper_name
-        .unwrap();
-    
-    project.test(name)?;
+    let output = project.identify(name)?.test()?;
+    println!("{}", output);
     Ok(())
 }
