@@ -6,12 +6,13 @@ use glob::glob;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::fs::File;
+use std::io::{Read, Write};
 use std::{
     ffi::OsString,
     path::{Path, PathBuf},
     process::{Command, Stdio},
 };
-use tabled::{Table, Tabled};
 use tree_sitter::{Query, QueryCursor, Tree};
 use which::which;
 
@@ -73,7 +74,7 @@ pub struct JavaFile {
     pub name: Option<String>,
     pretty_name: Option<String>,
     pub proper_name: Option<String>,
-    test_methods: Vec<String>,
+    pub test_methods: Vec<String>,
     pretty_test_methods: Vec<String>,
     kind: JavaFileType,
     source_code: String,
@@ -89,21 +90,21 @@ pub struct JavaFile {
 pub struct JavaProject {
     pub files: Vec<JavaFile>,
     pretty_names: Vec<String>,
-    names: Vec<String>,
+    pub names: Vec<String>,
 }
 
 /// Finds an returns the path to javac binary
-fn javac_path() -> Result<OsString> {
-    Ok(which("javac")
+pub fn javac_path() -> Result<OsString> {
+    which("javac")
         .map(PathBuf::into_os_string)
-        .context("Cannot find a Java Compiler on path (javac)")?)
+        .context("Cannot find a Java Compiler on path (javac)")
 }
 
 /// Finds an returns the path to java binary
-fn java_path() -> Result<OsString> {
-    Ok(which("java")
+pub fn java_path() -> Result<OsString> {
+    which("java")
         .map(PathBuf::into_os_string)
-        .context("Cannot find a Java runtime on path (java)")?)
+        .context("Cannot find a Java runtime on path (java)")
 }
 
 /// A glob utility function to find paths to files with certain extension
@@ -130,10 +131,12 @@ fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<Vec<
 }
 
 /// Find class, jar files in library path and build directory to populate classpath and return it
-fn classpath() -> Result<String> {
+pub fn classpath() -> Result<String> {
     let mut path: Vec<String> = vec![
         BUILD_DIR.display().to_string(),
         LIB_DIR.display().to_string(),
+        SOURCE_DIR.display().to_string(),
+        ROOT_DIR.display().to_string(),
     ];
 
     path.append(
@@ -142,12 +145,12 @@ fn classpath() -> Result<String> {
             .map(|p| p.as_path().display().to_string())
             .collect(),
     );
-    path.append(
-        &mut find_files("java", 4, &SOURCE_DIR)?
-            .iter()
-            .map(|p| p.as_path().display().to_string())
-            .collect(),
-    );
+    // path.append(
+    //     &mut find_files("java", 4, &SOURCE_DIR)?
+    //         .iter()
+    //         .map(|p| p.as_path().display().to_string())
+    //         .collect(),
+    // );
 
     Ok(path.join(&SEPARATOR))
 }
@@ -433,45 +436,37 @@ impl JavaFile {
             pretty_test_methods,
             kind,
             proper_name: Some(proper_name),
-            source_code: source_code.clone(),
+            source_code,
         })
     }
-}
 
-impl JavaProject {
-    pub fn new() -> Result<Self> {
-        let mut files = vec![];
-        let mut pretty_names = vec![];
-        let mut names = vec![];
+    pub fn doc_check(&self) -> Result<String> {
+        let child = Command::new(javac_path()?)
+            .args([
+                "--source-path",
+                SOURCE_DIR.to_str().unwrap(),
+                "-g",
+                "--class-path",
+                classpath()?.as_str(),
+                "-d",
+                BUILD_DIR.to_str().unwrap(),
+                self.path.as_path().to_str().unwrap(),
+                "-Xdiags:verbose",
+                "-Xdoclint",
+                // "-Xlint",
+                "-Xprefer:source",
+            ])
+            .output()
+            .context("Failed to spawn javac process.")?;
 
-        println!(
-            "Discovering project at {}",
-            std::fs::canonicalize(ROOT_DIR.as_path())?.display()
-        );
+        let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
 
-        for path in find_files("java", 15, &ROOT_DIR)? {
-            let file = JavaFile::new(path)?;
-            pretty_names.push(file.pretty_name.clone().unwrap());
-            names.push(file.proper_name.clone().unwrap());
-            files.push(file);
-        }
-
-        Ok(Self {
-            files,
-            pretty_names,
-            names,
-        })
+        Ok(output)
     }
-    pub fn check(&self, name: String, documentation: bool) -> Result<()> {
-        let index = self.names.iter().position(|x| x == &name);
-        ensure!(
-            index.is_some(),
-            "Could not find class/interface with name {}.",
-            name
-        );
-        let path = self.files[index.unwrap()].path.display().to_string();
-        let name = self.names[index.unwrap()].clone();
-        let doc_check = if documentation { "-Xdoclint" } else { "" };
+
+    pub fn check(&self) -> Result<()> {
+        let path = self.path.display().to_string();
+
         let child = Command::new(javac_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
@@ -486,7 +481,6 @@ impl JavaProject {
                 BUILD_DIR.to_str().unwrap(),
                 path.as_str(),
                 "-Xdiags:verbose",
-                doc_check,
                 // "-Xlint",
                 "-Xprefer:source",
             ])
@@ -506,22 +500,18 @@ impl JavaProject {
                     bail!("There were compiler errors in checked file or other source files it imports.".bright_red().bold());
                 }
             }
-            Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),
+            Err(e) => bail!(
+                "Failed to wait for child process for {}: {}",
+                self.proper_name.clone().unwrap(),
+                e
+            ),
         };
         Ok(())
     }
 
-    pub fn run(&self, name: String) -> Result<()> {
-        self.check(name.clone(), false)?;
-
-        let index = self.names.iter().position(|x| x == &name);
-        ensure!(
-            index.is_some(),
-            "Could not find class/interface with name {}.",
-            name
-        );
-        let name = self.names[index.unwrap()].clone();
-
+    pub fn run(&self) -> Result<()> {
+        self.check()?;
+        let name = self.proper_name.clone().unwrap();
         let child = Command::new(java_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
@@ -544,19 +534,10 @@ impl JavaProject {
         Ok(())
     }
 
-    pub fn test(&self, name: String) -> Result<()> {
-        self.check(name.clone(), false)?;
+    pub fn test(&self) -> Result<String> {
+        self.check()?;
 
-        let index = self.names.iter().position(|x| x == &name);
-        ensure!(
-            index.is_some(),
-            "Could not find class/interface with name {}.",
-            name
-        );
-        let file = &self.files[index.unwrap()];
-        let name = file.proper_name.clone().unwrap();
-
-        let tests = file.test_methods.clone();
+        let tests = self.test_methods.clone();
         let tests = tests
             .iter()
             .map(|s| "-m ".to_owned() + s)
@@ -564,9 +545,9 @@ impl JavaProject {
         let methods: Vec<&str> = tests.iter().map(String::as_str).collect();
 
         let child = Command::new(java_path()?)
-            .stdin(Stdio::inherit())
-            .stdout(Stdio::inherit())
-            .stderr(Stdio::inherit())
+            // .stdin(Stdio::inherit())
+            // .stdout(Stdio::inherit())
+            // .stderr(Stdio::inherit())
             .args(
                 [
                     [
@@ -589,20 +570,123 @@ impl JavaProject {
                 ]
                 .concat(),
             )
-            .spawn()
+            .output()
             .context("Could not issue java command to run the tests for some reason.")?;
 
-        match child.wait_with_output() {
-            Ok(status) => {
-                if status.status.success() {
-                    println!("{}", "Ran and exited successfully.".bright_green().bold(),);
-                } else {
-                    println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
-                }
-            }
-            Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),
-        };
+        if child.status.success() {
+            println!("{}", "Ran and exited successfully.".bright_green().bold(),);
+        } else {
+            println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
+        }
+        let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
 
+        Ok(output)
+    }
+}
+
+impl JavaProject {
+    pub fn new() -> Result<Self> {
+        let mut files = vec![];
+        let mut pretty_names = vec![];
+        let mut names = vec![];
+
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/DataStructures.jar?raw=true",
+        &LIB_DIR.join("DataStructures.jar"),
+    false)?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/junit-platform-console-standalone-1.8.0-RC1.jar?raw=true",
+        &LIB_DIR.join("junit-platform-console-standalone-1.8.0-RC1.jar"),
+false    )?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-1.7.4.jar?raw=true",
+        &LIB_DIR.join("pitest.jar"),
+    false)?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-command-line-1.7.4.jar?raw=true",
+        &LIB_DIR.join("pitest-command-line.jar"),
+    false)?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-entry-1.7.4.jar?raw=true",
+        &LIB_DIR.join("pitest-entry.jar"),
+    false)?;
+        download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-junit5-plugin-0.14.jar?raw=true",
+        &LIB_DIR.join("pitest-junit5-plugin.jar"),
+   false )?;
+
+        println!(
+            "Discovering project at {}",
+            std::fs::canonicalize(ROOT_DIR.as_path())?.display()
+        );
+
+        for path in find_files("java", 15, &ROOT_DIR)? {
+            let file = JavaFile::new(path)?;
+            pretty_names.push(file.pretty_name.clone().unwrap());
+            names.push(file.proper_name.clone().unwrap());
+            files.push(file);
+        }
+
+        Ok(Self {
+            files,
+            pretty_names,
+            names,
+        })
+    }
+
+    pub fn identify<T: Into<String>>(&self, name: T) -> Result<JavaFile> {
+        let name: String = name.into();
+
+        if let Some(i) = self.names.iter().position(|n| *n == name) {
+            Ok(self.files[i].clone())
+        } else if let Some(i) = self.files.iter().position(|n| n.file_name == name) {
+            Ok(self.files[i].clone())
+        } else if let Some(i) = self
+            .files
+            .iter()
+            .position(|n| n.name.clone().unwrap() == name)
+        {
+            Ok(self.files[i].clone())
+        } else if let Some(i) = self
+            .files
+            .iter()
+            .position(|n| n.path.display().to_string() == name)
+        {
+            Ok(self.files[i].clone())
+        } else {
+            bail!("Could not find {} in the project", name)
+        }
+    }
+}
+
+pub fn download(url: &str, path: &PathBuf, replace: bool) -> Result<()> {
+    if !replace && path.exists() {
         Ok(())
+    } else {
+        let resp = ureq::get(url)
+            .call()
+            .context(format!("Failed to download {}", url))?;
+
+        let len = resp
+            .header("Content-Length")
+            .and_then(|s| s.parse::<usize>().ok())
+            .unwrap();
+
+        let mut bytes: Vec<u8> = Vec::with_capacity(len);
+
+        resp.into_reader()
+            .take(10_000_000)
+            .read_to_end(&mut bytes)
+            .context(format!(
+                "Failed to read response till the end while downloading file at {}",
+                url,
+            ))?;
+
+        let name = path.file_name().unwrap().to_str().unwrap();
+
+        let mut file = File::create(path).context(format!("Failed to create file at {}", name))?;
+
+        file.write_all(&bytes)
+            .context(format!("Failed to write to file at {}", name))
     }
 }

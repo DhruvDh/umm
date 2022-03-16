@@ -1,5 +1,4 @@
-use anyhow::{anyhow, Context, Result};
-use std::path::PathBuf;
+use anyhow::{Context, Result};
 use umm::*;
 
 /// Cleans javac artifacts produced by `umm`
