@@ -449,10 +449,13 @@ pub fn main() -> Result<()> {
             String::from("DataStructures.LinkedStackTest#testPop"),
             String::from("DataStructures.LinkedStackTest#testPush"),
             String::from("DataStructures.LinkedStackTest#testPeek"),
+            String::from("DataStructures.LinkedStackTest#testSize"),
+            String::from("DataStructures.LinkedStackTest#testToString"),
+            String::from("DataStructures.LinkedStackTest#testIsEmpty"),
         ],
         &project,
         50.0,
-        "1 & 3".to_string(),
+        "1".to_string(),
     )?;
 
     let req_2 = grade_docs(vec!["DataStructures.LinkedStack"], &project, 20, "2".into())?;
