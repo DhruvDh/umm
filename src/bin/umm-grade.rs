@@ -389,6 +389,7 @@ fn grade_unit_tests(
         .context("Failed to spawn javac process.")?;
 
     if child.status.success() {
+        std::fs::create_dir_all("test_reports");
         let file = File::open(&ROOT_DIR.join("test_reports").join("mutations.csv"))
             .context(format!("Could not read ./test_reports/mutations.csv file"))?;
         let reader = BufReader::new(file);
@@ -438,40 +439,30 @@ pub fn main() -> Result<()> {
     let project = JavaProject::new()?;
 
     let req_1 = grade_by_tests(
-        vec![String::from("Shopping.ShoppingListArrayListTest")],
+        vec![String::from("DataStructures.LinkedStackTest")],
         vec![
-            String::from("Shopping.ShoppingListArrayListTest#testAdd"),
-            String::from("Shopping.ShoppingListArrayListTest#testRemove"),
-            String::from("Shopping.ShoppingListArrayListTest#testFind"),
-            String::from("Shopping.ShoppingListArrayListTest#testIndexOf"),
-            String::from("Shopping.ShoppingListArrayListTest#testContains"),
-            String::from("Shopping.ShoppingListArrayListTest#testSize"),
-            String::from("Shopping.ShoppingListArrayListTest#testIsEmpty"),
+            String::from("DataStructures.LinkedStackTest#testPop"),
+            String::from("DataStructures.LinkedStackTest#testPush"),
+            String::from("DataStructures.LinkedStackTest#testPeek"),
         ],
         &project,
-        80.0,
+        50.0,
         "1 & 3".to_string(),
     )?;
 
-    let req_2 = grade_docs(
-        vec![
-            "Shopping.ShoppingListArrayList",
-            "Shopping.ShoppingListArray",
-        ],
-        &project,
-        20,
-        "2".into(),
-    )?;
+    let req_2 = grade_docs(vec!["DataStructures.LinkedStack"], &project, 20, "2".into())?;
 
     let req_3 = grade_unit_tests(
         "3".to_string(),
-        0.0,
-        vec![String::from("Shopping.ShoppingListArrayListTest")],
-        vec![String::from("Shopping.ShoppingListArrayList")],
+        30.0,
+        vec![String::from("DataStructures.LinkedStackTest")],
+        vec![String::from("DataStructures.LinkedStack")],
         vec![
-            String::from("scanFile"),
+            String::from("LinkedStack"),
+            String::from("isEmpty"),
+            String::from("size"),
             String::from("toString"),
-            String::from("ShoppingListArrayList"),
+            String::from("main"),
         ],
     )?;
     println!(
