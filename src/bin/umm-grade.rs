@@ -10,7 +10,7 @@ use tabled::{
 };
 use umm::*;
 
-#[derive(Tabled)]
+#[derive(Tabled, Clone)]
 #[allow(non_snake_case)]
 /// A struct to store grading results and display them
 ///
@@ -134,7 +134,7 @@ peg::parser! {
               path_separator()?
               p:(word() ++ path_separator())
               whitespace()?
-            { p.iter().fold(String::new(), |acc, w| acc + "/" + w) }
+            { p.iter().fold(String::new(), |acc, w| format!("{}/{}", acc, w)) }
 
         /// matches line numbers (colon followed by numbers, eg. :23)
         rule line_number() -> u32
@@ -394,7 +394,7 @@ fn grade_unit_tests(
     if child.status.success() {
         std::fs::create_dir_all("test_reports")?;
         let file = File::open(&ROOT_DIR.join("test_reports").join("mutations.csv"))
-            .context(format!("Could not read ./test_reports/mutations.csv file"))?;
+            .context("Could not read ./test_reports/mutations.csv file")?;
         let reader = BufReader::new(file);
         let mut diags = vec![];
         let mut not_killed = 0;
@@ -428,7 +428,12 @@ fn grade_unit_tests(
             Reason: format!("-{} Penalty due to surviving muations", penalty),
         })
     } else {
-        let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
+        let output = format!(
+            "{}{}",
+            String::from_utf8(child.stderr)?,
+            String::from_utf8(child.stdout)?
+        );
+
         println!("{}", output);
         Ok(GradeResult {
             Requirement: req_name,
