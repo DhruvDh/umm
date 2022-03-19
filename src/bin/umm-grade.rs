@@ -476,16 +476,9 @@ pub fn main() -> Result<()> {
         "2".into(),
     )?;
 
-    let req_3 = grade_unit_tests(
-        "3".to_string(),
-        30.0,
-        vec![String::from("DataStructures.WorkAheadQueueTest")],
-        vec![String::from("DataStructures.WorkAheadQueue")],
-        vec![],
-    )?;
     println!(
         "{}",
-        Table::new(vec![req_1, req_2, req_3]).with(tabled::Style::modern())
+        Table::new(vec![req_1, req_2]).with(tabled::Style::modern())
     );
     Ok(())
 }
