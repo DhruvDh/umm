@@ -8,6 +8,8 @@ on:
       - next
       - next-assign1-spring-22
       - next-lab3-spring-22
+      - next-assign2-spring-22
+
   pull_request:
     branches:
       - main
@@ -15,6 +17,7 @@ on:
       - next
       - next-assign1-spring-22
       - next-lab3-spring-22
+      - next-assign2-spring-22
 
 env:
   CARGO_TERM_COLOR: always
@@ -35,7 +38,7 @@ jobs:
       with:
         prerelease: true
         name: release ${{ github.ref }}
-        tag_name: prerelease-lab3
+        tag_name: prerelease-assign2
         generate_release_notes: true
         files: |
           ./target/release/umm-info

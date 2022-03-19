@@ -449,34 +449,39 @@ pub fn main() -> Result<()> {
     let project = JavaProject::new()?;
 
     let req_1 = grade_by_tests(
-        vec![String::from("DataStructures.LinkedStackTest")],
+        vec![String::from("DataStructures.WorkAheadQueueTest")],
         vec![
-            String::from("DataStructures.LinkedStackTest#testPop"),
-            String::from("DataStructures.LinkedStackTest#testPush"),
-            String::from("DataStructures.LinkedStackTest#testPeek"),
-            String::from("DataStructures.LinkedStackTest#testSize"),
-            String::from("DataStructures.LinkedStackTest#testToString"),
-            String::from("DataStructures.LinkedStackTest#testIsEmpty"),
+            String::from("DataStructures.WorkAheadQueueTest#testDequeue_int"),
+            String::from("DataStructures.WorkAheadQueueTest#testFirst_int"),
+            String::from("DataStructures.WorkAheadQueueTest#testFirstThreeNodes"),
+            String::from("DataStructures.WorkAheadQueueTest#testFirstThreeElements"),
+            String::from("DataStructures.WorkAheadQueueTest#testEnqueue"),
+            String::from("DataStructures.WorkAheadQueueTest#testDequeue_0args"),
+            String::from("DataStructures.WorkAheadQueueTest#testFirst_0args"),
+            String::from("DataStructures.WorkAheadQueueTest#testIsEmpty"),
+            String::from("DataStructures.WorkAheadQueueTest#testSize"),
+            String::from("DataStructures.WorkAheadQueueTest#testDequeue_int_ECE"),
+            String::from("DataStructures.WorkAheadQueueTest#testDequeue_int_IAE"),
+            String::from("DataStructures.WorkAheadQueueTest#testDequeue_int2"),
         ],
         &project,
         50.0,
         "1".to_string(),
     )?;
 
-    let req_2 = grade_docs(vec!["DataStructures.LinkedStack"], &project, 20, "2".into())?;
+    let req_2 = grade_docs(
+        vec!["DataStructures.WorkAheadQueue"],
+        &project,
+        20,
+        "2".into(),
+    )?;
 
     let req_3 = grade_unit_tests(
         "3".to_string(),
         30.0,
-        vec![String::from("DataStructures.LinkedStackTest")],
-        vec![String::from("DataStructures.LinkedStack")],
-        vec![
-            String::from("LinkedStack"),
-            String::from("isEmpty"),
-            String::from("size"),
-            String::from("toString"),
-            String::from("main"),
-        ],
+        vec![String::from("DataStructures.WorkAheadQueueTest")],
+        vec![String::from("DataStructures.WorkAheadQueue")],
+        vec![],
     )?;
     println!(
         "{}",
