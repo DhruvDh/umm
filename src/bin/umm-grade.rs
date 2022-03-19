@@ -387,6 +387,8 @@ fn grade_unit_tests(
             "STRONGER",
             "--excludedMethods",
             excluded_methods.join(",").as_str(),
+            "--avoidCallsTo",
+            "DataStructures.SinglyLinkedNode",
         ])
         .output()
         .context("Failed to spawn javac process.")?;
