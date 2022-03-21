@@ -470,7 +470,7 @@ pub fn main() -> Result<()> {
     let req_3 = grade_unit_tests(
         "3".to_string(),
         30.0,
-        vec![String::from("DataStructures.LinkedStackTest")],
+        vec![String::from("DataStructures.*")],
         vec![String::from("DataStructures.LinkedStack")],
         vec![
             String::from("LinkedStack"),
