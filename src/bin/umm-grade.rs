@@ -197,23 +197,26 @@ peg::parser! {
               test_method:mutation_test_examined_path()?
               whitespace()?
                 {
-                let test = test_method.expect("Something went wrong parsing last column of mutation test report");
+                let test = test_method.expect(format!("Had trouble parsing last column for mutation at {}#{}:{}", source_file_name, source_method, line_no).as_str());
                 let mut test_file_name;
                 let mut test_method;
 
-                if test.len() == 3 {
+    if test.len() == 3 {
+                    let splitter = if test.get(1).unwrap().contains("[runner:") { "[runner:" } else { "[class:" };
                     test_file_name = test.get(1)
-                                .expect("Could not parse `examined test`")
+                                .unwrap()
                                 .to_string()
-                                .split_once("[class:")
-                                .expect("Could not parse `examined test`")
+                                .split_once(splitter)
+                                .expect(format!("had trouble parsing test_file_class for mutation at {}#{}:{}", source_file_name, source_method, line_no).as_str())
                                 .1
                                 .replace("]", "");
+
+                    let splitter = if test.get(2).unwrap().contains("[test:") { "[test:" } else { "[method:" };
                     test_method = test.get(2)
-                                    .expect("Could not parse `examinded test`")
+                                    .unwrap()
                                     .to_string()
-                                    .split_once("[method:")
-                                    .expect("Could not parse `examinded test`")
+                                    .split_once(splitter)
+                                    .expect(format!("Had trouble parsing test_file_method for mutation at {}#{}:{}", source_file_name, source_method, line_no).as_str())
                                     .1
                                     .replace("()]", "");
                 } else {
@@ -236,6 +239,7 @@ peg::parser! {
                 }
             }
     }
+
 }
 
 fn grade_docs(
