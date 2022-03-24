@@ -2,8 +2,6 @@
 // TODO fix JavaFile impl
 use anyhow::{bail, ensure, Context, Result};
 use colored::*;
-use glob::glob;
-use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::File;
@@ -14,26 +12,8 @@ use std::{
     process::{Command, Stdio},
 };
 use tree_sitter::{Query, QueryCursor, Tree};
-use which::which;
 
-lazy_static! {
-    /// Path to project root
-    pub static ref ROOT_DIR: PathBuf = PathBuf::from(".");
-    /// Directory for source files
-    pub static ref SOURCE_DIR: PathBuf = PathBuf::from(".").join("src");
-    /// Directory to store compiler artifacts
-    pub static ref BUILD_DIR: PathBuf = PathBuf::from(".").join("target");
-    /// Directory for test files
-    pub static ref TEST_DIR: PathBuf = PathBuf::from(".").join("test");
-    /// Directory for libraries, jars
-    pub static ref LIB_DIR: PathBuf = PathBuf::from(".").join("lib");
-    /// Directory for `umm` artifacts
-    pub static ref UMM_DIR: PathBuf = PathBuf::from(".").join(".umm");
-    /// Platform specific separator charactor for javac paths
-    pub static ref SEPARATOR: &'static str = if cfg!(windows) { ";" } else { ":" };
-    /// Reference to treesitter language struct
-    pub static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
-}
+pub mod util;
 
 /// Defined for convenience
 type Dict = std::collections::HashMap<String, String>;
@@ -93,67 +73,6 @@ pub struct JavaProject {
     pub names: Vec<String>,
 }
 
-/// Finds an returns the path to javac binary
-pub fn javac_path() -> Result<OsString> {
-    which("javac")
-        .map(PathBuf::into_os_string)
-        .context("Cannot find a Java Compiler on path (javac)")
-}
-
-/// Finds an returns the path to java binary
-pub fn java_path() -> Result<OsString> {
-    which("java")
-        .map(PathBuf::into_os_string)
-        .context("Cannot find a Java runtime on path (java)")
-}
-
-/// A glob utility function to find paths to files with certain extension
-///
-/// * `extension`: the file extension to find paths for
-/// * `search_depth`: how many folders deep to search for
-/// * `root_dir`: the root directory where search starts
-fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<Vec<PathBuf>> {
-    let mut root_dir = PathBuf::from(root_dir);
-
-    for _ in 0..search_depth {
-        root_dir.push("**");
-    }
-
-    root_dir.push(format!("*.{}", extension));
-    let root_dir = root_dir
-        .to_str()
-        .context("Could not convert root_dir to string")?;
-
-    Ok(glob(root_dir)
-        .context("Could not create glob")?
-        .filter_map(Result::ok)
-        .collect())
-}
-
-/// Find class, jar files in library path and build directory to populate classpath and return it
-pub fn classpath() -> Result<String> {
-    let mut path: Vec<String> = vec![
-        BUILD_DIR.display().to_string(),
-        LIB_DIR.display().to_string(),
-        SOURCE_DIR.display().to_string(),
-        ROOT_DIR.display().to_string(),
-    ];
-
-    path.append(
-        &mut find_files("jar", 4, &LIB_DIR)?
-            .iter()
-            .map(|p| p.as_path().display().to_string())
-            .collect(),
-    );
-    // path.append(
-    //     &mut find_files("java", 4, &SOURCE_DIR)?
-    //         .iter()
-    //         .map(|p| p.as_path().display().to_string())
-    //         .collect(),
-    // );
-
-    Ok(path.join(&SEPARATOR))
-}
 
 /// Tree-sitter query that returns imports made
 /// * `path`: java name of the import as it appears in the source code.
