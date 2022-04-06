@@ -223,8 +223,7 @@ dependencies = [
 [[package]]
 name = "fncmd"
 version = "1.2.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "53655505ebd5007a443aea4f282f0ad9291b82a05bbdfcfc55dc3469ff8bf34a"
+source = "git+https://github.com/DhruvDh/fncmd?branch=develop#77b4331a0894b7bbdac58a914d422c6e498b0127"
 dependencies = [
  "clap",
  "fncmd-impl",
@@ -234,8 +233,7 @@ dependencies = [
 [[package]]
 name = "fncmd-impl"
 version = "1.2.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6e1976b11e2561d74549408a630b63b0489d81fb05896fd96c7db1c5f19b7dc3"
+source = "git+https://github.com/DhruvDh/fncmd?branch=develop#77b4331a0894b7bbdac58a914d422c6e498b0127"
 dependencies = [
  "Inflector",
  "cargo_metadata",

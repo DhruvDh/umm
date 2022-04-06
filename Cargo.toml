@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.53"
-fncmd = "1.2.4"
+fncmd = { git = "https://github.com/DhruvDh/fncmd", branch = "develop"}
 glob = "0.3.0"
 lazy_static = "1.4.0"
 tree-sitter = "0.20.4"
