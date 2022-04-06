@@ -1,6 +1,5 @@
-use anyhow::{anyhow, Result};
-use std::path::PathBuf;
-use umm::{*, java::Project};
+use anyhow::{Result};
+use umm::{java::Project};
 
 /// Run JUnit tests from a JUnit test class (source) file
 #[fncmd::fncmd]

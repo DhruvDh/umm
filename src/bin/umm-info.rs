@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
 use std::{fs::File, io::Write};
-use umm::{*, constants::UMM_DIR, java::Project};
+use umm::{constants::UMM_DIR, java::Project};
 
 /// Writes project info to `UMM_DIR`
 #[fncmd::fncmd]

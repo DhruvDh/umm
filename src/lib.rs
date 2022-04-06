@@ -1,12 +1,14 @@
 pub mod constants;
 pub mod util;
 pub mod java;
+pub mod grade;
 
 /// Defined for convenience
 type Dict = std::collections::HashMap<String, String>;
 
 
 // TODO: Add documentations everywhere
+// TODO: replace std::Command with cmd_lib
 // TODO: Fix java mod impls
 // TODO: remove fncmd
 // TODO: use reedline for shell-like interface

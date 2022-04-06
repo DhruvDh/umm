@@ -1,6 +1,5 @@
-use anyhow::{anyhow, Result};
-use std::path::PathBuf;
-use umm::{*, java::Project};
+use anyhow::{Result};
+use umm::{java::Project};
 
 /// Run a java file
 #[fncmd::fncmd]
