@@ -35,7 +35,7 @@ jobs:
       with:
         prerelease: true
         name: release ${{ github.ref }}
-        tag_name: next
+        tag_name: next-pre
         generate_release_notes: true
         files: |
           ./target/release/umm-info
