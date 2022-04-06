@@ -448,37 +448,54 @@ fn grade_unit_tests(
 pub fn main() -> Result<()> {
     let project = JavaProject::new()?;
 
-    let req_1 = grade_by_tests(
-        vec![String::from("DataStructures.WorkAheadQueueTest")],
+    let req_1 = grade_docs(vec!["pyramid_scheme.LinkedTree"], &project, 10, "1".into())?;
+
+    let req_2 = grade_by_tests(
+        vec![String::from("pyramid_scheme.LinkedTreeTest")],
         vec![
-            String::from("DataStructures.WorkAheadQueueTest#testDequeue_int"),
-            String::from("DataStructures.WorkAheadQueueTest#testFirst_int"),
-            String::from("DataStructures.WorkAheadQueueTest#testFirstThreeNodes"),
-            String::from("DataStructures.WorkAheadQueueTest#testFirstThreeElements"),
-            String::from("DataStructures.WorkAheadQueueTest#testEnqueue"),
-            String::from("DataStructures.WorkAheadQueueTest#testDequeue_0args"),
-            String::from("DataStructures.WorkAheadQueueTest#testFirst_0args"),
-            String::from("DataStructures.WorkAheadQueueTest#testIsEmpty"),
-            String::from("DataStructures.WorkAheadQueueTest#testSize"),
-            String::from("DataStructures.WorkAheadQueueTest#testDequeue_int_ECE"),
-            String::from("DataStructures.WorkAheadQueueTest#testDequeue_int_IAE"),
-            String::from("DataStructures.WorkAheadQueueTest#testDequeue_int2"),
+            String::from("pyramid_scheme.LinkedTreeTest#testGetRootElement"),
+            "pyramid_scheme.LinkedTreeTest#testAddChild".into(),
+            "pyramid_scheme.LinkedTreeTest#testFindNode".into(),
+            "pyramid_scheme.LinkedTreeTest#testContains".into(),
+            "pyramid_scheme.LinkedTreeTest#testSize".into(),
         ],
         &project,
-        50.0,
-        "1".to_string(),
+        20.0,
+        "2".to_string(),
     )?;
 
-    let req_2 = grade_docs(
-        vec!["DataStructures.WorkAheadQueue"],
-        &project,
-        20,
+    let req_3 = grade_unit_tests(
         "2".into(),
+        20.0,
+        vec![String::from("pyramid_scheme.LinkedTreeTest")],
+        vec![
+            String::from("pyramid_scheme.LinkedTreeTest#testGetRootElement"),
+            "pyramid_scheme.LinkedTreeTest#testAddChild".into(),
+            "pyramid_scheme.LinkedTreeTest#testFindNode".into(),
+            "pyramid_scheme.LinkedTreeTest#testContains".into(),
+            "pyramid_scheme.LinkedTreeTest#testSize".into(),
+        ],
+        vec![],
+    )?;
+
+    let req_4 = grade_docs(
+        vec!["pyramid_scheme.PyramidScheme"],
+        &project,
+        10,
+        "3".into(),
+    )?;
+
+    let req_5 = grade_by_tests(
+        vec![String::from("pyramid_scheme.PyramidScheme")],
+        vec![String::from("pyramid_scheme.PyramidScheme#test")],
+        &project,
+        30.0,
+        "3".into(),
     )?;
 
     println!(
         "{}",
-        Table::new(vec![req_1, req_2]).with(tabled::Style::modern())
+        Table::new(vec![req_1, req_2, req_3, req_4, req_5]).with(tabled::Style::modern())
     );
     Ok(())
 }
