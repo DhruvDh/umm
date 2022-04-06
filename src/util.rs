@@ -1,67 +1,104 @@
+use std::{
+    ffi::OsString,
+    path::{Path, PathBuf}, io::{Read, Write}, fs::File,
+};
+
+use crate::constants::*;
+use anyhow::{Context, Result};
 use glob::glob;
 use which::which;
-pub mod constants;
 
-pub mod util {
-    /// Finds an returns the path to javac binary
-    pub fn javac_path() -> Result<OsString> {
-        which("javac")
-            .map(PathBuf::into_os_string)
-            .context("Cannot find a Java Compiler on path (javac)")
+/// Finds an returns the path to javac binary
+pub fn javac_path() -> Result<OsString> {
+    which("javac")
+        .map(PathBuf::into_os_string)
+        .context("Cannot find a Java Compiler on path (javac)")
+}
+
+/// Finds an returns the path to java binary
+pub fn java_path() -> Result<OsString> {
+    which("java")
+        .map(PathBuf::into_os_string)
+        .context("Cannot find a Java runtime on path (java)")
+}
+
+/// A glob utility function to find paths to files with certain extension
+///
+/// * `extension`: the file extension to find paths for
+/// * `search_depth`: how many folders deep to search for
+/// * `root_dir`: the root directory where search starts
+pub fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<Vec<PathBuf>> {
+    let mut root_dir = PathBuf::from(root_dir);
+
+    for _ in 0..search_depth {
+        root_dir.push("**");
     }
 
-    /// Finds an returns the path to java binary
-    pub fn java_path() -> Result<OsString> {
-        which("java")
-            .map(PathBuf::into_os_string)
-            .context("Cannot find a Java runtime on path (java)")
-    }
+    root_dir.push(format!("*.{}", extension));
+    let root_dir = root_dir
+        .to_str()
+        .context("Could not convert root_dir to string")?;
 
-    /// A glob utility function to find paths to files with certain extension
-    ///
-    /// * `extension`: the file extension to find paths for
-    /// * `search_depth`: how many folders deep to search for
-    /// * `root_dir`: the root directory where search starts
-    fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<Vec<PathBuf>> {
-        let mut root_dir = PathBuf::from(root_dir);
+    Ok(glob(root_dir)
+        .context("Could not create glob")?
+        .filter_map(Result::ok)
+        .collect())
+}
 
-        for _ in 0..search_depth {
-            root_dir.push("**");
-        }
+/// Find class, jar files in library path and build directory to populate classpath and return it
+pub fn classpath() -> Result<String> {
+    let mut path: Vec<String> = vec![
+        BUILD_DIR.display().to_string(),
+        LIB_DIR.display().to_string(),
+        SOURCE_DIR.display().to_string(),
+        ROOT_DIR.display().to_string(),
+    ];
 
-        root_dir.push(format!("*.{}", extension));
-        let root_dir = root_dir
-            .to_str()
-            .context("Could not convert root_dir to string")?;
+    path.append(
+        &mut find_files("jar", 4, &LIB_DIR)?
+            .iter()
+            .map(|p| p.as_path().display().to_string())
+            .collect(),
+    );
+    // path.append(
+    //     &mut find_files("java", 4, &SOURCE_DIR)?
+    //         .iter()
+    //         .map(|p| p.as_path().display().to_string())
+    //         .collect(),
+    // );
 
-        Ok(glob(root_dir)
-            .context("Could not create glob")?
-            .filter_map(Result::ok)
-            .collect())
-    }
+    Ok(path.join(&SEPARATOR))
+}
 
-    /// Find class, jar files in library path and build directory to populate classpath and return it
-    pub fn classpath() -> Result<String> {
-        let mut path: Vec<String> = vec![
-            BUILD_DIR.display().to_string(),
-            LIB_DIR.display().to_string(),
-            SOURCE_DIR.display().to_string(),
-            ROOT_DIR.display().to_string(),
-        ];
+/// TODO: Add docs
+pub fn download(url: &str, path: &PathBuf, replace: bool) -> Result<()> {
+    if !replace && path.exists() {
+        Ok(())
+    } else {
+        let resp = ureq::get(url)
+            .call()
+            .context(format!("Failed to download {}", url))?;
 
-        path.append(
-            &mut find_files("jar", 4, &LIB_DIR)?
-                .iter()
-                .map(|p| p.as_path().display().to_string())
-                .collect(),
-        );
-        // path.append(
-        //     &mut find_files("java", 4, &SOURCE_DIR)?
-        //         .iter()
-        //         .map(|p| p.as_path().display().to_string())
-        //         .collect(),
-        // );
+        let len = resp
+            .header("Content-Length")
+            .and_then(|s| s.parse::<usize>().ok())
+            .unwrap();
 
-        Ok(path.join(&SEPARATOR))
+        let mut bytes: Vec<u8> = Vec::with_capacity(len);
+
+        resp.into_reader()
+            .take(10_000_000)
+            .read_to_end(&mut bytes)
+            .context(format!(
+                "Failed to read response till the end while downloading file at {}",
+                url,
+            ))?;
+
+        let name = path.file_name().unwrap().to_str().unwrap();
+
+        let mut file = File::create(path).context(format!("Failed to create file at {}", name))?;
+
+        file.write_all(&bytes)
+            .context(format!("Failed to write to file at {}", name))
     }
 }

@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use umm::*;
+use umm::{*, constants::BUILD_DIR};
 
 /// Cleans javac artifacts produced by `umm`
 #[fncmd::fncmd]

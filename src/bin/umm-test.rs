@@ -1,6 +1,6 @@
 use anyhow::{anyhow, Result};
 use std::path::PathBuf;
-use umm::*;
+use umm::{*, java::Project};
 
 /// Run JUnit tests from a JUnit test class (source) file
 #[fncmd::fncmd]
@@ -9,7 +9,7 @@ pub fn main(
     #[opt()]
     name: String,
 ) -> Result<()> {
-    let project = JavaProject::new()?;
+    let project = Project::new()?;
     let output = project.identify(name)?.test()?;
     println!("{}", output);
     Ok(())

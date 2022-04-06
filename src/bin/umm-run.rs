@@ -1,6 +1,6 @@
 use anyhow::{anyhow, Result};
 use std::path::PathBuf;
-use umm::*;
+use umm::{*, java::Project};
 
 /// Run a java file
 #[fncmd::fncmd]
@@ -9,7 +9,7 @@ pub fn main(
     #[opt()]
     name: String,
 ) -> Result<()> {
-    let project = JavaProject::new()?;
+    let project = Project::new()?;
     project.identify(name)?.run()?;
     Ok(())
 }

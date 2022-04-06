@@ -1,11 +1,11 @@
 use anyhow::{Context, Result};
 use std::{fs::File, io::Write};
-use umm::*;
+use umm::{*, constants::UMM_DIR, java::Project};
 
 /// Writes project info to `UMM_DIR`
 #[fncmd::fncmd]
 pub fn main() -> Result<()> {
-    let project = JavaProject::new()?;
+    let project = Project::new()?;
 
     let json = serde_json::to_string(&project)?;
     std::fs::create_dir_all(UMM_DIR.as_path())

@@ -8,7 +8,7 @@ use std::{
 use tabled::{
     display::ExpandedDisplay, Alignment, Footer, Full, Header, MaxWidth, Modify, Row, Table, Tabled,
 };
-use umm::*;
+use umm::{*, util::{java_path, classpath}, constants::{SOURCE_DIR, ROOT_DIR}, java::Project};
 
 #[derive(Tabled)]
 #[allow(non_snake_case)]
@@ -243,7 +243,7 @@ peg::parser! {
 
 fn grade_docs(
     files: Vec<&str>,
-    project: &JavaProject,
+    project: &Project,
     out_of: u32,
     req_name: String,
 ) -> Result<GradeResult> {
@@ -288,7 +288,7 @@ fn grade_docs(
 fn grade_by_tests(
     test_files: Vec<String>,
     expected_tests: Vec<String>,
-    project: &JavaProject,
+    project: &Project,
     out_of: f32,
     req_name: String,
 ) -> Result<GradeResult> {
@@ -441,7 +441,7 @@ fn grade_unit_tests(
 #[fncmd::fncmd]
 /// Run JUnit tests from a JUnit test class (source) file
 pub fn main() -> Result<()> {
-    let project = JavaProject::new()?;
+    let project = Project::new()?;
 
     let req_1 = grade_by_tests(
         vec![String::from("DataStructures.LinkedStackTest")],
