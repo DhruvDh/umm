@@ -486,8 +486,12 @@ pub fn main() -> Result<()> {
     )?;
 
     let req_5 = grade_by_tests(
-        vec![String::from("pyramid_scheme.PyramidScheme")],
-        vec![String::from("pyramid_scheme.PyramidScheme#test")],
+        vec![String::from("pyramid_scheme.PyramidSchemeTest")],
+        vec![
+            String::from("pyramid_scheme.PyramidSchemeTest#testWhoBenefits"),
+            String::from("pyramid_scheme.PyramidSchemeTest#testAddChild"),
+            String::from("pyramid_scheme.PyramidSchemeTest#testInitiateCollapse"),
+        ],
         &project,
         30.0,
         "3".into(),
