@@ -1,11 +1,14 @@
-use std::{path::PathBuf, process::{Command, Stdio}};
+use std::{
+    path::PathBuf,
+    process::{Command, Stdio},
+};
 
+use anyhow::{bail, ensure, Context, Result};
 use colored::Colorize;
-use serde::{Serialize, Deserialize};
-use tree_sitter::{Tree, Query, QueryCursor};
-use anyhow::{Result, Context, ensure, bail};
+use serde::{Deserialize, Serialize};
+use tree_sitter::{Query, QueryCursor, Tree};
 
-use crate::{Dict, constants::*, util::*};
+use crate::{constants::*, util::*, Dict};
 
 /// Types of Java files -
 /// - Interface
@@ -13,7 +16,7 @@ use crate::{Dict, constants::*, util::*};
 /// - Class with a main method
 /// - JUnit test class
 #[derive(Debug, Clone, Serialize, Deserialize)]
-enum JavaFileType {
+pub enum JavaFileType {
     Interface,
     Class,
     ClassWithMain,
@@ -61,7 +64,6 @@ pub struct Project {
     pretty_names: Vec<String>,
     pub names: Vec<String>,
 }
-
 
 /// A struct that wraps a tree-sitter parser object and source code
 ///
@@ -367,10 +369,27 @@ impl File {
         Ok(())
     }
 
-    pub fn test(&self) -> Result<String> {
+    pub fn test<T: Into<String>>(&self, tests: Vec<T>) -> Result<String> {
         self.check()?;
+        let tests = {
+            let mut new_tests = Vec::<String>::new();
+            for t in tests {
+                new_tests.push(format!(
+                    "{}#{}",
+                    self.proper_name
+                        .clone()
+                        .unwrap_or(self.name.clone().unwrap_or("".into())),
+                    t.into()
+                ));
+            }
 
-        let tests = self.test_methods.clone();
+            if new_tests.is_empty() {
+                self.test_methods.clone()
+            } else {
+                new_tests
+            }
+        };
+
         let tests = tests
             .iter()
             .map(|s| "-m ".to_owned() + s)
@@ -414,6 +433,21 @@ impl File {
         let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
 
         Ok(output)
+    }
+
+    /// Get a reference to the file's kind.
+    pub fn kind(&self) -> &JavaFileType {
+        &self.kind
+    }
+
+    /// Get a reference to the file's file name.
+    pub fn file_name(&self) -> &str {
+        self.file_name.as_ref()
+    }
+
+    /// Get a reference to the file's test methods.
+    pub fn test_methods(&self) -> &[String] {
+        self.test_methods.as_ref()
     }
 }
 

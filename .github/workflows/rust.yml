@@ -7,6 +7,8 @@ on:
       - master
       - next
       - next-assign1-spring-22
+      - next-assign2-spring-22
+      - next-assign3-spring-22
       - next-lab3-spring-22
   pull_request:
     branches:
@@ -14,6 +16,8 @@ on:
       - master
       - next
       - next-assign1-spring-22
+      - next-assign2-spring-22
+      - next-assign3-spring-22
       - next-lab3-spring-22
 
 env:
@@ -38,11 +42,5 @@ jobs:
         tag_name: next-pre
         generate_release_notes: true
         files: |
-          ./target/release/umm-info
-          ./target/release/umm-clean
-          ./target/release/umm-check
-          ./target/release/umm-doc-check
-          ./target/release/umm-run
-          ./target/release/umm-test
-          ./target/release/umm-grade
+          ./target/release/umm
           

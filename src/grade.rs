@@ -1,13 +1,17 @@
+use crate::{
+    constants::{ROOT_DIR, SOURCE_DIR},
+    java::Project,
+    util::{classpath, java_path},
+};
 use anyhow::{Context, Result};
 use std::{
     fs::File,
     io::{BufRead, BufReader},
-    process::{Command},
+    process::Command,
 };
 use tabled::{
     display::ExpandedDisplay, Alignment, Footer, Full, Header, MaxWidth, Modify, Row, Table, Tabled,
 };
-use crate::{util::{java_path, classpath}, constants::{SOURCE_DIR, ROOT_DIR}, java::Project};
 
 #[derive(Tabled)]
 #[allow(non_snake_case)]
@@ -327,7 +331,7 @@ pub fn grade_by_tests(
         let mut num_tests_passed = 0.0;
         let mut num_tests_total = 0.0;
         for test_file in test_files {
-            let res = project.identify(test_file)?.test()?;
+            let res = project.identify(test_file)?.test(Vec::<String>::new())?;
 
             for line in res.lines() {
                 let parse_result =

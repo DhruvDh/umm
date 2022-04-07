@@ -1,0 +1,202 @@
+use std::fs::File;
+use std::io::Write;
+
+use anyhow::{anyhow, Context, Result};
+use crossterm::event::{KeyCode, KeyModifiers};
+use nu_ansi_term::{Color, Style};
+use reedline::{
+    default_emacs_keybindings, ColumnarMenu, DefaultCompleter, DefaultHinter, DefaultPrompt, Emacs,
+    ExampleHighlighter, FileBackedHistory, ListMenu, Reedline, ReedlineEvent, ReedlineMenu, Signal,
+};
+use umm::{
+    clean,
+    constants::UMM_DIR,
+    grade,
+    java::{self, JavaFileType},
+};
+
+fn main() -> Result<()> {
+    let prompt = DefaultPrompt::default();
+
+    let mut commands: Vec<String> = vec![
+        "test".into(),
+        "run".into(),
+        "grade".into(),
+        "check".into(),
+        "doc-check".into(),
+        "grade".into(),
+        "clean".into(),
+        "info".into(),
+        "clear".into(),
+        "exit".into(),
+        "history".into(),
+    ];
+
+    let project = java::Project::new()?;
+    let mut test_methods = vec![];
+    for file in project.files.iter() {
+        match file.kind() {
+            JavaFileType::ClassWithMain => {
+                commands.push(format!("run {}", file.file_name()));
+            }
+            JavaFileType::Test => {
+                commands.push(format!("test {}", file.file_name()));
+                for method in file.test_methods() {
+                    let method = method.clone();
+                    let method = method
+                        .split_once('#')
+                        .ok_or(anyhow!("Could not parse test method - {}", method))?
+                        .1;
+                    commands.push(method.into());
+                    test_methods.push(String::from(method));
+                }
+            }
+            _ => {}
+        };
+
+        commands.push(format!("check {}", file.file_name()));
+        commands.push(format!("doc-check {}", file.file_name()));
+    }
+
+    let mut line_editor = Reedline::create()
+        .with_history(Box::new(
+            FileBackedHistory::with_file(5, "history.txt".into())
+                .expect("Error configuring history with file"),
+        ))
+        .with_highlighter(Box::new(ExampleHighlighter::new(commands.clone())))
+        .with_hinter(Box::new(
+            DefaultHinter::default().with_style(Style::new().italic().fg(Color::LightGray)),
+        ))
+        .with_completer({
+            let mut inclusions = vec!['-', '_'];
+            for i in '0'..='9' {
+                inclusions.push(i);
+            }
+
+            let mut completer = DefaultCompleter::with_inclusions(&inclusions);
+            completer.insert(commands.clone());
+            Box::new(completer)
+        })
+        .with_quick_completions(true)
+        .with_partial_completions(true)
+        .with_ansi_colors(true)
+        .with_menu(ReedlineMenu::EngineCompleter(Box::new(
+            ListMenu::default().with_name("completion_menu"),
+        )))
+        .with_edit_mode({
+            let mut keybindings = default_emacs_keybindings();
+            keybindings.add_binding(
+                KeyModifiers::NONE,
+                KeyCode::Tab,
+                ReedlineEvent::UntilFound(vec![
+                    ReedlineEvent::Menu("completion_menu".to_string()),
+                    ReedlineEvent::MenuNext,
+                ]),
+            );
+
+            keybindings.add_binding(
+                KeyModifiers::SHIFT,
+                KeyCode::BackTab,
+                ReedlineEvent::MenuPrevious,
+            );
+            Box::new(Emacs::new(keybindings))
+        });
+
+    loop {
+        let sig = line_editor.read_line(&prompt)?;
+        match sig {
+            Signal::Success(buffer) => match buffer.trim() {
+                "exit" => break Ok(()),
+                "clear" => {
+                    line_editor.clear_screen()?;
+                    continue;
+                }
+                "history" => {
+                    line_editor.print_history()?;
+                    continue;
+                }
+                b if b.starts_with("run") => {
+                    let b = b.replace("run ", "");
+                    let res = project.identify(b)?.run();
+                    if res.is_err() {
+                        eprintln!("{:?}", res);
+                    }
+                }
+                b if b.starts_with("check") => {
+                    let b = b.replace("check ", "");
+                    let res = project.identify(b)?.check();
+                    if res.is_err() {
+                        eprintln!("{:?}", res);
+                    }
+                }
+                b if b.starts_with("doc-check") => {
+                    let b = b.replace("doc-check ", "");
+                    let res = project.identify(b)?.doc_check();
+                    if res.is_err() {
+                        eprintln!("{:?}", res);
+                    }
+                }
+                b if test_methods.contains(&String::from(b)) => {
+                    eprintln!("Try test <FILENAME> {} instead.", b);
+                }
+                b if b.starts_with("test ") => {
+                    let b = b.replace("test ", "");
+                    let b = b.split_whitespace().collect::<Vec<&str>>();
+                    let name = String::from(*b.get(0).unwrap());
+
+                    let res = if b.len() == 1 {
+                        project.identify(name)?.test(Vec::<String>::new())
+                    } else if b.len() > 1 {
+                        let b = {
+                            let mut new_b = vec![];
+                            for i in b {
+                                new_b.push(String::from(i));
+                            }
+                            new_b
+                        };
+
+                        project.identify(name)?.test(b)
+                    } else {
+                        Err(anyhow!("No test file mentioned"))
+                    };
+
+                    match res {
+                        Ok(out) => println!("{}", out),
+                        Err(e) => eprintln!("{}", e.backtrace()),
+                    };
+                }
+                "grade" => {
+                    let res = grade();
+                    if res.is_err() {
+                        eprintln!("{:?}", res);
+                    }
+                }
+                "clean" => {
+                    let res = clean();
+                    if res.is_err() {
+                        eprintln!("{:?}", res);
+                    }
+                }
+                "info" => {
+                    println!("Generated project info at .umm/info.json");
+                    let json = serde_json::to_string(&project)?;
+                    std::fs::create_dir_all(UMM_DIR.as_path())
+                        .with_context(|| "Could not create $UMM_DIR folder")?;
+                    let mut output = File::create(UMM_DIR.join("info.json"))
+                        .with_context(|| "Could not create $UMM_DIR/info.json")?;
+                    write!(output, "{}", json).with_context(|| "Could not write to info.json")?
+                }
+                _ => {
+                    println!("Don't know how to {:?}", buffer.trim());
+                }
+            },
+            Signal::CtrlD | Signal::CtrlC => {
+                println!("Bye!");
+                break Ok(());
+            }
+            Signal::CtrlL => {
+                line_editor.clear_screen().unwrap();
+            }
+        }
+    }
+}
