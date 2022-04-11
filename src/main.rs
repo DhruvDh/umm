@@ -81,7 +81,7 @@ fn main() -> Result<()> {
         .with_partial_completions(true)
         .with_ansi_colors(true)
         .with_menu(ReedlineMenu::EngineCompleter(Box::new(
-            ListMenu::default().with_name("completion_menu"),
+            ColumnarMenu::default().with_name("completion_menu"),
         )))
         .with_edit_mode({
             let mut keybindings = default_emacs_keybindings();
