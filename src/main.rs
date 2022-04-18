@@ -6,7 +6,7 @@ use crossterm::event::{KeyCode, KeyModifiers};
 use nu_ansi_term::{Color, Style};
 use reedline::{
     default_emacs_keybindings, ColumnarMenu, DefaultCompleter, DefaultHinter, DefaultPrompt, Emacs,
-    ExampleHighlighter, FileBackedHistory, ListMenu, Reedline, ReedlineEvent, ReedlineMenu, Signal,
+    ExampleHighlighter, FileBackedHistory, Reedline, ReedlineEvent, ReedlineMenu, Signal,
 };
 use umm::{
     clean,
@@ -15,7 +15,9 @@ use umm::{
     java::{self, JavaFileType},
 };
 
-fn main() -> Result<()> {
+use bpaf::*;
+
+fn shell() -> Result<()> {
     let prompt = DefaultPrompt::default();
 
     let mut commands: Vec<String> = vec![
@@ -199,4 +201,36 @@ fn main() -> Result<()> {
             }
         }
     }
+}
+
+fn main() -> Result<()> {
+    let f: Parser<Option<String>> = positional("FILENAME").optional();
+    let cmd: Parser<Option<String>> = positional("COMMAND").optional();
+    let combined_parser = construct!(cmd, f);
+
+    let (cmd, f) = Info::default()
+        .descr("Build tool for novices")
+        .for_parser(combined_parser)
+        .run();
+
+    let project = java::Project::new()?;
+    let f = f.unwrap_or(String::new());
+    match cmd {
+        Some(a) => match a.as_str() {
+            "run" => project.identify(f)?.run()?,
+            "check" => project.identify(f)?.check()?,
+            "test" => {
+                project.identify(f)?.test::<String>(vec![])?;
+            }
+            "doc-check" => {
+                project.identify(f)?.doc_check()?;
+            }
+            "grade" => grade()?,
+            "clean" => clean()?,
+            _ => println!("{} is not a valid subcommand.", a),
+        },
+        None => shell()?,
+    };
+
+    Ok(())
 }

@@ -23,6 +23,7 @@ ureq = "2.4.0"
 reedline = { git = "https://github.com/nushell/reedline", rev = "2f59d80", features = ["clipboard", "system_clipboard"] }
 nu-ansi-term = "0.45.1"
 crossterm = "0.23.2"
+bpaf = "0.4.3"
 
 # [[bin]]
 # name = "umm"

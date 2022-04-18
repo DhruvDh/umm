@@ -482,11 +482,6 @@ false    )?;
         &LIB_DIR.join("pitest-junit5-plugin.jar"),
    false )?;
 
-        println!(
-            "Discovering project at {}",
-            std::fs::canonicalize(ROOT_DIR.as_path())?.display()
-        );
-
         for path in find_files("java", 15, &ROOT_DIR)? {
             let file = File::new(path)?;
             pretty_names.push(file.pretty_name.clone().unwrap());
