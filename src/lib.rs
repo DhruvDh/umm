@@ -38,7 +38,15 @@ pub fn grade() -> Result<()> {
         20.0,
         vec![String::from("pyramid_scheme.LinkedTreeTest")],
         vec![String::from("pyramid_scheme.LinkedTree")],
-        vec![],
+        vec![
+            String::from("toString"),
+            "LinkedTree".into(),
+            "getRootElement".into(),
+            "findNode".into(),
+            "size".into(),
+            "leafCounter".into(),
+            "isEmpty".into(),
+        ],
         vec![
             String::from("pyramid_scheme.MultiNodeTree"),
             "DataStructures.*".into(),
