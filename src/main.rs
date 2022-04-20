@@ -220,10 +220,12 @@ fn main() -> Result<()> {
             "run" => project.identify(f)?.run()?,
             "check" => project.identify(f)?.check()?,
             "test" => {
-                project.identify(f)?.test::<String>(vec![])?;
+                let out = project.identify(f)?.test::<String>(vec![])?;
+                println!("{}", out);
             }
             "doc-check" => {
-                project.identify(f)?.doc_check()?;
+                let out = project.identify(f)?.doc_check()?;
+                println!("{}", out);
             }
             "grade" => grade()?,
             "clean" => clean()?,

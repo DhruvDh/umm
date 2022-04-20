@@ -552,8 +552,8 @@ dependencies = [
 
 [[package]]
 name = "reedline"
-version = "0.3.1"
-source = "git+https://github.com/nushell/reedline?rev=2f59d80#2f59d803a8cf6fa4e0f59355dbe1f7abb4d1d10f"
+version = "0.4.0"
+source = "git+https://github.com/DhruvDh/reedline#f2f665197740af9ef0a742efc9b7b6f1712c9e3c"
 dependencies = [
  "chrono",
  "clipboard",
