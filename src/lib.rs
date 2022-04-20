@@ -35,11 +35,7 @@ pub fn grade() -> Result<()> {
         20.0,
         vec![String::from("pyramid_scheme.LinkedTreeTest")],
         vec![
-            String::from("pyramid_scheme.LinkedTreeTest#testGetRootElement"),
-            "pyramid_scheme.LinkedTreeTest#testAddChild".into(),
-            "pyramid_scheme.LinkedTreeTest#testFindNode".into(),
-            "pyramid_scheme.LinkedTreeTest#testContains".into(),
-            "pyramid_scheme.LinkedTreeTest#testSize".into(),
+            String::from("pyramid_scheme.LinkedTree"),
         ],
         vec![],
     )?;
