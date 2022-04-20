@@ -12,7 +12,7 @@ use crate::{grade::*, java::Project};
 type Dict = std::collections::HashMap<String, String>;
 
 pub fn grade() -> Result<()> {
-    let project = JavaProject::new()?;
+    let project = Project::new()?;
 
     let req_1 = grade_docs(vec!["pyramid_scheme.LinkedTree"], &project, 10, "1".into())?;
 
