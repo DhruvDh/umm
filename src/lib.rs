@@ -3,8 +3,11 @@ pub mod grade;
 pub mod java;
 pub mod util;
 
+use std::primitive;
+
 use anyhow::{Context, Result};
 use constants::BUILD_DIR;
+use crossterm::style::Print;
 use tabled::Table;
 
 use crate::{grade::*, java::Project};
@@ -34,10 +37,15 @@ pub fn grade() -> Result<()> {
         "2".into(),
         20.0,
         vec![String::from("pyramid_scheme.LinkedTreeTest")],
-        vec![
-            String::from("pyramid_scheme.LinkedTree"),
-        ],
+        vec![String::from("pyramid_scheme.LinkedTree")],
         vec![],
+        vec![
+            String::from("pyramid_scheme.MultiNodeTree"),
+            "DataStructures.*".into(),
+            "pyramid_scheme.Person".into(),
+            "pyramid_scheme.PyramidScheme".into(),
+            "pyramid_scheme.PyramidSchemeSim".into(),
+        ],
     )?;
 
     let req_4 = grade_docs(
@@ -58,11 +66,14 @@ pub fn grade() -> Result<()> {
         30.0,
         "3".into(),
     )?;
+    let grades = &vec![req_1, req_2, req_3, req_4, req_5];
+    println!("{}", Table::new(grades).with(tabled::Style::modern()));
 
-    println!(
-        "{}",
-        Table::new(vec![req_1, req_2, req_3, req_4, req_5]).with(tabled::Style::modern())
-    );
+    let total = grades
+        .iter()
+        .fold(0u32, |acc, x| acc + x.grade().parse::<u32>().unwrap_or(0));
+    
+    println!("Total: {}", total);
     Ok(())
 }
 

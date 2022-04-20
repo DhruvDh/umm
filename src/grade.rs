@@ -26,6 +26,14 @@ pub struct GradeResult {
     Reason: String,
 }
 
+impl GradeResult {
+    /// Get a reference to the grade result's grade.
+    #[must_use]
+    pub fn grade(&self) -> &str {
+        self.Grade.as_ref()
+    }
+}
+
 #[derive(Tabled)]
 /// A struct representing a javac diagnostic message
 ///
@@ -366,6 +374,7 @@ pub fn grade_unit_tests(
     target_test: Vec<String>,
     target_class: Vec<String>,
     excluded_methods: Vec<String>,
+    avoid_calls_to: Vec<String>,
 ) -> Result<GradeResult> {
     let child = Command::new(java_path()?)
         .args([
@@ -390,6 +399,8 @@ pub fn grade_unit_tests(
             "STRONGER",
             "--excludedMethods",
             excluded_methods.join(",").as_str(),
+            "--avoidCallsTo",
+            avoid_calls_to.join(",").as_str()
         ])
         .output()
         .context("Failed to spawn javac process.")?;
