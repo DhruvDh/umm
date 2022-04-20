@@ -14,39 +14,58 @@ type Dict = std::collections::HashMap<String, String>;
 pub fn grade() -> Result<()> {
     let project = Project::new()?;
 
-    let req_1 = grade_by_tests(
-        vec![String::from("DataStructures.LinkedStackTest")],
+    let req_1 = grade_docs(vec!["pyramid_scheme.LinkedTree"], &project, 10, "1".into())?;
+
+    let req_2 = grade_by_tests(
+        vec![String::from("pyramid_scheme.LinkedTreeTest")],
         vec![
-            String::from("DataStructures.LinkedStackTest#testPop"),
-            String::from("DataStructures.LinkedStackTest#testPush"),
-            String::from("DataStructures.LinkedStackTest#testPeek"),
-            String::from("DataStructures.LinkedStackTest#testSize"),
-            String::from("DataStructures.LinkedStackTest#testToString"),
-            String::from("DataStructures.LinkedStackTest#testIsEmpty"),
+            String::from("pyramid_scheme.LinkedTreeTest#testGetRootElement"),
+            "pyramid_scheme.LinkedTreeTest#testAddChild".into(),
+            "pyramid_scheme.LinkedTreeTest#testFindNode".into(),
+            "pyramid_scheme.LinkedTreeTest#testContains".into(),
+            "pyramid_scheme.LinkedTreeTest#testSize".into(),
         ],
         &project,
-        50.0,
-        "1".to_string(),
+        20.0,
+        "2".to_string(),
     )?;
-
-    let req_2 = grade_docs(vec!["DataStructures.LinkedStack"], &project, 20, "2".into())?;
 
     let req_3 = grade_unit_tests(
-        "3".to_string(),
-        30.0,
-        vec![String::from("DataStructures.LinkedStackTest")],
-        vec![String::from("DataStructures.LinkedStack")],
+        "2".into(),
+        20.0,
+        vec![String::from("pyramid_scheme.LinkedTreeTest")],
         vec![
-            String::from("LinkedStack"),
-            String::from("isEmpty"),
-            String::from("size"),
-            String::from("toString"),
-            String::from("main"),
+            String::from("pyramid_scheme.LinkedTreeTest#testGetRootElement"),
+            "pyramid_scheme.LinkedTreeTest#testAddChild".into(),
+            "pyramid_scheme.LinkedTreeTest#testFindNode".into(),
+            "pyramid_scheme.LinkedTreeTest#testContains".into(),
+            "pyramid_scheme.LinkedTreeTest#testSize".into(),
         ],
+        vec![],
     )?;
+
+    let req_4 = grade_docs(
+        vec!["pyramid_scheme.PyramidScheme"],
+        &project,
+        10,
+        "3".into(),
+    )?;
+
+    let req_5 = grade_by_tests(
+        vec![String::from("pyramid_scheme.PyramidSchemeTest")],
+        vec![
+            String::from("pyramid_scheme.PyramidSchemeTest#testWhoBenefits"),
+            String::from("pyramid_scheme.PyramidSchemeTest#testAddChild"),
+            String::from("pyramid_scheme.PyramidSchemeTest#testInitiateCollapse"),
+        ],
+        &project,
+        30.0,
+        "3".into(),
+    )?;
+
     println!(
         "{}",
-        Table::new(vec![req_1, req_2, req_3]).with(tabled::Style::modern())
+        Table::new(vec![req_1, req_2, req_3, req_4, req_5]).with(tabled::Style::modern())
     );
     Ok(())
 }
