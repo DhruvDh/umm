@@ -3,6 +3,7 @@ name = "umm"
 version = "0.1.0"
 edition = "2021"
 default-run = "umm"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -20,7 +21,10 @@ tabled = "0.5.0"
 peg = "0.8.0"
 ureq = "2.4.0"
 # reedline = { version = "0.3.0", features = ["clipboard", "system_clipboard"] }
-reedline = { git = "https://github.com/DhruvDh/reedline", features = ["clipboard", "system_clipboard"] }
+reedline = { git = "https://github.com/DhruvDh/reedline", features = [
+    "clipboard",
+    "system_clipboard",
+] }
 nu-ansi-term = "0.45.1"
 crossterm = "0.23.2"
 bpaf = "0.4.3"
