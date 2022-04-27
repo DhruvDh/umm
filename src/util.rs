@@ -1,12 +1,27 @@
+#![warn(missing_docs)]
+#![warn(clippy::missing_docs_in_private_items)]
+
 use std::{
     ffi::OsString,
-    path::{Path, PathBuf}, io::{Read, Write}, fs::File,
+    fs::File,
+    io::{
+        Read,
+        Write,
+    },
+    path::{
+        Path,
+        PathBuf,
+    },
 };
 
-use crate::constants::*;
-use anyhow::{Context, Result};
+use anyhow::{
+    Context,
+    Result,
+};
 use glob::glob;
 use which::which;
+
+use crate::constants::*;
 
 /// Finds an returns the path to javac binary
 pub fn javac_path() -> Result<OsString> {
@@ -45,7 +60,8 @@ pub fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<
         .collect())
 }
 
-/// Find class, jar files in library path and build directory to populate classpath and return it
+/// Find class, jar files in library path and build directory to populate
+/// classpath and return it
 pub fn classpath() -> Result<String> {
     let mut path: Vec<String> = vec![
         BUILD_DIR.display().to_string(),

@@ -1,19 +1,37 @@
+//! # umm
+//!
+//! A scriptable build tool/grader/test runner for Java projects that don't use
+//! package managers.
+
+#![warn(missing_docs)]
+#![warn(clippy::missing_docs_in_private_items)]
+#![feature(label_break_value)]
+
+/// A module defining a bunch of constant values to be used throughout
 pub mod constants;
+/// For all things related to grading
 pub mod grade;
+/// For discovering Java projects, analyzing them, and generating/executing
+/// build tasks
 pub mod java;
+/// Utility functions for convenience
 pub mod util;
 
-use std::primitive;
-
-use anyhow::{Context, Result};
+use anyhow::{
+    Context,
+    Result,
+};
 use constants::BUILD_DIR;
-use crossterm::style::Print;
 use tabled::Table;
 
-use crate::{grade::*, java::Project};
+use crate::{
+    grade::*,
+    java::Project,
+};
 /// Defined for convenience
 type Dict = std::collections::HashMap<String, String>;
 
+/// Prints the result of grading
 pub fn grade() -> Result<()> {
     let project = Project::new()?;
 
@@ -80,11 +98,12 @@ pub fn grade() -> Result<()> {
     let total = grades
         .iter()
         .fold(0u32, |acc, x| acc + x.grade().parse::<u32>().unwrap_or(0));
-    
+
     println!("Total: {}", total);
     Ok(())
 }
 
+/// Deletes all java compiler artefacts
 pub fn clean() -> Result<()> {
     std::fs::remove_dir_all(BUILD_DIR.as_path())
         .with_context(|| format!("Could not delete {}", BUILD_DIR.display()))

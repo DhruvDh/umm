@@ -1,29 +1,54 @@
-use crate::{
-    constants::{ROOT_DIR, SOURCE_DIR},
-    java::Project,
-    util::{classpath, java_path},
-};
-use anyhow::{Context, Result};
+#![warn(missing_docs)]
+#![warn(clippy::missing_docs_in_private_items)]
+
 use std::{
     fs::File,
-    io::{BufRead, BufReader},
+    io::{
+        BufRead,
+        BufReader,
+    },
     process::Command,
 };
+
+use anyhow::{
+    Context,
+    Result,
+};
 use tabled::{
-    display::ExpandedDisplay, Alignment, Footer, Full, Header, MaxWidth, Modify, Row, Table, Tabled,
+    display::ExpandedDisplay,
+    Alignment,
+    Footer,
+    Full,
+    Header,
+    MaxWidth,
+    Modify,
+    Row,
+    Table,
+    Tabled,
+};
+
+use crate::{
+    constants::{
+        ROOT_DIR,
+        SOURCE_DIR,
+    },
+    java::Project,
+    util::{
+        classpath,
+        java_path,
+    },
 };
 
 #[derive(Tabled)]
 #[allow(non_snake_case)]
 /// A struct to store grading results and display them
-///
-/// * `Requirement`: refers to Requirement ID  
-/// * `Grade`: grade received for above Requirement
-/// * `Reason`: the reason for penalties applied, if any  
 pub struct GradeResult {
+    /// * `Requirement`: refers to Requirement ID
     Requirement: String,
-    Grade: String,
-    Reason: String,
+    /// * `Grade`: grade received for above Requirement
+    Grade:       String,
+    /// * `Reason`: the reason for penalties applied, if any
+    Reason:      String,
 }
 
 impl GradeResult {
@@ -34,50 +59,55 @@ impl GradeResult {
     }
 }
 
+#[allow(dead_code)]
 #[derive(Tabled)]
 /// A struct representing a javac diagnostic message
-///
-/// * `path`: path to the file diagnostic is referring to  
-/// * `file_name`: name of the file the diagnostic is about
-/// * `line_number`: line number
-/// * `is_error`: boolean value, is true if error or false if the diagnostic is a warning
-/// * `message`: the diagnostic message
+/// TODO: figure out if the dead code fields are actually needed
 pub struct JavacDiagnostic {
+    /// * `path`: path to the file diagnostic is referring to
     #[header(hidden = true)]
-    path: String,
+    path:        String,
+    /// * `file_name`: name of the file the diagnostic is about
     #[header("File")]
-    file_name: String,
+    file_name:   String,
+    /// * `line_number`: line number
     #[header("Line")]
     line_number: u32,
+    /// * `is_error`: boolean value, is true if error or false if the diagnostic
+    ///   is a warning
     #[header(hidden = true)]
-    is_error: bool,
+    is_error:    bool,
+    /// * `message`: the diagnostic message
     #[header("Message")]
-    message: String,
+    message:     String,
 }
 
-#[derive(Debug, Tabled)]
+#[allow(dead_code)]
+#[derive(Tabled)]
 /// A struct representing a PIT diagnostic message
-///
-/// * `mutator`: name of the mutator in question
-/// * `source_method`: name of the source method being mutated
-/// * `line_number`: source line number where mutation occured
-/// * `test_method`: name of the test examined
-/// * `result`: result of mutation testing
+/// TODO: figure out if the dead code fields are actually needed
 pub struct MutationDiagnostic {
+    /// * `mutator`: name of the mutator in question
     #[header("Mutation type")]
-    mutator: String,
+    mutator:          String,
+    /// * `source_method`: name of the source method being mutated
     #[header("Source method mutated")]
-    source_method: String,
+    source_method:    String,
+    /// * `line_number`: source line number where mutation occured
     #[header("Line no. of mutation")]
-    line_number: u32,
+    line_number:      u32,
+    /// * `test_method`: name of the test examined
     #[header("Test examined")]
-    test_method: String,
+    test_method:      String,
+    /// * `result`: result of mutation testing
     #[header("Result")]
-    result: String,
+    result:           String,
+    /// * `source_file_name`: name of the source file
     #[header(hidden = true)]
     source_file_name: String,
+    /// * `test_file_name`: name of the test file
     #[header(hidden = true)]
-    test_file_name: String,
+    test_file_name:   String,
 }
 peg::parser! {
     grammar parser() for str {
@@ -208,7 +238,7 @@ peg::parser! {
               test_method:mutation_test_examined_path()?
               whitespace()?
                 {
-                let test = test_method.expect(format!("Had trouble parsing last column for mutation at {}#{}:{}", source_file_name, source_method, line_no).as_str());
+                let test = test_method.unwrap_or_else(|| panic!("Had trouble parsing last column for mutation at {}#{}:{}", source_file_name, source_method, line_no));
                 let mut test_file_name;
                 let mut test_method;
 
@@ -218,16 +248,16 @@ peg::parser! {
                                 .unwrap()
                                 .to_string()
                                 .split_once(splitter)
-                                .expect(format!("had trouble parsing test_file_class for mutation at {}#{}:{}", source_file_name, source_method, line_no).as_str())
+                                .unwrap_or_else(|| panic!("had trouble parsing test_file_class for mutation at {}#{}:{}", source_file_name, source_method, line_no))
                                 .1
-                                .replace("]", "");
+                                .replace(']', "");
 
                     let splitter = if test.get(2).unwrap().contains("[test:") { "[test:" } else { "[method:" };
                     test_method = test.get(2)
                                     .unwrap()
                                     .to_string()
                                     .split_once(splitter)
-                                    .expect(format!("Had trouble parsing test_file_method for mutation at {}#{}:{}", source_file_name, source_method, line_no).as_str())
+                                    .unwrap_or_else(|| panic!("Had trouble parsing test_file_method for mutation at {}#{}:{}", source_file_name, source_method, line_no))
                                     .1
                                     .replace("()]", "");
                 } else {
@@ -252,6 +282,15 @@ peg::parser! {
     }
 }
 
+/// Grades documentation by using the -Xdoclint javac flag.
+/// Scans javac output for generated warnings and grades accordingly.
+/// TODO: have customizable grade penalties
+///
+/// * `files`: list of files to check documentation for.
+/// * `project`: reference to the Project object the files belong to
+/// * `out_of`: maximum possible grade
+/// * `req_name`: display name for requirement to use while displaying grade
+///   result
 pub fn grade_docs(
     files: Vec<&str>,
     project: &Project,
@@ -267,7 +306,7 @@ pub fn grade_docs(
             let result = parser::parse_diag(line);
             match result {
                 Ok(res) => {
-                    if file.file_name == res.file_name {
+                    if file.file_name() == res.file_name {
                         diags.push(res);
                     }
                 }
@@ -291,11 +330,22 @@ pub fn grade_docs(
 
     Ok(GradeResult {
         Requirement: req_name,
-        Grade: format!("{}/{}", grade, out_of),
-        Reason: String::from("See above."),
+        Grade:       format!("{}/{}", grade, out_of),
+        Reason:      String::from("See above."),
     })
 }
 
+/// Grades by running tests, and reports how many tests pass.
+/// Final grade is the same percentage of maximum grade as the number of tests
+/// passing.
+///
+/// * `test_files`: A list of test files to run.
+/// * `expected_tests`: A list of test names that should be found. Grade
+///   returned is 0 if not all tests are found.
+/// * `project`: A reference to the project the test files belong to.
+/// * `out_of`: maximum possible grade.
+/// * `req_name`: display name for requirement to use while displaying grade
+///   result
 pub fn grade_by_tests(
     test_files: Vec<String>,
     expected_tests: Vec<String>,
@@ -311,7 +361,7 @@ pub fn grade_by_tests(
     for test_file in &test_files {
         let test_file = project.identify(test_file)?;
 
-        actual_tests.append(&mut test_file.test_methods.clone());
+        actual_tests.append(&mut test_file.test_methods());
     }
     actual_tests.sort();
 
@@ -332,8 +382,8 @@ pub fn grade_by_tests(
     if !reasons.is_empty() {
         Ok(GradeResult {
             Requirement: req_name,
-            Grade: format!("0.00/{:.2}", out_of),
-            Reason: reasons.join("\n"),
+            Grade:       format!("0.00/{:.2}", out_of),
+            Reason:      reasons.join("\n"),
         })
     } else {
         let mut num_tests_passed = 0.0;
@@ -362,12 +412,23 @@ pub fn grade_by_tests(
 
         Ok(GradeResult {
             Requirement: req_name,
-            Grade: format!("{:.2}/{:.2}", grade, out_of),
-            Reason: format!("- {}/{} tests passing.", num_tests_passed, num_tests_total),
+            Grade:       format!("{:.2}/{:.2}", grade, out_of),
+            Reason:      format!("- {}/{} tests passing.", num_tests_passed, num_tests_total),
         })
     }
 }
 
+/// Runs mutation tests using ![Pitest](http://pitest.org/) to grade unit tests written by
+/// students.
+///
+/// * `req_name`: display name for requirement to use while displaying grade
+///   result
+/// * `out_of`: maximum possible grade.
+/// * `target_test`: a list of tests to mutation test.
+/// * `target_class`: a list of classes that can be mutated.
+/// * `excluded_methods`: a list of method names that are excluted from mutation
+///   testing.
+/// * `avoid_calls_to`: a list of methods to avoid calls to.
 pub fn grade_unit_tests(
     req_name: String,
     out_of: f32,
@@ -400,7 +461,7 @@ pub fn grade_unit_tests(
             "--excludedMethods",
             excluded_methods.join(",").as_str(),
             "--avoidCallsTo",
-            avoid_calls_to.join(",").as_str()
+            avoid_calls_to.join(",").as_str(),
         ])
         .output()
         .context("Failed to spawn javac process.")?;
@@ -411,7 +472,8 @@ pub fn grade_unit_tests(
             .context(format!("Could not read ./test_reports/mutations.csv file"))?;
         let reader = BufReader::new(file);
         let mut diags = vec![];
-        let mut not_killed = 0;
+        // TODO: figure out if not_killed is required
+        // let mut not_killed = 0;
         for line in reader.lines() {
             let line = line?;
             let parse_result = parser::mutation_report_row(&line)
@@ -420,9 +482,10 @@ pub fn grade_unit_tests(
             match parse_result {
                 Ok(r) => {
                     if r.result != "KILLED" {
-                        if r.test_method != "None" {
-                            not_killed += 1;
-                        }
+                        // TODO: figure out if not_killed is required
+                        // if r.test_method != "None" {
+                        //     not_killed += 1;
+                        // }
                         diags.push(r);
                     }
                 }
@@ -438,16 +501,18 @@ pub fn grade_unit_tests(
 
         Ok(GradeResult {
             Requirement: req_name,
-            Grade: format!("{}/{}", (out_of as u32).saturating_sub(penalty), out_of),
-            Reason: format!("-{} Penalty due to surviving muations", penalty),
+            Grade:       format!("{}/{}", (out_of as u32).saturating_sub(penalty), out_of),
+            Reason:      format!("-{} Penalty due to surviving muations", penalty),
         })
     } else {
         let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
         println!("{}", output);
         Ok(GradeResult {
             Requirement: req_name,
-            Grade: format!("0/{}", out_of),
-            Reason: String::from("Something went wrong while running mutation tests, skipping."),
+            Grade:       format!("0/{}", out_of),
+            Reason:      String::from(
+                "Something went wrong while running mutation tests, skipping.",
+            ),
         })
     }
 }

@@ -1,3 +1,6 @@
+#![warn(missing_docs)]
+#![warn(clippy::missing_docs_in_private_items)]
+
 use std::path::PathBuf;
 
 use lazy_static::lazy_static;
@@ -16,7 +19,7 @@ lazy_static! {
     pub static ref LIB_DIR: PathBuf = PathBuf::from(".").join("lib");
     /// Directory for `umm` artifacts
     pub static ref UMM_DIR: PathBuf = PathBuf::from(".").join(".umm");
-    /// Platform specific separator charactor for javac paths
+    /// Platform specific separator character for javac paths
     pub static ref SEPARATOR: &'static str = if cfg!(windows) { ";" } else { ":" };
     /// Reference to treesitter language struct
     pub static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();

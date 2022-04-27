@@ -1,83 +1,95 @@
+#![warn(missing_docs)]
+#![warn(clippy::missing_docs_in_private_items)]
+
 use std::{
     path::PathBuf,
-    process::{Command, Stdio},
+    process::{
+        Command,
+        Stdio,
+    },
 };
 
-use anyhow::{bail, ensure, Context, Result};
+use anyhow::{
+    anyhow,
+    bail,
+    ensure,
+    Context,
+    Result,
+};
 use colored::Colorize;
-use serde::{Deserialize, Serialize};
-use tree_sitter::{Query, QueryCursor, Tree};
+use serde::{
+    Deserialize,
+    Serialize,
+};
+use tree_sitter::{
+    Query,
+    QueryCursor,
+    Tree,
+};
 
-use crate::{constants::*, util::*, Dict};
+use crate::{
+    constants::*,
+    util::*,
+    Dict,
+};
 
 /// Types of Java files -
-/// - Interface
-/// - Class
-/// - Class with a main method
-/// - JUnit test class
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum JavaFileType {
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum FileType {
+    /// - Interface
     Interface,
+    /// - Class
     Class,
+    /// - Class with a main method
     ClassWithMain,
+    /// - JUnit test class
     Test,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// Struct representing a java file
-///
-/// * `path`: path to java file
-/// * `file_name`: name of file
-/// * `package_name`: package the java file belongs to
-/// * `imports`: imports made by the java file
-/// * `name`: name of the file TODO: How does this differ from `file_name`?
-/// * `pretty_name`: colored terminal string representing java file name
-/// * `proper_name`: proper name of the file as understood by the java compiler
-/// * `test_methods`: Name of tests methods in this file, as understood by JUnit
-/// * `pretty_test_methods`: Name of tests methods in this file, colored using terminal color codes
-/// * `kind`: `JavaFileType` variant for this java file
-/// * `source_code`: Source code as a string for this java file
 pub struct File {
-    path: PathBuf,
-    pub file_name: String,
+    /// path to java file.
+    path:         PathBuf,
+    /// name of file.
+    file_name:    String,
+    /// package the java file belongs to.
     package_name: Option<String>,
-    imports: Option<Vec<Dict>>,
-    /// TODO: How does this differ from `file_name`?
-    pub name: Option<String>,
-    pretty_name: Option<String>,
-    pub proper_name: Option<String>,
-    pub test_methods: Vec<String>,
-    pretty_test_methods: Vec<String>,
-    kind: JavaFileType,
-    source_code: String,
+    /// imports made by the java file.
+    imports:      Option<Vec<Dict>>,
+    /// name of the file TODO: How does this differ from `file_name`?
+    name:         String,
+    /// colored terminal string representing java file name.
+    proper_name:  String,
+    /// Name of tests methods in this file, as understood by JUnit.
+    test_methods: Vec<String>,
+    /// Name of tests methods in this file, colored using terminal color codes.
+    kind:         FileType,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 /// Struct representing a Java project.
-/// Any index `i` in any collection in this struct always refers to the same JavaFile.
-///
-/// * `files`: Collection of java files in this project
-/// * `pretty_names`: Names of java files in this projects, colored using terminal color codes
-/// * `names`: Names of java files in this project.
+/// Any index `i` in any collection in this struct always refers to the same
+/// JavaFile.
 pub struct Project {
-    pub files: Vec<File>,
-    pretty_names: Vec<String>,
-    pub names: Vec<String>,
+    /// Collection of java files in this project
+    files: Vec<File>,
+    /// Names of java files in this project.
+    names: Vec<String>,
 }
 
 /// A struct that wraps a tree-sitter parser object and source code
 ///
 /// TODO: The source code should not be in here, extract it out
-///
-/// * `code`: the source code being parsed
-/// * `_parser`: the tree-sitter parser object
-/// * `_tree`: the parse tree
-/// * `lang`: the tree-sitter java grammar language
 pub struct Parser {
-    code: String,
+    /// the source code being parsed
+    code:    String,
+    /// the tree-sitter parser object
     _parser: tree_sitter::Parser,
-    _tree: Tree,
-    lang: tree_sitter::Language,
+    /// the parse tree
+    _tree:   Tree,
+    /// the tree-sitter java grammar language
+    lang:    tree_sitter::Language,
 }
 
 impl Parser {
@@ -103,7 +115,8 @@ impl Parser {
         })
     }
 
-    /// Applies a tree sitter query and returns the result as a collection of HashMaps
+    /// Applies a tree sitter query and returns the result as a collection of
+    /// HashMaps
     ///
     /// * `q`: the tree-sitter query to be applied
     pub fn query(&self, q: &str) -> Result<Vec<Dict>> {
@@ -121,10 +134,13 @@ impl Parser {
             for name in capture_names {
                 let index = query.capture_index_for_name(name);
                 let index = match index {
-                        Some(i) => i,
-                        None => bail!("Error while querying source code. Capture name: {} has no index associated.",
-                        name),
-                    };
+                    Some(i) => i,
+                    None => bail!(
+                        "Error while querying source code. Capture name: {} has no index \
+                         associated.",
+                        name
+                    ),
+                };
 
                 let value = m.captures.iter().find(|c| c.index == index);
                 let value = match value {
@@ -133,14 +149,15 @@ impl Parser {
                 };
 
                 let value = value
-                        .node
-                        .utf8_text(self.code.as_bytes())
-                        .with_context(|| {
-                            format!(
-                            "Cannot match query result indices with source code for capture name: {}.",
+                    .node
+                    .utf8_text(self.code.as_bytes())
+                    .with_context(|| {
+                        format!(
+                            "Cannot match query result indices with source code for capture name: \
+                             {}.",
                             name
                         )
-                        })?;
+                    })?;
 
                 result.insert(name.clone(), value.to_string());
             }
@@ -150,103 +167,78 @@ impl Parser {
         Ok(results)
     }
 }
+
 impl File {
+    /// Creates a new `File` from `path`
+    ///
+    /// * `path`: the path to read and try to create a File instance for.
     fn new(path: PathBuf) -> Result<Self> {
-        let source_code = std::fs::read_to_string(&path)
-            .with_context(|| format!("Could not read file: {:?}", &path))?;
-
-        let parser = Parser::new(source_code.clone(), *JAVA_TS_LANG)?;
-
-        let imports = parser.query(IMPORT_QUERY)?;
-        let imports = if imports.is_empty() {
-            None
-        } else {
-            Some(imports)
-        };
-        let _package_name = parser.query(PACKAGE_QUERY)?;
-
-        ensure!(
-            _package_name.len() == 1 || _package_name.is_empty(),
-            "Expected 0 or 1 package declaration statements, found {}.",
-            _package_name.len()
-        );
-
-        let package_name = if _package_name.is_empty() {
-            None
-        } else {
-            _package_name[0].get("name").map(String::to_owned)
+        let parser = {
+            let source_code = std::fs::read_to_string(&path)
+                .with_context(|| format!("Could not read file: {:?}", &path))?;
+            Parser::new(source_code.clone(), *JAVA_TS_LANG)?
         };
 
-        let mut kind = JavaFileType::Class;
-        let name = {
-            let class = parser.query(CLASSNAME_QUERY)?;
-            if class.is_empty() {
-                kind = JavaFileType::Interface;
-                parser.query(INTERFACENAME_QUERY)?
+        let imports = {
+            let imports = parser.query(IMPORT_QUERY)?;
+            if imports.is_empty() {
+                None
             } else {
-                class
+                Some(imports)
             }
         };
 
-        let main_method_result = parser.query(MAIN_METHOD_QUERY)?;
+        let package_name = {
+            let package_name = parser.query(PACKAGE_QUERY)?;
 
-        ensure!(
-            main_method_result.len() <= 1,
-            "Number of main methods should be 0 or 1."
-        );
-        if !main_method_result.is_empty() {
-            kind = JavaFileType::ClassWithMain;
-        }
+            if package_name.is_empty() {
+                None
+            } else {
+                package_name[0].get("name").map(String::to_owned)
+            }
+        };
 
-        ensure!(
-            name.len() == 1,
-            "For file: {} Expected exactly one class/interface name, found {}.",
-            path.as_path().display(),
-            name.len()
-        );
+        let (kind, name) = 'outer: {
+            let work = vec![
+                (FileType::Interface, INTERFACENAME_QUERY),
+                (FileType::ClassWithMain, MAIN_METHOD_QUERY),
+                (FileType::Class, CLASSNAME_QUERY),
+            ];
+            for (kind, query) in work {
+                let result = parser.query(query)?;
 
-        let name = name[0].get("name").map(String::to_owned);
-        let pretty_name = if package_name.is_some() {
-            format!(
-                "{}.{}",
-                package_name.as_ref().unwrap().bright_yellow().bold(),
-                name.as_ref().unwrap().bright_blue().bold()
-            )
-        } else {
-            format!("{}", name.as_ref().unwrap().blue())
+                if !result.is_empty() {
+                    break 'outer (
+                        kind,
+                        result
+                            .get(0)
+                            .ok_or(anyhow!(
+                                "Could not find a valid class/interface declaration for {} (vec \
+                                 size is 0)",
+                                path.display()
+                            ))?
+                            .get("name")
+                            .ok_or(anyhow!(
+                                "Could not find a valid class/interface declaration for {} \
+                                 (hashmap has no name key) ",
+                                path.display()
+                            ))?
+                            .to_string(),
+                    );
+                }
+            }
+
+            (FileType::Class, String::new())
         };
 
         let proper_name = if package_name.is_some() {
-            format!(
-                "{}.{}",
-                package_name.as_ref().unwrap(),
-                name.as_ref().unwrap()
-            )
+            format!("{}.{}", package_name.as_ref().unwrap(), name)
         } else {
-            name.as_ref().unwrap().to_string()
+            name.clone()
         };
 
-        let test_methods = parser.query(TEST_ANNOTATION_QUERY)?;
-
-        let mut pretty_test_methods = vec![];
-        for test_method in test_methods.clone() {
-            let method_name = test_method
-                .get("name")
-                .map(String::to_owned)
-                .unwrap_or_default();
-
-            let method_name = if method_name.starts_with("test") {
-                let method_name = method_name.replace("test", "");
-                let method_name = method_name.bright_green().bold();
-                format!("test{}", method_name)
-            } else {
-                method_name.bright_green().bold().to_string()
-            };
-
-            pretty_test_methods.push(method_name);
-        }
-
         let test_methods = {
+            let test_methods = parser.query(TEST_ANNOTATION_QUERY)?;
             let mut tests = vec![];
             for t in test_methods {
                 if let Some(t) = t.get("name") {
@@ -254,10 +246,13 @@ impl File {
                 }
             }
 
-            if !tests.is_empty() {
-                kind = JavaFileType::Test;
-            }
             tests
+        };
+
+        let kind = if !test_methods.is_empty() {
+            FileType::Test
+        } else {
+            kind
         };
 
         Ok(Self {
@@ -265,16 +260,18 @@ impl File {
             file_name: path.file_name().unwrap().to_str().unwrap().to_string(),
             package_name,
             imports,
-            pretty_name: Some(pretty_name),
-            name,
+            name: name.to_string(),
             test_methods,
-            pretty_test_methods,
             kind,
-            proper_name: Some(proper_name),
-            source_code,
+            proper_name,
         })
     }
 
+    /// Utility method to ask javac for documentation lints using the -Xdoclint
+    /// flag.
+    ///
+    /// The method simply returns the output produced by javac as a String.
+    /// There is a parser that can parse these in the [grader] module.
     pub fn doc_check(&self) -> Result<String> {
         let child = Command::new(javac_path()?)
             .args([
@@ -299,6 +296,10 @@ impl File {
         Ok(output)
     }
 
+    /// Utility method to check for syntax errors using javac flag.
+    /// TODO: instead of printing javac output, return it.
+    /// TODO: have all such methods have generated versions that display output
+    /// instead of returning.
     pub fn check(&self) -> Result<()> {
         let path = self.path.display().to_string();
 
@@ -332,21 +333,36 @@ impl File {
                             .bold(),
                     );
                 } else {
-                    bail!("There were compiler errors in checked file or other source files it imports.".bright_red().bold());
+                    bail!(
+                        "There were compiler errors in checked file or other source files it \
+                         imports."
+                            .bright_red()
+                            .bold()
+                    );
                 }
             }
             Err(e) => bail!(
                 "Failed to wait for child process for {}: {}",
-                self.proper_name.clone().unwrap(),
+                self.proper_name.clone(),
                 e
             ),
         };
         Ok(())
     }
 
+    /// Utility method to run a java file that has a main method.
+    /// TODO: instead of printing javac output, return it.
+    /// TODO: have all such methods have generated versions that display output
+    /// instead of returning.
     pub fn run(&self) -> Result<()> {
         self.check()?;
-        let name = self.proper_name.clone().unwrap();
+
+        ensure!(
+            self.kind == FileType::ClassWithMain,
+            "File you wish to run doesn't have a main method."
+        );
+
+        let name = self.proper_name.clone();
         let child = Command::new(java_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
@@ -369,18 +385,21 @@ impl File {
         Ok(())
     }
 
+    /// A utility method that takes a list of strings (or types that implement
+    /// Into<String>) meant to represent test method names, and runs those
+    /// tests.
+    ///
+    /// Returns the output from JUnit as a string. There is a parser in the
+    /// [grader] module that helps parse this output.
+    ///
+    /// * `tests`: list of strings (or types that implement
+    /// Into<String>) meant to represent test method names,
     pub fn test<T: Into<String>>(&self, tests: Vec<T>) -> Result<String> {
         self.check()?;
         let tests = {
             let mut new_tests = Vec::<String>::new();
             for t in tests {
-                new_tests.push(format!(
-                    "{}#{}",
-                    self.proper_name
-                        .clone()
-                        .unwrap_or(self.name.clone().unwrap_or("".into())),
-                    t.into()
-                ));
+                new_tests.push(format!("{}#{}", self.proper_name.clone(), t.into()));
             }
 
             if new_tests.is_empty() {
@@ -436,7 +455,7 @@ impl File {
     }
 
     /// Get a reference to the file's kind.
-    pub fn kind(&self) -> &JavaFileType {
+    pub fn kind(&self) -> &FileType {
         &self.kind
     }
 
@@ -446,15 +465,20 @@ impl File {
     }
 
     /// Get a reference to the file's test methods.
-    pub fn test_methods(&self) -> &[String] {
-        self.test_methods.as_ref()
+    pub fn test_methods(&self) -> Vec<String> {
+        self.test_methods.clone()
     }
 }
 
 impl Project {
+    /// Initializes a Project, by discovering java files in the [UMM_DIR]
+    /// directory. Also downloads some `jar` files required for unit testing
+    /// and mutation testing.
+    ///
+    /// TODO: Only download these jars if required.
+    /// TODO: get rid of DataStructures.jar from all labs and assignments.
     pub fn new() -> Result<Self> {
         let mut files = vec![];
-        let mut pretty_names = vec![];
         let mut names = vec![];
 
         download(
@@ -484,18 +508,22 @@ false    )?;
 
         for path in find_files("java", 15, &ROOT_DIR)? {
             let file = File::new(path)?;
-            pretty_names.push(file.pretty_name.clone().unwrap());
-            names.push(file.proper_name.clone().unwrap());
+            names.push(file.proper_name.clone());
             files.push(file);
         }
 
         Ok(Self {
             files,
-            pretty_names,
             names,
         })
     }
 
+    /// Attempts to identiy the correct file from the project from a partial or
+    /// fully formed name as expected by a java compiler.
+    ///
+    /// Returns a reference to the identified file, if any.
+    ///
+    /// * `name`: partial/fully formed name of the Java file to look for.
     pub fn identify<T: Into<String>>(&self, name: T) -> Result<File> {
         let name: String = name.into();
 
@@ -503,11 +531,7 @@ false    )?;
             Ok(self.files[i].clone())
         } else if let Some(i) = self.files.iter().position(|n| n.file_name == name) {
             Ok(self.files[i].clone())
-        } else if let Some(i) = self
-            .files
-            .iter()
-            .position(|n| n.name.clone().unwrap() == name)
-        {
+        } else if let Some(i) = self.files.iter().position(|n| n.name.clone() == name) {
             Ok(self.files[i].clone())
         } else if let Some(i) = self
             .files
@@ -518,5 +542,11 @@ false    )?;
         } else {
             bail!("Could not find {} in the project", name)
         }
+    }
+
+    /// Get a reference to the project's files.
+    #[must_use]
+    pub fn files(&self) -> &[File] {
+        self.files.as_ref()
     }
 }

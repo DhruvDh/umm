@@ -1,21 +1,61 @@
-use std::fs::File;
-use std::io::Write;
+//! # umm
+//! ## Introduction
 
-use anyhow::{anyhow, Context, Result};
-use crossterm::event::{KeyCode, KeyModifiers};
-use nu_ansi_term::{Color, Style};
+//! A java build tool for novices.
+
+//! ## Installation
+
+//! You would need rust installed, ideally the nightly toolchain. You can visit https://rustup.rs/ to find out how to install this on your computer, just make sure you install the "nightly" toolchain instead of stable.
+
+//! On Linux, Windows Subsystem for Linux (WSL), and Mac you should be able to run `curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly` on a terminal to install the nightly toolchain for rust.
+
+//! Once you are done, just type `cargo install --git=https://github.com/DhruvDh/umm.git` and it should compile and install it on your system.
+
+#![warn(missing_docs)]
+#![warn(clippy::missing_docs_in_private_items)]
+
+use std::{
+    fs::File,
+    io::Write,
+};
+
+use anyhow::{
+    anyhow,
+    Context,
+    Result,
+};
+use bpaf::*;
+use crossterm::event::{
+    KeyCode,
+    KeyModifiers,
+};
+use nu_ansi_term::{
+    Color,
+    Style,
+};
 use reedline::{
-    default_emacs_keybindings, ColumnarMenu, DefaultCompleter, DefaultHinter, DefaultPrompt, Emacs,
-    ExampleHighlighter, FileBackedHistory, Reedline, ReedlineEvent, ReedlineMenu, Signal,
+    default_emacs_keybindings,
+    ColumnarMenu,
+    DefaultCompleter,
+    DefaultHinter,
+    DefaultPrompt,
+    Emacs,
+    ExampleHighlighter,
+    FileBackedHistory,
+    Reedline,
+    ReedlineEvent,
+    ReedlineMenu,
+    Signal,
 };
 use umm::{
     clean,
     constants::UMM_DIR,
     grade,
-    java::{self, JavaFileType},
+    java::{
+        self,
+        FileType,
+    },
 };
-
-use bpaf::*;
 
 fn shell() -> Result<()> {
     let prompt = DefaultPrompt::default();
@@ -36,12 +76,12 @@ fn shell() -> Result<()> {
 
     let project = java::Project::new()?;
     let mut test_methods = vec![];
-    for file in project.files.iter() {
+    for file in project.files().iter() {
         match file.kind() {
-            JavaFileType::ClassWithMain => {
+            FileType::ClassWithMain => {
                 commands.push(format!("run {}", file.file_name()));
             }
-            JavaFileType::Test => {
+            FileType::Test => {
                 commands.push(format!("test {}", file.file_name()));
                 for method in file.test_methods() {
                     let method = method.clone();
@@ -195,9 +235,6 @@ fn shell() -> Result<()> {
             Signal::CtrlD | Signal::CtrlC => {
                 println!("Bye!");
                 break Ok(());
-            }
-            Signal::CtrlL => {
-                line_editor.clear_screen().unwrap();
             }
         }
     }
