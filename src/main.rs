@@ -255,7 +255,9 @@ fn main() -> Result<()> {
 
     let project = java::Project::new()?;
     let f = f.unwrap_or_default();
+
     match cmd {
+        // TODO: move this to a separate method and call that method in shell()
         Some(a) => match a.as_str() {
             "run" => project.identify(f)?.run()?,
             "check" => project.identify(f)?.check()?,

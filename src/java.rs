@@ -272,7 +272,8 @@ impl File {
     /// flag.
     ///
     /// The method simply returns the output produced by javac as a String.
-    /// There is a parser that can parse these in the [grader] module.
+    /// There is a ['parse_diag method'][fn@crate::grade::parser::parse_diag]
+    /// that can parse these to yield useful information.
     pub fn doc_check(&self) -> Result<String> {
         let child = Command::new(javac_path()?)
             .args([
@@ -390,8 +391,8 @@ impl File {
     /// Into<String>) meant to represent test method names, and runs those
     /// tests.
     ///
-    /// Returns the output from JUnit as a string. There is a parser in the
-    /// [grader] module that helps parse this output.
+    /// Returns the output from JUnit as a string. There are parsers in
+    /// ['grade module'][crate::grade::parser] that helps parse this output.
     ///
     /// * `tests`: list of strings (or types that implement
     /// Into<String>) meant to represent test method names,
@@ -472,9 +473,9 @@ impl File {
 }
 
 impl Project {
-    /// Initializes a Project, by discovering java files in the [UMM_DIR]
-    /// directory. Also downloads some `jar` files required for unit testing
-    /// and mutation testing.
+    /// Initializes a Project, by discovering java files in the
+    /// [struct@UMM_DIR] directory. Also downloads some `jar`
+    /// files required for unit testing and mutation testing.
     ///
     /// TODO: Only download these jars if required.
     /// TODO: get rid of DataStructures.jar from all labs and assignments.

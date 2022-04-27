@@ -110,7 +110,8 @@ pub struct MutationDiagnostic {
     test_file_name:   String,
 }
 peg::parser! {
-    grammar parser() for str {
+    /// includes some useful grammars for parsing JUNit/javac/pitest outputs.
+    pub grammar parser() for str {
         /// matches any sequeuce of 1 or more numbers
         rule number() -> u32
             = n:$(['0'..='9']+) {? n.parse().or(Err("u32")) }
@@ -222,6 +223,7 @@ peg::parser! {
         rule mutation_test_examined_none() -> &'input str
             = $("none")
 
+        /// parses one row of mutation report
         pub rule mutation_report_row() -> MutationDiagnostic
             = file_name:word()
               ","
