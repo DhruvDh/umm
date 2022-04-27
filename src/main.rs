@@ -15,6 +15,7 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use std::{
+    cmp::Ordering,
     fs::File,
     io::Write,
 };
@@ -57,6 +58,7 @@ use umm::{
     },
 };
 
+/// A utility method to start the terminal shell and execute requested commands.
 fn shell() -> Result<()> {
     let prompt = DefaultPrompt::default();
 
@@ -85,6 +87,7 @@ fn shell() -> Result<()> {
                 commands.push(format!("test {}", file.file_name()));
                 for method in file.test_methods() {
                     let method = method.clone();
+                    #[allow(clippy::or_fun_call)]
                     let method = method
                         .split_once('#')
                         .ok_or(anyhow!("Could not parse test method - {}", method))?
@@ -186,20 +189,20 @@ fn shell() -> Result<()> {
                     let b = b.split_whitespace().collect::<Vec<&str>>();
                     let name = String::from(*b.get(0).unwrap());
 
-                    let res = if b.len() == 1 {
-                        project.identify(name)?.test(Vec::<String>::new())
-                    } else if b.len() > 1 {
-                        let b = {
-                            let mut new_b = vec![];
-                            for i in b {
-                                new_b.push(String::from(i));
-                            }
-                            new_b
-                        };
+                    let res = match b.len().cmp(&1) {
+                        Ordering::Equal => project.identify(name)?.test(Vec::<String>::new()),
+                        Ordering::Greater => {
+                            let b = {
+                                let mut new_b = vec![];
+                                for i in b {
+                                    new_b.push(String::from(i));
+                                }
+                                new_b
+                            };
 
-                        project.identify(name)?.test(b)
-                    } else {
-                        Err(anyhow!("No test file mentioned"))
+                            project.identify(name)?.test(b)
+                        }
+                        Ordering::Less => Err(anyhow!("No test file mentioned")),
                     };
 
                     match res {
@@ -251,7 +254,7 @@ fn main() -> Result<()> {
         .run();
 
     let project = java::Project::new()?;
-    let f = f.unwrap_or(String::new());
+    let f = f.unwrap_or_default();
     match cmd {
         Some(a) => match a.as_str() {
             "run" => project.identify(f)?.run()?,

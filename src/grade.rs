@@ -213,9 +213,9 @@ peg::parser! {
             = a:mutations_csv_word()? "/"? b:mutations_csv_word()? "/"?  c:mutations_csv_word()?
             {
                 let mut res = vec![];
-                if let Some(a) = a { res.push(a.to_string()); }
-                if let Some(b) = b { res.push(b.to_string()); }
-                if let Some(c) = c { res.push(c.to_string()); }
+                if let Some(a) = a { res.push(a); }
+                if let Some(b) = b { res.push(b); }
+                if let Some(c) = c { res.push(c); }
                 res
             }
 
@@ -354,7 +354,7 @@ pub fn grade_by_tests(
     req_name: String,
 ) -> Result<GradeResult> {
     let mut actual_tests = vec![];
-    let mut expected_tests = expected_tests.clone();
+    let mut expected_tests = expected_tests;
     let mut reasons = vec![];
     expected_tests.sort();
 
@@ -469,7 +469,7 @@ pub fn grade_unit_tests(
     if child.status.success() {
         std::fs::create_dir_all("test_reports")?;
         let file = File::open(&ROOT_DIR.join("test_reports").join("mutations.csv"))
-            .context(format!("Could not read ./test_reports/mutations.csv file"))?;
+            .context("Could not read ./test_reports/mutations.csv file".to_string())?;
         let reader = BufReader::new(file);
         let mut diags = vec![];
         // TODO: figure out if not_killed is required

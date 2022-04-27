@@ -176,7 +176,7 @@ impl File {
         let parser = {
             let source_code = std::fs::read_to_string(&path)
                 .with_context(|| format!("Could not read file: {:?}", &path))?;
-            Parser::new(source_code.clone(), *JAVA_TS_LANG)?
+            Parser::new(source_code, *JAVA_TS_LANG)?
         };
 
         let imports = {
@@ -210,6 +210,7 @@ impl File {
                 if !result.is_empty() {
                     break 'outer (
                         kind,
+                        #[allow(clippy::or_fun_call)]
                         result
                             .get(0)
                             .ok_or(anyhow!(
@@ -260,7 +261,7 @@ impl File {
             file_name: path.file_name().unwrap().to_str().unwrap().to_string(),
             package_name,
             imports,
-            name: name.to_string(),
+            name,
             test_methods,
             kind,
             proper_name,
