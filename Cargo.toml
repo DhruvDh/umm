@@ -1,3 +1,10 @@
+[workspace]
+
+members = [
+    "umm_derive"
+]
+
+
 [package]
 name = "umm"
 version = "0.1.0"
@@ -29,18 +36,3 @@ nu-ansi-term = "0.45.1"
 crossterm = "0.23.2"
 bpaf = "0.4.3"
 
-# [[bin]]
-# name = "umm"
-# path = "src/bin/umm.rs"
-# [[bin]]
-# name = "umm-check"
-# path = "src/bin/umm-check.rs"
-# [[bin]]
-# name = "umm-run"
-# path = "src/bin/umm-run.rs"
-# [[bin]]
-# name = "umm-test"
-# path = "src/bin/umm-test.rs"
-# [[bin]]
-# name = "umm-clean"
-# path = "src/bin/umm-clean.rs"

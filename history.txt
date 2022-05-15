@@ -1,5 +1,0 @@
-tes
-clear
-exit
-clear
-exit
