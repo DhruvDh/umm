@@ -20,7 +20,7 @@ glob = "0.3.0"
 lazy_static = "1.4.0"
 tree-sitter = "0.20.4"
 which = "4.2.4"
-tree-sitter-java = { git = "https://github.com/Luni-4/tree-sitter-java.git", branch = "update-0.20" }
+tree-sitter-java = { git = "https://github.com/tree-sitter/tree-sitter-java.git", commit = "39a11c8330d0b2ad75310456c378396785f79a4e"}
 colored = "2.0.0"
 serde_json = "1.0.79"
 serde = { version = "1.0.136", features = ["derive"] }
@@ -35,4 +35,6 @@ reedline = { git = "https://github.com/DhruvDh/reedline", features = [
 nu-ansi-term = "0.45.1"
 crossterm = "0.23.2"
 bpaf = "0.4.3"
+rhai = {version = "1.7.0", features = ["metadata", "decimal", "sync"]}
+temp-file = "0.1.7"
 

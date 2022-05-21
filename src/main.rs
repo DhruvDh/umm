@@ -222,15 +222,7 @@ fn shell() -> Result<()> {
                         eprintln!("{:?}", res);
                     }
                 }
-                "info" => {
-                    println!("Generated project info at .umm/info.json");
-                    let json = serde_json::to_string(&project)?;
-                    std::fs::create_dir_all(UMM_DIR.as_path())
-                        .with_context(|| "Could not create $UMM_DIR folder")?;
-                    let mut output = File::create(UMM_DIR.join("info.json"))
-                        .with_context(|| "Could not create $UMM_DIR/info.json")?;
-                    write!(output, "{}", json).with_context(|| "Could not write to info.json")?
-                }
+                "info" => project.info()?,
                 _ => {
                     println!("Don't know how to {:?}", buffer.trim());
                 }
@@ -271,6 +263,7 @@ fn main() -> Result<()> {
             }
             "grade" => grade()?,
             "clean" => clean()?,
+            "info" => project.info()?,
             _ => println!("{} is not a valid subcommand.", a),
         },
         None => shell()?,

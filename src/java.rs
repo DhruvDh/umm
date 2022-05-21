@@ -293,7 +293,11 @@ impl File {
             .output()
             .context("Failed to spawn javac process.")?;
 
-        let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
+        let output = [
+            String::from_utf8(child.stderr)?,
+            String::from_utf8(child.stdout)?,
+        ]
+        .concat();
 
         Ok(output)
     }
@@ -413,7 +417,7 @@ impl File {
 
         let tests = tests
             .iter()
-            .map(|s| "-m ".to_owned() + s)
+            .map(|s| format!("-m {}", s))
             .collect::<Vec<String>>();
         let methods: Vec<&str> = tests.iter().map(String::as_str).collect();
 
@@ -451,7 +455,11 @@ impl File {
         } else {
             println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
         }
-        let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
+        let output = [
+            String::from_utf8(child.stderr)?,
+            String::from_utf8(child.stdout)?,
+        ]
+        .concat();
 
         Ok(output)
     }
@@ -483,6 +491,12 @@ impl Project {
         let mut files = vec![];
         let mut names = vec![];
 
+        for path in find_files("java", 15, &ROOT_DIR)? {
+            let file = File::new(path)?;
+            names.push(file.proper_name.clone());
+            files.push(file);
+        }
+
         download(
         "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/DataStructures.jar?raw=true",
         &LIB_DIR.join("DataStructures.jar"),
@@ -507,12 +521,6 @@ false    )?;
         "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-junit5-plugin-0.14.jar?raw=true",
         &LIB_DIR.join("pitest-junit5-plugin.jar"),
    false )?;
-
-        for path in find_files("java", 15, &ROOT_DIR)? {
-            let file = File::new(path)?;
-            names.push(file.proper_name.clone());
-            files.push(file);
-        }
 
         Ok(Self {
             files,
@@ -550,5 +558,11 @@ false    )?;
     #[must_use]
     pub fn files(&self) -> &[File] {
         self.files.as_ref()
+    }
+
+    /// Prints project struct as a json
+    pub fn info(&self) -> Result<()> {
+        println!("{}", serde_json::to_string(&self)?);
+        Ok(())
     }
 }

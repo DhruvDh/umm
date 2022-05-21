@@ -176,7 +176,7 @@ peg::parser! {
               path_separator()?
               p:(word() ++ path_separator())
               whitespace()?
-            { p.iter().fold(String::new(), |acc, w| acc + "/" + w) }
+            { p.iter().fold(String::new(), |acc, w| format!("{}/{}", acc, w)) }
 
         /// matches line numbers (colon followed by numbers, eg. :23)
         rule line_number() -> u32
@@ -507,7 +507,11 @@ pub fn grade_unit_tests(
             Reason:      format!("-{} Penalty due to surviving muations", penalty),
         })
     } else {
-        let output = String::from_utf8(child.stderr)? + &String::from_utf8(child.stdout)?;
+        let output = [
+            String::from_utf8(child.stderr)?,
+            String::from_utf8(child.stdout)?,
+        ]
+        .concat();
         println!("{}", output);
         Ok(GradeResult {
             Requirement: req_name,

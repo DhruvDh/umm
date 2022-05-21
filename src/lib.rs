@@ -22,84 +22,28 @@ use anyhow::{
     Result,
 };
 use constants::BUILD_DIR;
+use rhai::{
+    Engine,
+    EvalAltResult,
+};
 use tabled::Table;
 
-use crate::{
-    grade::*,
-    java::Project,
-};
 /// Defined for convenience
 type Dict = std::collections::HashMap<String, String>;
 
 /// Prints the result of grading
 pub fn grade() -> Result<()> {
-    let project = Project::new()?;
+    let mut engine = Engine::new();
+    engine.register_result_fn("clean", clean_script);
 
-    let req_1 = grade_docs(vec!["pyramid_scheme.LinkedTree"], &project, 10, "1".into())?;
+    // Download grading script
 
-    let req_2 = grade_by_tests(
-        vec![String::from("pyramid_scheme.LinkedTreeTest")],
-        vec![
-            String::from("pyramid_scheme.LinkedTreeTest#testGetRootElement"),
-            "pyramid_scheme.LinkedTreeTest#testAddChild".into(),
-            "pyramid_scheme.LinkedTreeTest#testFindNode".into(),
-            "pyramid_scheme.LinkedTreeTest#testContains".into(),
-            "pyramid_scheme.LinkedTreeTest#testSize".into(),
-        ],
-        &project,
-        20.0,
-        "2".to_string(),
-    )?;
+    // Your first Rhai Script
+    let script = "clean();";
 
-    let req_3 = grade_unit_tests(
-        "2".into(),
-        20.0,
-        vec![String::from("pyramid_scheme.LinkedTreeTest")],
-        vec![String::from("pyramid_scheme.LinkedTree")],
-        vec![
-            String::from("toString"),
-            "LinkedTree".into(),
-            "getRootElement".into(),
-            "findNode".into(),
-            "size".into(),
-            "leafCounter".into(),
-            "isEmpty".into(),
-        ],
-        vec![
-            String::from("pyramid_scheme.MultiNodeTree"),
-            "DataStructures.*".into(),
-            "pyramid_scheme.Person".into(),
-            "pyramid_scheme.PyramidScheme".into(),
-            "pyramid_scheme.PyramidSchemeSim".into(),
-        ],
-    )?;
+    // Run the script - prints "42"
+    engine.run(script)?;
 
-    let req_4 = grade_docs(
-        vec!["pyramid_scheme.PyramidScheme"],
-        &project,
-        10,
-        "3".into(),
-    )?;
-
-    let req_5 = grade_by_tests(
-        vec![String::from("pyramid_scheme.PyramidSchemeTest")],
-        vec![
-            String::from("pyramid_scheme.PyramidSchemeTest#testWhoBenefits"),
-            String::from("pyramid_scheme.PyramidSchemeTest#testAddChild"),
-            String::from("pyramid_scheme.PyramidSchemeTest#testInitiateCollapse"),
-        ],
-        &project,
-        30.0,
-        "3".into(),
-    )?;
-    let grades = &vec![req_1, req_2, req_3, req_4, req_5];
-    println!("{}", Table::new(grades).with(tabled::Style::modern()));
-
-    let total = grades
-        .iter()
-        .fold(0u32, |acc, x| acc + x.grade().parse::<u32>().unwrap_or(0));
-
-    println!("Total: {}", total);
     Ok(())
 }
 
@@ -109,14 +53,21 @@ pub fn clean() -> Result<()> {
         .with_context(|| format!("Could not delete {}", BUILD_DIR.display()))
 }
 
-// TODO: Add documentations everywhere
+fn clean_script() -> Result<(), Box<EvalAltResult>> {
+    match clean() {
+        Ok(_) => Ok(()),
+        Err(e) => Err(e.to_string().into()),
+    }
+}
+
 // TODO: replace std::Command with cmd_lib
+// TODO: Lazily load all constants from rhai scripts instead
 // TODO: Fix java mod impls
-// TODO: remove fncmd
-// TODO: use reedline for shell-like interface
 // TODO: update classpath when discovering project
-// TODO: fix grading api, move to grade module.
+// TODO: fix grading api
 // TODO: add rhai scripting for grading
 // TODO: find a way to generate a rhai wrapper for all methods
 // TODO: add rhai scripting for project init
 // TODO: update tabled to 0.6
+// TODO: make reedline shell optional behind a feature
+// TODO: Download jars only if required OR remove jar requirement altogether.
