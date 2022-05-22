@@ -6,6 +6,7 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 #![feature(label_break_value)]
+#![feature(iterator_try_collect)]
 
 /// A module defining a bunch of constant values to be used throughout
 pub mod constants;
@@ -17,7 +18,10 @@ pub mod java;
 /// Utility functions for convenience
 pub mod util;
 
-use std::io::Read;
+use std::{
+    fs::read_to_string,
+    io::Read,
+};
 
 use anyhow::{
     Context,
@@ -49,6 +53,7 @@ pub fn grade(script_url: &str) -> Result<()> {
         .register_type_with_name::<Project>("JavaProject")
         .register_fn("show_results", show_result)
         .register_result_fn("clean", clean_script)
+        .register_result_fn("new_project", Project::new_script)
         .register_result_fn("identify", Project::identify_script)
         .register_result_fn("check", File::check_script)
         .register_result_fn("run", File::run_script)
@@ -57,6 +62,7 @@ pub fn grade(script_url: &str) -> Result<()> {
         .register_result_fn("grade_unit_tests", grade_unit_tests_script)
         .register_result_fn("grade_by_tests", grade_by_tests_script);
 
+    println!("{}", engine.gen_fn_signatures(false).join("\n"));
     // Download grading script
     let script = {
         let resp = ureq::get(script_url)
@@ -81,6 +87,8 @@ pub fn grade(script_url: &str) -> Result<()> {
         String::from_utf8(bytes)?
     };
 
+    let script =
+        read_to_string("/Users/dhruvdh/Dropbox/documents/ITSC 2214/oof/umm/grading/sample.rhai")?;
     // Run the script
     engine.run(&script)?;
 

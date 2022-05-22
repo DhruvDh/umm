@@ -43,6 +43,7 @@ use reedline::{
     ReedlineMenu,
     Signal,
 };
+use self_update::cargo_crate_version;
 use umm::{
     clean,
     grade,
@@ -51,6 +52,21 @@ use umm::{
         FileType,
     },
 };
+
+fn update() -> Result<()> {
+    let status = self_update::backends::github::Update::configure()
+        .repo_owner("dhruvdh")
+        .repo_name("umm")
+        .bin_name("umm")
+        .target_version_tag("main")
+        .show_download_progress(true)
+        .show_output(false)
+        .current_version(cargo_crate_version!())
+        .build()?
+        .update()?;
+    println!("Update status: `{}`!", status.version());
+    Ok(())
+}
 
 /// A utility method to start the terminal shell and execute requested commands.
 fn shell() -> Result<()> {
@@ -233,6 +249,11 @@ fn shell() -> Result<()> {
 }
 
 fn main() -> Result<()> {
+    match update() {
+        Ok(_) => {}
+        Err(e) => eprintln!("{}", e),
+    };
+
     let f: Parser<Option<String>> = positional("FILENAME").optional();
     let cmd: Parser<Option<String>> = positional("COMMAND").optional();
     let combined_parser = construct!(cmd, f);

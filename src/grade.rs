@@ -11,10 +11,15 @@ use std::{
 };
 
 use anyhow::{
+    anyhow,
     Context,
     Result,
 };
-use rhai::EvalAltResult;
+use rhai::{
+    Array,
+    Dynamic,
+    EvalAltResult,
+};
 use tabled::{
     display::ExpandedDisplay,
     Alignment,
@@ -297,15 +302,25 @@ peg::parser! {
 /// * `req_name`: display name for requirement to use while displaying grade
 ///   result
 pub fn grade_docs(
-    files: Vec<&str>,
-    project: &Project,
-    out_of: u32,
-    req_name: String,
+    files: Array,
+    project: Project,
+    out_of: i64,
+    req_name: &str,
 ) -> Result<GradeResult> {
     let mut diags = vec![];
-
+    let files: Vec<String> = files
+        .iter()
+        .map(|f| match f.clone().into_string() {
+            Ok(n) => Ok(n),
+            Err(e) => Err(anyhow!(
+                "files array has something that's not a string: {}",
+                e
+            )),
+        })
+        .try_collect()?;
+    let out_of: u32 = out_of.try_into()?;
     for name in &files {
-        let file = project.identify(*name)?;
+        let file = project.identify(&name)?;
         let output = file.doc_check()?;
         for line in output.lines() {
             let result = parser::parse_diag(line);
@@ -334,7 +349,7 @@ pub fn grade_docs(
     );
 
     Ok(GradeResult {
-        Requirement: req_name,
+        Requirement: req_name.to_string(),
         Grade:       format!("{}/{}", grade, out_of),
         Reason:      String::from("See above."),
     })
@@ -353,12 +368,34 @@ pub fn grade_docs(
 /// * `req_name`: display name for requirement to use while displaying grade
 ///   result
 pub fn grade_by_tests(
-    test_files: Vec<String>,
-    expected_tests: Vec<String>,
-    project: &Project,
-    out_of: f32,
-    req_name: String,
+    test_files: Array,
+    expected_tests: Array,
+    project: Project,
+    out_of: f64,
+    req_name: &str,
 ) -> Result<GradeResult> {
+    let test_files: Vec<String> = test_files
+        .iter()
+        .map(|f| match f.clone().into_string() {
+            Ok(n) => Ok(n),
+            Err(e) => Err(anyhow!(
+                "files array has something that's not a string: {}",
+                e
+            )),
+        })
+        .try_collect()?;
+
+    let expected_tests: Vec<String> = expected_tests
+        .iter()
+        .map(|f| match f.clone().into_string() {
+            Ok(n) => Ok(n),
+            Err(e) => Err(anyhow!(
+                "files array has something that's not a string: {}",
+                e
+            )),
+        })
+        .try_collect()?;
+
     let mut actual_tests = vec![];
     let mut expected_tests = expected_tests;
     let mut reasons = vec![];
@@ -387,7 +424,7 @@ pub fn grade_by_tests(
 
     if !reasons.is_empty() {
         Ok(GradeResult {
-            Requirement: req_name,
+            Requirement: req_name.to_string(),
             Grade:       format!("0.00/{:.2}", out_of),
             Reason:      reasons.join("\n"),
         })
@@ -401,12 +438,12 @@ pub fn grade_by_tests(
                 let parse_result =
                     parser::num_tests_passed(line).context("While parsing Junit summary table");
                 if let Ok(n) = parse_result {
-                    num_tests_passed = n as f32;
+                    num_tests_passed = n as f64;
                 }
                 let parse_result =
                     parser::num_tests_found(line).context("While parsing Junit summary table");
                 if let Ok(n) = parse_result {
-                    num_tests_total = n as f32;
+                    num_tests_total = n as f64;
                 }
             }
         }
@@ -417,7 +454,7 @@ pub fn grade_by_tests(
         };
 
         Ok(GradeResult {
-            Requirement: req_name,
+            Requirement: req_name.to_string(),
             Grade:       format!("{:.2}/{:.2}", grade, out_of),
             Reason:      format!("- {}/{} tests passing.", num_tests_passed, num_tests_total),
         })
@@ -437,13 +474,54 @@ pub fn grade_by_tests(
 ///   testing.
 /// * `avoid_calls_to`: a list of methods to avoid calls to.
 pub fn grade_unit_tests(
-    req_name: String,
-    out_of: f32,
-    target_test: Vec<String>,
-    target_class: Vec<String>,
-    excluded_methods: Vec<String>,
-    avoid_calls_to: Vec<String>,
+    req_name: &str,
+    out_of: f64,
+    target_test: Array,
+    target_class: Array,
+    excluded_methods: Array,
+    avoid_calls_to: Array,
 ) -> Result<GradeResult> {
+    let target_test: Vec<String> = target_test
+        .iter()
+        .map(|f| match f.clone().into_string() {
+            Ok(n) => Ok(n),
+            Err(e) => Err(anyhow!(
+                "files array has something that's not a string: {}",
+                e
+            )),
+        })
+        .try_collect()?;
+    let target_class: Vec<String> = target_class
+        .iter()
+        .map(|f| match f.clone().into_string() {
+            Ok(n) => Ok(n),
+            Err(e) => Err(anyhow!(
+                "files array has something that's not a string: {}",
+                e
+            )),
+        })
+        .try_collect()?;
+    let excluded_methods: Vec<String> = excluded_methods
+        .iter()
+        .map(|f| match f.clone().into_string() {
+            Ok(n) => Ok(n),
+            Err(e) => Err(anyhow!(
+                "files array has something that's not a string: {}",
+                e
+            )),
+        })
+        .try_collect()?;
+    let avoid_calls_to: Vec<String> = avoid_calls_to
+        .iter()
+        .map(|f| match f.clone().into_string() {
+            Ok(n) => Ok(n),
+            Err(e) => Err(anyhow!(
+                "files array has something that's not a string: {}",
+                e
+            )),
+        })
+        .try_collect()?;
+
     let child = Command::new(java_path()?)
         .args([
             "--class-path",
@@ -507,7 +585,7 @@ pub fn grade_unit_tests(
         println!("Problematic mutation test failures printed about.");
 
         Ok(GradeResult {
-            Requirement: req_name,
+            Requirement: req_name.to_string(),
             Grade:       format!("{}/{}", (out_of as u32).saturating_sub(penalty), out_of),
             Reason:      format!("-{} Penalty due to surviving muations", penalty),
         })
@@ -519,7 +597,7 @@ pub fn grade_unit_tests(
         .concat();
         println!("{}", output);
         Ok(GradeResult {
-            Requirement: req_name,
+            Requirement: req_name.to_string(),
             Grade:       format!("0/{}", out_of),
             Reason:      String::from(
                 "Something went wrong while running mutation tests, skipping.",
@@ -529,6 +607,10 @@ pub fn grade_unit_tests(
 }
 
 /// Print grade result
-pub fn show_result(results: Vec<GradeResult>) {
+pub fn show_result(results: Array) {
+    let results: Vec<GradeResult> = results
+        .iter()
+        .map(|f| f.clone().cast::<GradeResult>())
+        .collect();
     println!("{}", Table::new(results).with(tabled::Style::modern()));
 }
