@@ -1,0 +1,13 @@
+[package]
+name = "umm_derive"
+version = "0.1.0"
+edition = "2021"
+
+
+[lib]
+proc_macro = true
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+syn = { version = "1.0.95", features = ["full", "extra-traits"] }
+quote = "1.0.18"
