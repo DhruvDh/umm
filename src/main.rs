@@ -53,12 +53,13 @@ use umm::{
     },
 };
 
+/// Updates binary based on github releases
 fn update() -> Result<()> {
     let status = self_update::backends::github::Update::configure()
         .repo_owner("dhruvdh")
         .repo_name("umm")
         .bin_name("umm")
-        .target_version_tag("main")
+        .target_version_tag("summer_22")
         .show_download_progress(true)
         .show_output(false)
         .current_version(cargo_crate_version!())

@@ -57,6 +57,7 @@ pub fn grade(script_url: &str) -> Result<()> {
         .register_result_fn("test", File::test_script)
         .register_result_fn("grade_docs", grade_docs_script)
         .register_result_fn("grade_unit_tests", grade_unit_tests_script)
+        .register_result_fn("grade_by_hidden_tests", grade_by_hidden_tests_script)
         .register_result_fn("grade_by_tests", grade_by_tests_script);
 
     println!("{}", engine.gen_fn_signatures(false).join("\n"));

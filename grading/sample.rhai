@@ -1,3 +1,6 @@
+// url for this file -
+// https://www.dropbox.com/s/h1rqcejfapbfwb4/sample.rhai?raw=1
+
 let project = new_project();
 
 let req_1 = grade_docs(["pyramid_scheme.LinkedTree"], project, 10, "1");
@@ -50,4 +53,11 @@ let req_5 = grade_by_tests(
     "3",
 );
 
-show_results([req_1, req_2, req_3, req_4, req_5]);
+let req_6 = grade_by_hidden_tests(
+    "https://www.dropbox.com/s/47jd1jru1f1i0cc/ABCTest.java?raw=1",
+    "ABCTest",
+    30.0,
+    "4"
+);
+
+show_results([req_1, req_2, req_3, req_4, req_5, req_6]);

@@ -336,14 +336,7 @@ impl File {
 
         match child.wait_with_output() {
             Ok(status) => {
-                if status.status.success() {
-                    println!(
-                        "{}",
-                        "No compiler errors in checked file or other source files it imports."
-                            .bright_green()
-                            .bold(),
-                    );
-                } else {
+                if !status.status.success() {
                     bail!(
                         "There were compiler errors in checked file or other source files it \
                          imports."
@@ -457,11 +450,6 @@ impl File {
             .output()
             .context("Could not issue java command to run the tests for some reason.")?;
 
-        if child.status.success() {
-            println!("{}", "Ran and exited successfully.".bright_green().bold(),);
-        } else {
-            println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
-        }
         let output = [
             String::from_utf8(child.stderr)?,
             String::from_utf8(child.stdout)?,
