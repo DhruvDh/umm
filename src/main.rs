@@ -156,21 +156,21 @@ fn shell() -> Result<()> {
                 }
                 b if b.starts_with("run") => {
                     let b = b.replace("run ", "");
-                    let res = project.identify(b)?.run();
+                    let res = project.identify(b.as_str())?.run();
                     if res.is_err() {
                         eprintln!("{:?}", res);
                     }
                 }
                 b if b.starts_with("check") => {
                     let b = b.replace("check ", "");
-                    let res = project.identify(b)?.check();
+                    let res = project.identify(b.as_str())?.check();
                     if res.is_err() {
                         eprintln!("{:?}", res);
                     }
                 }
                 b if b.starts_with("doc-check") => {
                     let b = b.replace("doc-check ", "");
-                    let res = project.identify(b)?.doc_check();
+                    let res = project.identify(b.as_str())?.doc_check();
                     if res.is_err() {
                         eprintln!("{:?}", res);
                     }
@@ -184,7 +184,7 @@ fn shell() -> Result<()> {
                     let name = String::from(*b.get(0).unwrap());
 
                     let res = match b.len().cmp(&1) {
-                        Ordering::Equal => project.identify(name)?.test(Vec::<String>::new()),
+                        Ordering::Equal => project.identify(name.as_str())?.test(Vec::new()),
                         Ordering::Greater => {
                             let b = {
                                 let mut new_b = vec![];
@@ -194,7 +194,9 @@ fn shell() -> Result<()> {
                                 new_b
                             };
 
-                            project.identify(name)?.test(b)
+                            let b = b.iter().map(|i| i.as_str()).collect();
+
+                            project.identify(name.as_str())?.test(b)
                         }
                         Ordering::Less => Err(anyhow!("No test file mentioned")),
                     };
@@ -246,14 +248,14 @@ fn main() -> Result<()> {
     match cmd {
         // TODO: move this to a separate method and call that method in shell()
         Some(a) => match a.as_str() {
-            "run" => project.identify(f)?.run()?,
-            "check" => project.identify(f)?.check()?,
+            "run" => project.identify(f.as_str())?.run()?,
+            "check" => project.identify(f.as_str())?.check()?,
             "test" => {
-                let out = project.identify(f)?.test::<String>(vec![])?;
+                let out = project.identify(f.as_str())?.test(vec![])?;
                 println!("{}", out);
             }
             "doc-check" => {
-                let out = project.identify(f)?.doc_check()?;
+                let out = project.identify(f.as_str())?.doc_check()?;
                 println!("{}", out);
             }
             "grade" => grade(&f)?,

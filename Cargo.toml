@@ -35,6 +35,6 @@ reedline = { git = "https://github.com/DhruvDh/reedline", features = [
 nu-ansi-term = "0.45.1"
 crossterm = "0.23.2"
 bpaf = "0.4.3"
-rhai = {version = "1.7.0", features = ["metadata", "decimal", "sync"]}
+rhai = { version = "1.7.0", features = ["metadata", "decimal", "sync"] }
 temp-file = "0.1.7"
-
+umm_derive = { path = "./umm_derive" }

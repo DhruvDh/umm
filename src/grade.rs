@@ -14,6 +14,7 @@ use anyhow::{
     Context,
     Result,
 };
+use rhai::EvalAltResult;
 use tabled::{
     display::ExpandedDisplay,
     Alignment,
@@ -26,6 +27,7 @@ use tabled::{
     Table,
     Tabled,
 };
+use umm_derive::generate_rhai_variant;
 
 use crate::{
     constants::{
@@ -39,7 +41,7 @@ use crate::{
     },
 };
 
-#[derive(Tabled)]
+#[derive(Tabled, Clone)]
 #[allow(non_snake_case)]
 /// A struct to store grading results and display them
 pub struct GradeResult {
@@ -284,6 +286,7 @@ peg::parser! {
     }
 }
 
+#[generate_rhai_variant]
 /// Grades documentation by using the -Xdoclint javac flag.
 /// Scans javac output for generated warnings and grades accordingly.
 /// TODO: have customizable grade penalties
@@ -337,6 +340,7 @@ pub fn grade_docs(
     })
 }
 
+#[generate_rhai_variant]
 /// Grades by running tests, and reports how many tests pass.
 /// Final grade is the same percentage of maximum grade as the number of tests
 /// passing.
@@ -391,7 +395,7 @@ pub fn grade_by_tests(
         let mut num_tests_passed = 0.0;
         let mut num_tests_total = 0.0;
         for test_file in test_files {
-            let res = project.identify(test_file)?.test(Vec::<String>::new())?;
+            let res = project.identify(test_file.as_str())?.test(Vec::new())?;
 
             for line in res.lines() {
                 let parse_result =
@@ -420,6 +424,7 @@ pub fn grade_by_tests(
     }
 }
 
+#[generate_rhai_variant]
 /// Runs mutation tests using ![Pitest](http://pitest.org/) to grade unit tests written by
 /// students.
 ///
@@ -521,4 +526,9 @@ pub fn grade_unit_tests(
             ),
         })
     }
+}
+
+/// Print grade result
+pub fn show_result(results: Vec<GradeResult>) {
+    println!("{}", Table::new(results).with(tabled::Style::modern()));
 }

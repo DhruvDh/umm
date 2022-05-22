@@ -24,10 +24,17 @@ use anyhow::{
     Result,
 };
 use constants::BUILD_DIR;
+use grade::*;
+use java::{
+    File,
+    FileType,
+    Project,
+};
 use rhai::{
     Engine,
     EvalAltResult,
 };
+use umm_derive::generate_rhai_variant;
 
 /// Defined for convenience
 type Dict = std::collections::HashMap<String, String>;
@@ -35,7 +42,20 @@ type Dict = std::collections::HashMap<String, String>;
 /// Prints the result of grading
 pub fn grade(script_url: &str) -> Result<()> {
     let mut engine = Engine::new();
-    engine.register_result_fn("clean", clean_script);
+    engine
+        .register_type::<GradeResult>()
+        .register_type_with_name::<FileType>("JavaFileType")
+        .register_type_with_name::<File>("JavaFile")
+        .register_type_with_name::<Project>("JavaProject")
+        .register_fn("show_results", show_result)
+        .register_result_fn("clean", clean_script)
+        .register_result_fn("identify", Project::identify_script)
+        .register_result_fn("check", File::check_script)
+        .register_result_fn("run", File::run_script)
+        .register_result_fn("test", File::test_script)
+        .register_result_fn("grade_docs", grade_docs_script)
+        .register_result_fn("grade_unit_tests", grade_unit_tests_script)
+        .register_result_fn("grade_by_tests", grade_by_tests_script);
 
     // Download grading script
     let script = {
@@ -46,7 +66,7 @@ pub fn grade(script_url: &str) -> Result<()> {
         let len = resp
             .header("Content-Length")
             .and_then(|s| s.parse::<usize>().ok())
-            .unwrap();
+            .unwrap_or(1024);
 
         let mut bytes: Vec<u8> = Vec::with_capacity(len);
 
@@ -60,25 +80,18 @@ pub fn grade(script_url: &str) -> Result<()> {
 
         String::from_utf8(bytes)?
     };
-    // Your first Rhai Script
 
-    // Run the script - prints "42"
+    // Run the script
     engine.run(&script)?;
 
     Ok(())
 }
 
+#[generate_rhai_variant]
 /// Deletes all java compiler artefacts
 pub fn clean() -> Result<()> {
     std::fs::remove_dir_all(BUILD_DIR.as_path())
         .with_context(|| format!("Could not delete {}", BUILD_DIR.display()))
-}
-
-fn clean_script() -> Result<(), Box<EvalAltResult>> {
-    match clean() {
-        Ok(_) => Ok(()),
-        Err(e) => Err(e.to_string().into()),
-    }
 }
 
 // TODO: replace std::Command with cmd_lib

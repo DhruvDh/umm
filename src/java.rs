@@ -17,6 +17,7 @@ use anyhow::{
     Result,
 };
 use colored::Colorize;
+use rhai::EvalAltResult;
 use serde::{
     Deserialize,
     Serialize,
@@ -26,6 +27,7 @@ use tree_sitter::{
     QueryCursor,
     Tree,
 };
+use umm_derive::generate_rhai_variant;
 
 use crate::{
     constants::*,
@@ -169,6 +171,7 @@ impl Parser {
 }
 
 impl File {
+    #[generate_rhai_variant(Impl)]
     /// Creates a new `File` from `path`
     ///
     /// * `path`: the path to read and try to create a File instance for.
@@ -268,6 +271,7 @@ impl File {
         })
     }
 
+    #[generate_rhai_variant]
     /// Utility method to ask javac for documentation lints using the -Xdoclint
     /// flag.
     ///
@@ -302,6 +306,7 @@ impl File {
         Ok(output)
     }
 
+    #[generate_rhai_variant]
     /// Utility method to check for syntax errors using javac flag.
     /// TODO: instead of printing javac output, return it.
     /// TODO: have all such methods have generated versions that display output
@@ -356,6 +361,7 @@ impl File {
         Ok(())
     }
 
+    #[generate_rhai_variant]
     /// Utility method to run a java file that has a main method.
     /// TODO: instead of printing javac output, return it.
     /// TODO: have all such methods have generated versions that display output
@@ -391,6 +397,7 @@ impl File {
         Ok(())
     }
 
+    #[generate_rhai_variant]
     /// A utility method that takes a list of strings (or types that implement
     /// Into<String>) meant to represent test method names, and runs those
     /// tests.
@@ -400,12 +407,12 @@ impl File {
     ///
     /// * `tests`: list of strings (or types that implement
     /// Into<String>) meant to represent test method names,
-    pub fn test<T: Into<String>>(&self, tests: Vec<T>) -> Result<String> {
+    pub fn test(&self, tests: Vec<&str>) -> Result<String> {
         self.check()?;
         let tests = {
             let mut new_tests = Vec::<String>::new();
             for t in tests {
-                new_tests.push(format!("{}#{}", self.proper_name.clone(), t.into()));
+                new_tests.push(format!("{}#{}", self.proper_name.clone(), t));
             }
 
             if new_tests.is_empty() {
@@ -478,9 +485,66 @@ impl File {
     pub fn test_methods(&self) -> Vec<String> {
         self.test_methods.clone()
     }
+
+    #[generate_rhai_variant]
+    /// treesitter query for this file
+    pub fn query(&self, q: &str) -> Result<Vec<Dict>> {
+        let parser = {
+            let source_code = std::fs::read_to_string(&self.path)
+                .with_context(|| format!("Could not read file: {:?}", &self.path))?;
+            Parser::new(source_code, *JAVA_TS_LANG)?
+        };
+
+        let mut results = vec![];
+
+        let query = Query::new(parser.lang, q).unwrap();
+
+        let mut cursor = QueryCursor::new();
+        let matches = cursor.matches(&query, parser._tree.root_node(), parser.code.as_bytes());
+        let capture_names = query.capture_names();
+
+        for m in matches {
+            let mut result = Dict::new();
+
+            for name in capture_names {
+                let index = query.capture_index_for_name(name);
+                let index = match index {
+                    Some(i) => i,
+                    None => bail!(
+                        "Error while querying source code. Capture name: {} has no index \
+                         associated.",
+                        name
+                    ),
+                };
+
+                let value = m.captures.iter().find(|c| c.index == index);
+                let value = match value {
+                    Some(v) => v,
+                    None => continue,
+                };
+
+                let value = value
+                    .node
+                    .utf8_text(parser.code.as_bytes())
+                    .with_context(|| {
+                        format!(
+                            "Cannot match query result indices with source code for capture name: \
+                             {}.",
+                            name
+                        )
+                    })?;
+
+                result.insert(name.clone(), value.to_string());
+            }
+            results.push(result);
+        }
+
+        Ok(results)
+    }
 }
 
 impl Project {
+    #[generate_rhai_variant(Impl)]
     /// Initializes a Project, by discovering java files in the
     /// [struct@UMM_DIR] directory. Also downloads some `jar`
     /// files required for unit testing and mutation testing.
@@ -528,13 +592,14 @@ false    )?;
         })
     }
 
+    #[generate_rhai_variant]
     /// Attempts to identiy the correct file from the project from a partial or
     /// fully formed name as expected by a java compiler.
     ///
     /// Returns a reference to the identified file, if any.
     ///
     /// * `name`: partial/fully formed name of the Java file to look for.
-    pub fn identify<T: Into<String>>(&self, name: T) -> Result<File> {
+    pub fn identify(&self, name: &str) -> Result<File> {
         let name: String = name.into();
 
         if let Some(i) = self.names.iter().position(|n| *n == name) {
