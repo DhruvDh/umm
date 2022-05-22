@@ -14,15 +14,10 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-use std::{
-    cmp::Ordering,
-    fs::File,
-    io::Write,
-};
+use std::cmp::Ordering;
 
 use anyhow::{
     anyhow,
-    Context,
     Result,
 };
 use bpaf::*;
@@ -50,7 +45,6 @@ use reedline::{
 };
 use umm::{
     clean,
-    constants::UMM_DIR,
     grade,
     java::{
         self,
@@ -210,8 +204,9 @@ fn shell() -> Result<()> {
                         Err(e) => eprintln!("{}", e.backtrace()),
                     };
                 }
-                "grade" => {
-                    let res = grade();
+                b if b.starts_with("grade") => {
+                    let b = b.replace("grade", "");
+                    let res = grade(&b);
                     if res.is_err() {
                         eprintln!("{:?}", res);
                     }
@@ -261,7 +256,7 @@ fn main() -> Result<()> {
                 let out = project.identify(f)?.doc_check()?;
                 println!("{}", out);
             }
-            "grade" => grade()?,
+            "grade" => grade(&f)?,
             "clean" => clean()?,
             "info" => project.info()?,
             _ => println!("{} is not a valid subcommand.", a),

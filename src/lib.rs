@@ -17,6 +17,8 @@ pub mod java;
 /// Utility functions for convenience
 pub mod util;
 
+use std::io::Read;
+
 use anyhow::{
     Context,
     Result,
@@ -26,23 +28,42 @@ use rhai::{
     Engine,
     EvalAltResult,
 };
-use tabled::Table;
 
 /// Defined for convenience
 type Dict = std::collections::HashMap<String, String>;
 
 /// Prints the result of grading
-pub fn grade() -> Result<()> {
+pub fn grade(script_url: &str) -> Result<()> {
     let mut engine = Engine::new();
     engine.register_result_fn("clean", clean_script);
 
     // Download grading script
+    let script = {
+        let resp = ureq::get(script_url)
+            .call()
+            .context(format!("Failed to download {}", script_url))?;
 
+        let len = resp
+            .header("Content-Length")
+            .and_then(|s| s.parse::<usize>().ok())
+            .unwrap();
+
+        let mut bytes: Vec<u8> = Vec::with_capacity(len);
+
+        resp.into_reader()
+            .take(10_000_000)
+            .read_to_end(&mut bytes)
+            .context(format!(
+                "Failed to read response till the end while downloading file at {}",
+                script_url,
+            ))?;
+
+        String::from_utf8(bytes)?
+    };
     // Your first Rhai Script
-    let script = "clean();";
 
     // Run the script - prints "42"
-    engine.run(script)?;
+    engine.run(&script)?;
 
     Ok(())
 }
