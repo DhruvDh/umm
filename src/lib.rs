@@ -18,10 +18,7 @@ pub mod java;
 /// Utility functions for convenience
 pub mod util;
 
-use std::{
-    fs::read_to_string,
-    io::Read,
-};
+use std::io::Read;
 
 use anyhow::{
     Context,
@@ -87,8 +84,6 @@ pub fn grade(script_url: &str) -> Result<()> {
         String::from_utf8(bytes)?
     };
 
-    let script =
-        read_to_string("/Users/dhruvdh/Dropbox/documents/ITSC 2214/oof/umm/grading/sample.rhai")?;
     // Run the script
     engine.run(&script)?;
 
