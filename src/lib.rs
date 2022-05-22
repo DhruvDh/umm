@@ -60,7 +60,7 @@ pub fn grade(script_url: &str) -> Result<()> {
         .register_result_fn("grade_by_hidden_tests", grade_by_hidden_tests_script)
         .register_result_fn("grade_by_tests", grade_by_tests_script);
 
-    println!("{}", engine.gen_fn_signatures(false).join("\n"));
+    // println!("{}", engine.gen_fn_signatures(false).join("\n"));
     // Download grading script
     let script = {
         let resp = ureq::get(script_url)

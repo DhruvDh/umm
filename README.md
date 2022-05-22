@@ -1,5 +1,13 @@
 # umm
 
+- [umm](#umm)
+  - [Introduction](#introduction)
+  - [Installation](#installation)
+  - [Auto-grading](#auto-grading)
+    - [Sample grading script](#sample-grading-script)
+    - [Output](#output)
+  - [License](#license)
+
 ## Introduction
 
 A java build tool for novices.
@@ -87,7 +95,79 @@ show_results([req_1, req_2, req_3, req_4, req_5, req_6]);
 ```
 
 ### Output
+```
+┌─────────────────────────────────────────────────────┬
+│     Check javadoc for pyramid_scheme.LinkedTree     │
+├─────────────────────────────────────────────────────┼
+│      File       │ Line │          Message           │
+├─────────────────┼──────┼────────────────────────────┤
+│ LinkedTree.java │  14  │   no initial description   │
+├─────────────────┼──────┼────────────────────────────┤
+│ LinkedTree.java │  15  │ no description for @param  │
+├─────────────────┼──────┼────────────────────────────┤
+│ LinkedTree.java │  29  │ no description for @param  │
+├─────────────────┼──────┼────────────────────────────┤
+│ LinkedTree.java │  56  │   Error: unknown tag: T    │
+├─────────────────┼──────┼────────────────────────────┤
+│ LinkedTree.java │  72  │ no description for @throws │
+├─────────────────┼──────┼────────────────────────────┤
+│ LinkedTree.java │ 251  │ no description for @param  │
+├─────────────────┼──────┼────────────────────────────┤
+│                  -18 due to 6 nits                  │
+└─────────────────────────────────────────────────────┴
 
+Running Mutation tests -
+6:04:54 PM PIT >> INFO : Verbose logging is disabled. If you encounter a problem, please enable it before reporting an issue.
+6:04:54 PM PIT >> INFO : Incremental analysis reduced number of mutations by 0
+6:04:54 PM PIT >> INFO : Created  0 mutation test units in pre scan
+Exception in thread "main" org.pitest.help.PitHelpError: No mutations found. This probably means there is an issue with either the supplied classpath or filters.
+See http://pitest.org for more details.
+	at org.pitest.mutationtest.tooling.MutationCoverage.checkMutationsFound(MutationCoverage.java:352)
+	at org.pitest.mutationtest.tooling.MutationCoverage.runReport(MutationCoverage.java:132)
+	at org.pitest.mutationtest.tooling.EntryPoint.execute(EntryPoint.java:123)
+	at org.pitest.mutationtest.tooling.EntryPoint.execute(EntryPoint.java:54)
+	at org.pitest.mutationtest.commandline.MutationCoverageReport.runReport(MutationCoverageReport.java:98)
+	at org.pitest.mutationtest.commandline.MutationCoverageReport.main(MutationCoverageReport.java:45)
+
+┌────────────────────────────────────────────────────────┬
+│     Check javadoc for pyramid_scheme.PyramidScheme     │
+├────────────────────────────────────────────────────────┼
+│        File        │ Line │          Message           │
+├────────────────────┼──────┼────────────────────────────┤
+│ PyramidScheme.java │  10  │ Error: unknown tag: Person │
+├────────────────────┼──────┼────────────────────────────┤
+│ PyramidScheme.java │  18  │         no comment         │
+├────────────────────┼──────┼────────────────────────────┤
+│ PyramidScheme.java │  19  │         no comment         │
+├────────────────────┼──────┼────────────────────────────┤
+│ PyramidScheme.java │ 165  │ no description for @throws │
+├────────────────────┼──────┼────────────────────────────┤
+│ PyramidScheme.java │ 241  │ no description for @return │
+├────────────────────┼──────┼────────────────────────────┤
+│                   -15 due to 5 nits                    │
+└────────────────────────────────────────────────────────┴
+
+┌─────────────────────────────────────────────────────────────────┬
+│                        Grading Overview                         │
+├─────────────────────────────────────────────────────────────────┼
+│ Requirement │   Grade    │                Reason                │
+├─────────────┼────────────┼──────────────────────────────────────┤
+│      1      │    0/10    │              See above.              │
+├─────────────┼────────────┼──────────────────────────────────────┤
+│      2      │ 0.00/20.00 │         - 0/5 tests passing.         │
+├─────────────┼────────────┼──────────────────────────────────────┤
+│      2      │    0/20    │ Something went wrong while running m │
+│             │            │       utation tests, skipping.       │
+├─────────────┼────────────┼──────────────────────────────────────┤
+│      3      │    0/10    │              See above.              │
+├─────────────┼────────────┼──────────────────────────────────────┤
+│      3      │ 0.00/30.00 │         - 0/3 tests passing.         │
+├─────────────┼────────────┼──────────────────────────────────────┤
+│      4      │ 0.00/30.00 │         - 0/5 tests passing.         │
+├─────────────┼────────────┼──────────────────────────────────────┤
+│                       Total: 0.00/120.00                        │
+└─────────────────────────────────────────────────────────────────┴
+```
 ## License
 
 See `license.html` for a list of all licenses used in this project.
