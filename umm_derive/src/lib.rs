@@ -74,48 +74,25 @@ pub fn generate_rhai_variant(attr: TokenStream, input: TokenStream) -> TokenStre
         }
     };
 
-    // Build the output, possibly using quasi-quotation
-    let expanded = if is_impl_self_fn {
-        quote! {
-        #og_fn
-
-        /// Macro generated version that returns EvalAltResult.
-        /// This allows the function to be used in scripts.
-        pub fn #new_fn_name(#sig_args) #output {
-            // TODO: create an args that has only names serpated by commas
-            match self.#fn_name(#args) {
-                Ok(res) => Ok(res),
-                Err(e) => Err(e.to_string().into()),
-            }
-        }
-        }
+    let match_expr = if is_impl_self_fn {
+        quote! { self.#fn_name(#args) }
     } else if is_impl_fn {
-        quote! {
-        #og_fn
-
-        /// Macro generated version that returns EvalAltResult.
-        /// This allows the function to be used in scripts.
-        pub fn #new_fn_name(#sig_args) #output {
-            // TODO: create an args that has only names serpated by commas
-            match Self::#fn_name(#args) {
-                Ok(res) => Ok(res),
-                Err(e) => Err(e.to_string().into()),
-            }
-        }
-        }
+        quote! { Self::#fn_name(#args) }
     } else {
-        quote! {
+        quote! { #fn_name(#args) }
+    };
+
+    // Build the output, possibly using quasi-quotation
+    let expanded = quote! {
         #og_fn
 
-        /// Macro generated version that returns EvalAltResult.
+        /// Macro generated variant of #fn_name that returns EvalAltResult.
         /// This allows the function to be used in scripts.
         pub fn #new_fn_name(#sig_args) #output {
-            // TODO: create an args that has only names serpated by commas
-            match #fn_name(#args) {
+            match #match_expr {
                 Ok(res) => Ok(res),
                 Err(e) => Err(e.to_string().into()),
             }
-        }
         }
     };
 
