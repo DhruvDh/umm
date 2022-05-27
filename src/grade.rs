@@ -40,7 +40,6 @@ use crate::{
     constants::{
         ROOT_DIR,
         SOURCE_DIR,
-        TEST_DIR,
     },
     java::Project,
     util::{
@@ -543,7 +542,12 @@ pub fn grade_unit_tests(
             "--targetTests",
             target_test.join(",").as_str(),
             "--sourceDirs",
-            SOURCE_DIR.to_str().unwrap(),
+            vec![
+                SOURCE_DIR.to_str().unwrap_or("."),
+                ROOT_DIR.to_str().unwrap_or("."),
+            ]
+            .join(",")
+            .as_str(),
             "--timestampedReports",
             "false",
             "--outputFormats",
@@ -647,7 +651,7 @@ pub fn grade_by_hidden_tests(
 
         bytes
     };
-    let path = TEST_DIR.join(format!("{}.java", test_class_name));
+    let path = ROOT_DIR.join(format!("{}.java", test_class_name));
     let mut file = File::create(&path)?;
     file.write_all(&test_source)?;
 
@@ -677,6 +681,7 @@ pub fn grade_by_hidden_tests(
         }
     };
 
+    std::fs::remove_file(&path)?;
     Ok(out)
 }
 

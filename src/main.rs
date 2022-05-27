@@ -63,6 +63,7 @@ fn update() -> Result<()> {
         .show_download_progress(true)
         .show_output(false)
         .current_version(cargo_crate_version!())
+        .no_confirm(true)
         .build()?
         .update()?;
     println!("Update status: `{}`!", status.version());
@@ -237,6 +238,12 @@ fn shell() -> Result<()> {
                     }
                 }
                 "info" => project.info()?,
+                "update" => {
+                    match update() {
+                        Ok(_) => {}
+                        Err(e) => eprintln!("{}", e),
+                    };
+                }
                 _ => {
                     println!("Don't know how to {:?}", buffer.trim());
                 }
@@ -250,11 +257,6 @@ fn shell() -> Result<()> {
 }
 
 fn main() -> Result<()> {
-    match update() {
-        Ok(_) => {}
-        Err(e) => eprintln!("{}", e),
-    };
-
     let f: Parser<Option<String>> = positional("FILENAME").optional();
     let cmd: Parser<Option<String>> = positional("COMMAND").optional();
     let combined_parser = construct!(cmd, f);
@@ -283,6 +285,12 @@ fn main() -> Result<()> {
             "grade" => grade(&f)?,
             "clean" => clean()?,
             "info" => project.info()?,
+            "update" => {
+                match update() {
+                    Ok(_) => {}
+                    Err(e) => eprintln!("{}", e),
+                };
+            }
             _ => println!("{} is not a valid subcommand.", a),
         },
         None => shell()?,

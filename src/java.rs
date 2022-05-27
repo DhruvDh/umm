@@ -75,9 +75,11 @@ pub struct File {
 /// JavaFile.
 pub struct Project {
     /// Collection of java files in this project
-    files: Vec<File>,
+    files:     Vec<File>,
     /// Names of java files in this project.
-    names: Vec<String>,
+    names:     Vec<String>,
+    /// Classpath
+    classpath: String,
 }
 
 /// A struct that wraps a tree-sitter parser object and source code
@@ -282,7 +284,7 @@ impl File {
         let child = Command::new(javac_path()?)
             .args([
                 "--source-path",
-                SOURCE_DIR.to_str().unwrap(),
+                sourcepath()?.as_str(),
                 "-g",
                 "--class-path",
                 classpath()?.as_str(),
@@ -320,7 +322,7 @@ impl File {
             .stderr(Stdio::inherit())
             .args([
                 "--source-path",
-                SOURCE_DIR.to_str().unwrap(),
+                sourcepath()?.as_str(),
                 "-g",
                 "--class-path",
                 classpath()?.as_str(),
@@ -549,10 +551,13 @@ impl Project {
             files.push(file);
         }
 
-    //     download(
-    //     "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/DataStructures.jar?raw=true",
-    //     &LIB_DIR.join("DataStructures.jar"),
-    // false)?;
+        if !LIB_DIR.as_path().is_dir() {
+            std::fs::create_dir(LIB_DIR.as_path()).unwrap();
+        }
+        //     download(
+        //     "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/DataStructures.jar?raw=true",
+        //     &LIB_DIR.join("DataStructures.jar"),
+        // false)?;
         download(
         "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/junit-platform-console-standalone-1.8.0-RC1.jar?raw=true",
         &LIB_DIR.join("junit-platform-console-standalone-1.8.0-RC1.jar"),
@@ -577,6 +582,7 @@ false    )?;
         Ok(Self {
             files,
             names,
+            classpath: classpath()?,
         })
     }
 
