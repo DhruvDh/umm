@@ -66,7 +66,7 @@ fn update() -> Result<()> {
         .no_confirm(true)
         .build()?
         .update()?;
-    println!("Update status: `{}`!", status.version());
+    eprintln!("Update status: `{}`!", status.version());
     Ok(())
 }
 
@@ -291,7 +291,7 @@ fn main() -> Result<()> {
                     Err(e) => eprintln!("{}", e),
                 };
             }
-            _ => println!("{} is not a valid subcommand.", a),
+            _ => eprintln!("{} is not a valid subcommand.", a),
         },
         None => shell()?,
     };

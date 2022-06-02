@@ -381,9 +381,9 @@ impl File {
         match child.wait_with_output() {
             Ok(status) => {
                 if status.status.success() {
-                    println!("{}", "Ran and exited successfully.".bright_green().bold(),);
+                    eprintln!("{}", "Ran and exited successfully.".bright_green().bold(),);
                 } else {
-                    println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
+                    eprintln!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
                 }
             }
             Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),

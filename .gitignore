@@ -1,6 +1,7 @@
 .DS_Store
 history.txt
 .idea
+grading/**/**/*.java
 
 # Added by cargo
 

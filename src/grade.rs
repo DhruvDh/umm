@@ -340,7 +340,7 @@ pub fn grade_docs(
     let penalty = diags.len() as u32 * 3;
     let grade = out_of.saturating_sub(penalty);
     let num_diags = diags.len();
-    println!(
+    eprintln!(
         "{}",
         Table::new(diags)
             .with(Header(format!("Check javadoc for {}", files.join(", "))))
@@ -486,7 +486,7 @@ pub fn grade_unit_tests(
     excluded_methods: Array,
     avoid_calls_to: Array,
 ) -> Result<GradeResult> {
-    println!("Running Mutation tests -");
+    eprintln!("Running Mutation tests -");
     let target_test: Vec<String> = target_test
         .iter()
         .map(|f| match f.clone().into_string() {
@@ -591,9 +591,9 @@ pub fn grade_unit_tests(
             };
         }
         let penalty = diags.len() as u32 * 4;
-        println!("Ran mutation tests for {} -", target_test.join(", "));
-        println!("{}", ExpandedDisplay::new(diags));
-        println!("Problematic mutation test failures printed about.");
+        eprintln!("Ran mutation tests for {} -", target_test.join(", "));
+        eprintln!("{}", ExpandedDisplay::new(diags));
+        eprintln!("Problematic mutation test failures printed about.");
 
         Ok(GradeResult {
             Requirement: req_name.to_string(),
@@ -606,7 +606,7 @@ pub fn grade_unit_tests(
             String::from_utf8(child.stdout)?,
         ]
         .concat();
-        println!("{}", output);
+        eprintln!("{}", output);
         Ok(GradeResult {
             Requirement: req_name.to_string(),
             Grade:       format!("0/{}", out_of),
@@ -699,7 +699,7 @@ pub fn show_result(results: Array) {
         (acc.0 + g, acc.1 + o)
     });
 
-    println!(
+    eprintln!(
         "{}",
         Table::new(results)
             .with(Header("Grading Overview"))
@@ -708,4 +708,6 @@ pub fn show_result(results: Array) {
             .with(Modify::new(Full).with(Alignment::center_horizontal()))
             .with(tabled::Style::modern())
     );
+
+    println!("p;{}", grade as isize);
 }
