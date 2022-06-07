@@ -199,7 +199,7 @@ fn shell() -> Result<()> {
                 b if b.starts_with("test ") => {
                     let b = b.replace("test ", "");
                     let b = b.split_whitespace().collect::<Vec<&str>>();
-                    let name = String::from(*b.get(0).unwrap());
+                    let name = String::from(*b.first().unwrap());
 
                     let res = match b.len().cmp(&1) {
                         Ordering::Equal => project.identify(name.as_str())?.test(Vec::new()),
