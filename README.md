@@ -2,6 +2,7 @@
 
 - [umm](#umm)
   - [Introduction](#introduction)
+  - [Documentation](#documentation)
   - [Installation](#installation)
   - [Auto-grading](#auto-grading)
     - [Sample grading script](#sample-grading-script)
@@ -11,6 +12,10 @@
 ## Introduction
 
 A java build tool for novices.
+
+## Documentation
+
+Rustdoc can be found at https://dhruvdh.github.io/umm/umm/index.html
 
 ## Installation
 
