@@ -26,13 +26,7 @@ let req_3 = grade_unit_tests(
     "2",
     20.0,
     ["pyramid_scheme.LinkedTreeTest"],
-    [
-        "pyramid_scheme.LinkedTreeTest#testGetRootElement",
-        "pyramid_scheme.LinkedTreeTest#testAddChild",
-        "pyramid_scheme.LinkedTreeTest#testFindNode",
-        "pyramid_scheme.LinkedTreeTest#testContains",
-        "pyramid_scheme.LinkedTreeTest#testSize",
-    ],
+    ["pyramid_scheme.LinkedTree"],
     [],
     []
 );

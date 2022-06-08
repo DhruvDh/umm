@@ -2,6 +2,7 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use std::{
+    io::Write,
     path::PathBuf,
     process::{
         Command,
@@ -554,6 +555,33 @@ impl Project {
         if !LIB_DIR.as_path().is_dir() {
             std::fs::create_dir(LIB_DIR.as_path()).unwrap();
         }
+
+        // TODO: Move this to an init function that takes CONSTANTS into account
+        if !ROOT_DIR.join(".vscode").as_path().is_dir() {
+            std::fs::create_dir(ROOT_DIR.join(".vscode").as_path()).unwrap();
+            let mut file = std::fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(ROOT_DIR.join(".vscode").join("settings.json").as_path())?;
+
+            write!(
+                &mut file,
+                r#"
+{{
+    "java.project.sourcePaths": [
+        ".",
+        "./src/",
+        "./test/"
+    ],
+    "java.project.outputPath": "./target/",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ],
+}}
+            "#
+            )?;
+        }
+
         //     download(
         //     "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/DataStructures.jar?raw=true",
         //     &LIB_DIR.join("DataStructures.jar"),
