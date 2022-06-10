@@ -1,5 +1,3 @@
-// https://www.dropbox.com/s/svav5ikceqge6ef/part2.rhai?raw=1
-
 let project = new_project();
 
 let req_1 = grade_by_tests(
