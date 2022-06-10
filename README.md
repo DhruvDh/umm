@@ -39,62 +39,67 @@ Also allows for running auto-grading scripts based on [Rhai](https://rhai.rs/boo
 
 let project = new_project();
 
-let req_1 = grade_docs(["pyramid_scheme.LinkedTree"], project, 10, "1");
 
-let req_2 = grade_by_tests(
-    [("pyramid_scheme.LinkedTreeTest")],
-    [
+let req_1 = new_docs_grader()
+    .files(["pyramid_scheme.LinkedTree"])
+    .project(project)
+    .out_of(10)
+    .req_name("1");
+
+let req_2 = new_by_tests_grader()
+    .test_files([("pyramid_scheme.LinkedTreeTest")])
+    .expected_tests([
         "pyramid_scheme.LinkedTreeTest#testGetRootElement",
         "pyramid_scheme.LinkedTreeTest#testAddChild",
         "pyramid_scheme.LinkedTreeTest#testFindNode",
         "pyramid_scheme.LinkedTreeTest#testContains",
         "pyramid_scheme.LinkedTreeTest#testSize",
-    ],
-    project,
-    20.0,
-    "2",
-);
+    ])
+    .project(project)
+    .out_of(20.0)
+    .req_name("2");
 
-let req_3 = grade_unit_tests(
-    "2",
-    20.0,
-    ["pyramid_scheme.LinkedTreeTest"],
-    [
+let req_3 = new_unit_test_grader()
+    .req_name("2")
+    .out_of(20.0)
+    .target_tests(["pyramid_scheme.LinkedTreeTest"])
+    .target_class([
         "pyramid_scheme.LinkedTreeTest#testGetRootElement",
         "pyramid_scheme.LinkedTreeTest#testAddChild",
         "pyramid_scheme.LinkedTreeTest#testFindNode",
         "pyramid_scheme.LinkedTreeTest#testContains",
         "pyramid_scheme.LinkedTreeTest#testSize",
-    ],
-    [],
-    []
-);
+    ]);
 
-let req_4 = grade_docs(
-    ["pyramid_scheme.PyramidScheme"],
-    project,
-    10,
-    "3",
-);
+let req_4 = new_docs_grader()
+    .files(["pyramid_scheme.PyramidScheme"])
+    .project(project)
+    .out_of(10)
+    .req_name("3");
 
-let req_5 = grade_by_tests(
-    ["pyramid_scheme.PyramidSchemeTest"],
-    [
+let req_5 = new_by_tests_grader()
+    .test_files([("pyramid_scheme.PyramidSchemeTest")])
+    .expected_tests([
         "pyramid_scheme.PyramidSchemeTest#testWhoBenefits",
         "pyramid_scheme.PyramidSchemeTest#testAddChild",
         "pyramid_scheme.PyramidSchemeTest#testInitiateCollapse",
-    ],
-    project,
-    30.0,
-    "3",
-);
+    ])
+    .project(project)
+    .out_of(30.0)
+    .req_name("3");
 
-let req_6 = grade_by_hidden_tests(
-    "https://www.dropbox.com/s/47jd1jru1f1i0cc/ABCTest.java?raw=1",
-    "ABCTest",
-    30.0,
-    "4"
-);
+(
+    url: &str,
+    test_class_name: &str,
+    out_of: f64,
+    req_name: &str,
+)
+
+let req_6 = new_by_hidden_tests_grader()
+    .url("https://www.dropbox.com/s/47jd1jru1f1i0cc/ABCTest.java?raw=1")
+    .test_class_name("ABCTest")
+    .out_of(30.0)
+    .req_name("4")
 
 show_results([req_1, req_2, req_3, req_4, req_5, req_6]);
 ```
