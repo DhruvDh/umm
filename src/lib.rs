@@ -18,10 +18,7 @@ pub mod java;
 /// Utility functions for convenience
 pub mod util;
 
-use std::{
-    fs::read_to_string,
-    io::Read,
-};
+use std::io::Read;
 
 use anyhow::{
     Context,
@@ -60,9 +57,10 @@ pub fn grade(script_url: &str) -> Result<()> {
         .register_result_fn("test", File::test_script)
         .register_result_fn("grade_docs", grade_docs_script)
         .register_result_fn("grade_unit_tests", grade_unit_tests_script)
+        .register_result_fn("grade_by_hidden_tests", grade_by_hidden_tests_script)
         .register_result_fn("grade_by_tests", grade_by_tests_script);
 
-    println!("{}", engine.gen_fn_signatures(false).join("\n"));
+    // println!("{}", engine.gen_fn_signatures(false).join("\n"));
     // Download grading script
     let script = {
         let resp = ureq::get(script_url)
@@ -87,8 +85,6 @@ pub fn grade(script_url: &str) -> Result<()> {
         String::from_utf8(bytes)?
     };
 
-    let script =
-        read_to_string("/Users/dhruvdh/Dropbox/documents/ITSC 2214/oof/umm/grading/sample.rhai")?;
     // Run the script
     engine.run(&script)?;
 

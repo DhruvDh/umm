@@ -1,24 +1,6 @@
 name: Rust
 
-on:
-  push:
-    branches:
-      - main
-      - master
-      - next
-      - next-assign1-spring-22
-      - next-assign2-spring-22
-      - next-assign3-spring-22
-      - next-lab3-spring-22
-  pull_request:
-    branches:
-      - main
-      - master
-      - next
-      - next-assign1-spring-22
-      - next-assign2-spring-22
-      - next-assign3-spring-22
-      - next-lab3-spring-22
+on: [workflow_dispatch]  
 
 env:
   CARGO_TERM_COLOR: always
@@ -35,13 +17,14 @@ jobs:
         sudo apt-get install libxcb1-dev libxcb-shape0-dev libxcb-xfixes0-dev
         rustup toolchain install nightly
         cargo +nightly build --release
+        mv ./target/release/umm ./target/release/umm-x86_64-unknown-linux-gnu
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
-        prerelease: true
-        name: release ${{ github.ref }}
-        tag_name: next-pre
+        prerelease: false
+        name: main
+        tag_name: summer_22
         generate_release_notes: true
         files: |
-          ./target/release/umm
+          ./target/release/umm-x86_64-unknown-linux-gnu
           

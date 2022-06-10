@@ -53,18 +53,20 @@ use umm::{
     },
 };
 
+/// Updates binary based on github releases
 fn update() -> Result<()> {
     let status = self_update::backends::github::Update::configure()
         .repo_owner("dhruvdh")
         .repo_name("umm")
         .bin_name("umm")
-        .target_version_tag("main")
+        .target_version_tag("summer_22")
         .show_download_progress(true)
         .show_output(false)
         .current_version(cargo_crate_version!())
+        .no_confirm(true)
         .build()?
         .update()?;
-    println!("Update status: `{}`!", status.version());
+    eprintln!("Update status: `{}`!", status.version());
     Ok(())
 }
 
@@ -197,7 +199,7 @@ fn shell() -> Result<()> {
                 b if b.starts_with("test ") => {
                     let b = b.replace("test ", "");
                     let b = b.split_whitespace().collect::<Vec<&str>>();
-                    let name = String::from(*b.get(0).unwrap());
+                    let name = String::from(*b.first().unwrap());
 
                     let res = match b.len().cmp(&1) {
                         Ordering::Equal => project.identify(name.as_str())?.test(Vec::new()),
@@ -236,6 +238,12 @@ fn shell() -> Result<()> {
                     }
                 }
                 "info" => project.info()?,
+                "update" => {
+                    match update() {
+                        Ok(_) => {}
+                        Err(e) => eprintln!("{}", e),
+                    };
+                }
                 _ => {
                     println!("Don't know how to {:?}", buffer.trim());
                 }
@@ -249,11 +257,6 @@ fn shell() -> Result<()> {
 }
 
 fn main() -> Result<()> {
-    match update() {
-        Ok(_) => {}
-        Err(e) => eprintln!("{}", e),
-    };
-
     let f: Parser<Option<String>> = positional("FILENAME").optional();
     let cmd: Parser<Option<String>> = positional("COMMAND").optional();
     let combined_parser = construct!(cmd, f);
@@ -282,7 +285,13 @@ fn main() -> Result<()> {
             "grade" => grade(&f)?,
             "clean" => clean()?,
             "info" => project.info()?,
-            _ => println!("{} is not a valid subcommand.", a),
+            "update" => {
+                match update() {
+                    Ok(_) => {}
+                    Err(e) => eprintln!("{}", e),
+                };
+            }
+            _ => eprintln!("{} is not a valid subcommand.", a),
         },
         None => shell()?,
     };

@@ -6,6 +6,8 @@ use std::{
     io::{
         BufRead,
         BufReader,
+        Read,
+        Write,
     },
     process::Command,
 };
@@ -59,10 +61,10 @@ pub struct GradeResult {
 }
 
 impl GradeResult {
-    /// Get a reference to the grade result's grade.
-    #[must_use]
-    pub fn grade(&self) -> &str {
-        self.Grade.as_ref()
+    /// Returns grade as u32
+    pub fn grade(&self) -> Result<(f32, f32)> {
+        let (grade, out_of) = self.Grade.split_once('/').unwrap_or(("0", "0"));
+        Ok((grade.parse::<f32>()?, out_of.parse::<f32>()?))
     }
 }
 
@@ -320,7 +322,7 @@ pub fn grade_docs(
         .try_collect()?;
     let out_of: u32 = out_of.try_into()?;
     for name in &files {
-        let file = project.identify(&name)?;
+        let file = project.identify(name)?;
         let output = file.doc_check()?;
         for line in output.lines() {
             let result = parser::parse_diag(line);
@@ -338,7 +340,7 @@ pub fn grade_docs(
     let penalty = diags.len() as u32 * 3;
     let grade = out_of.saturating_sub(penalty);
     let num_diags = diags.len();
-    println!(
+    eprintln!(
         "{}",
         Table::new(diags)
             .with(Header(format!("Check javadoc for {}", files.join(", "))))
@@ -379,7 +381,7 @@ pub fn grade_by_tests(
         .map(|f| match f.clone().into_string() {
             Ok(n) => Ok(n),
             Err(e) => Err(anyhow!(
-                "files array has something that's not a string: {}",
+                "test_files array has something that's not a string: {}",
                 e
             )),
         })
@@ -390,7 +392,7 @@ pub fn grade_by_tests(
         .map(|f| match f.clone().into_string() {
             Ok(n) => Ok(n),
             Err(e) => Err(anyhow!(
-                "files array has something that's not a string: {}",
+                "expected_tests array has something that's not a string: {}",
                 e
             )),
         })
@@ -408,21 +410,24 @@ pub fn grade_by_tests(
     }
     actual_tests.sort();
 
-    for expected in &expected_tests {
-        let n = expected.split_once('#').unwrap().1;
-        if !actual_tests.contains(expected) {
-            reasons.push(format!("- {} not found.", n));
+    if !expected_tests.is_empty() {
+        for expected in &expected_tests {
+            let n = expected.split_once('#').unwrap().1;
+            if !actual_tests.contains(expected) {
+                reasons.push(format!("- {} not found.", n));
+            }
         }
-    }
 
-    for actual in &actual_tests {
-        let n = actual.split_once('#').unwrap().1;
-        if !expected_tests.contains(actual) {
-            reasons.push(format!("- Unexpected test called {}", n));
+        for actual in &actual_tests {
+            let n = actual.split_once('#').unwrap().1;
+            if !expected_tests.contains(actual) {
+                reasons.push(format!("- Unexpected test called {}", n));
+            }
         }
     }
 
     if !reasons.is_empty() {
+        reasons.push("Tests will not be run until above is fixed.".into());
         Ok(GradeResult {
             Requirement: req_name.to_string(),
             Grade:       format!("0.00/{:.2}", out_of),
@@ -481,12 +486,13 @@ pub fn grade_unit_tests(
     excluded_methods: Array,
     avoid_calls_to: Array,
 ) -> Result<GradeResult> {
+    eprintln!("Running Mutation tests -");
     let target_test: Vec<String> = target_test
         .iter()
         .map(|f| match f.clone().into_string() {
             Ok(n) => Ok(n),
             Err(e) => Err(anyhow!(
-                "files array has something that's not a string: {}",
+                "target_test array has something that's not a string: {}",
                 e
             )),
         })
@@ -496,7 +502,7 @@ pub fn grade_unit_tests(
         .map(|f| match f.clone().into_string() {
             Ok(n) => Ok(n),
             Err(e) => Err(anyhow!(
-                "files array has something that's not a string: {}",
+                "target_class array has something that's not a string: {}",
                 e
             )),
         })
@@ -506,7 +512,7 @@ pub fn grade_unit_tests(
         .map(|f| match f.clone().into_string() {
             Ok(n) => Ok(n),
             Err(e) => Err(anyhow!(
-                "files array has something that's not a string: {}",
+                "excluded_methods array has something that's not a string: {}",
                 e
             )),
         })
@@ -516,7 +522,7 @@ pub fn grade_unit_tests(
         .map(|f| match f.clone().into_string() {
             Ok(n) => Ok(n),
             Err(e) => Err(anyhow!(
-                "files array has something that's not a string: {}",
+                "avoid_calls_to array has something that's not a string: {}",
                 e
             )),
         })
@@ -536,7 +542,12 @@ pub fn grade_unit_tests(
             "--targetTests",
             target_test.join(",").as_str(),
             "--sourceDirs",
-            SOURCE_DIR.to_str().unwrap(),
+            vec![
+                SOURCE_DIR.to_str().unwrap_or("."),
+                ROOT_DIR.to_str().unwrap_or("."),
+            ]
+            .join(",")
+            .as_str(),
             "--timestampedReports",
             "false",
             "--outputFormats",
@@ -580,9 +591,9 @@ pub fn grade_unit_tests(
             };
         }
         let penalty = diags.len() as u32 * 4;
-        println!("Ran mutation tests for {} -", target_test.join(", "));
-        println!("{}", ExpandedDisplay::new(diags));
-        println!("Problematic mutation test failures printed about.");
+        eprintln!("Ran mutation tests for {} -", target_test.join(", "));
+        eprintln!("{}", ExpandedDisplay::new(diags));
+        eprintln!("Problematic mutation test failures printed about.");
 
         Ok(GradeResult {
             Requirement: req_name.to_string(),
@@ -595,7 +606,7 @@ pub fn grade_unit_tests(
             String::from_utf8(child.stdout)?,
         ]
         .concat();
-        println!("{}", output);
+        eprintln!("{}", output);
         Ok(GradeResult {
             Requirement: req_name.to_string(),
             Grade:       format!("0/{}", out_of),
@@ -606,11 +617,97 @@ pub fn grade_unit_tests(
     }
 }
 
+#[generate_rhai_variant]
+/// Grades using hidden tests. Test file is downloaded, ran, and then cleaned up
+/// before returning.
+///
+/// * `url`: URL to download test source from.
+/// * `test_class_name`: name of test class.
+pub fn grade_by_hidden_tests(
+    url: &str,
+    test_class_name: &str,
+    out_of: f64,
+    req_name: &str,
+) -> Result<GradeResult> {
+    let test_source = {
+        let resp = ureq::get(url)
+            .call()
+            .context(format!("Failed to download {}", url))?;
+
+        let len = resp
+            .header("Content-Length")
+            .and_then(|s| s.parse::<usize>().ok())
+            .unwrap_or(1024);
+
+        let mut bytes: Vec<u8> = Vec::with_capacity(len);
+
+        resp.into_reader()
+            .take(10_000_000)
+            .read_to_end(&mut bytes)
+            .context(format!(
+                "Failed to read response till the end while downloading file at {}",
+                url,
+            ))?;
+
+        bytes
+    };
+    let path = ROOT_DIR.join(format!("{}.java", test_class_name));
+    let mut file = File::create(&path)?;
+    file.write_all(&test_source)?;
+
+    let project = match Project::new() {
+        Ok(a) => a,
+        Err(e) => {
+            std::fs::remove_file(&path)?;
+            return Err(e);
+        }
+    };
+
+    let run_tests = || -> Result<GradeResult> {
+        grade_by_tests(
+            vec![Dynamic::from(test_class_name.to_string())],
+            Array::new(),
+            project,
+            out_of,
+            req_name,
+        )
+    };
+
+    let out = match run_tests() {
+        Ok(o) => o,
+        Err(e) => {
+            std::fs::remove_file(&path)?;
+            return Err(e);
+        }
+    };
+
+    std::fs::remove_file(&path)?;
+    Ok(out)
+}
+
 /// Print grade result
+///
+/// * `results`: array of GradeResults to print in a table.
 pub fn show_result(results: Array) {
     let results: Vec<GradeResult> = results
         .iter()
         .map(|f| f.clone().cast::<GradeResult>())
         .collect();
-    println!("{}", Table::new(results).with(tabled::Style::modern()));
+
+    let (grade, out_of) = results.iter().fold((0f32, 0f32), |acc, r| {
+        let (g, o) = r.grade().unwrap_or((0f32, 0f32));
+        (acc.0 + g, acc.1 + o)
+    });
+
+    eprintln!(
+        "{}",
+        Table::new(results)
+            .with(Header("Grading Overview"))
+            .with(Footer(format!("Total: {:.2}/{:.2}", grade, out_of)))
+            .with(Modify::new(Row(1..)).with(MaxWidth::wrapping(36)))
+            .with(Modify::new(Full).with(Alignment::center_horizontal()))
+            .with(tabled::Style::modern())
+    );
+
+    println!("p;{}", grade as isize);
 }

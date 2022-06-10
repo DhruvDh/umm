@@ -2,6 +2,7 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use std::{
+    io::Write,
     path::PathBuf,
     process::{
         Command,
@@ -75,9 +76,11 @@ pub struct File {
 /// JavaFile.
 pub struct Project {
     /// Collection of java files in this project
-    files: Vec<File>,
+    files:     Vec<File>,
     /// Names of java files in this project.
-    names: Vec<String>,
+    names:     Vec<String>,
+    /// Classpath
+    classpath: String,
 }
 
 /// A struct that wraps a tree-sitter parser object and source code
@@ -282,7 +285,7 @@ impl File {
         let child = Command::new(javac_path()?)
             .args([
                 "--source-path",
-                SOURCE_DIR.to_str().unwrap(),
+                sourcepath()?.as_str(),
                 "-g",
                 "--class-path",
                 classpath()?.as_str(),
@@ -320,7 +323,7 @@ impl File {
             .stderr(Stdio::inherit())
             .args([
                 "--source-path",
-                SOURCE_DIR.to_str().unwrap(),
+                sourcepath()?.as_str(),
                 "-g",
                 "--class-path",
                 classpath()?.as_str(),
@@ -336,14 +339,7 @@ impl File {
 
         match child.wait_with_output() {
             Ok(status) => {
-                if status.status.success() {
-                    println!(
-                        "{}",
-                        "No compiler errors in checked file or other source files it imports."
-                            .bright_green()
-                            .bold(),
-                    );
-                } else {
+                if !status.status.success() {
                     bail!(
                         "There were compiler errors in checked file or other source files it \
                          imports."
@@ -386,9 +382,9 @@ impl File {
         match child.wait_with_output() {
             Ok(status) => {
                 if status.status.success() {
-                    println!("{}", "Ran and exited successfully.".bright_green().bold(),);
+                    eprintln!("{}", "Ran and exited successfully.".bright_green().bold(),);
                 } else {
-                    println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
+                    eprintln!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
                 }
             }
             Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),
@@ -457,11 +453,6 @@ impl File {
             .output()
             .context("Could not issue java command to run the tests for some reason.")?;
 
-        if child.status.success() {
-            println!("{}", "Ran and exited successfully.".bright_green().bold(),);
-        } else {
-            println!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
-        }
         let output = [
             String::from_utf8(child.stderr)?,
             String::from_utf8(child.stdout)?,
@@ -561,10 +552,40 @@ impl Project {
             files.push(file);
         }
 
-        download(
-        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/DataStructures.jar?raw=true",
-        &LIB_DIR.join("DataStructures.jar"),
-    false)?;
+        if !LIB_DIR.as_path().is_dir() {
+            std::fs::create_dir(LIB_DIR.as_path()).unwrap();
+        }
+
+        // TODO: Move this to an init function that takes CONSTANTS into account
+        if !ROOT_DIR.join(".vscode").as_path().is_dir() {
+            std::fs::create_dir(ROOT_DIR.join(".vscode").as_path()).unwrap();
+            let mut file = std::fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(ROOT_DIR.join(".vscode").join("settings.json").as_path())?;
+
+            write!(
+                &mut file,
+                r#"
+{{
+    "java.project.sourcePaths": [
+        ".",
+        "./src/",
+        "./test/"
+    ],
+    "java.project.outputPath": "./target/",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ],
+}}
+            "#
+            )?;
+        }
+
+        //     download(
+        //     "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/DataStructures.jar?raw=true",
+        //     &LIB_DIR.join("DataStructures.jar"),
+        // false)?;
         download(
         "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/junit-platform-console-standalone-1.8.0-RC1.jar?raw=true",
         &LIB_DIR.join("junit-platform-console-standalone-1.8.0-RC1.jar"),
@@ -589,6 +610,7 @@ false    )?;
         Ok(Self {
             files,
             names,
+            classpath: classpath()?,
         })
     }
 

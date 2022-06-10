@@ -66,22 +66,42 @@ pub fn classpath() -> Result<String> {
     let mut path: Vec<String> = vec![
         BUILD_DIR.display().to_string(),
         LIB_DIR.display().to_string(),
-        SOURCE_DIR.display().to_string(),
-        ROOT_DIR.display().to_string(),
+        // SOURCE_DIR.display().to_string(),
+        // ROOT_DIR.display().to_string(),
     ];
 
     path.append(
-        &mut find_files("jar", 4, &LIB_DIR)?
+        &mut find_files("jar", 4, &ROOT_DIR)?
             .iter()
             .map(|p| p.as_path().display().to_string())
             .collect(),
     );
     // path.append(
-    //     &mut find_files("java", 4, &SOURCE_DIR)?
+    //     &mut find_files("java", 4, &ROOT_DIR)?
     //         .iter()
     //         .map(|p| p.as_path().display().to_string())
     //         .collect(),
     // );
+
+    Ok(path.join(&SEPARATOR))
+}
+
+/// Find java files in source path and root directory to populate
+/// sourcepath and return it
+pub fn sourcepath() -> Result<String> {
+    let mut path: Vec<String> = vec![
+        // BUILD_DIR.display().to_string(),
+        // LIB_DIR.display().to_string(),
+        SOURCE_DIR.display().to_string(),
+        ROOT_DIR.display().to_string(),
+    ];
+
+    path.append(
+        &mut find_files("java", 4, &ROOT_DIR)?
+            .iter()
+            .map(|p| p.as_path().display().to_string())
+            .collect(),
+    );
 
     Ok(path.join(&SEPARATOR))
 }
