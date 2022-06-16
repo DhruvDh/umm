@@ -569,7 +569,6 @@ impl Project {
                 r#"
 {{
     "java.project.sourcePaths": [
-        ".",
         "./src/",
         "./test/"
     ],
