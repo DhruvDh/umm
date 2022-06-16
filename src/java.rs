@@ -190,7 +190,7 @@ impl File {
             if imports.is_empty() {
                 None
             } else {
-                Some(imports)
+                Some(dbg!(imports))
             }
         };
 
@@ -585,27 +585,44 @@ impl Project {
         //     "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/DataStructures.jar?raw=true",
         //     &LIB_DIR.join("DataStructures.jar"),
         // false)?;
-        download(
+
+        let need_junit = 'outer: {
+            for file in files.iter() {
+                if let Some(imports) = &file.imports {
+                    for import in imports {
+                        if let Some(path) = import.get(&String::from("path")) {
+                            if path.starts_with("org.junit") {
+                                break 'outer true;
+                            }
+                        }
+                    }
+                }
+            }
+            false
+        };
+
+        if need_junit {
+            download(
         "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/junit-platform-console-standalone-1.8.0-RC1.jar?raw=true",
         &LIB_DIR.join("junit-platform-console-standalone-1.8.0-RC1.jar"),
 false    )?;
-        download(
+            download(
         "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-1.7.4.jar?raw=true",
         &LIB_DIR.join("pitest.jar"),
     false)?;
-        download(
+            download(
         "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-command-line-1.7.4.jar?raw=true",
         &LIB_DIR.join("pitest-command-line.jar"),
     false)?;
-        download(
+            download(
         "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-entry-1.7.4.jar?raw=true",
         &LIB_DIR.join("pitest-entry.jar"),
     false)?;
-        download(
+            download(
         "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-junit5-plugin-0.14.jar?raw=true",
         &LIB_DIR.join("pitest-junit5-plugin.jar"),
    false )?;
-
+        }
         Ok(Self {
             files,
             names,
