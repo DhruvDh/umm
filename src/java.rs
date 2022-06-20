@@ -190,7 +190,7 @@ impl File {
             if imports.is_empty() {
                 None
             } else {
-                Some(dbg!(imports))
+                Some(imports)
             }
         };
 
