@@ -89,6 +89,7 @@ fn shell() -> Result<()> {
     ];
 
     let project = java::Project::new()?;
+
     let mut test_methods = vec![];
     for file in project.files().iter() {
         match file.kind() {

@@ -552,82 +552,16 @@ impl Project {
             files.push(file);
         }
 
-        if !LIB_DIR.as_path().is_dir() {
-            std::fs::create_dir(LIB_DIR.as_path()).unwrap();
-        }
-
-        // TODO: Move this to an init function that takes CONSTANTS into account
-        if !ROOT_DIR.join(".vscode").as_path().is_dir() {
-            std::fs::create_dir(ROOT_DIR.join(".vscode").as_path()).unwrap();
-            let mut file = std::fs::OpenOptions::new()
-                .write(true)
-                .create_new(true)
-                .open(ROOT_DIR.join(".vscode").join("settings.json").as_path())?;
-
-            write!(
-                &mut file,
-                r#"
-{{
-    "java.project.sourcePaths": [
-        "./src/",
-        "./test/"
-    ],
-    "java.project.outputPath": "./target/",
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar"
-    ],
-}}
-            "#
-            )?;
-        }
-
-        //     download(
-        //     "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/DataStructures.jar?raw=true",
-        //     &LIB_DIR.join("DataStructures.jar"),
-        // false)?;
-
-        let need_junit = 'outer: {
-            for file in files.iter() {
-                if let Some(imports) = &file.imports {
-                    for import in imports {
-                        if let Some(path) = import.get(&String::from("path")) {
-                            if path.starts_with("org.junit") {
-                                break 'outer true;
-                            }
-                        }
-                    }
-                }
-            }
-            false
-        };
-
-        if need_junit {
-            download(
-        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/junit-platform-console-standalone-1.8.0-RC1.jar?raw=true",
-        &LIB_DIR.join("junit-platform-console-standalone-1.8.0-RC1.jar"),
-false    )?;
-            download(
-        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-1.7.4.jar?raw=true",
-        &LIB_DIR.join("pitest.jar"),
-    false)?;
-            download(
-        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-command-line-1.7.4.jar?raw=true",
-        &LIB_DIR.join("pitest-command-line.jar"),
-    false)?;
-            download(
-        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-entry-1.7.4.jar?raw=true",
-        &LIB_DIR.join("pitest-entry.jar"),
-    false)?;
-            download(
-        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-junit5-plugin-0.14.jar?raw=true",
-        &LIB_DIR.join("pitest-junit5-plugin.jar"),
-   false )?;
-        }
-        Ok(Self {
+        let proj = Self {
             files,
             names,
             classpath: classpath()?,
-        })
+        };
+
+        proj.download_libraries_if_needed()?;
+        proj.update_vscode_settings()?;
+
+        Ok(proj)
     }
 
     #[generate_rhai_variant]
@@ -655,6 +589,82 @@ false    )?;
         } else {
             bail!("Could not find {} in the project", name)
         }
+    }
+
+    /// Downloads certain libraries like JUnit if found in imports
+    pub fn download_libraries_if_needed(&self) -> Result<()> {
+        let need_junit = 'outer: {
+            for file in self.files.iter() {
+                if let Some(imports) = &file.imports {
+                    for import in imports {
+                        if let Some(path) = import.get(&String::from("path")) {
+                            if path.starts_with("org.junit") {
+                                break 'outer true;
+                            }
+                        }
+                    }
+                }
+            }
+            false
+        };
+
+        if need_junit {
+            if !LIB_DIR.as_path().is_dir() {
+                std::fs::create_dir(LIB_DIR.as_path()).unwrap();
+            }
+
+            download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/junit-platform-console-standalone-1.8.0-RC1.jar?raw=true",
+        &LIB_DIR.join("junit-platform-console-standalone-1.8.0-RC1.jar"),
+false    )?;
+            download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-1.7.4.jar?raw=true",
+        &LIB_DIR.join("pitest.jar"),
+    false)?;
+            download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-command-line-1.7.4.jar?raw=true",
+        &LIB_DIR.join("pitest-command-line.jar"),
+    false)?;
+            download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-entry-1.7.4.jar?raw=true",
+        &LIB_DIR.join("pitest-entry.jar"),
+    false)?;
+            download(
+        "https://github.com/DhruvDh/umm/blob/next-assign1-spring-22/jar_files/pitest-junit5-plugin-0.14.jar?raw=true",
+        &LIB_DIR.join("pitest-junit5-plugin.jar"),
+   false )?;
+        }
+        Ok(())
+    }
+
+    /// Creates a vscode settings.json file for the project.
+    pub fn update_vscode_settings(&self) -> Result<()> {
+        // TODO: Move this to an init function that takes CONSTANTS into account
+        if !ROOT_DIR.join(".vscode").as_path().is_dir() {
+            std::fs::create_dir(ROOT_DIR.join(".vscode").as_path()).unwrap();
+            let mut file = std::fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(ROOT_DIR.join(".vscode").join("settings.json").as_path())?;
+
+            write!(
+                &mut file,
+                r#"
+{{
+    "java.project.sourcePaths": [
+        "./src/",
+        "./test/"
+    ],
+    "java.project.outputPath": "./target/",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ],
+}}
+            "#
+            )?;
+        }
+
+        Ok(())
     }
 
     /// Get a reference to the project's files.
