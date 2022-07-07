@@ -614,23 +614,23 @@ impl Project {
             }
 
             download(
-        "https://github.com/DhruvDh/umm/blob/main/jar_files/junit-platform-console-standalone-1.8.0-RC1.jar?raw=true",
+        "https://www.dropbox.com/s/wzbgjlhxoy79i0m/junit-platform-console-standalone-1.8.0-RC1.jar?raw=1",
         &LIB_DIR.join("junit-platform-console-standalone-1.8.0-RC1.jar"),
 false    )?;
             download(
-        "https://github.com/DhruvDh/umm/blob/main/jar_files/pitest-1.7.4.jar?raw=true",
+        "https://www.dropbox.com/s/wed3ohk8pz4b7d0/pitest-1.7.4.jar?raw=true",
         &LIB_DIR.join("pitest.jar"),
     false)?;
             download(
-        "https://github.com/DhruvDh/umm/blob/main/jar_files/pitest-command-line-1.7.4.jar?raw=true",
+        "https://www.dropbox.com/s/vdmvnpwplih1whh/pitest-command-line-1.7.4.jar?raw=true",
         &LIB_DIR.join("pitest-command-line.jar"),
     false)?;
             download(
-        "https://github.com/DhruvDh/umm/blob/main/jar_files/pitest-entry-1.7.4.jar?raw=true",
+        "https://www.dropbox.com/s/lrykjoz1od30ong/pitest-entry-1.7.4.jar?raw=true",
         &LIB_DIR.join("pitest-entry.jar"),
     false)?;
             download(
-        "https://github.com/DhruvDh/umm/blob/main/jar_files/pitest-junit5-plugin-0.14.jar?raw=true",
+        "https://www.dropbox.com/s/uaqvgqkgcllyhbq/pitest-junit5-plugin-0.14.jar?raw=true",
         &LIB_DIR.join("pitest-junit5-plugin.jar"),
    false )?;
         }
