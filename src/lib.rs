@@ -41,7 +41,7 @@ use umm_derive::generate_rhai_variant;
 type Dict = std::collections::HashMap<String, String>;
 
 /// Prints the result of grading
-pub fn grade(script_url: &str) -> Result<()> {
+pub fn grade(assignment_name: &str) -> Result<()> {
     let mut engine = Engine::new();
     engine
         .register_type::<GradeResult>()
