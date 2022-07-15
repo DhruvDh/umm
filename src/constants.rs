@@ -25,6 +25,9 @@ lazy_static! {
     pub static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
 }
 
+/// URL to download grading_scripts.json
+pub const GRADING_SCRIPTS_URL: &str = "https://raw.githubusercontent.com/DhruvDh/umm/main/grading/grading_scripts.json";
+
 /// Tree-sitter query that returns imports made
 /// * `path`: java name of the import as it appears in the source code.
 /// * `asterisk`: true if the import path ends in an asterisk

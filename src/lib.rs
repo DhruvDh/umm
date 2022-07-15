@@ -24,7 +24,10 @@ use anyhow::{
     Context,
     Result,
 };
-use constants::BUILD_DIR;
+use constants::{
+    BUILD_DIR,
+    GRADING_SCRIPTS_URL,
+};
 use grade::*;
 use java::{
     File,
@@ -36,6 +39,7 @@ use rhai::{
     EvalAltResult,
 };
 use umm_derive::generate_rhai_variant;
+use util::download_to_string;
 
 /// Defined for convenience
 type Dict = std::collections::HashMap<String, String>;
@@ -61,30 +65,14 @@ pub fn grade(assignment_name: &str) -> Result<()> {
         .register_result_fn("grade_by_tests", grade_by_tests_script);
 
     // println!("{}", engine.gen_fn_signatures(false).join("\n"));
-    // Download grading script
-    let script = {
-        let resp = ureq::get(script_url)
-            .call()
-            .context(format!("Failed to download {}", script_url))?;
 
-        let len = resp
-            .header("Content-Length")
-            .and_then(|s| s.parse::<usize>().ok())
-            .unwrap_or(1024);
+    let grading_scripts = download_to_string(GRADING_SCRIPTS_URL)?;
+    let grading_scripts: Dict = serde_json::from_str(&grading_scripts)?;
+    let script_url = grading_scripts
+        .get(assignment_name)
+        .ok_or_else(|| anyhow::anyhow!("No grading script found for {}", assignment_name))?;
 
-        let mut bytes: Vec<u8> = Vec::with_capacity(len);
-
-        resp.into_reader()
-            .take(10_000_000)
-            .read_to_end(&mut bytes)
-            .context(format!(
-                "Failed to read response till the end while downloading file at {}",
-                script_url,
-            ))?;
-
-        String::from_utf8(bytes)?
-    };
-
+    let script = download_to_string(script_url)?;
     // Run the script
     engine.run(&script)?;
 

@@ -138,3 +138,27 @@ pub fn download(url: &str, path: &PathBuf, replace: bool) -> Result<()> {
             .context(format!("Failed to write to file at {}", name))
     }
 }
+
+/// Download a URL and return response as string
+pub fn download_to_string(url: &str) -> Result<String> {
+    let resp = ureq::get(url)
+        .call()
+        .context(format!("Failed to download {}", url))?;
+
+    let len = resp
+        .header("Content-Length")
+        .and_then(|s| s.parse::<usize>().ok())
+        .unwrap_or(4096);
+
+    let mut bytes: Vec<u8> = Vec::with_capacity(len);
+
+    resp.into_reader()
+        .take(10_000_000)
+        .read_to_end(&mut bytes)
+        .context(format!(
+            "Failed to read response till the end while downloading file at {}",
+            url,
+        ))?;
+
+    Ok(String::from_utf8(bytes)?)
+}
