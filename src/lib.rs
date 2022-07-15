@@ -18,15 +18,16 @@ pub mod java;
 /// Utility functions for convenience
 pub mod util;
 
-use std::io::Read;
-
 use anyhow::{
+    anyhow,
     Context,
     Result,
 };
 use constants::{
     BUILD_DIR,
+    COURSE,
     GRADING_SCRIPTS_URL,
+    TERM,
 };
 use grade::*;
 use java::{
@@ -67,10 +68,29 @@ pub fn grade(assignment_name: &str) -> Result<()> {
     // println!("{}", engine.gen_fn_signatures(false).join("\n"));
 
     let grading_scripts = download_to_string(GRADING_SCRIPTS_URL)?;
-    let grading_scripts: Dict = serde_json::from_str(&grading_scripts)?;
+    let grading_scripts: serde_json::Value = serde_json::from_str(&grading_scripts)?;
     let script_url = grading_scripts
+        .get(COURSE)
+        .ok_or_else(|| anyhow!("Could not find course: {}", COURSE))?
+        .get(TERM)
+        .ok_or_else(|| anyhow!("Could not find term {} in {}", TERM, COURSE))?
         .get(assignment_name)
-        .ok_or_else(|| anyhow::anyhow!("No grading script found for {}", assignment_name))?;
+        .ok_or_else(|| {
+            anyhow!(
+                "No grading script found for {} in {}-{}",
+                assignment_name,
+                COURSE,
+                TERM
+            )
+        })?;
+    let script_url = script_url.as_str().ok_or_else(|| {
+        anyhow!(
+            "Script URL for {} in {}-{} is not a string",
+            assignment_name,
+            COURSE,
+            TERM
+        )
+    })?;
 
     let script = download_to_string(script_url)?;
     // Run the script

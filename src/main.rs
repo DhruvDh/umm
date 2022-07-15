@@ -60,7 +60,7 @@ fn update() -> Result<()> {
         .repo_name("umm")
         .bin_name("umm")
         .target_version_tag("summer_22")
-        .show__progress(true)
+        .show_download_progress(true)
         .show_output(false)
         .current_version(cargo_crate_version!())
         .no_confirm(true)
