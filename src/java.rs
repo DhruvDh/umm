@@ -796,7 +796,7 @@ false    )?;
 
                     tasks.push(
                         vscode::Task::builder()
-                            .label(format!("Run spefic test from {}", file.name))
+                            .label(format!("Run specific test from {}", file.name))
                             .r#type(vscode::Type::Shell)
                             .command("${config:ummBinaryPath}")
                             .args(vec![
@@ -855,6 +855,60 @@ false    )?;
                     .build(),
             );
         }
+
+        let grading_json = download_to_string(GRADING_SCRIPTS_URL)?;
+        let grading_json: serde_json::Value = serde_json::from_str(&grading_json)?;
+        let grading_json = grading_json
+            .get(COURSE)
+            .ok_or_else(|| anyhow!("Could not find course: {}", COURSE))?
+            .get(TERM)
+            .ok_or_else(|| anyhow!("Could not find term {} in {}", TERM, COURSE))?;
+        let mut keys = vec![];
+        for (key, _) in grading_json.as_object().unwrap() {
+            keys.push(key.to_string());
+        }
+
+        inputs.push(vscode::Input::PickString {
+            id:          "gradable_assignments".to_string(),
+            description: "Which assignment are you working on?".to_string(),
+            options:     keys.clone(),
+            default:     keys.first().unwrap().clone(),
+        });
+
+        tasks.push(
+            vscode::Task::builder()
+                .label("Grade Assignment".to_string())
+                .r#type(vscode::Type::Shell)
+                .command("${config:ummBinaryPath}")
+                .args(vec![
+                    vscode::Args::builder()
+                        .value("grade")
+                        .quoting(vscode::ArgQuoting::Escape)
+                        .build(),
+                    vscode::Args::builder()
+                        .value("${input:gradable_assignments}".to_string())
+                        .quoting(vscode::ArgQuoting::Escape)
+                        .build(),
+                ])
+                .problem_matcher(Some(vec![vscode::ProblemMatcher::builder()
+                    .apply_to("allDocuments".to_string())
+                    .file_location(vec![
+                        "relative".to_string(),
+                        "${workspaceFolder}".to_string(),
+                    ])
+                    .owner("umm".to_string())
+                    .pattern(
+                        vscode::Pattern::builder()
+                            .regexp(r#"\s*[│]\s*([\w./]+)\s*[│]\s*([0-9]+)\s*[│]\s*([\w ]+)"#)
+                            .file(1)
+                            .line(2)
+                            .end_line(2)
+                            .message(3)
+                            .build(),
+                    )
+                    .build()]))
+                .build(),
+        );
 
         if !ROOT_DIR.join(".vscode").as_path().is_dir() {
             std::fs::create_dir(ROOT_DIR.join(".vscode").as_path()).unwrap();

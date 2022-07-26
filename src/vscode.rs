@@ -158,7 +158,7 @@ pub struct ProblemMatcher {
     /// * `autoDetect` - automatically detects
     #[builder(default, setter(into))]
     #[serde(skip_serializing_if = "Option::is_none")]
-    file_location: Option<String>,
+    file_location: Option<Vec<String>>,
     /// The owner of the problem inside Code. Can be omitted if base is
     /// specified. Defaults to 'external' if omitted and base is not specified.
     #[builder(default, setter(into))]
@@ -231,6 +231,7 @@ pub struct Pattern {
     #[serde(skip_serializing_if = "Option::is_none")]
     message:    Option<usize>,
     /// The regular expression to find an error, warning or info in the output.
+    #[builder(setter(into))]
     regexp:     String,
     /// The match group index of the problem's severity. Defaults to undefined
     #[builder(default, setter(into))]
@@ -314,7 +315,7 @@ pub struct Task {
     osx:             Option<String>,
     /// The problem matcher(s) to use. Can either be a string or a problem
     /// matcher definition or an array of strings and problem matchers.
-    #[builder(default=Some(Vec::new()), setter(into))]
+    #[builder(default=Some(Vec::new()))]
     problem_matcher: Option<Vec<ProblemMatcher>>,
     /// Whether the user is prompted when VS Code closes with a running task.
     #[builder(default, setter(into))]

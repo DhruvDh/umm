@@ -74,10 +74,10 @@ impl GradeResult {
 /// TODO: figure out if the dead code fields are actually needed
 pub struct JavacDiagnostic {
     /// * `path`: path to the file diagnostic is referring to
-    #[header(hidden = true)]
+    #[header("File")]
     path:        String,
     /// * `file_name`: name of the file the diagnostic is about
-    #[header("File")]
+    #[header(hidden = true)]
     file_name:   String,
     /// * `line_number`: line number
     #[header("Line")]
@@ -211,7 +211,7 @@ peg::parser! {
                 let p = std::path::PathBuf::from(p);
             let name = p.file_name().expect("Could not parse path to file in javac error/warning");
                 JavacDiagnostic {
-                path: p.display().to_string(),
+                path: format!(".{}", p.display()),
                 file_name: name.to_string_lossy().to_string(),
                 line_number: l,
                 is_error: d,
