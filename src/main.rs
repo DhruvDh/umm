@@ -258,17 +258,19 @@ fn shell() -> Result<()> {
 }
 
 fn main() -> Result<()> {
+    let t: Parser<Option<String>> = positional("TESTNAME").optional();
     let f: Parser<Option<String>> = positional("FILENAME").optional();
     let cmd: Parser<Option<String>> = positional("COMMAND").optional();
-    let combined_parser = construct!(cmd, f);
+    let combined_parser = construct!(cmd, f, t);
 
-    let (cmd, f) = Info::default()
+    let (cmd, f, t) = Info::default()
         .descr("Build tool for novices")
         .for_parser(combined_parser)
         .run();
 
     let project = java::Project::new()?;
     let f = f.unwrap_or_default();
+    let t = t.unwrap_or_default();
 
     match cmd {
         // TODO: move this to a separate method and call that method in shell()
@@ -276,7 +278,11 @@ fn main() -> Result<()> {
             "run" => project.identify(f.as_str())?.run()?,
             "check" => project.identify(f.as_str())?.check()?,
             "test" => {
-                let out = project.identify(f.as_str())?.test(vec![])?;
+                let out = if t.is_empty() {
+                    project.identify(f.as_str())?.test(vec![])?
+                } else {
+                    project.identify(f.as_str())?.test(vec![&t])?
+                };
                 println!("{}", out);
             }
             "doc-check" => {

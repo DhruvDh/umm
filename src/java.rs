@@ -33,6 +33,7 @@ use umm_derive::generate_rhai_variant;
 use crate::{
     constants::*,
     util::*,
+    vscode,
     Dict,
 };
 
@@ -76,11 +77,15 @@ pub struct File {
 /// JavaFile.
 pub struct Project {
     /// Collection of java files in this project
-    files:     Vec<File>,
+    files:      Vec<File>,
     /// Names of java files in this project.
-    names:     Vec<String>,
+    names:      Vec<String>,
     /// Classpath
-    classpath: String,
+    classpath:  Vec<String>,
+    /// Source path
+    sourcepath: Vec<String>,
+    /// Root directory
+    root_dir:   String,
 }
 
 /// A struct that wraps a tree-sitter parser object and source code
@@ -420,7 +425,7 @@ impl File {
 
         let tests = tests
             .iter()
-            .map(|s| format!("-m {}", s))
+            .map(|s| format!("-m{}", s))
             .collect::<Vec<String>>();
         let methods: Vec<&str> = tests.iter().map(String::as_str).collect();
 
@@ -432,16 +437,8 @@ impl File {
                 [
                     [
                         "-jar",
-                        ROOT_DIR
-                            .join("lib/junit-platform-console-standalone-1.8.0-RC1.jar")
-                            .as_path()
-                            .to_str()
-                            .unwrap(),
+                        LIB_DIR.join(JUNIT_PLATFORM).as_path().to_str().unwrap(),
                         "--disable-banner",
-                        "--reports-dir",
-                        "test_reports",
-                        "--details",
-                        "tree",
                         "-cp",
                         &classpath()?,
                     ]
@@ -552,14 +549,24 @@ impl Project {
             files.push(file);
         }
 
+        let classpath = vec![LIB_DIR.join("*.jar").display().to_string()];
+
+        let sourcepath = vec![
+            SOURCE_DIR.join("").display().to_string(),
+            TEST_DIR.join("").display().to_string(),
+        ];
+
         let proj = Self {
             files,
             names,
-            classpath: classpath()?,
+            classpath,
+            sourcepath,
+            root_dir: ROOT_DIR.display().to_string(),
         };
 
         proj.download_libraries_if_needed()?;
         proj.update_vscode_settings()?;
+        proj.update_vscode_tasks()?;
 
         Ok(proj)
     }
@@ -614,25 +621,37 @@ impl Project {
             }
 
             download(
-        "https://www.dropbox.com/s/wzbgjlhxoy79i0m/junit-platform-console-standalone-1.8.0-RC1.jar?raw=1",
-        &LIB_DIR.join("junit-platform-console-standalone-1.8.0-RC1.jar"),
+        "https://www.dropbox.com/s/y49kb56n3ngcn9c/junit-platform-console-standalone-1.9.0-RC1.jar?raw=1",
+        &LIB_DIR.join(JUNIT_PLATFORM),
 false    )?;
+
             download(
-        "https://www.dropbox.com/s/wed3ohk8pz4b7d0/pitest-1.7.4.jar?raw=true",
-        &LIB_DIR.join("pitest.jar"),
-    false)?;
+                "https://www.dropbox.com/s/e76zkejtre8k0be/junit-4.13.2.jar?raw=1",
+                &LIB_DIR.join("junit-4.13.2.jar"),
+                false,
+            )?;
+
+            // https://www.dropbox.com/s/e76zkejtre8k0be/junit-4.13.2.jar?dl=0
             download(
-        "https://www.dropbox.com/s/vdmvnpwplih1whh/pitest-command-line-1.7.4.jar?raw=true",
-        &LIB_DIR.join("pitest-command-line.jar"),
-    false)?;
+                "https://www.dropbox.com/s/wed3ohk8pz4b7d0/pitest-1.7.4.jar?raw=true",
+                &LIB_DIR.join("pitest.jar"),
+                false,
+            )?;
             download(
-        "https://www.dropbox.com/s/lrykjoz1od30ong/pitest-entry-1.7.4.jar?raw=true",
-        &LIB_DIR.join("pitest-entry.jar"),
-    false)?;
+                "https://www.dropbox.com/s/vdmvnpwplih1whh/pitest-command-line-1.7.4.jar?raw=true",
+                &LIB_DIR.join("pitest-command-line.jar"),
+                false,
+            )?;
             download(
-        "https://www.dropbox.com/s/uaqvgqkgcllyhbq/pitest-junit5-plugin-0.14.jar?raw=true",
-        &LIB_DIR.join("pitest-junit5-plugin.jar"),
-   false )?;
+                "https://www.dropbox.com/s/lrykjoz1od30ong/pitest-entry-1.7.4.jar?raw=true",
+                &LIB_DIR.join("pitest-entry.jar"),
+                false,
+            )?;
+            download(
+                "https://www.dropbox.com/s/uaqvgqkgcllyhbq/pitest-junit5-plugin-0.14.jar?raw=true",
+                &LIB_DIR.join("pitest-junit5-plugin.jar"),
+                false,
+            )?;
         }
         Ok(())
     }
@@ -642,26 +661,21 @@ false    )?;
         // TODO: Move this to an init function that takes CONSTANTS into account
         if !ROOT_DIR.join(".vscode").as_path().is_dir() {
             std::fs::create_dir(ROOT_DIR.join(".vscode").as_path()).unwrap();
+        }
+
+        if !ROOT_DIR.join(".vscode/settings.json").as_path().exists() {
             let mut file = std::fs::OpenOptions::new()
                 .write(true)
-                .create_new(true)
+                .truncate(true)
+                .create(true)
                 .open(ROOT_DIR.join(".vscode").join("settings.json").as_path())?;
 
-            write!(
-                &mut file,
-                r#"
-{{
-    "java.project.sourcePaths": [
-        "./src/",
-        "./test/"
-    ],
-    "java.project.outputPath": "./target/",
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar"
-    ],
-}}
-            "#
-            )?;
+            let settings = vscode::SettingsFile::builder()
+                .java_source_path(self.sourcepath.clone())
+                .java_output_path(BUILD_DIR.join("").display().to_string())
+                .java_referenced_libs(self.classpath.clone())
+                .build();
+            write!(&mut file, "{}", serde_json::to_string_pretty(&settings)?)?;
         }
 
         Ok(())
@@ -676,6 +690,189 @@ false    )?;
     /// Prints project struct as a json
     pub fn info(&self) -> Result<()> {
         println!("{}", serde_json::to_string(&self)?);
+        Ok(())
+    }
+
+    /// Writes a .vscode/tasks.json file for the project.
+    pub fn update_vscode_tasks(&self) -> Result<()> {
+        let mut tasks = Vec::new();
+        let mut inputs = Vec::new();
+
+        tasks.push(
+            vscode::Task::builder()
+                .label("Set umm to be executable".to_string())
+                .r#type(vscode::Type::Shell)
+                .command("chmod")
+                .args(vec![
+                    vscode::Args::builder()
+                        .value("+x")
+                        .quoting(vscode::ArgQuoting::Escape)
+                        .build(),
+                    vscode::Args::builder()
+                        .value("${config:ummBinaryPath}")
+                        .quoting(vscode::ArgQuoting::Weak)
+                        .build(),
+                ])
+                .depends_on(None)
+                .depends_order(None)
+                .build(),
+        );
+
+        tasks.push(
+            vscode::Task::builder()
+                .label("Clean library and target folders".to_string())
+                .r#type(vscode::Type::Shell)
+                .command("${config:ummBinaryPath}")
+                .args(vec![vscode::Args::builder()
+                    .value("clean")
+                    .quoting(vscode::ArgQuoting::Escape)
+                    .build()])
+                .build(),
+        );
+
+        for file in self.files().iter() {
+            match file.kind() {
+                FileType::ClassWithMain => {
+                    tasks.push(
+                        vscode::Task::builder()
+                            .label(format!("Run {}", file.name))
+                            .r#type(vscode::Type::Shell)
+                            .command("${config:ummBinaryPath}")
+                            .args(vec![
+                                vscode::Args::builder()
+                                    .value("run")
+                                    .quoting(vscode::ArgQuoting::Escape)
+                                    .build(),
+                                vscode::Args::builder()
+                                    .value(&file.proper_name)
+                                    .quoting(vscode::ArgQuoting::Escape)
+                                    .build(),
+                            ])
+                            .build(),
+                    );
+                }
+                FileType::Test => {
+                    tasks.push(
+                        vscode::Task::builder()
+                            .label(format!("Run tests for {}", file.name))
+                            .r#type(vscode::Type::Shell)
+                            .command("${config:ummBinaryPath}")
+                            .args(vec![
+                                vscode::Args::builder()
+                                    .value("test")
+                                    .quoting(vscode::ArgQuoting::Escape)
+                                    .build(),
+                                vscode::Args::builder()
+                                    .value(&file.proper_name)
+                                    .quoting(vscode::ArgQuoting::Escape)
+                                    .build(),
+                            ])
+                            .group("test".to_string())
+                            .build(),
+                    );
+
+                    let mut test_methods = Vec::new();
+
+                    for method in file.test_methods() {
+                        let method = method.clone();
+                        #[allow(clippy::or_fun_call)]
+                        let method = method
+                            .split_once('#')
+                            .ok_or(anyhow!("Could not parse test method - {}", method))?
+                            .1;
+                        // commands.push(method.into());
+                        test_methods.push(String::from(method));
+                    }
+
+                    if !test_methods.is_empty() {
+                        let input = vscode::Input::PickString {
+                            id:          file.proper_name.to_string(),
+                            description: "Which test to run?".to_string(),
+                            options:     test_methods.clone(),
+                            default:     test_methods.first().unwrap().clone(),
+                        };
+                        inputs.push(input);
+                    }
+
+                    tasks.push(
+                        vscode::Task::builder()
+                            .label(format!("Run spefic test from {}", file.name))
+                            .r#type(vscode::Type::Shell)
+                            .command("${config:ummBinaryPath}")
+                            .args(vec![
+                                vscode::Args::builder()
+                                    .value("test")
+                                    .quoting(vscode::ArgQuoting::Escape)
+                                    .build(),
+                                vscode::Args::builder()
+                                    .value(&file.proper_name)
+                                    .quoting(vscode::ArgQuoting::Escape)
+                                    .build(),
+                                vscode::Args::builder()
+                                    .value(format!("${{input:{}}}", file.proper_name))
+                                    .quoting(vscode::ArgQuoting::Escape)
+                                    .build(),
+                            ])
+                            .group("test".to_string())
+                            .build(),
+                    );
+                }
+                _ => {}
+            };
+
+            tasks.push(
+                vscode::Task::builder()
+                    .label(format!("Check {}", file.name))
+                    .r#type(vscode::Type::Shell)
+                    .command("${config:ummBinaryPath}")
+                    .args(vec![
+                        vscode::Args::builder()
+                            .value("check")
+                            .quoting(vscode::ArgQuoting::Escape)
+                            .build(),
+                        vscode::Args::builder()
+                            .value(&file.proper_name)
+                            .quoting(vscode::ArgQuoting::Escape)
+                            .build(),
+                    ])
+                    .build(),
+            );
+            tasks.push(
+                vscode::Task::builder()
+                    .label(format!("Check JavaDoc for {}", file.name))
+                    .r#type(vscode::Type::Shell)
+                    .command("${config:ummBinaryPath}")
+                    .args(vec![
+                        vscode::Args::builder()
+                            .value("doc-check")
+                            .quoting(vscode::ArgQuoting::Escape)
+                            .build(),
+                        vscode::Args::builder()
+                            .value(&file.proper_name)
+                            .quoting(vscode::ArgQuoting::Escape)
+                            .build(),
+                    ])
+                    .build(),
+            );
+        }
+
+        if !ROOT_DIR.join(".vscode").as_path().is_dir() {
+            std::fs::create_dir(ROOT_DIR.join(".vscode").as_path()).unwrap();
+        }
+
+        let mut file = std::fs::OpenOptions::new()
+            .write(true)
+            .truncate(true)
+            .create(true)
+            .open(ROOT_DIR.join(".vscode").join("tasks.json").as_path())?;
+
+        let task_file = vscode::TasksFile::builder()
+            .tasks(tasks)
+            .inputs(inputs)
+            .build();
+
+        write!(&mut file, "{}", serde_json::to_string_pretty(&task_file)?)?;
+
         Ok(())
     }
 }

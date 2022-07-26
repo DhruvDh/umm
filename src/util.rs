@@ -64,10 +64,8 @@ pub fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<
 /// classpath and return it
 pub fn classpath() -> Result<String> {
     let mut path: Vec<String> = vec![
-        BUILD_DIR.display().to_string(),
         LIB_DIR.display().to_string(),
-        // SOURCE_DIR.display().to_string(),
-        // ROOT_DIR.display().to_string(),
+        BUILD_DIR.display().to_string(),
     ];
 
     path.append(
@@ -76,12 +74,6 @@ pub fn classpath() -> Result<String> {
             .map(|p| p.as_path().display().to_string())
             .collect(),
     );
-    // path.append(
-    //     &mut find_files("java", 4, &ROOT_DIR)?
-    //         .iter()
-    //         .map(|p| p.as_path().display().to_string())
-    //         .collect(),
-    // );
 
     Ok(path.join(&SEPARATOR))
 }
@@ -90,10 +82,8 @@ pub fn classpath() -> Result<String> {
 /// sourcepath and return it
 pub fn sourcepath() -> Result<String> {
     let mut path: Vec<String> = vec![
-        // BUILD_DIR.display().to_string(),
-        // LIB_DIR.display().to_string(),
-        SOURCE_DIR.display().to_string(),
-        ROOT_DIR.display().to_string(),
+        SOURCE_DIR.join("").display().to_string(),
+        TEST_DIR.join("").display().to_string(),
     ];
 
     path.append(

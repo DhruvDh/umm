@@ -17,6 +17,8 @@ pub mod grade;
 pub mod java;
 /// Utility functions for convenience
 pub mod util;
+/// For structs and enums related to VSCode Tasks
+pub mod vscode;
 
 use anyhow::{
     anyhow,
@@ -27,6 +29,8 @@ use constants::{
     BUILD_DIR,
     COURSE,
     GRADING_SCRIPTS_URL,
+    LIB_DIR,
+    ROOT_DIR,
     TERM,
 };
 use grade::*;
@@ -103,7 +107,11 @@ pub fn grade(assignment_name: &str) -> Result<()> {
 /// Deletes all java compiler artefacts
 pub fn clean() -> Result<()> {
     std::fs::remove_dir_all(BUILD_DIR.as_path())
-        .with_context(|| format!("Could not delete {}", BUILD_DIR.display()))
+        .with_context(|| format!("Could not delete {}", BUILD_DIR.display()))?;
+    std::fs::remove_dir_all(LIB_DIR.as_path())
+        .with_context(|| format!("Could not delete {}", LIB_DIR.display()))?;
+    std::fs::remove_dir_all(ROOT_DIR.join(".vscode").as_path())
+        .with_context(|| format!("Could not delete {}", ROOT_DIR.join(".vscode").display()))
 }
 
 // TODO: replace std::Command with cmd_lib

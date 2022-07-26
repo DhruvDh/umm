@@ -33,3 +33,4 @@ bpaf = "0.4.3"
 rhai = { version = "1.7.0", features = ["metadata", "decimal", "sync"] }
 umm_derive = { path = "./umm_derive" }
 self_update = { version = "0.30.0", features = ["rustls"] }
+typed-builder = "0.10.0"

@@ -34,6 +34,9 @@ pub const TERM: &str = "summer_22";
 /// Current course. TODO: Move this to init script
 pub const COURSE: &str = "itsc_2214";
 
+/// file name for JUnit platform console standard jar
+pub const JUNIT_PLATFORM: &str = "junit-platform-console-standalone-1.9.0-RC1.jar";
+
 /// Tree-sitter query that returns imports made
 /// * `path`: java name of the import as it appears in the source code.
 /// * `asterisk`: true if the import path ends in an asterisk
