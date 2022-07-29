@@ -621,7 +621,7 @@ impl Project {
             }
 
             download(
-        "https://www.dropbox.com/s/y49kb56n3ngcn9c/junit-platform-console-standalone-1.9.0-RC1.jar?raw=1",
+        "https://www.dropbox.com/s/ohy0yfd2pe6zded/junit-platform-console-standalone-1.9.0-RC1.jar?raw=1",
         &LIB_DIR.join(JUNIT_PLATFORM),
 false    )?;
 
