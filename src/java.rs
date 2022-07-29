@@ -626,7 +626,7 @@ impl Project {
 false    )?;
 
             download(
-                "https://www.dropbox.com/s/e76zkejtre8k0be/junit-4.13.2.jar?raw=1",
+                "https://www.dropbox.com/s/3t1oor0kp9ptd7d/junit-4.13.2.jar?raw=1",
                 &LIB_DIR.join("junit-4.13.2.jar"),
                 false,
             )?;
