@@ -57,6 +57,7 @@ pub fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<
     Ok(glob(root_dir)
         .context("Could not create glob")?
         .filter_map(Result::ok)
+        .map(|path| ROOT_DIR.join(path))
         .collect())
 }
 
@@ -84,6 +85,7 @@ pub fn sourcepath() -> Result<String> {
     let mut path: Vec<String> = vec![
         SOURCE_DIR.join("").display().to_string(),
         TEST_DIR.join("").display().to_string(),
+        ROOT_DIR.join("").display().to_string(),
     ];
 
     path.append(
