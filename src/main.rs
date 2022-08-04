@@ -222,7 +222,7 @@ fn shell() -> Result<()> {
 
                     match res {
                         Ok(out) => println!("{}", out),
-                        Err(e) => eprintln!("{}", e.backtrace()),
+                        Err(e) => eprintln!("{:?}", e),
                     };
                 }
                 b if b.starts_with("grade") => {
