@@ -26,7 +26,8 @@ lazy_static! {
 }
 
 /// URL to download grading_scripts.json
-pub const GRADING_SCRIPTS_URL: &str = "https://raw.githubusercontent.com/DhruvDh/umm/main/grading/grading_scripts.json";
+pub const GRADING_SCRIPTS_URL: &str =
+    "https://www.dropbox.com/s/g3nocl0nnpjmk28/grading_scripts.json?raw=1";
 
 /// Current term. TODO: Move this to init script
 pub const TERM: &str = "summer_22";
