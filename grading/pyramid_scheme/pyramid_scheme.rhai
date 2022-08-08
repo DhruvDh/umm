@@ -12,7 +12,7 @@ let req_2 = grade_by_tests(
         "pyramid_scheme.LinkedTreeTest#testSize",
     ],
     project,
-    30.0,
+    40.0,
     "2",
 );
 
@@ -26,7 +26,7 @@ let req_4 = grade_by_tests(
         "pyramid_scheme.PyramidSchemeTest#testInitiateCollapse",
     ],
     project,
-    30.0,
+    40.0,
     "5",
 );
 
