@@ -26,9 +26,9 @@ tabled = "0.5.0"
 peg = "0.8.0"
 ureq = "2.4.0"
 # reedline = { version = "0.3.0", features = ["clipboard", "system_clipboard"] }
-reedline = { version = "0.8.0", features = ["clipboard", "system_clipboard"] }
+reedline = { version = "0.10.0", features = ["clipboard", "system_clipboard"] }
 nu-ansi-term = "0.46.0"
-crossterm = "0.23.2"
+crossterm = "0.25.0"
 bpaf = "0.4.3"
 rhai = { version = "1.7.0", features = ["metadata", "decimal", "sync"] }
 umm_derive = { path = "./umm_derive" }

@@ -21,10 +21,6 @@ use anyhow::{
     Result,
 };
 use bpaf::*;
-use crossterm::event::{
-    KeyCode,
-    KeyModifiers,
-};
 use nu_ansi_term::{
     Color,
     Style,
@@ -38,6 +34,8 @@ use reedline::{
     Emacs,
     ExampleHighlighter,
     FileBackedHistory,
+    KeyCode,
+    KeyModifiers,
     Reedline,
     ReedlineEvent,
     ReedlineMenu,
