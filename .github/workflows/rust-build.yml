@@ -4,7 +4,8 @@ name: Crossplatform build
 
 # Controls when the workflow will run
 on:
-  # Allows you to run this workflow manually from the Actions tab
+  release:
+    types: [released published edited created prereleased]
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
