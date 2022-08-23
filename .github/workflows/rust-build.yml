@@ -19,9 +19,6 @@ jobs:
           - target: x86_64-pc-windows-gnu
             archive: zip
             archive_name: umm-x86_64-pc-windows-gnu
-          - target: x86_64-unknown-linux-musl
-            archive: zip
-            archive_name: umm-x86_64-unknown-linux-musl
           - target: x86_64-apple-darwin
             archive: zip
             archive_name: umm-x86_64-apple-darwin
@@ -53,6 +50,5 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             umm-x86_64-apple-darwin.zip
-            umm-x86_64-unknown-linux-musl.zip
             umm-x86_64-pc-windows-gnu.zip
             
