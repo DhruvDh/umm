@@ -257,50 +257,116 @@ fn shell() -> Result<()> {
     }
 }
 
-fn main() -> Result<()> {
-    let t: Parser<Option<String>> = positional("TESTNAME").optional();
-    let f: Parser<Option<String>> = positional("FILENAME").optional();
-    let cmd: Parser<Option<String>> = positional("COMMAND").optional();
-    let combined_parser = construct!(cmd, f, t);
+#[derive(Debug, Clone)]
+enum Cmd {
+    Run(String),
+    Check(String),
+    Test(String, String),
+    DocCheck(String),
+    Grade(String),
+    Clean,
+    Info,
+    Update,
+    Shell,
+}
 
-    let (cmd, f, t) = Info::default()
-        .descr("Build tool for novices")
-        .for_parser(combined_parser)
-        .run();
+fn options() -> Cmd {
+    use bpaf::*;
+
+    fn t() -> impl Parser<String> {
+        positional("TESTNAME").help("add explanation here plox")
+    }
+
+    // this should be positional_os and OsString....
+    fn f() -> impl Parser<String> {
+        positional("FILENAME").help("add explanation here plox")
+    }
+
+    let run = construct!(Cmd::Run(f()))
+        .to_options()
+        .command("run")
+        .help("add explanation here plox");
+
+    let check = construct!(Cmd::Check(f()))
+        .to_options()
+        .command("check")
+        .help("add explanation here plox");
+
+    let test = construct!(Cmd::Test(f(), t()))
+        .to_options()
+        .command("test")
+        .help("add explanation here plox");
+
+    let doc_check = construct!(Cmd::DocCheck(f()))
+        .to_options()
+        .command("dock-check")
+        .help("add explanation here plox");
+
+    let grade = construct!(Cmd::Grade(f()))
+        .to_options()
+        .command("grade")
+        .help("add explanation here plox");
+
+    let clean = pure(Cmd::Clean)
+        .to_options()
+        .command("clean")
+        .help("add explanation here plox");
+
+    let info = pure(Cmd::Info)
+        .to_options()
+        .command("info")
+        .help("add explanation here plox");
+
+    let update = pure(Cmd::Update)
+        .to_options()
+        .command("update")
+        .help("add explanation here plox");
+
+    let shell = pure(Cmd::Shell)
+        .to_options()
+        .command("shell")
+        .help("add explanation here plox");
+
+    let cmd = construct!([run, check, test, doc_check, grade, clean, info, update, shell])
+        .fallback(Cmd::Shell);
+
+    //    let t = positional("TESTNAME").fallback(String::new());
+    //    let f = positional("FILENAME").fallback(String::new());
+    cmd.to_options().descr("Build tool for novices").run()
+}
+
+fn main() -> Result<()> {
+    let cmd = options();
 
     let project = java::Project::new()?;
-    let f = f.unwrap_or_default();
-    let t = t.unwrap_or_default();
 
+    // TODO: move this to a separate method and call that method in shell()
     match cmd {
-        // TODO: move this to a separate method and call that method in shell()
-        Some(a) => match a.as_str() {
-            "run" => project.identify(f.as_str())?.run()?,
-            "check" => project.identify(f.as_str())?.check()?,
-            "test" => {
-                let out = if t.is_empty() {
-                    project.identify(f.as_str())?.test(vec![])?
-                } else {
-                    project.identify(f.as_str())?.test(vec![&t])?
-                };
-                println!("{}", out);
-            }
-            "doc-check" => {
-                let out = project.identify(f.as_str())?.doc_check()?;
-                println!("{}", out);
-            }
-            "grade" => grade(&f)?,
-            "clean" => clean()?,
-            "info" => project.info()?,
-            "update" => {
-                match update() {
-                    Ok(_) => {}
-                    Err(e) => eprintln!("{}", e),
-                };
-            }
-            _ => eprintln!("{} is not a valid subcommand.", a),
-        },
-        None => shell()?,
+        Cmd::Run(f) => project.identify(f.as_str())?.run()?,
+        Cmd::Check(f) => project.identify(f.as_str())?.check()?,
+        Cmd::Test(f, t) => {
+            let out = if t.is_empty() {
+                project.identify(f.as_str())?.test(vec![])?
+            } else {
+                project.identify(f.as_str())?.test(vec![&t])?
+            };
+            println!("{}", out);
+        }
+        Cmd::DocCheck(f) => {
+            let out = project.identify(f.as_str())?.doc_check()?;
+            println!("{}", out);
+        }
+        Cmd::Grade(f) => grade(&f)?,
+        Cmd::Clean => clean()?,
+        Cmd::Info => project.info()?,
+        Cmd::Update => {
+            match update() {
+                Ok(_) => {}
+                Err(e) => eprintln!("{}", e),
+            };
+        }
+
+        Cmd::Shell => shell()?,
     };
 
     Ok(())
