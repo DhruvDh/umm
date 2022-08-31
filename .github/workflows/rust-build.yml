@@ -4,8 +4,8 @@ name: Crossplatform build
 
 # Controls when the workflow will run
 on:
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  release:
+    types: [released published edited created prereleased]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -19,9 +19,6 @@ jobs:
           - target: x86_64-pc-windows-gnu
             archive: zip
             archive_name: umm-x86_64-pc-windows-gnu
-          - target: x86_64-unknown-linux-musl
-            archive: zip
-            archive_name: umm-x86_64-unknown-linux-musl
           - target: x86_64-apple-darwin
             archive: zip
             archive_name: umm-x86_64-apple-darwin
@@ -53,6 +50,5 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             umm-x86_64-apple-darwin.zip
-            umm-x86_64-unknown-linux-musl.zip
             umm-x86_64-pc-windows-gnu.zip
             
