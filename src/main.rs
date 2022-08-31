@@ -271,8 +271,8 @@ fn main() -> Result<()> {
         .for_parser(combined_parser)
         .run();
 
-    let _cmd = cmd.clone();
-    if let Some(c) = _cmd && c.as_str() == "clean" {
+    let c = cmd.clone().unwrap_or_default();
+    if c.as_str() == "clean" {
         clean()?;
         return Ok(());
     }
