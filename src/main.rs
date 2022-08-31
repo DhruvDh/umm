@@ -18,6 +18,7 @@ use std::cmp::Ordering;
 
 use anyhow::{
     anyhow,
+    Context,
     Result,
 };
 use bpaf::*;
@@ -44,6 +45,10 @@ use reedline::{
 use self_update::cargo_crate_version;
 use umm::{
     clean,
+    constants::{
+        BUILD_DIR,
+        LIB_DIR,
+    },
     grade,
     java::{
         self,
@@ -266,6 +271,11 @@ fn main() -> Result<()> {
         .for_parser(combined_parser)
         .run();
 
+    if let Some(cmd) = cmd.clone() && cmd.as_str() == "clean" {
+        clean()?;
+        return Ok(());
+    }
+
     let project = java::Project::new()?;
     let f = f.unwrap_or_default();
     let t = t.unwrap_or_default();
@@ -288,7 +298,6 @@ fn main() -> Result<()> {
                 println!("{}", out);
             }
             "grade" => grade(&f)?,
-            "clean" => clean()?,
             "info" => project.info()?,
             "update" => {
                 match update() {
@@ -300,6 +309,21 @@ fn main() -> Result<()> {
         },
         None => shell()?,
     };
+
+    if BUILD_DIR.join(".vscode").exists() {
+        std::fs::remove_dir_all(BUILD_DIR.join(".vscode").as_path())
+            .with_context(|| format!("Could not delete {}", BUILD_DIR.join(".vscode").display()))?;
+    }
+
+    if BUILD_DIR.join(LIB_DIR.display().to_string()).exists() {
+        std::fs::remove_dir_all(BUILD_DIR.join(LIB_DIR.display().to_string()).as_path())
+            .with_context(|| {
+                format!(
+                    "Could not delete {}",
+                    BUILD_DIR.join(LIB_DIR.display().to_string()).display()
+                )
+            })?;
+    }
 
     Ok(())
 }

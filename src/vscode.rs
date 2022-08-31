@@ -48,7 +48,7 @@ pub struct Args {
 }
 
 /// Enum for VSCode task's dependsOrder.
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Copy)]
 #[serde(rename_all = "camelCase")]
 pub enum DependsOrder {
     /// In parrallel with other tasks.
@@ -434,6 +434,5 @@ pub struct SettingsFile {
     keybindings_enabled:  bool,
     /// path to umm binary
     #[serde(rename = "ummBinaryPath")]
-    #[builder(default = "./umm".to_string())]
     umm_binary_path:      String,
 }
