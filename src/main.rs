@@ -271,7 +271,8 @@ fn main() -> Result<()> {
         .for_parser(combined_parser)
         .run();
 
-    if let Some(cmd) = cmd.clone() && cmd.as_str() == "clean" {
+    let _cmd = cmd.clone();
+    if let Some(c) = _cmd && c.as_str() == "clean" {
         clean()?;
         return Ok(());
     }
