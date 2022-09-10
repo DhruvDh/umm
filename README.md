@@ -11,7 +11,7 @@
 
 ## Introduction
 
-A java build tool for novices.
+A java build tool for novices, that doubles as a scriptable autograder.
 
 ## Documentation
 
