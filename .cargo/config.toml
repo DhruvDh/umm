@@ -1,6 +1,9 @@
 [build]
 rustflags = ["-Zshare-generics"]
-rustdocflags = ["-Z" , "unstable-options", "--enable-index-page"]
+rustdocflags = ["-Z", "unstable-options", "--enable-index-page"]
 
 [target.x86_64-pc-windows-msvc]
 rustflags = ["-C", "target-feature=+crt-static"]
+
+[profile.release]
+debug = true

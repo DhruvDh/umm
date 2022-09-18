@@ -20,16 +20,16 @@ pub mod util;
 pub mod vscode;
 
 use anyhow::{
-    anyhow,
     Context,
     Result,
 };
 use constants::{
     BUILD_DIR,
     COURSE,
-    GRADING_SCRIPTS_URL,
     LIB_DIR,
+    POSTGREST_CLIENT,
     ROOT_DIR,
+    RUNTIME_HANDLE,
     TERM,
 };
 use grade::*;
@@ -49,6 +49,9 @@ type Dict = std::collections::HashMap<String, String>;
 
 /// Prints the result of grading
 pub fn grade(assignment_name: &str) -> Result<()> {
+    let assignment_name = assignment_name.to_string();
+    let assignment_name = assignment_name.replace(['\"', '\\'], "");
+    dbg!(&assignment_name);
     let mut engine = Engine::new();
     engine
         .register_type::<GradeResult>()
@@ -68,36 +71,32 @@ pub fn grade(assignment_name: &str) -> Result<()> {
         .register_fn("grade_by_tests", grade_by_tests_script);
 
     // println!("{}", engine.gen_fn_signatures(false).join("\n"));
+    let rt = RUNTIME_HANDLE.handle().clone();
 
-    let grading_scripts = reqwest::blocking::get(GRADING_SCRIPTS_URL)
-        .context(format!("Cannot get url: {GRADING_SCRIPTS_URL}"))?
-        .text()
-        .context(format!(
-            "Could not parse the response from {GRADING_SCRIPTS_URL} to text."
-        ))?;
-    let grading_scripts: serde_json::Value = serde_json::from_str(&grading_scripts)?;
-    let script_url = grading_scripts
-        .get(COURSE)
-        .ok_or_else(|| anyhow!("Could not find course: {}", COURSE))?
-        .get(TERM)
-        .ok_or_else(|| anyhow!("Could not find term {} in {}", TERM, COURSE))?
-        .get(assignment_name)
-        .ok_or_else(|| {
-            anyhow!(
-                "No grading script found for {} in {}-{}",
-                assignment_name,
-                COURSE,
-                TERM
-            )
-        })?;
-    let script_url = script_url.as_str().ok_or_else(|| {
-        anyhow!(
-            "Script URL for {} in {}-{} is not a string",
-            assignment_name,
-            COURSE,
-            TERM
-        )
-    })?;
+    let resp = rt.block_on(async {
+        POSTGREST_CLIENT
+            .from("grading_scripts")
+            .eq("course", COURSE)
+            .eq("term", TERM)
+            .eq("assignment", &assignment_name)
+            .select("url")
+            .single()
+            .execute()
+            .await?
+            .text()
+            .await
+            .context(format!(
+                "Could not get grading script for {assignment_name}"
+            ))
+    });
+    let resp: serde_json::Value = serde_json::from_str(resp?.as_str())?;
+    let resp = resp.as_object().unwrap();
+
+    if let Some(message) = resp.get("message") {
+        anyhow::bail!("Error: {message}");
+    }
+
+    let script_url = resp.get("url").unwrap().as_str().unwrap();
 
     let script = reqwest::blocking::get(script_url)
         .context(format!("Cannot get url: {script_url}"))?

@@ -4,8 +4,10 @@
 use std::path::PathBuf;
 
 use lazy_static::lazy_static;
+use postgrest::Postgrest;
 use tree_sitter;
 
+// TODO: replace with https://lib.rs/crates/state
 lazy_static! {
     /// Path to project root
     pub static ref ROOT_DIR: PathBuf = PathBuf::from(".");
@@ -23,17 +25,21 @@ lazy_static! {
     pub static ref SEPARATOR: &'static str = if cfg!(windows) { ";" } else { ":" };
     /// Reference to treesitter language struct
     pub static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
+    /// Supabase public api key
+    pub static ref SUPABASE_KEY: String = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5YW5jenRtempsZWtvamVwcm9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjA4NDA1NzgsImV4cCI6MTk3NjQxNjU3OH0.yMvOYM0AM61v6MRsHUSgO0BPrQHTde2AiKzE0b4H4lo".to_string();
+    /// PostGrest client
+    pub static ref POSTGREST_CLIENT: Postgrest = Postgrest::new("https://uyancztmzjlekojeproj.supabase.co/rest/v1")
+            .insert_header("apiKey", SUPABASE_KEY.clone());
+    /// Runtime
+    pub static ref RUNTIME_HANDLE: tokio::runtime::Runtime = tokio::runtime::Runtime::new().unwrap();
+
 }
 
-/// URL to download grading_scripts.json
-pub const GRADING_SCRIPTS_URL: &str =
-    "https://www.dropbox.com/s/usow7hyzjoylehc/grading_scripts.json?raw=1";
-
 /// Current term. TODO: Move this to init script
-pub const TERM: &str = "summer_22";
+pub const TERM: &str = "Fall 2022";
 
 /// Current course. TODO: Move this to init script
-pub const COURSE: &str = "itsc_2214";
+pub const COURSE: &str = "ITSC 2214";
 
 /// file name for JUnit platform console standard jar
 pub const JUNIT_PLATFORM: &str = "junit-platform-console-standalone-1.9.0-RC1.jar";

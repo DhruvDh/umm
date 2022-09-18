@@ -625,7 +625,7 @@ impl Project {
                 std::fs::create_dir(LIB_DIR.as_path()).unwrap();
             }
 
-            let rt = tokio::runtime::Runtime::new().unwrap();
+            let rt = RUNTIME_HANDLE.handle().clone();
 
             rt.block_on(async {
                 let handle1 = rt.spawn(async {
@@ -918,23 +918,25 @@ impl Project {
                     .build(),
             );
         }
+        let rt = RUNTIME_HANDLE.handle().clone();
 
-        let grading_json = reqwest::blocking::get(GRADING_SCRIPTS_URL)
-            .context(format!("Failed to download url: {GRADING_SCRIPTS_URL}"))?
-            .text()
-            .context(format!(
-                "Failed to read response as text: {GRADING_SCRIPTS_URL}"
-            ))?;
+        let resp = rt.block_on(async {
+            POSTGREST_CLIENT
+                .from("grading_scripts")
+                .eq("course", COURSE)
+                .eq("term", TERM)
+                .select("assignment")
+                .execute()
+                .await?
+                .text()
+                .await
+                .context("Could not get grading scripts")
+        });
+        let resp: serde_json::Value = serde_json::from_str(resp?.as_str())?;
 
-        let grading_json: serde_json::Value = serde_json::from_str(&grading_json)?;
-        let grading_json = grading_json
-            .get(COURSE)
-            .ok_or_else(|| anyhow!("Could not find course: {}", COURSE))?
-            .get(TERM)
-            .ok_or_else(|| anyhow!("Could not find term {} in {}", TERM, COURSE))?;
         let mut keys = vec![];
-        for (key, _) in grading_json.as_object().unwrap() {
-            keys.push(key.to_string());
+        for val in resp.as_array().unwrap() {
+            keys.push(val.as_object().unwrap()["assignment"].to_string());
         }
 
         inputs.push(vscode::Input::PickString {
