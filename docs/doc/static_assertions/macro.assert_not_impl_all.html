@@ -16,7 +16,7 @@ implemented you should invoke <a href="macro.assert_not_impl_any.html"><code>ass
 <p>The following example fails to compile since <code>u32</code> can be converted into
 <code>u64</code>.</p>
 
-<div class='information'><div class='tooltip compile_fail'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered compile_fail"><code><span class="macro">assert_not_impl_all!</span>(u32: Into&lt;u64&gt;);</code></pre></div>
+<div class="example-wrap compile_fail"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="macro">assert_not_impl_all!</span>(u32: Into&lt;u64&gt;);</code></pre></div>
 <p>The following compiles because <a href="https://doc.rust-lang.org/std/cell/struct.Cell.html"><code>Cell</code></a> is not both <a href="https://doc.rust-lang.org/std/marker/trait.Sync.html"><code>Sync</code></a> <em>and</em> <a href="https://doc.rust-lang.org/std/marker/trait.Send.html"><code>Send</code></a>:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::cell::Cell;
@@ -24,5 +24,5 @@ implemented you should invoke <a href="macro.assert_not_impl_any.html"><code>ass
 <span class="macro">assert_not_impl_all!</span>(Cell&lt;u32&gt;: Sync, Send);</code></pre></div>
 <p>But it is <a href="https://doc.rust-lang.org/std/marker/trait.Send.html"><code>Send</code></a>, so this fails to compile:</p>
 
-<div class='information'><div class='tooltip compile_fail'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered compile_fail"><code><span class="macro">assert_not_impl_all!</span>(Cell&lt;u32&gt;: Send);</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="static_assertions" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+<div class="example-wrap compile_fail"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="macro">assert_not_impl_all!</span>(Cell&lt;u32&gt;: Send);</code></pre></div>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="static_assertions" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

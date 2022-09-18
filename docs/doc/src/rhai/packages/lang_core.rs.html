@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/packages/lang_core.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lang_core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/packages/lang_core.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lang_core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -269,25 +269,10 @@
 <span id="269">269</span>
 <span id="270">270</span>
 <span id="271">271</span>
-<span id="272">272</span>
-<span id="273">273</span>
-<span id="274">274</span>
-<span id="275">275</span>
-<span id="276">276</span>
-<span id="277">277</span>
-<span id="278">278</span>
-<span id="279">279</span>
-<span id="280">280</span>
-<span id="281">281</span>
-<span id="282">282</span>
-<span id="283">283</span>
-<span id="284">284</span>
-<span id="285">285</span>
-<span id="286">286</span>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::def_package;
 <span class="kw">use </span><span class="kw">crate</span>::plugin::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::types::dynamic::Tag;
-<span class="kw">use crate</span>::{Dynamic, RhaiResultOf, ERR, INT};
+<span class="kw">use crate</span>::{Dynamic, RhaiResultOf, ERR, INT, MAX_USIZE_INT};
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
 
@@ -335,25 +320,22 @@
     /// ```
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;set_tag&quot;</span>, set = <span class="string">&quot;tag&quot;</span>, return_raw)]
     </span><span class="kw">pub fn </span>set_tag(value: <span class="kw-2">&amp;mut </span>Dynamic, tag: INT) -&gt; RhaiResultOf&lt;()&gt; {
-        <span class="kw">if </span>tag &lt; Tag::MIN <span class="kw">as </span>INT {
+        <span class="kw">const </span>TAG_MIN: Tag = Tag::MIN;
+        <span class="kw">const </span>TAG_MAX: Tag = Tag::MAX;
+
+        <span class="kw">if </span>tag &lt; TAG_MIN <span class="kw">as </span>INT {
             <span class="prelude-val">Err</span>(ERR::ErrorArithmetic(
                 <span class="macro">format!</span>(
-                    <span class="string">&quot;{} is too small to fit into a tag (must be between {} and {})&quot;</span>,
-                    tag,
-                    Tag::MIN,
-                    Tag::MAX
-                ),
+                    <span class="string">&quot;{tag} is too small to fit into a tag (must be between {TAG_MIN} and {TAG_MAX})&quot;
+                </span>),
                 Position::NONE,
             )
             .into())
-        } <span class="kw">else if </span>tag &gt; Tag::MAX <span class="kw">as </span>INT {
+        } <span class="kw">else if </span>tag &gt; TAG_MAX <span class="kw">as </span>INT {
             <span class="prelude-val">Err</span>(ERR::ErrorArithmetic(
                 <span class="macro">format!</span>(
-                    <span class="string">&quot;{} is too large to fit into a tag (must be between {} and {})&quot;</span>,
-                    tag,
-                    Tag::MIN,
-                    Tag::MAX
-                ),
+                    <span class="string">&quot;{tag} is too large to fit into a tag (must be between {TAG_MIN} and {TAG_MAX})&quot;
+                </span>),
                 Position::NONE,
             )
             .into())
@@ -402,7 +384,7 @@
     }
     <span class="attribute">#[rhai_fn(name = <span class="string">&quot;get_fn_metadata_list&quot;</span>)]
     </span><span class="kw">pub fn </span>get_fn_metadata2(ctx: NativeCallContext, name: <span class="kw-2">&amp;</span>str, params: INT) -&gt; <span class="kw">crate</span>::Array {
-        <span class="kw">if </span>params &lt; <span class="number">0 </span>{
+        <span class="kw">if </span>params &lt; <span class="number">0 </span>|| params &gt; MAX_USIZE_INT {
             <span class="kw">crate</span>::Array::new()
         } <span class="kw">else </span>{
             collect_fn_metadata(ctx, |<span class="kw">_</span>, <span class="kw">_</span>, n, p, <span class="kw">_</span>| p == (params <span class="kw">as </span>usize) &amp;&amp; n == name)
@@ -418,67 +400,57 @@
     filter: <span class="kw">impl </span>Fn(FnNamespace, FnAccess, <span class="kw-2">&amp;</span>str, usize, <span class="kw-2">&amp;</span><span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::ast::ScriptFnDef&gt;) -&gt; bool
         + Copy,
 ) -&gt; <span class="kw">crate</span>::Array {
-    <span class="kw">use crate</span>::{ast::ScriptFnDef, Array, Identifier, Map};
-    <span class="kw">use </span>std::collections::BTreeSet;
+    <span class="kw">use crate</span>::{ast::ScriptFnDef, Array, Map};
 
     <span class="comment">// Create a metadata record for a function.
     </span><span class="kw">fn </span>make_metadata(
-        dict: <span class="kw-2">&amp;</span>BTreeSet&lt;Identifier&gt;,
-        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))] </span>namespace: Identifier,
+        dict: <span class="kw-2">&amp;mut </span><span class="kw">crate</span>::types::StringsInterner,
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))] </span>namespace: <span class="kw">crate</span>::Identifier,
         func: <span class="kw-2">&amp;</span>ScriptFnDef,
     ) -&gt; Map {
-        <span class="kw">const </span>DICT: <span class="kw-2">&amp;</span>str = <span class="string">&quot;key exists&quot;</span>;
-
         <span class="kw">let </span><span class="kw-2">mut </span>map = Map::new();
 
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
         </span><span class="kw">if </span>!namespace.is_empty() {
-            map.insert(dict.get(<span class="string">&quot;namespace&quot;</span>).expect(DICT).clone(), namespace.into());
+            map.insert(<span class="string">&quot;namespace&quot;</span>.into(), dict.get(namespace).into());
         }
+        map.insert(<span class="string">&quot;name&quot;</span>.into(), dict.get(func.name.as_str()).into());
         map.insert(
-            dict.get(<span class="string">&quot;name&quot;</span>).expect(DICT).clone(),
-            func.name.clone().into(),
-        );
-        map.insert(
-            dict.get(<span class="string">&quot;access&quot;</span>).expect(DICT).clone(),
-            <span class="kw">match </span>func.access {
-                FnAccess::Public =&gt; dict.get(<span class="string">&quot;public&quot;</span>).expect(DICT).clone(),
-                FnAccess::Private =&gt; dict.get(<span class="string">&quot;private&quot;</span>).expect(DICT).clone(),
-            }
+            <span class="string">&quot;access&quot;</span>.into(),
+            dict.get(<span class="kw">match </span>func.access {
+                FnAccess::Public =&gt; <span class="string">&quot;public&quot;</span>,
+                FnAccess::Private =&gt; <span class="string">&quot;private&quot;</span>,
+            })
             .into(),
         );
         map.insert(
-            dict.get(<span class="string">&quot;is_anonymous&quot;</span>).expect(DICT).clone(),
+            <span class="string">&quot;is_anonymous&quot;</span>.into(),
             func.name.starts_with(<span class="kw">crate</span>::engine::FN_ANONYMOUS).into(),
         );
         map.insert(
-            dict.get(<span class="string">&quot;params&quot;</span>).expect(DICT).clone(),
+            <span class="string">&quot;params&quot;</span>.into(),
             func.params
                 .iter()
-                .cloned()
-                .map(Into::into)
+                .map(|p| dict.get(p.as_str()).into())
                 .collect::&lt;Array&gt;()
                 .into(),
         );
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+        </span><span class="kw">if </span>!func.comments.is_empty() {
+            map.insert(
+                <span class="string">&quot;comments&quot;</span>.into(),
+                func.comments
+                    .iter()
+                    .map(|s| dict.get(s.as_ref()).into())
+                    .collect::&lt;Array&gt;()
+                    .into(),
+            );
+        }
 
         map
     }
 
-    <span class="comment">// Intern strings
-    </span><span class="kw">let </span>dict: BTreeSet&lt;Identifier&gt; = [
-        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-        </span><span class="string">&quot;namespace&quot;</span>,
-        <span class="string">&quot;name&quot;</span>,
-        <span class="string">&quot;access&quot;</span>,
-        <span class="string">&quot;public&quot;</span>,
-        <span class="string">&quot;private&quot;</span>,
-        <span class="string">&quot;is_anonymous&quot;</span>,
-        <span class="string">&quot;params&quot;</span>,
-    ]
-    .iter()
-    .map(|<span class="kw-2">&amp;</span>s| s.into())
-    .collect();
-
+    <span class="kw">let </span>dict = <span class="kw-2">&amp;mut </span><span class="kw">crate</span>::types::StringsInterner::new();
     <span class="kw">let </span><span class="kw-2">mut </span>list = Array::new();
 
     ctx.iter_namespaces()
@@ -487,13 +459,13 @@
         .for_each(|(.., f)| {
             list.push(
                 make_metadata(
-                    <span class="kw-2">&amp;</span>dict,
+                    dict,
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-                    </span>Identifier::new_const(),
+                    </span><span class="kw">crate</span>::Identifier::new_const(),
                     f,
                 )
                 .into(),
-            )
+            );
         });
 
     ctx.engine()
@@ -504,13 +476,13 @@
         .for_each(|(.., f)| {
             list.push(
                 make_metadata(
-                    <span class="kw-2">&amp;</span>dict,
+                    dict,
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-                    </span>Identifier::new_const(),
+                    </span><span class="kw">crate</span>::Identifier::new_const(),
                     f,
                 )
                 .into(),
-            )
+            );
         });
 
     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
@@ -522,22 +494,22 @@
         .for_each(|(.., f)| {
             list.push(
                 make_metadata(
-                    <span class="kw-2">&amp;</span>dict,
+                    dict,
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-                    </span>Identifier::new_const(),
+                    </span><span class="kw">crate</span>::Identifier::new_const(),
                     f,
                 )
                 .into(),
-            )
+            );
         });
 
     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
     </span>{
         <span class="comment">// Recursively scan modules for script-defined functions.
         </span><span class="kw">fn </span>scan_module(
+            dict: <span class="kw-2">&amp;mut </span><span class="kw">crate</span>::types::StringsInterner,
             list: <span class="kw-2">&amp;mut </span>Array,
-            dict: <span class="kw-2">&amp;</span>BTreeSet&lt;Identifier&gt;,
-            namespace: Identifier,
+            namespace: <span class="kw-2">&amp;</span>str,
             module: <span class="kw-2">&amp;</span>Module,
             filter: <span class="kw">impl </span>Fn(
                     FnNamespace,
@@ -551,24 +523,22 @@
             module
                 .iter_script_fn()
                 .filter(|(s, a, n, p, f)| filter(<span class="kw-2">*</span>s, <span class="kw-2">*</span>a, n, <span class="kw-2">*</span>p, f))
-                .for_each(|(.., f)| list.push(make_metadata(dict, namespace.clone(), f).into()));
+                .for_each(|(.., f)| list.push(make_metadata(dict, namespace.into(), f).into()));
             <span class="kw">for </span>(ns, m) <span class="kw">in </span>module.iter_sub_modules() {
                 <span class="kw">let </span>ns = <span class="macro">format!</span>(
-                    <span class="string">&quot;{}{}{}&quot;</span>,
-                    namespace,
-                    <span class="kw">crate</span>::tokenizer::Token::DoubleColon.literal_syntax(),
-                    ns
+                    <span class="string">&quot;{namespace}{}{ns}&quot;</span>,
+                    <span class="kw">crate</span>::tokenizer::Token::DoubleColon.literal_syntax()
                 );
-                scan_module(list, dict, ns.into(), m.as_ref(), filter)
+                scan_module(dict, list, <span class="kw-2">&amp;</span>ns, <span class="kw-2">&amp;**</span>m, filter);
             }
         }
 
         <span class="kw">for </span>(ns, m) <span class="kw">in </span>ctx.iter_imports_raw() {
-            scan_module(<span class="kw-2">&amp;mut </span>list, <span class="kw-2">&amp;</span>dict, ns.clone(), m.as_ref(), filter)
+            scan_module(dict, <span class="kw-2">&amp;mut </span>list, ns, <span class="kw-2">&amp;**</span>m, filter);
         }
     }
 
     list
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

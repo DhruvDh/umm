@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/api/custom_syntax.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>custom_syntax.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/api/custom_syntax.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>custom_syntax.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -365,16 +365,16 @@
 <span id="365">365</span>
 <span id="366">366</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Module implementing custom syntax for [`Engine`].
+</span><span class="attribute">#![cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
 
 </span><span class="kw">use </span><span class="kw">crate</span>::ast::Expr;
-<span class="kw">use </span><span class="kw">crate</span>::eval::Caches;
-<span class="kw">use </span><span class="kw">crate</span>::func::native::SendSync;
+<span class="kw">use </span><span class="kw">crate</span>::func::SendSync;
 <span class="kw">use </span><span class="kw">crate</span>::parser::ParseResult;
 <span class="kw">use </span><span class="kw">crate</span>::tokenizer::{is_valid_identifier, Token};
 <span class="kw">use </span><span class="kw">crate</span>::types::dynamic::Variant;
 <span class="kw">use crate</span>::{
     reify, Engine, EvalContext, Identifier, ImmutableString, LexError, Position, RhaiResult,
-    Shared, StaticVec,
+    StaticVec,
 };
 <span class="kw">use </span>std::ops::Deref;
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
@@ -431,6 +431,37 @@
 }
 
 <span class="kw">impl </span>Expression&lt;<span class="lifetime">&#39;_</span>&gt; {
+    <span class="doccomment">/// Evaluate this [expression tree][Expression] within an [evaluation context][`EvalContext`].
+    ///
+    /// # WARNING - Low Level API
+    ///
+    /// This function is very low level.  It evaluates an expression from an [`AST`][crate::AST].
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>eval_with_context(<span class="kw-2">&amp;</span><span class="self">self</span>, context: <span class="kw-2">&amp;mut </span>EvalContext) -&gt; RhaiResult {
+        context.eval_expression_tree(<span class="self">self</span>)
+    }
+    <span class="doccomment">/// Evaluate this [expression tree][Expression] within an [evaluation context][`EvalContext`].
+    ///
+    /// The following option is available:
+    ///
+    /// * whether to rewind the [`Scope`][crate::Scope] after evaluation if the expression is a [`StmtBlock`][crate::ast::StmtBlock]
+    ///
+    /// # WARNING - Unstable API
+    ///
+    /// This API is volatile and may change in the future.
+    ///
+    /// # WARNING - Low Level API
+    ///
+    /// This function is _extremely_ low level.  It evaluates an expression from an [`AST`][crate::AST].
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>eval_with_context_raw(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        context: <span class="kw-2">&amp;mut </span>EvalContext,
+        rewind_scope: bool,
+    ) -&gt; RhaiResult {
+        <span class="attribute">#[allow(deprecated)]
+        </span>context.eval_expression_tree_raw(<span class="self">self</span>, rewind_scope)
+    }
     <span class="doccomment">/// Get the value of this expression if it is a variable name or a string constant.
     ///
     /// Returns [`None`] also if the constant is not of the specified type.
@@ -469,10 +500,7 @@
 
             Expr::CharConstant(x, ..) =&gt; <span class="macro">reify!</span>(<span class="kw-2">*</span>x =&gt; <span class="prelude-ty">Option</span>&lt;T&gt;),
             Expr::StringConstant(x, ..) =&gt; <span class="macro">reify!</span>(x.clone() =&gt; <span class="prelude-ty">Option</span>&lt;T&gt;),
-            Expr::Variable(x, ..) =&gt; {
-                <span class="kw">let </span>x: ImmutableString = x.<span class="number">3</span>.clone().into();
-                <span class="macro">reify!</span>(x =&gt; <span class="prelude-ty">Option</span>&lt;T&gt;)
-            }
+            Expr::Variable(x, ..) =&gt; <span class="macro">reify!</span>(x.<span class="number">3</span>.clone() =&gt; <span class="prelude-ty">Option</span>&lt;T&gt;),
             Expr::BoolConstant(x, ..) =&gt; <span class="macro">reify!</span>(<span class="kw-2">*</span>x =&gt; <span class="prelude-ty">Option</span>&lt;T&gt;),
             Expr::Unit(..) =&gt; <span class="macro">reify!</span>(() =&gt; <span class="prelude-ty">Option</span>&lt;T&gt;),
 
@@ -484,7 +512,7 @@
 <span class="kw">impl </span>AsRef&lt;Expr&gt; <span class="kw">for </span>Expression&lt;<span class="lifetime">&#39;_</span>&gt; {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Expr {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
+        <span class="self">self</span>.<span class="number">0
     </span>}
 }
 
@@ -493,36 +521,8 @@
 
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
+        <span class="self">self</span>.<span class="number">0
     </span>}
-}
-
-<span class="kw">impl </span>EvalContext&lt;<span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span>&gt; {
-    <span class="doccomment">/// Evaluate an [expression tree][Expression].
-    ///
-    /// # WARNING - Low Level API
-    ///
-    /// This function is very low level.  It evaluates an expression from an [`AST`][crate::AST].
-    </span><span class="attribute">#[inline(always)]
-    </span><span class="kw">pub fn </span>eval_expression_tree(<span class="kw-2">&amp;mut </span><span class="self">self</span>, expr: <span class="kw-2">&amp;</span>Expression) -&gt; RhaiResult {
-        <span class="kw">let </span><span class="kw-2">mut </span>caches;
-
-        <span class="self">self</span>.engine.eval_expr(
-            <span class="self">self</span>.scope,
-            <span class="self">self</span>.global,
-            <span class="kw">match </span><span class="self">self</span>.caches.as_mut() {
-                <span class="prelude-val">Some</span>(c) =&gt; c,
-                <span class="prelude-val">None </span>=&gt; {
-                    caches = Caches::new();
-                    <span class="kw-2">&amp;mut </span>caches
-                }
-            },
-            <span class="self">self</span>.lib,
-            <span class="self">self</span>.this_ptr,
-            expr,
-            <span class="self">self</span>.level,
-        )
-    }
 }
 
 <span class="doccomment">/// Definition of a custom syntax definition.
@@ -531,7 +531,7 @@
     /// symbols parsed so far.
     </span><span class="kw">pub </span>parse: Box&lt;FnCustomSyntaxParse&gt;,
     <span class="doccomment">/// Custom syntax implementation function.
-    </span><span class="kw">pub </span>func: Shared&lt;FnCustomSyntaxEval&gt;,
+    </span><span class="kw">pub </span>func: Box&lt;FnCustomSyntaxEval&gt;,
     <span class="doccomment">/// Any variables added/removed in the scope?
     </span><span class="kw">pub </span>scope_may_be_changed: bool,
 }
@@ -539,7 +539,9 @@
 <span class="kw">impl </span>Engine {
     <span class="doccomment">/// Register a custom syntax with the [`Engine`].
     ///
-    /// * `symbols` holds a slice of strings that define the custom syntax.  
+    /// Not available under `no_custom_syntax`.
+    ///
+    /// * `symbols` holds a slice of strings that define the custom syntax.
     /// * `scope_may_be_changed` specifies variables _may_ be added/removed by this custom syntax.
     /// * `func` is the implementation function.
     ///
@@ -613,15 +615,14 @@
                 }
                 <span class="comment">// Standard keyword in first position but not disabled
                 </span><span class="kw">_ if </span>segments.is_empty()
-                    &amp;&amp; token.as_ref().map_or(<span class="bool-val">false</span>, |v| v.is_standard_keyword())
+                    &amp;&amp; token.as_ref().map_or(<span class="bool-val">false</span>, Token::is_standard_keyword)
                     &amp;&amp; (<span class="self">self</span>.disabled_symbols.is_empty() || !<span class="self">self</span>.disabled_symbols.contains(s)) =&gt;
                 {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(LexError::ImproperSymbol(
                         s.to_string(),
                         <span class="macro">format!</span>(
-                            <span class="string">&quot;Improper symbol for custom syntax at position #{}: &#39;{}&#39;&quot;</span>,
+                            <span class="string">&quot;Improper symbol for custom syntax at position #{}: &#39;{s}&#39;&quot;</span>,
                             segments.len() + <span class="number">1</span>,
-                            s
                         ),
                     )
                     .into_err(Position::NONE));
@@ -631,11 +632,10 @@
                     <span class="comment">// Make it a custom keyword/symbol if it is disabled or reserved
                     </span><span class="kw">if </span>(!<span class="self">self</span>.disabled_symbols.is_empty() &amp;&amp; <span class="self">self</span>.disabled_symbols.contains(s))
                         || token.map_or(<span class="bool-val">false</span>, |v| v.is_reserved())
+                            &amp;&amp; <span class="self">self</span>.custom_keywords.is_empty()
+                        || !<span class="self">self</span>.custom_keywords.contains_key(s)
                     {
-                        <span class="kw">if </span><span class="self">self</span>.custom_keywords.is_empty() || !<span class="self">self</span>.custom_keywords.contains_key(s)
-                        {
-                            <span class="self">self</span>.custom_keywords.insert(s.into(), <span class="prelude-val">None</span>);
-                        }
+                        <span class="self">self</span>.custom_keywords.insert(s.into(), <span class="prelude-val">None</span>);
                     }
                     s.into()
                 }
@@ -644,9 +644,8 @@
                     <span class="kw">return </span><span class="prelude-val">Err</span>(LexError::ImproperSymbol(
                         s.to_string(),
                         <span class="macro">format!</span>(
-                            <span class="string">&quot;Improper symbol for custom syntax at position #{}: &#39;{}&#39;&quot;</span>,
+                            <span class="string">&quot;Improper symbol for custom syntax at position #{}: &#39;{s}&#39;&quot;</span>,
                             segments.len() + <span class="number">1</span>,
-                            s
                         ),
                     )
                     .into_err(Position::NONE));
@@ -681,6 +680,8 @@
         <span class="prelude-val">Ok</span>(<span class="self">self</span>)
     }
     <span class="doccomment">/// Register a custom syntax with the [`Engine`].
+    ///
+    /// Not available under `no_custom_syntax`.
     ///
     /// # WARNING - Low Level API
     ///
@@ -722,13 +723,12 @@
             key.into(),
             CustomSyntax {
                 parse: Box::new(parse),
-                func: (Box::new(func) <span class="kw">as </span>Box&lt;FnCustomSyntaxEval&gt;).into(),
+                func: Box::new(func),
                 scope_may_be_changed,
-            }
-            .into(),
+            },
         );
         <span class="self">self
     </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

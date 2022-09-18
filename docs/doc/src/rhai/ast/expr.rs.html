@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/ast/expr.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>expr.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/ast/expr.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>expr.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -913,6 +913,62 @@
 <span id="913">913</span>
 <span id="914">914</span>
 <span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Module defining script expressions.
 
 </span><span class="kw">use super</span>::{ASTFlags, ASTNode, Ident, Stmt, StmtBlock};
@@ -920,12 +976,16 @@
 <span class="kw">use </span><span class="kw">crate</span>::func::hashing::ALT_ZERO_HASH;
 <span class="kw">use </span><span class="kw">crate</span>::tokenizer::Token;
 <span class="kw">use </span><span class="kw">crate</span>::types::dynamic::Union;
-<span class="kw">use crate</span>::{calc_fn_hash, Dynamic, FnPtr, Identifier, ImmutableString, Position, StaticVec, INT};
+<span class="kw">use crate</span>::{
+    calc_fn_hash, Dynamic, FnPtr, Identifier, ImmutableString, Position, SmartString, StaticVec,
+    INT,
+};
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::{
     collections::BTreeMap,
     fmt,
+    fmt::Write,
     hash::Hash,
     iter::once,
     num::{NonZeroU8, NonZeroUsize},
@@ -963,12 +1023,15 @@
 
 <span class="doccomment">/// _(internals)_ A custom syntax expression.
 /// Exported under the `internals` feature only.
-</span><span class="attribute">#[derive(Debug, Clone, Hash)]
+///
+/// Not available under `no_custom_syntax`.
+</span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+#[derive(Debug, Clone, Hash)]
 </span><span class="kw">pub struct </span>CustomExpr {
     <span class="doccomment">/// List of keywords.
     </span><span class="kw">pub </span>inputs: StaticVec&lt;Expr&gt;,
     <span class="doccomment">/// List of tokens actually parsed.
-    </span><span class="kw">pub </span>tokens: StaticVec&lt;Identifier&gt;,
+    </span><span class="kw">pub </span>tokens: StaticVec&lt;ImmutableString&gt;,
     <span class="doccomment">/// Is the current [`Scope`][crate::Scope] possibly modified by this custom statement
     /// (e.g. introducing a new variable)?
     </span><span class="kw">pub </span>scope_may_be_changed: bool,
@@ -976,7 +1039,8 @@
     </span><span class="kw">pub </span>self_terminated: bool,
 }
 
-<span class="kw">impl </span>CustomExpr {
+<span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+</span><span class="kw">impl </span>CustomExpr {
     <span class="doccomment">/// Is this custom syntax self-terminated (i.e. no need for a semicolon terminator)?
     ///
     /// A self-terminated custom syntax always ends in `$block$`, `}` or `;`
@@ -1090,13 +1154,15 @@
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
     </span><span class="kw">pub </span>namespace: <span class="kw">super</span>::Namespace,
     <span class="doccomment">/// Function name.
-    </span><span class="kw">pub </span>name: Identifier,
+    </span><span class="kw">pub </span>name: ImmutableString,
     <span class="doccomment">/// Pre-calculated hashes.
     </span><span class="kw">pub </span>hashes: FnCallHashes,
     <span class="doccomment">/// List of function call argument expressions.
     </span><span class="kw">pub </span>args: StaticVec&lt;Expr&gt;,
     <span class="doccomment">/// Does this function call capture the parent scope?
     </span><span class="kw">pub </span>capture_parent_scope: bool,
+    <span class="doccomment">/// Is this function call a native operator?
+    </span><span class="kw">pub </span>is_native_operator: bool,
     <span class="doccomment">/// [Position] of the function name.
     </span><span class="kw">pub </span>pos: Position,
 }
@@ -1110,6 +1176,9 @@
         }
         <span class="kw">if </span><span class="self">self</span>.capture_parent_scope {
             ff.field(<span class="string">&quot;capture_parent_scope&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.capture_parent_scope);
+        }
+        <span class="kw">if </span><span class="self">self</span>.is_native_operator {
+            ff.field(<span class="string">&quot;is_native_operator&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.is_native_operator);
         }
         ff.field(<span class="string">&quot;hash&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.hashes)
             .field(<span class="string">&quot;name&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.name)
@@ -1237,25 +1306,15 @@
 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
 </span><span class="kw">impl</span>&lt;F: Float&gt; FloatWrapper&lt;F&gt; {
     <span class="doccomment">/// Maximum floating-point number for natural display before switching to scientific notation.
-    </span><span class="kw">pub const </span>MAX_NATURAL_FLOAT_FOR_DISPLAY: f32 = <span class="number">10000000000000.0</span>;
+    </span><span class="kw">pub const </span>MAX_NATURAL_FLOAT_FOR_DISPLAY: f32 = <span class="number">10_000_000_000_000.0</span>;
 
     <span class="doccomment">/// Minimum floating-point number for natural display before switching to scientific notation.
-    </span><span class="kw">pub const </span>MIN_NATURAL_FLOAT_FOR_DISPLAY: f32 = <span class="number">0.0000000000001</span>;
+    </span><span class="kw">pub const </span>MIN_NATURAL_FLOAT_FOR_DISPLAY: f32 = <span class="number">0.000_000_000_000_1</span>;
 
     <span class="doccomment">/// Create a new [`FloatWrapper`].
     </span><span class="attribute">#[inline(always)]
     #[must_use]
-    </span><span class="kw">pub fn </span>new(value: F) -&gt; <span class="self">Self </span>{
-        <span class="self">Self</span>(value)
-    }
-}
-
-<span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
-</span><span class="kw">impl </span>FloatWrapper&lt;<span class="kw">crate</span>::FLOAT&gt; {
-    <span class="doccomment">/// Create a new [`FloatWrapper`].
-    </span><span class="attribute">#[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub const fn </span>new_const(value: <span class="kw">crate</span>::FLOAT) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>new(value: F) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(value)
     }
 }
@@ -1269,6 +1328,8 @@
     ///
     /// Used to hold complex constants such as [`Array`][crate::Array] or [`Map`][crate::Map] for quick cloning.
     /// Primitive data types should use the appropriate variants to avoid an allocation.
+    ///
+    /// The [`Dynamic`] value is boxed in order to avoid bloating the size of [`Expr`].
     </span>DynamicConstant(Box&lt;Dynamic&gt;, Position),
     <span class="doccomment">/// Boolean constant.
     </span>BoolConstant(bool, Position),
@@ -1299,14 +1360,18 @@
     /// This is to avoid reading a pointer redirection during each variable access.
     </span>Variable(
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-        </span>Box&lt;(<span class="prelude-ty">Option</span>&lt;NonZeroUsize&gt;, <span class="kw">super</span>::Namespace, u64, Identifier)&gt;,
-        <span class="attribute">#[cfg(feature = <span class="string">&quot;no_module&quot;</span>)] </span>Box&lt;(<span class="prelude-ty">Option</span>&lt;NonZeroUsize&gt;, (), u64, Identifier)&gt;,
+        </span>Box&lt;(<span class="prelude-ty">Option</span>&lt;NonZeroUsize&gt;, <span class="kw">super</span>::Namespace, u64, ImmutableString)&gt;,
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;no_module&quot;</span>)] </span>Box&lt;(<span class="prelude-ty">Option</span>&lt;NonZeroUsize&gt;, (), u64, ImmutableString)&gt;,
         <span class="prelude-ty">Option</span>&lt;NonZeroU8&gt;,
         Position,
     ),
     <span class="doccomment">/// Property access - ((getter, hash), (setter, hash), prop)
     </span>Property(
-        Box&lt;((Identifier, u64), (Identifier, u64), ImmutableString)&gt;,
+        Box&lt;(
+            (ImmutableString, u64),
+            (ImmutableString, u64),
+            ImmutableString,
+        )&gt;,
         Position,
     ),
     <span class="doccomment">/// xxx `.` method `(` expr `,` ... `)`
@@ -1315,20 +1380,28 @@
     </span>Stmt(Box&lt;StmtBlock&gt;),
     <span class="doccomment">/// func `(` expr `,` ... `)`
     </span>FnCall(Box&lt;FnCallExpr&gt;, Position),
-    <span class="doccomment">/// lhs `.` rhs
+    <span class="doccomment">/// lhs `.` rhs | lhs `?.` rhs
+    ///
+    /// ### Flags
+    ///
+    /// [`NEGATED`][ASTFlags::NEGATED] = `?.` (`.` if unset)
+    /// [`BREAK`][ASTFlags::BREAK] = terminate the chain (recurse into the chain if unset)
     </span>Dot(Box&lt;BinaryExpr&gt;, ASTFlags, Position),
     <span class="doccomment">/// lhs `[` rhs `]`
     ///
     /// ### Flags
     ///
-    /// [`NONE`][ASTFlags::NONE] = recurse into the indexing chain
-    /// [`BREAK`][ASTFlags::BREAK] = terminate the indexing chain
+    /// [`NEGATED`][ASTFlags::NEGATED] = `?[` ... `]` (`[` ... `]` if unset)
+    /// [`BREAK`][ASTFlags::BREAK] = terminate the chain (recurse into the chain if unset)
     </span>Index(Box&lt;BinaryExpr&gt;, ASTFlags, Position),
     <span class="doccomment">/// lhs `&amp;&amp;` rhs
     </span>And(Box&lt;BinaryExpr&gt;, Position),
     <span class="doccomment">/// lhs `||` rhs
     </span>Or(Box&lt;BinaryExpr&gt;, Position),
+    <span class="doccomment">/// lhs `??` rhs
+    </span>Coalesce(Box&lt;BinaryExpr&gt;, Position),
     <span class="doccomment">/// Custom syntax
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
     </span>Custom(Box&lt;CustomExpr&gt;, Position),
 }
 
@@ -1375,7 +1448,7 @@
                     <span class="macro">write!</span>(f, <span class="string">&quot;{}{}&quot;</span>, x.<span class="number">1</span>, Token::DoubleColon.literal_syntax())<span class="question-mark">?</span>;
                     <span class="kw">let </span>pos = x.<span class="number">1</span>.position();
                     <span class="kw">if </span>!pos.is_none() {
-                        display_pos = <span class="macro">format!</span>(<span class="string">&quot; @ {:?}&quot;</span>, pos);
+                        display_pos = <span class="macro">format!</span>(<span class="string">&quot; @ {pos:?}&quot;</span>);
                     }
                 }
                 f.write_str(<span class="kw-2">&amp;</span>x.<span class="number">3</span>)<span class="question-mark">?</span>;
@@ -1389,36 +1462,48 @@
             <span class="self">Self</span>::Stmt(x) =&gt; {
                 <span class="kw">let </span>pos = x.span();
                 <span class="kw">if </span>!pos.is_none() {
-                    display_pos = <span class="macro">format!</span>(<span class="string">&quot; @ {:?}&quot;</span>, pos);
+                    display_pos = <span class="macro">format!</span>(<span class="string">&quot; @ {pos:?}&quot;</span>);
                 }
                 f.write_str(<span class="string">&quot;ExprStmtBlock&quot;</span>)<span class="question-mark">?</span>;
                 f.debug_list().entries(x.iter()).finish()
             }
             <span class="self">Self</span>::FnCall(x, ..) =&gt; fmt::Debug::fmt(x, f),
-            <span class="self">Self</span>::Index(x, term, pos) =&gt; {
+            <span class="self">Self</span>::Index(x, options, pos) =&gt; {
                 <span class="kw">if </span>!pos.is_none() {
-                    display_pos = <span class="macro">format!</span>(<span class="string">&quot; @ {:?}&quot;</span>, pos);
+                    display_pos = <span class="macro">format!</span>(<span class="string">&quot; @ {pos:?}&quot;</span>);
                 }
 
-                f.debug_struct(<span class="string">&quot;Index&quot;</span>)
-                    .field(<span class="string">&quot;lhs&quot;</span>, <span class="kw-2">&amp;</span>x.lhs)
-                    .field(<span class="string">&quot;rhs&quot;</span>, <span class="kw-2">&amp;</span>x.rhs)
-                    .field(<span class="string">&quot;terminate&quot;</span>, term)
-                    .finish()
+                <span class="kw">let </span><span class="kw-2">mut </span>f = f.debug_struct(<span class="string">&quot;Index&quot;</span>);
+
+                f.field(<span class="string">&quot;lhs&quot;</span>, <span class="kw-2">&amp;</span>x.lhs).field(<span class="string">&quot;rhs&quot;</span>, <span class="kw-2">&amp;</span>x.rhs);
+                <span class="kw">if </span>!options.is_empty() {
+                    f.field(<span class="string">&quot;options&quot;</span>, options);
+                }
+                f.finish()
             }
-            <span class="self">Self</span>::Dot(x, <span class="kw">_</span>, pos) | <span class="self">Self</span>::And(x, pos) | <span class="self">Self</span>::Or(x, pos) =&gt; {
+            <span class="self">Self</span>::Dot(x, options, pos) =&gt; {
+                <span class="kw">if </span>!pos.is_none() {
+                    display_pos = <span class="macro">format!</span>(<span class="string">&quot; @ {pos:?}&quot;</span>);
+                }
+
+                <span class="kw">let </span><span class="kw-2">mut </span>f = f.debug_struct(<span class="string">&quot;Dot&quot;</span>);
+
+                f.field(<span class="string">&quot;lhs&quot;</span>, <span class="kw-2">&amp;</span>x.lhs).field(<span class="string">&quot;rhs&quot;</span>, <span class="kw-2">&amp;</span>x.rhs);
+                <span class="kw">if </span>!options.is_empty() {
+                    f.field(<span class="string">&quot;options&quot;</span>, options);
+                }
+                f.finish()
+            }
+            <span class="self">Self</span>::And(x, pos) | <span class="self">Self</span>::Or(x, pos) | <span class="self">Self</span>::Coalesce(x, pos) =&gt; {
                 <span class="kw">let </span>op_name = <span class="kw">match </span><span class="self">self </span>{
-                    <span class="self">Self</span>::Dot(..) =&gt; <span class="string">&quot;Dot&quot;</span>,
                     <span class="self">Self</span>::And(..) =&gt; <span class="string">&quot;And&quot;</span>,
                     <span class="self">Self</span>::Or(..) =&gt; <span class="string">&quot;Or&quot;</span>,
-                    expr =&gt; <span class="macro">unreachable!</span>(
-                        <span class="string">&quot;Self::Dot or Self::And or Self::Or expected but gets {:?}&quot;</span>,
-                        expr
-                    ),
+                    <span class="self">Self</span>::Coalesce(..) =&gt; <span class="string">&quot;Coalesce&quot;</span>,
+                    expr =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;`And`, `Or` or `Coalesce` expected but gets {:?}&quot;</span>, expr),
                 };
 
                 <span class="kw">if </span>!pos.is_none() {
-                    display_pos = <span class="macro">format!</span>(<span class="string">&quot; @ {:?}&quot;</span>, pos);
+                    display_pos = <span class="macro">format!</span>(<span class="string">&quot; @ {pos:?}&quot;</span>);
                 }
 
                 f.debug_struct(op_name)
@@ -1426,7 +1511,8 @@
                     .field(<span class="string">&quot;rhs&quot;</span>, <span class="kw-2">&amp;</span>x.rhs)
                     .finish()
             }
-            <span class="self">Self</span>::Custom(x, ..) =&gt; f.debug_tuple(<span class="string">&quot;Custom&quot;</span>).field(x).finish(),
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+            </span><span class="self">Self</span>::Custom(x, ..) =&gt; f.debug_tuple(<span class="string">&quot;Custom&quot;</span>).field(x).finish(),
         }<span class="question-mark">?</span>;
 
         f.write_str(<span class="kw-2">&amp;</span>display_pos)
@@ -1466,11 +1552,21 @@
                 }))
             }
 
+            <span class="comment">// Interpolated string
+            </span><span class="self">Self</span>::InterpolatedString(x, ..) <span class="kw">if </span><span class="self">self</span>.is_constant() =&gt; {
+                <span class="kw">let </span><span class="kw-2">mut </span>s = SmartString::new_const();
+                <span class="kw">for </span>segment <span class="kw">in </span>x.iter() {
+                    <span class="kw">let </span>v = segment.get_literal_value().unwrap();
+                    <span class="macro">write!</span>(<span class="kw-2">&amp;mut </span>s, <span class="string">&quot;{}&quot;</span>, v).unwrap();
+                }
+                s.into()
+            }
+
             <span class="comment">// Fn
             </span><span class="self">Self</span>::FnCall(<span class="kw-2">ref </span>x, ..)
                 <span class="kw">if </span>!x.is_qualified() &amp;&amp; x.args.len() == <span class="number">1 </span>&amp;&amp; x.name == KEYWORD_FN_PTR =&gt;
             {
-                <span class="kw">if let </span>Expr::StringConstant(<span class="kw-2">ref </span>s, ..) = x.args[<span class="number">0</span>] {
+                <span class="kw">if let </span><span class="self">Self</span>::StringConstant(<span class="kw-2">ref </span>s, ..) = x.args[<span class="number">0</span>] {
                     FnPtr::new(s).ok()<span class="question-mark">?</span>.into()
                 } <span class="kw">else </span>{
                     <span class="kw">return </span><span class="prelude-val">None</span>;
@@ -1482,8 +1578,8 @@
                 <span class="kw">match </span>x.name.as_str() {
                     <span class="comment">// x..y
                     </span>OP_EXCLUSIVE_RANGE =&gt; {
-                        <span class="kw">if let </span>Expr::IntegerConstant(<span class="kw-2">ref </span>start, ..) = x.args[<span class="number">0</span>] {
-                            <span class="kw">if let </span>Expr::IntegerConstant(<span class="kw-2">ref </span>end, ..) = x.args[<span class="number">1</span>] {
+                        <span class="kw">if let </span><span class="self">Self</span>::IntegerConstant(<span class="kw-2">ref </span>start, ..) = x.args[<span class="number">0</span>] {
+                            <span class="kw">if let </span><span class="self">Self</span>::IntegerConstant(<span class="kw-2">ref </span>end, ..) = x.args[<span class="number">1</span>] {
                                 (<span class="kw-2">*</span>start..<span class="kw-2">*</span>end).into()
                             } <span class="kw">else </span>{
                                 <span class="kw">return </span><span class="prelude-val">None</span>;
@@ -1494,8 +1590,8 @@
                     }
                     <span class="comment">// x..=y
                     </span>OP_INCLUSIVE_RANGE =&gt; {
-                        <span class="kw">if let </span>Expr::IntegerConstant(<span class="kw-2">ref </span>start, ..) = x.args[<span class="number">0</span>] {
-                            <span class="kw">if let </span>Expr::IntegerConstant(<span class="kw-2">ref </span>end, ..) = x.args[<span class="number">1</span>] {
+                        <span class="kw">if let </span><span class="self">Self</span>::IntegerConstant(<span class="kw-2">ref </span>start, ..) = x.args[<span class="number">0</span>] {
+                            <span class="kw">if let </span><span class="self">Self</span>::IntegerConstant(<span class="kw-2">ref </span>end, ..) = x.args[<span class="number">1</span>] {
                                 (<span class="kw-2">*</span>start..=<span class="kw-2">*</span>end).into()
                             } <span class="kw">else </span>{
                                 <span class="kw">return </span><span class="prelude-val">None</span>;
@@ -1542,6 +1638,7 @@
                     hashes: calc_fn_hash(f.fn_name(), <span class="number">1</span>).into(),
                     args: once(<span class="self">Self</span>::StringConstant(f.fn_name().into(), pos)).collect(),
                     capture_parent_scope: <span class="bool-val">false</span>,
+                    is_native_operator: <span class="bool-val">false</span>,
                     pos,
                 }
                 .into(),
@@ -1596,11 +1693,14 @@
             | <span class="self">Self</span>::Variable(.., pos)
             | <span class="self">Self</span>::And(.., pos)
             | <span class="self">Self</span>::Or(.., pos)
+            | <span class="self">Self</span>::Coalesce(.., pos)
             | <span class="self">Self</span>::Index(.., pos)
             | <span class="self">Self</span>::Dot(.., pos)
-            | <span class="self">Self</span>::Custom(.., pos)
             | <span class="self">Self</span>::InterpolatedString(.., pos)
             | <span class="self">Self</span>::Property(.., pos) =&gt; <span class="kw-2">*</span>pos,
+
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+            </span><span class="self">Self</span>::Custom(.., pos) =&gt; <span class="kw-2">*</span>pos,
 
             <span class="self">Self</span>::FnCall(x, ..) | <span class="self">Self</span>::MethodCall(x, ..) =&gt; x.pos,
 
@@ -1615,16 +1715,21 @@
         <span class="kw">match </span><span class="self">self </span>{
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
             </span><span class="self">Self</span>::Variable(x, ..) =&gt; {
-                <span class="kw">if </span>!x.<span class="number">1</span>.is_empty() {
-                    x.<span class="number">1</span>.position()
-                } <span class="kw">else </span>{
+                <span class="kw">if </span>x.<span class="number">1</span>.is_empty() {
                     <span class="self">self</span>.position()
+                } <span class="kw">else </span>{
+                    x.<span class="number">1</span>.position()
                 }
             }
-            <span class="self">Self</span>::And(x, ..) | <span class="self">Self</span>::Or(x, ..) | <span class="self">Self</span>::Index(x, ..) | <span class="self">Self</span>::Dot(x, ..) =&gt; {
-                x.lhs.start_position()
-            }
+
+            <span class="self">Self</span>::And(x, ..)
+            | <span class="self">Self</span>::Or(x, ..)
+            | <span class="self">Self</span>::Coalesce(x, ..)
+            | <span class="self">Self</span>::Index(x, ..)
+            | <span class="self">Self</span>::Dot(x, ..) =&gt; x.lhs.start_position(),
+
             <span class="self">Self</span>::FnCall(.., pos) =&gt; <span class="kw-2">*</span>pos,
+
             <span class="kw">_ </span>=&gt; <span class="self">self</span>.position(),
         }
     }
@@ -1645,14 +1750,17 @@
             | <span class="self">Self</span>::Map(.., pos)
             | <span class="self">Self</span>::And(.., pos)
             | <span class="self">Self</span>::Or(.., pos)
+            | <span class="self">Self</span>::Coalesce(.., pos)
             | <span class="self">Self</span>::Dot(.., pos)
             | <span class="self">Self</span>::Index(.., pos)
             | <span class="self">Self</span>::Variable(.., pos)
             | <span class="self">Self</span>::FnCall(.., pos)
             | <span class="self">Self</span>::MethodCall(.., pos)
-            | <span class="self">Self</span>::Custom(.., pos)
             | <span class="self">Self</span>::InterpolatedString(.., pos)
             | <span class="self">Self</span>::Property(.., pos) =&gt; <span class="kw-2">*</span>pos = new_pos,
+
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+            </span><span class="self">Self</span>::Custom(.., pos) =&gt; <span class="kw-2">*</span>pos = new_pos,
 
             <span class="self">Self</span>::Stmt(x) =&gt; x.set_position(new_pos, Position::NONE),
         }
@@ -1670,7 +1778,9 @@
 
             <span class="self">Self</span>::Map(x, ..) =&gt; x.<span class="number">0</span>.iter().map(|(.., v)| v).all(<span class="self">Self</span>::is_pure),
 
-            <span class="self">Self</span>::And(x, ..) | <span class="self">Self</span>::Or(x, ..) =&gt; x.lhs.is_pure() &amp;&amp; x.rhs.is_pure(),
+            <span class="self">Self</span>::And(x, ..) | <span class="self">Self</span>::Or(x, ..) | <span class="self">Self</span>::Coalesce(x, ..) =&gt; {
+                x.lhs.is_pure() &amp;&amp; x.rhs.is_pure()
+            }
 
             <span class="self">Self</span>::Stmt(x) =&gt; x.iter().all(Stmt::is_pure),
 
@@ -1713,7 +1823,9 @@
     </span><span class="kw">pub const fn </span>is_valid_postfix(<span class="kw-2">&amp;</span><span class="self">self</span>, token: <span class="kw-2">&amp;</span>Token) -&gt; bool {
         <span class="kw">match </span>token {
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-            </span>Token::Period =&gt; <span class="kw">return </span><span class="bool-val">true</span>,
+            </span>Token::Period | Token::Elvis =&gt; <span class="kw">return </span><span class="bool-val">true</span>,
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
+            </span>Token::LeftBracket | Token::QuestionBracket =&gt; <span class="kw">return </span><span class="bool-val">true</span>,
             <span class="kw">_ </span>=&gt; (),
         }
 
@@ -1726,6 +1838,7 @@
             | <span class="self">Self</span>::CharConstant(..)
             | <span class="self">Self</span>::And(..)
             | <span class="self">Self</span>::Or(..)
+            | <span class="self">Self</span>::Coalesce(..)
             | <span class="self">Self</span>::Unit(..) =&gt; <span class="bool-val">false</span>,
 
             <span class="self">Self</span>::IntegerConstant(..)
@@ -1737,16 +1850,12 @@
             | <span class="self">Self</span>::Dot(..)
             | <span class="self">Self</span>::Index(..)
             | <span class="self">Self</span>::Array(..)
-            | <span class="self">Self</span>::Map(..)
-            | <span class="self">Self</span>::Custom(..) =&gt; <span class="kw">match </span>token {
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-                </span>Token::LeftBracket =&gt; <span class="bool-val">true</span>,
-                <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
-            },
+            | <span class="self">Self</span>::Map(..) =&gt; <span class="bool-val">false</span>,
+
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+            </span><span class="self">Self</span>::Custom(..) =&gt; <span class="bool-val">false</span>,
 
             <span class="self">Self</span>::Variable(..) =&gt; <span class="kw">match </span>token {
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-                </span>Token::LeftBracket =&gt; <span class="bool-val">true</span>,
                 Token::LeftParen =&gt; <span class="bool-val">true</span>,
                 Token::Unit =&gt; <span class="bool-val">true</span>,
                 Token::Bang =&gt; <span class="bool-val">true</span>,
@@ -1755,8 +1864,6 @@
             },
 
             <span class="self">Self</span>::Property(..) =&gt; <span class="kw">match </span>token {
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-                </span>Token::LeftBracket =&gt; <span class="bool-val">true</span>,
                 Token::LeftParen =&gt; <span class="bool-val">true</span>,
                 <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
             },
@@ -1778,14 +1885,14 @@
 
         <span class="kw">match </span><span class="self">self </span>{
             <span class="self">Self</span>::Stmt(x) =&gt; {
-                <span class="kw">for </span>s <span class="kw">in </span>x.iter() {
+                <span class="kw">for </span>s <span class="kw">in </span><span class="kw-2">&amp;**</span>x {
                     <span class="kw">if </span>!s.walk(path, on_node) {
                         <span class="kw">return </span><span class="bool-val">false</span>;
                     }
                 }
             }
             <span class="self">Self</span>::InterpolatedString(x, ..) | <span class="self">Self</span>::Array(x, ..) =&gt; {
-                <span class="kw">for </span>e <span class="kw">in </span>x.as_ref() {
+                <span class="kw">for </span>e <span class="kw">in </span><span class="kw-2">&amp;**</span>x {
                     <span class="kw">if </span>!e.walk(path, on_node) {
                         <span class="kw">return </span><span class="bool-val">false</span>;
                     }
@@ -1798,7 +1905,11 @@
                     }
                 }
             }
-            <span class="self">Self</span>::Index(x, ..) | <span class="self">Self</span>::Dot(x, ..) | Expr::And(x, ..) | Expr::Or(x, ..) =&gt; {
+            <span class="self">Self</span>::Index(x, ..)
+            | <span class="self">Self</span>::Dot(x, ..)
+            | <span class="self">Self</span>::And(x, ..)
+            | <span class="self">Self</span>::Or(x, ..)
+            | <span class="self">Self</span>::Coalesce(x, ..) =&gt; {
                 <span class="kw">if </span>!x.lhs.walk(path, on_node) {
                     <span class="kw">return </span><span class="bool-val">false</span>;
                 }
@@ -1813,7 +1924,8 @@
                     }
                 }
             }
-            <span class="self">Self</span>::Custom(x, ..) =&gt; {
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+            </span><span class="self">Self</span>::Custom(x, ..) =&gt; {
                 <span class="kw">for </span>e <span class="kw">in </span><span class="kw-2">&amp;</span>x.inputs {
                     <span class="kw">if </span>!e.walk(path, on_node) {
                         <span class="kw">return </span><span class="bool-val">false</span>;
@@ -1829,4 +1941,4 @@
     </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.2.2/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../url/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../url/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../url/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../url/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../url/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../url/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -2887,6 +2887,40 @@
 <span id="2887">2887</span>
 <span id="2888">2888</span>
 <span id="2889">2889</span>
+<span id="2890">2890</span>
+<span id="2891">2891</span>
+<span id="2892">2892</span>
+<span id="2893">2893</span>
+<span id="2894">2894</span>
+<span id="2895">2895</span>
+<span id="2896">2896</span>
+<span id="2897">2897</span>
+<span id="2898">2898</span>
+<span id="2899">2899</span>
+<span id="2900">2900</span>
+<span id="2901">2901</span>
+<span id="2902">2902</span>
+<span id="2903">2903</span>
+<span id="2904">2904</span>
+<span id="2905">2905</span>
+<span id="2906">2906</span>
+<span id="2907">2907</span>
+<span id="2908">2908</span>
+<span id="2909">2909</span>
+<span id="2910">2910</span>
+<span id="2911">2911</span>
+<span id="2912">2912</span>
+<span id="2913">2913</span>
+<span id="2914">2914</span>
+<span id="2915">2915</span>
+<span id="2916">2916</span>
+<span id="2917">2917</span>
+<span id="2918">2918</span>
+<span id="2919">2919</span>
+<span id="2920">2920</span>
+<span id="2921">2921</span>
+<span id="2922">2922</span>
+<span id="2923">2923</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2013-2015 The rust-url developers.
 //
 // Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or
@@ -3007,13 +3041,17 @@ See [serde documentation](https://serde.rs) for more information.
 ```toml
 url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
 ```
+
 */
 
-</span><span class="attribute">#![doc(html_root_url = <span class="string">&quot;https://docs.rs/url/2.2.2&quot;</span>)]
+</span><span class="attribute">#![doc(html_root_url = <span class="string">&quot;https://docs.rs/url/2.3.1&quot;</span>)]
+#![cfg_attr(
+    feature = <span class="string">&quot;debugger_visualizer&quot;</span>,
+    feature(debugger_visualizer),
+    debugger_visualizer(natvis_file = <span class="string">&quot;../../debug_metadata/url.natvis&quot;</span>)
+)]
 
-#[macro_use]
-</span><span class="kw">extern crate </span>matches;
-<span class="kw">pub use </span>form_urlencoded;
+</span><span class="kw">pub use </span>form_urlencoded;
 
 <span class="attribute">#[cfg(feature = <span class="string">&quot;serde&quot;</span>)]
 </span><span class="kw">extern crate </span>serde;
@@ -3349,7 +3387,7 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
         }
 
         <span class="comment">// Add the filename if they are not the same
-        </span><span class="kw">if </span>base_filename != url_filename {
+        </span><span class="kw">if </span>!relative.is_empty() || base_filename != url_filename {
             <span class="comment">// If the URIs filename is empty this means that it was a directory
             // so we&#39;ll have to append a &#39;/&#39;.
             //
@@ -4123,14 +4161,9 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     /// # }
     /// # run().unwrap();
     /// ```
-    </span><span class="attribute">#[allow(clippy::manual_strip)] </span><span class="comment">// introduced in 1.45, MSRV is 1.36
     </span><span class="kw">pub fn </span>path_segments(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;str::Split&lt;<span class="lifetime">&#39;_</span>, char&gt;&gt; {
         <span class="kw">let </span>path = <span class="self">self</span>.path();
-        <span class="kw">if </span>path.starts_with(<span class="string">&#39;/&#39;</span>) {
-            <span class="prelude-val">Some</span>(path[<span class="number">1</span>..].split(<span class="string">&#39;/&#39;</span>))
-        } <span class="kw">else </span>{
-            <span class="prelude-val">None
-        </span>}
+        path.strip_prefix(<span class="string">&#39;/&#39;</span>).map(|remainder| remainder.split(<span class="string">&#39;/&#39;</span>))
     }
 
     <span class="doccomment">/// Return this URL’s query string, if any, as a percent-encoded ASCII string.
@@ -4193,7 +4226,7 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     /// # Ok(())
     /// # }
     /// # run().unwrap();
-    ///
+    /// ```
 
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>query_pairs(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; form_urlencoded::Parse&lt;<span class="lifetime">&#39;_</span>&gt; {
@@ -4240,7 +4273,7 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     }
 
     <span class="kw">fn </span>mutate&lt;F: FnOnce(<span class="kw-2">&amp;mut </span>Parser&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; R, R&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, f: F) -&gt; R {
-        <span class="kw">let </span><span class="kw-2">mut </span>parser = Parser::for_setter(mem::replace(<span class="kw-2">&amp;mut </span><span class="self">self</span>.serialization, String::new()));
+        <span class="kw">let </span><span class="kw-2">mut </span>parser = Parser::for_setter(mem::take(<span class="kw-2">&amp;mut </span><span class="self">self</span>.serialization));
         <span class="kw">let </span>result = f(<span class="kw-2">&amp;mut </span>parser);
         <span class="self">self</span>.serialization = parser.serialization;
         result
@@ -4430,6 +4463,19 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     /// url.set_path(&quot;data/report.csv&quot;);
     /// assert_eq!(url.as_str(), &quot;https://example.com/data/report.csv&quot;);
     /// assert_eq!(url.path(), &quot;/data/report.csv&quot;);
+    ///
+    /// // `set_path` percent-encodes the given string if it&#39;s not already percent-encoded.
+    /// let mut url = Url::parse(&quot;https://example.com&quot;)?;
+    /// url.set_path(&quot;api/some comments&quot;);
+    /// assert_eq!(url.as_str(), &quot;https://example.com/api/some%20comments&quot;);
+    /// assert_eq!(url.path(), &quot;/api/some%20comments&quot;);
+    ///
+    /// // `set_path` will not double percent-encode the string if it&#39;s already percent-encoded.
+    /// let mut url = Url::parse(&quot;https://example.com&quot;)?;
+    /// url.set_path(&quot;api/some%20comments&quot;);
+    /// assert_eq!(url.as_str(), &quot;https://example.com/api/some%20comments&quot;);
+    /// assert_eq!(url.path(), &quot;/api/some%20comments&quot;);
+    ///
     /// # Ok(())
     /// # }
     /// # run().unwrap();
@@ -4681,8 +4727,10 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
             <span class="kw">return </span><span class="prelude-val">Err</span>(ParseError::SetHostOnCannotBeABaseUrl);
         }
 
+        <span class="kw">let </span>scheme_type = SchemeType::from(<span class="self">self</span>.scheme());
+
         <span class="kw">if let </span><span class="prelude-val">Some</span>(host) = host {
-            <span class="kw">if </span>host.is_empty() &amp;&amp; SchemeType::from(<span class="self">self</span>.scheme()).is_special() {
+            <span class="kw">if </span>host.is_empty() &amp;&amp; scheme_type.is_special() &amp;&amp; !scheme_type.is_file() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(ParseError::EmptyHost);
             }
             <span class="kw">let </span><span class="kw-2">mut </span>host_substr = host;
@@ -4706,15 +4754,20 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
                 <span class="self">self</span>.set_host_internal(Host::parse_opaque(host_substr)<span class="question-mark">?</span>, <span class="prelude-val">None</span>);
             }
         } <span class="kw">else if </span><span class="self">self</span>.has_host() {
-            <span class="kw">let </span>scheme_type = SchemeType::from(<span class="self">self</span>.scheme());
-            <span class="kw">if </span>scheme_type.is_special() {
+            <span class="kw">if </span>scheme_type.is_special() &amp;&amp; !scheme_type.is_file() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(ParseError::EmptyHost);
             } <span class="kw">else if </span><span class="self">self</span>.serialization.len() == <span class="self">self</span>.path_start <span class="kw">as </span>usize {
                 <span class="self">self</span>.serialization.push(<span class="string">&#39;/&#39;</span>);
             }
             <span class="macro">debug_assert!</span>(<span class="self">self</span>.byte_at(<span class="self">self</span>.scheme_end) == <span class="string">b&#39;:&#39;</span>);
             <span class="macro">debug_assert!</span>(<span class="self">self</span>.byte_at(<span class="self">self</span>.path_start) == <span class="string">b&#39;/&#39;</span>);
-            <span class="kw">let </span>new_path_start = <span class="self">self</span>.scheme_end + <span class="number">1</span>;
+
+            <span class="kw">let </span>new_path_start = <span class="kw">if </span>scheme_type.is_file() {
+                <span class="self">self</span>.scheme_end + <span class="number">3
+            </span>} <span class="kw">else </span>{
+                <span class="self">self</span>.scheme_end + <span class="number">1
+            </span>};
+
             <span class="self">self</span>.serialization
                 .drain(new_path_start <span class="kw">as </span>usize..<span class="self">self</span>.path_start <span class="kw">as </span>usize);
             <span class="kw">let </span>offset = <span class="self">self</span>.path_start - new_path_start;
@@ -5016,7 +5069,7 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     ///
     /// # Examples
     ///
-    /// Change the URL’s scheme from `https` to `foo`:
+    /// Change the URL’s scheme from `https` to `http`:
     ///
     /// ```
     /// use url::Url;
@@ -5187,7 +5240,7 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     /// # run().unwrap();
     /// # }
     /// ```
-    </span><span class="attribute">#[cfg(any(unix, windows, target_os = <span class="string">&quot;redox&quot;</span>))]
+    </span><span class="attribute">#[cfg(any(unix, windows, target_os = <span class="string">&quot;redox&quot;</span>, target_os = <span class="string">&quot;wasi&quot;</span>))]
     #[allow(clippy::result_unit_err)]
     </span><span class="kw">pub fn </span>from_file_path&lt;P: AsRef&lt;Path&gt;&gt;(path: P) -&gt; <span class="prelude-ty">Result</span>&lt;Url, ()&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>serialization = <span class="string">&quot;file://&quot;</span>.to_owned();
@@ -5224,7 +5277,7 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     ///
     /// Note that `std::path` does not consider trailing slashes significant
     /// and usually does not include them (e.g. in `Path::parent()`).
-    </span><span class="attribute">#[cfg(any(unix, windows, target_os = <span class="string">&quot;redox&quot;</span>))]
+    </span><span class="attribute">#[cfg(any(unix, windows, target_os = <span class="string">&quot;redox&quot;</span>, target_os = <span class="string">&quot;wasi&quot;</span>))]
     #[allow(clippy::result_unit_err)]
     </span><span class="kw">pub fn </span>from_directory_path&lt;P: AsRef&lt;Path&gt;&gt;(path: P) -&gt; <span class="prelude-ty">Result</span>&lt;Url, ()&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>url = Url::from_file_path(path)<span class="question-mark">?</span>;
@@ -5341,7 +5394,7 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     /// (That is, if the percent-decoded path contains a NUL byte or,
     /// for a Windows path, is not UTF-8.)
     </span><span class="attribute">#[inline]
-    #[cfg(any(unix, windows, target_os = <span class="string">&quot;redox&quot;</span>))]
+    #[cfg(any(unix, windows, target_os = <span class="string">&quot;redox&quot;</span>, target_os = <span class="string">&quot;wasi&quot;</span>))]
     #[allow(clippy::result_unit_err)]
     </span><span class="kw">pub fn </span>to_file_path(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;PathBuf, ()&gt; {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(segments) = <span class="self">self</span>.path_segments() {
@@ -5400,7 +5453,7 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     }
 }
 
-<span class="doccomment">/// String converstion.
+<span class="doccomment">/// String conversion.
 </span><span class="kw">impl </span>From&lt;Url&gt; <span class="kw">for </span>String {
     <span class="kw">fn </span>from(value: Url) -&gt; String {
         value.serialization
@@ -5545,12 +5598,15 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     }
 }
 
-<span class="attribute">#[cfg(any(unix, target_os = <span class="string">&quot;redox&quot;</span>))]
+<span class="attribute">#[cfg(any(unix, target_os = <span class="string">&quot;redox&quot;</span>, target_os = <span class="string">&quot;wasi&quot;</span>))]
 </span><span class="kw">fn </span>path_to_file_url_segments(
     path: <span class="kw-2">&amp;</span>Path,
     serialization: <span class="kw-2">&amp;mut </span>String,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;(u32, HostInternal), ()&gt; {
-    <span class="kw">use </span>std::os::unix::prelude::OsStrExt;
+    <span class="attribute">#[cfg(any(unix, target_os = <span class="string">&quot;redox&quot;</span>))]
+    </span><span class="kw">use </span>std::os::unix::prelude::OsStrExt;
+    <span class="attribute">#[cfg(target_os = <span class="string">&quot;wasi&quot;</span>)]
+    </span><span class="kw">use </span>std::os::wasi::prelude::OsStrExt;
     <span class="kw">if </span>!path.is_absolute() {
         <span class="kw">return </span><span class="prelude-val">Err</span>(());
     }
@@ -5595,6 +5651,7 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     <span class="kw">let </span>host_start = serialization.len() + <span class="number">1</span>;
     <span class="kw">let </span>host_end;
     <span class="kw">let </span>host_internal;
+
     <span class="kw">match </span>components.next() {
         <span class="prelude-val">Some</span>(Component::Prefix(<span class="kw-2">ref </span>p)) =&gt; <span class="kw">match </span>p.kind() {
             Prefix::Disk(letter) | Prefix::VerbatimDisk(letter) =&gt; {
@@ -5615,7 +5672,6 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
             }
             <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(()),
         },
-
         <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(()),
     }
 
@@ -5624,12 +5680,15 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
         <span class="kw">if </span>component == Component::RootDir {
             <span class="kw">continue</span>;
         }
+
         path_only_has_prefix = <span class="bool-val">false</span>;
         <span class="comment">// FIXME: somehow work with non-unicode?
         </span><span class="kw">let </span>component = component.as_os_str().to_str().ok_or(())<span class="question-mark">?</span>;
+
         serialization.push(<span class="string">&#39;/&#39;</span>);
         serialization.extend(percent_encode(component.as_bytes(), PATH_SEGMENT));
     }
+
     <span class="comment">// A windows drive letter must end with a slash.
     </span><span class="kw">if </span>serialization.len() &gt; host_start
         &amp;&amp; parser::is_windows_drive_letter(<span class="kw-2">&amp;</span>serialization[host_start..])
@@ -5637,16 +5696,20 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     {
         serialization.push(<span class="string">&#39;/&#39;</span>);
     }
+
     <span class="prelude-val">Ok</span>((host_end, host_internal))
 }
 
-<span class="attribute">#[cfg(any(unix, target_os = <span class="string">&quot;redox&quot;</span>))]
+<span class="attribute">#[cfg(any(unix, target_os = <span class="string">&quot;redox&quot;</span>, target_os = <span class="string">&quot;wasi&quot;</span>))]
 </span><span class="kw">fn </span>file_url_segments_to_pathbuf(
     host: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
     segments: str::Split&lt;<span class="lifetime">&#39;_</span>, char&gt;,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;PathBuf, ()&gt; {
     <span class="kw">use </span>std::ffi::OsStr;
-    <span class="kw">use </span>std::os::unix::prelude::OsStrExt;
+    <span class="attribute">#[cfg(any(unix, target_os = <span class="string">&quot;redox&quot;</span>))]
+    </span><span class="kw">use </span>std::os::unix::prelude::OsStrExt;
+    <span class="attribute">#[cfg(target_os = <span class="string">&quot;wasi&quot;</span>)]
+    </span><span class="kw">use </span>std::os::wasi::prelude::OsStrExt;
 
     <span class="kw">if </span>host.is_some() {
         <span class="kw">return </span><span class="prelude-val">Err</span>(());
@@ -5657,10 +5720,12 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     } <span class="kw">else </span>{
         Vec::new()
     };
+
     <span class="kw">for </span>segment <span class="kw">in </span>segments {
         bytes.push(<span class="string">b&#39;/&#39;</span>);
         bytes.extend(percent_decode(segment.as_bytes()));
     }
+
     <span class="comment">// A windows drive letter must end with a slash.
     </span><span class="kw">if </span>bytes.len() &gt; <span class="number">2
         </span>&amp;&amp; <span class="macro">matches!</span>(bytes[bytes.len() - <span class="number">2</span>], <span class="string">b&#39;a&#39;</span>..=<span class="string">b&#39;z&#39; </span>| <span class="string">b&#39;A&#39;</span>..=<span class="string">b&#39;Z&#39;</span>)
@@ -5668,12 +5733,15 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     {
         bytes.push(<span class="string">b&#39;/&#39;</span>);
     }
+
     <span class="kw">let </span>os_str = OsStr::from_bytes(<span class="kw-2">&amp;</span>bytes);
     <span class="kw">let </span>path = PathBuf::from(os_str);
+
     <span class="macro">debug_assert!</span>(
         path.is_absolute(),
         <span class="string">&quot;to_file_path() failed to produce an absolute Path&quot;
     </span>);
+
     <span class="prelude-val">Ok</span>(path)
 }
 
@@ -5777,4 +5845,4 @@ url = { version = &quot;2&quot;, features = [&quot;serde&quot;] }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="url" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="url" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

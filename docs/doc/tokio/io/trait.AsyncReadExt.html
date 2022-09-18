@@ -82,7 +82,7 @@
 until EOF is encountered. Afterwards the output is equivalent to the
 output of <code>next</code>.</p>
 <h5 id="examples"><a href="#examples">Examples</a></h5>
-<p>[<code>File</code>][crate::fs::File]s implement <code>AsyncRead</code>:</p>
+<p><a href="../fs/struct.File.html" title="crate::fs::File"><code>File</code></a>s implement <code>AsyncRead</code>:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tokio::fs::File;
 <span class="kw">use </span>tokio::io::{<span class="self">self</span>, AsyncReadExt};
@@ -104,7 +104,7 @@ output of <code>next</code>.</p>
 returning how many bytes were read.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
 <p>This method does not provide any guarantees about whether it
 completes immediately or asynchronously.</p>
 <h5 id="return"><a href="#return">Return</a></h5>
@@ -134,10 +134,10 @@ variant will be returned. If an error is returned then it must be
 guaranteed that no bytes were read.</p>
 <h5 id="cancel-safety"><a href="#cancel-safety">Cancel safety</a></h5>
 <p>This method is cancel safe. If you use it as the event in a
-<a href="crate::select"><code>tokio::select!</code></a> statement and some other branch
+<a href="../macro.select.html"><code>tokio::select!</code></a> statement and some other branch
 completes first, then it is guaranteed that no data was read.</p>
 <h5 id="examples-1"><a href="#examples-1">Examples</a></h5>
-<p>[<code>File</code>][crate::fs::File]s implement <code>Read</code>:</p>
+<p><a href="../fs/struct.File.html" title="crate::fs::File"><code>File</code></a>s implement <code>Read</code>:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tokio::fs::File;
 <span class="kw">use </span>tokio::io::{<span class="self">self</span>, AsyncReadExt};
@@ -157,7 +157,7 @@ completes first, then it is guaranteed that no data was read.</p>
 advancing the buffer’s internal cursor.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_buf&lt;B: BufMut&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>B) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_buf&lt;B: BufMut&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>B) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
 <p>Usually, only a single <code>read</code> syscall is issued, even if there is
 more space in the supplied buffer.</p>
 <p>This method does not provide any guarantees about whether it
@@ -178,10 +178,10 @@ variant will be returned. If an error is returned then it must be
 guaranteed that no bytes were read.</p>
 <h5 id="cancel-safety-1"><a href="#cancel-safety-1">Cancel safety</a></h5>
 <p>This method is cancel safe. If you use it as the event in a
-<a href="crate::select"><code>tokio::select!</code></a> statement and some other branch
+<a href="../macro.select.html"><code>tokio::select!</code></a> statement and some other branch
 completes first, then it is guaranteed that no data was read.</p>
 <h5 id="examples-2"><a href="#examples-2">Examples</a></h5>
-<p><a href="crate::fs::File"><code>File</code></a> implements <code>Read</code> and <a href="../../bytes/bytes_mut/struct.BytesMut.html"><code>BytesMut</code></a> implements <a href="../../bytes/buf/buf_mut/trait.BufMut.html"><code>BufMut</code></a>:</p>
+<p><a href="../fs/struct.File.html"><code>File</code></a> implements <code>Read</code> and <a href="../../bytes/bytes_mut/struct.BytesMut.html"><code>BytesMut</code></a> implements <a href="../../bytes/buf/buf_mut/trait.BufMut.html"><code>BufMut</code></a>:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tokio::fs::File;
 <span class="kw">use </span>tokio::io::{<span class="self">self</span>, AsyncReadExt};
@@ -206,7 +206,7 @@ completes first, then it is guaranteed that no data was read.</p>
 </div></details><details class="rustdoc-toggle" open><summary><div id="method.read_exact" class="method has-srclink"><a class="srclink rightside" href="../../src/tokio/io/util/async_read_ext.rs.html#304-309">source</a><h4 class="code-header">fn <a href="#method.read_exact" class="fnname">read_exact</a>&lt;'a&gt;(&amp;'a mut self, buf: &amp;'a mut [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>]) -&gt; ReadExact&lt;'a, Self&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a>,</span></h4></div></summary><div class="docblock"><p>Reads the exact number of bytes required to fill <code>buf</code>.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_exact(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_exact(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
 <p>This function reads as many bytes as necessary to completely fill
 the specified buffer <code>buf</code>.</p>
 <h5 id="errors-2"><a href="#errors-2">Errors</a></h5>
@@ -222,11 +222,11 @@ it has read, but it will never read more than would be necessary to
 completely fill the buffer.</p>
 <h5 id="cancel-safety-2"><a href="#cancel-safety-2">Cancel safety</a></h5>
 <p>This method is not cancellation safe. If the method is used as the
-event in a <a href="crate::select"><code>tokio::select!</code></a> statement and some
+event in a <a href="../macro.select.html"><code>tokio::select!</code></a> statement and some
 other branch completes first, then some data may already have been
 read into <code>buf</code>.</p>
 <h5 id="examples-3"><a href="#examples-3">Examples</a></h5>
-<p>[<code>File</code>][crate::fs::File]s implement <code>Read</code>:</p>
+<p><a href="../fs/struct.File.html" title="crate::fs::File"><code>File</code></a>s implement <code>Read</code>:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tokio::fs::File;
 <span class="kw">use </span>tokio::io::{<span class="self">self</span>, AsyncReadExt};
@@ -243,7 +243,7 @@ read into <code>buf</code>.</p>
 </div></details><details class="rustdoc-toggle" open><summary><div id="method.read_u8" class="method has-srclink"><a class="srclink rightside" href="../../src/tokio/io/util/async_read_ext.rs.html#311-1153">source</a><h4 class="code-header">fn <a href="#method.read_u8" class="fnname">read_u8</a>&lt;'a&gt;(&amp;'a mut self) -&gt; ReadU8&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;'a mut </a>Self&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a>,</span></h4></div></summary><div class="docblock"><p>Reads an unsigned 8 bit integer from the underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_u8(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u8&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_u8(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u8&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-3"><a href="#errors-3">Errors</a></h5>
@@ -267,7 +267,7 @@ syscalls.</p>
 </div></details><details class="rustdoc-toggle" open><summary><div id="method.read_i8" class="method has-srclink"><a class="srclink rightside" href="../../src/tokio/io/util/async_read_ext.rs.html#311-1153">source</a><h4 class="code-header">fn <a href="#method.read_i8" class="fnname">read_i8</a>&lt;'a&gt;(&amp;'a mut self) -&gt; ReadI8&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;'a mut </a>Self&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a>,</span></h4></div></summary><div class="docblock"><p>Reads a signed 8 bit integer from the underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_i8(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i8&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_i8(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i8&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-4"><a href="#errors-4">Errors</a></h5>
@@ -292,7 +292,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_u16(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u16&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_u16(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u16&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-5"><a href="#errors-5">Errors</a></h5>
@@ -316,7 +316,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_i16(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i16&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_i16(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i16&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-6"><a href="#errors-6">Errors</a></h5>
@@ -340,7 +340,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_u32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u32&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_u32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u32&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-7"><a href="#errors-7">Errors</a></h5>
@@ -363,7 +363,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_i32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i32&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_i32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i32&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-8"><a href="#errors-8">Errors</a></h5>
@@ -386,7 +386,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_u64(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u64&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_u64(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u64&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-9"><a href="#errors-9">Errors</a></h5>
@@ -411,7 +411,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_i64(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i64&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_i64(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i64&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-10"><a href="#errors-10">Errors</a></h5>
@@ -434,7 +434,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_u128(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u128&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_u128(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u128&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-11"><a href="#errors-11">Errors</a></h5>
@@ -460,7 +460,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_i128(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i128&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_i128(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i128&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-12"><a href="#errors-12">Errors</a></h5>
@@ -486,7 +486,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_f32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;f32&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_f32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;f32&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-13"><a href="#errors-13">Errors</a></h5>
@@ -509,7 +509,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_f64(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;f64&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_f64(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;f64&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-14"><a href="#errors-14">Errors</a></h5>
@@ -534,7 +534,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_u16_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u16&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_u16_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u16&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-15"><a href="#errors-15">Errors</a></h5>
@@ -558,7 +558,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_i16_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i16&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_i16_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i16&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-16"><a href="#errors-16">Errors</a></h5>
@@ -582,7 +582,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_u32_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u32&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_u32_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u32&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-17"><a href="#errors-17">Errors</a></h5>
@@ -605,7 +605,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_i32_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i32&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_i32_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i32&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-18"><a href="#errors-18">Errors</a></h5>
@@ -628,7 +628,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_u64_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u64&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_u64_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u64&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-19"><a href="#errors-19">Errors</a></h5>
@@ -653,7 +653,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_i64_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i64&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_i64_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i64&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-20"><a href="#errors-20">Errors</a></h5>
@@ -676,7 +676,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_u128_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u128&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_u128_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;u128&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-21"><a href="#errors-21">Errors</a></h5>
@@ -702,7 +702,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_i128_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i128&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_i128_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;i128&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-22"><a href="#errors-22">Errors</a></h5>
@@ -728,7 +728,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_f32_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;f32&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_f32_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;f32&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-23"><a href="#errors-23">Errors</a></h5>
@@ -751,7 +751,7 @@ syscalls.</p>
 underlying reader.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_f64_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;f64&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_f64_le(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;f64&gt;;</code></pre></div>
 <p>It is recommended to use a buffered reader to avoid excessive
 syscalls.</p>
 <h5 id="errors-24"><a href="#errors-24">Errors</a></h5>
@@ -775,7 +775,7 @@ syscalls.</p>
 </div></details><details class="rustdoc-toggle" open><summary><div id="method.read_to_end" class="method has-srclink"><a class="srclink rightside" href="../../src/tokio/io/util/async_read_ext.rs.html#1200-1205">source</a><h4 class="code-header">fn <a href="#method.read_to_end" class="fnname">read_to_end</a>&lt;'a&gt;(&amp;'a mut self, buf: &amp;'a mut <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;) -&gt; ReadToEnd&lt;'a, Self&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a>,</span></h4></div></summary><div class="docblock"><p>Reads all bytes until EOF in this source, placing them into <code>buf</code>.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_to_end(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_to_end(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
 <p>All bytes read from this source will be appended to the specified
 buffer <code>buf</code>. This function will continuously call <a href="trait.AsyncReadExt.html#method.read"><code>read()</code></a> to
 append more data to <code>buf</code> until <a href="trait.AsyncReadExt.html#method.read"><code>read()</code></a> returns <code>Ok(0)</code>.</p>
@@ -785,7 +785,7 @@ append more data to <code>buf</code> until <a href="trait.AsyncReadExt.html#meth
 immediately completes. Any bytes which have already been read will
 be appended to <code>buf</code>.</p>
 <h5 id="examples-26"><a href="#examples-26">Examples</a></h5>
-<p>[<code>File</code>][crate::fs::File]s implement <code>Read</code>:</p>
+<p><a href="../fs/struct.File.html" title="crate::fs::File"><code>File</code></a>s implement <code>Read</code>:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tokio::io::{<span class="self">self</span>, AsyncReadExt};
 <span class="kw">use </span>tokio::fs::File;
@@ -799,12 +799,12 @@ be appended to <code>buf</code>.</p>
     </span>f.read_to_end(<span class="kw-2">&amp;mut </span>buffer).<span class="kw">await</span><span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(())
 }</code></pre></div>
-<p>(See also the <a href="fn@crate::fs::read"><code>tokio::fs::read</code></a> convenience function for reading from a
+<p>(See also the <a href="../fs/fn.read.html"><code>tokio::fs::read</code></a> convenience function for reading from a
 file.)</p>
 </div></details><details class="rustdoc-toggle" open><summary><div id="method.read_to_string" class="method has-srclink"><a class="srclink rightside" href="../../src/tokio/io/util/async_read_ext.rs.html#1247-1252">source</a><h4 class="code-header">fn <a href="#method.read_to_string" class="fnname">read_to_string</a>&lt;'a&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;'a mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;dst: &amp;'a mut <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a><br>) -&gt; ReadToString&lt;'a, Self&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a>,</span></h4></div></summary><div class="docblock"><p>Reads all bytes until EOF in this source, appending them to <code>buf</code>.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_to_string(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>String) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_to_string(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>String) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
 <p>If successful, the number of bytes which were read and appended to
 <code>buf</code> is returned.</p>
 <h5 id="errors-26"><a href="#errors-26">Errors</a></h5>
@@ -812,7 +812,7 @@ file.)</p>
 returned and <code>buf</code> is unchanged.</p>
 <p>See <a href="trait.AsyncReadExt.html#method.read_to_end" title="AsyncReadExt::read_to_end"><code>read_to_end</code></a> for other error semantics.</p>
 <h5 id="examples-27"><a href="#examples-27">Examples</a></h5>
-<p>[<code>File</code>][crate::fs::File]s implement <code>Read</code>:</p>
+<p><a href="../fs/struct.File.html" title="crate::fs::File"><code>File</code></a>s implement <code>Read</code>:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tokio::io::{<span class="self">self</span>, AsyncReadExt};
 <span class="kw">use </span>tokio::fs::File;
@@ -825,7 +825,7 @@ returned and <code>buf</code> is unchanged.</p>
     f.read_to_string(<span class="kw-2">&amp;mut </span>buffer).<span class="kw">await</span><span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(())
 }</code></pre></div>
-<p>(See also the <a href="fn@crate::fs::read_to_string"><code>crate::fs::read_to_string</code></a> convenience function for
+<p>(See also the <a href="../fs/fn.read_to_string.html"><code>crate::fs::read_to_string</code></a> convenience function for
 reading from a file.)</p>
 </div></details><details class="rustdoc-toggle" open><summary><div id="method.take" class="method has-srclink"><a class="srclink rightside" href="../../src/tokio/io/util/async_read_ext.rs.html#1285-1290">source</a><h4 class="code-header">fn <a href="#method.take" class="fnname">take</a>(self, limit: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>) -&gt; <a class="struct" href="struct.Take.html" title="struct tokio::io::Take">Take</a>&lt;Self&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</span></h4></div></summary><div class="docblock"><p>Creates an adaptor which reads at most <code>limit</code> bytes from it.</p>
 <p>This function returns a new instance of <code>AsyncRead</code> which will read
@@ -833,7 +833,7 @@ at most <code>limit</code> bytes, after which it will always return EOF
 (<code>Ok(0)</code>). Any read errors will not count towards the number of
 bytes read and future calls to <a href="trait.AsyncReadExt.html#method.read"><code>read()</code></a> may succeed.</p>
 <h5 id="examples-28"><a href="#examples-28">Examples</a></h5>
-<p>[<code>File</code>][crate::fs::File]s implement <code>Read</code>:</p>
+<p><a href="../fs/struct.File.html" title="crate::fs::File"><code>File</code></a>s implement <code>Read</code>:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tokio::io::{<span class="self">self</span>, AsyncReadExt};
 <span class="kw">use </span>tokio::fs::File;
@@ -849,4 +849,4 @@ bytes read and future calls to <a href="trait.AsyncReadExt.html#method.read"><co
     handle.read(<span class="kw-2">&amp;mut </span>buffer).<span class="kw">await</span><span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(())
 }</code></pre></div>
-</div></details></div><h2 id="implementors" class="small-section-header">Implementors<a href="#implementors" class="anchor"></a></h2><div class="item-list" id="implementors-list"><section id="impl-AsyncReadExt-for-R" class="impl has-srclink"><a class="srclink rightside" href="../../src/tokio/io/util/async_read_ext.rs.html#1294">source</a><a href="#impl-AsyncReadExt-for-R" class="anchor"></a><h3 class="code-header in-band">impl&lt;R:&nbsp;<a class="trait" href="trait.AsyncRead.html" title="trait tokio::io::AsyncRead">AsyncRead</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt; <a class="trait" href="trait.AsyncReadExt.html" title="trait tokio::io::AsyncReadExt">AsyncReadExt</a> for R</h3></section></div><script src="../../implementors/tokio/io/util/async_read_ext/trait.AsyncReadExt.js" async></script></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</div></details></div><h2 id="implementors" class="small-section-header">Implementors<a href="#implementors" class="anchor"></a></h2><div class="item-list" id="implementors-list"><section id="impl-AsyncReadExt-for-R" class="impl has-srclink"><a class="srclink rightside" href="../../src/tokio/io/util/async_read_ext.rs.html#1294">source</a><a href="#impl-AsyncReadExt-for-R" class="anchor"></a><h3 class="code-header in-band">impl&lt;R:&nbsp;<a class="trait" href="trait.AsyncRead.html" title="trait tokio::io::AsyncRead">AsyncRead</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt; <a class="trait" href="trait.AsyncReadExt.html" title="trait tokio::io::AsyncReadExt">AsyncReadExt</a> for R</h3></section></div><script src="../../implementors/tokio/io/util/async_read_ext/trait.AsyncReadExt.js" async></script></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

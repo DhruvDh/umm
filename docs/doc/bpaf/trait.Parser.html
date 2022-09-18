@@ -1,0 +1,455 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Simple or composed argument parser"><meta name="keywords" content="rust, rustlang, rust-lang, Parser"><title>Parser in bpaf - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../normalize.css"><link rel="stylesheet" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../ayu.css" disabled><link rel="stylesheet" href="../dark.css" disabled><link rel="stylesheet" href="../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../storage.js"></script><script defer src="sidebar-items.js"></script><script defer src="../main.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"></head><body class="rustdoc trait"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../bpaf/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../bpaf/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div></a><h2 class="location"><a href="#">Parser</a></h2><div class="sidebar-elems"><section><div class="block"><h3 class="sidebar-title"><a href="#provided-methods">Provided Methods</a></h3><ul><li><a href="#method.fallback">fallback</a></li><li><a href="#method.fallback_with">fallback_with</a></li><li><a href="#method.from_str">from_str</a></li><li><a href="#method.group_help">group_help</a></li><li><a href="#method.guard">guard</a></li><li><a href="#method.hide">hide</a></li><li><a href="#method.many">many</a></li><li><a href="#method.map">map</a></li><li><a href="#method.optional">optional</a></li><li><a href="#method.parse">parse</a></li><li><a href="#method.some">some</a></li><li><a href="#method.to_options">to_options</a></li></ul></div><div class="block"><h3 class="sidebar-title"><a href="#implementors">Implementors</a></h3></div></section><h2 class="location"><a href="index.html">In bpaf</a></h2></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../bpaf/index.html"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">Trait <a href="index.html">bpaf</a>::<wbr><a class="trait" href="#">Parser</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/bpaf/lib.rs.html#673-1582">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><div class="docblock item-decl"><pre class="rust trait"><code>pub trait Parser&lt;T&gt; {
+    fn <a href="#method.many" class="fnname">many</a>(self) -&gt; ParseMany&lt;Self&gt;<br>&nbsp;&nbsp;&nbsp;<span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a></span>,
+    { ... }
+<span class="item-spacer"></span>    fn <a href="#method.some" class="fnname">some</a>(self, message: &amp;'static <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>) -&gt; ParseSome&lt;Self&gt;<br>&nbsp;&nbsp;&nbsp;<span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;</span>,
+    { ... }
+<span class="item-spacer"></span>    fn <a href="#method.optional" class="fnname">optional</a>(self) -&gt; ParseOptional&lt;Self&gt;<br>&nbsp;&nbsp;&nbsp;<span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;</span>,
+    { ... }
+<span class="item-spacer"></span>    fn <a href="#method.parse" class="fnname">parse</a>&lt;F, R, E&gt;(self, f: F) -&gt; ParseWith&lt;T, Self, F, E, R&gt;<br>&nbsp;&nbsp;&nbsp;<span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(T) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;R, E&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E: <a class="trait" href="https://doc.rust-lang.org/nightly/alloc/string/trait.ToString.html" title="trait alloc::string::ToString">ToString</a></span>,
+    { ... }
+<span class="item-spacer"></span>    fn <a href="#method.map" class="fnname">map</a>&lt;F, R&gt;(self, map: F) -&gt; ParseMap&lt;T, Self, F, R&gt;<br>&nbsp;&nbsp;&nbsp;<span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(T) -&gt; R + 'static</span>,
+    { ... }
+<span class="item-spacer"></span>    fn <a href="#method.from_str" class="fnname">from_str</a>&lt;R&gt;(self) -&gt; ParseFromStr&lt;Self, R&gt;<br>&nbsp;&nbsp;&nbsp;<span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;</span>,
+    { ... }
+<span class="item-spacer"></span>    fn <a href="#method.guard" class="fnname">guard</a>&lt;F&gt;(self, check: F, message: &amp;'static <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>) -&gt; ParseGuard&lt;Self, F&gt;<br>&nbsp;&nbsp;&nbsp;<span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>T) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></span>,
+    { ... }
+<span class="item-spacer"></span>    fn <a href="#method.fallback" class="fnname">fallback</a>(self, value: T) -&gt; ParseFallback&lt;Self, T&gt;<br>&nbsp;&nbsp;&nbsp;<span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;</span>,
+    { ... }
+<span class="item-spacer"></span>    fn <a href="#method.fallback_with" class="fnname">fallback_with</a>&lt;F, E&gt;(self, fallback: F) -&gt; ParseFallbackWith&lt;T, Self, F, E&gt;<br>&nbsp;&nbsp;&nbsp;<span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>() -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;T, E&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E: <a class="trait" href="https://doc.rust-lang.org/nightly/alloc/string/trait.ToString.html" title="trait alloc::string::ToString">ToString</a></span>,
+    { ... }
+<span class="item-spacer"></span>    fn <a href="#method.hide" class="fnname">hide</a>(self) -&gt; ParseHide&lt;Self&gt;<br>&nbsp;&nbsp;&nbsp;<span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;</span>,
+    { ... }
+<span class="item-spacer"></span>    fn <a href="#method.group_help" class="fnname">group_help</a>(self, message: &amp;'static <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>) -&gt; ParseGroupHelp&lt;Self&gt;<br>&nbsp;&nbsp;&nbsp;<span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;</span>,
+    { ... }
+<span class="item-spacer"></span>    fn <a href="#method.to_options" class="fnname">to_options</a>(self) -&gt; <a class="struct" href="struct.OptionParser.html" title="struct bpaf::OptionParser">OptionParser</a>&lt;T&gt;<br>&nbsp;&nbsp;&nbsp;<span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt; + 'static</span>,
+    { ... }
+}</code></pre></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Simple or composed argument parser</p>
+<h2 id="overview"><a href="#overview">Overview</a></h2>
+<p>It’s best to think of an object implementing <a href="trait.Parser.html" title="Parser"><code>Parser</code></a> trait as a container with a value
+inside that are composable with other <code>Parser</code> containers using <a href="macro.construct.html" title="construct!"><code>construct!</code></a> and the only
+way to extract this value is by transforming it to <a href="struct.OptionParser.html" title="OptionParser"><code>OptionParser</code></a> with
+<a href="trait.Parser.html#method.to_options"><code>to_options</code></a> and running it with <a href="struct.OptionParser.html#method.run"><code>run</code></a>. At which
+point you either get your value out or <code>bpaf</code> would generate a message describing a problem
+(missing argument, validation failure, user requested help, etc) and the program would
+exit.</p>
+<p>Values inside can be of any type for as long as they implement <code>Debug</code>, <code>Clone</code> and
+there’s no lifetimes other than static.</p>
+<p>When consuming the values you usually start with <code>Parser&lt;String&gt;</code> or <code>Parser&lt;OsString&gt;</code> which
+you then transform into something that your program would actually use. it’s better to perform
+as much parsing and validation inside the <code>Parser</code> as possible so the program itself gets
+strictly typed and correct value while user gets immediate feedback on what’s wrong with the
+arguments they pass.</p>
+<p>For example suppose your program needs user to specify a dimensions of a rectangle, with sides
+being 1..20 units long and the total area must not exceed 200 units square. A parser that
+consumes it might look like this:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Copy, Clone)]
+</span><span class="kw">struct </span>Rectangle {
+    width: u32,
+    height: u32,
+}
+
+<span class="kw">fn </span>rectangle() -&gt; <span class="kw">impl </span>Parser&lt;Rectangle&gt; {
+    <span class="kw">let </span>invalid_size = <span class="string">&quot;Sides of a rectangle must be 1..20 units long&quot;</span>;
+    <span class="kw">let </span>invalid_area = <span class="string">&quot;Area of a rectangle must not exceed 200 units square&quot;</span>;
+    <span class="kw">let </span>width = long(<span class="string">&quot;width&quot;</span>)
+        .help(<span class="string">&quot;Width of the rectangle&quot;</span>)
+        .argument(<span class="string">&quot;PX&quot;</span>)
+        .from_str::&lt;u32&gt;()
+        .guard(|<span class="kw-2">&amp;</span>x| <span class="number">1 </span>&lt;= x &amp;&amp; x &lt;= <span class="number">10</span>, invalid_size);
+    <span class="kw">let </span>height = long(<span class="string">&quot;height&quot;</span>)
+        .help(<span class="string">&quot;Height of the rectangle&quot;</span>)
+        .argument(<span class="string">&quot;PX&quot;</span>)
+        .from_str::&lt;u32&gt;()
+        .guard(|<span class="kw-2">&amp;</span>x| <span class="number">1 </span>&lt;= x &amp;&amp; x &lt;= <span class="number">10</span>, invalid_size);
+    <span class="macro">construct!</span>(Rectangle { width, height })
+        .guard(|<span class="kw-2">&amp;</span>r| r.width * r.height &lt;= <span class="number">400</span>, invalid_area)
+}</code></pre></div>
+<h2 id="derive-specific-considerations"><a href="#derive-specific-considerations">Derive specific considerations</a></h2>
+<p>Every method defined on this trait belongs to the <code>postprocessing</code> section of the field
+annotation. <code>bpaf_derive</code> would try to figure out what chain to use for as long as there’s no
+options changing the type: you can use <a href="trait.Parser.html#method.fallback_with"><code>fallback</code></a>,
+<a href="trait.Parser.html#method.fallback_with"><code>fallback_with</code></a>, <a href="trait.Parser.html#method.guard"><code>guard</code></a>, <a href="trait.Parser.html#method.hide"><code>hide</code></a> and
+<a href="trait.Parser.html#method.group_help"><code>group_help</code></a> but not the rest of them.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+    <span class="comment">// no annotation at all - `bpaf_derive` inserts implicit `argument` and `from_str`
+    </span>number_1: u32,
+
+    <span class="comment">// fallback isn&#39;t changing the type so `bpaf_derive` still handles it
+    </span><span class="attribute">#[bpaf(fallback(<span class="number">42</span>))]
+    </span>number_2: u32,
+
+    <span class="comment">// `bpaf_derive` inserts implicit `argument`, `optional` and `from_str`
+    </span>number_3: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+
+    <span class="comment">// fails to compile: you need to specify a consumer, `argument` or `argument_os`
+    // #[bpaf(optional)]
+    // number_4: Option&lt;u32&gt;
+
+    // fails to compile: you also need to specify how to go from String to u32
+    // #[bpaf(argument(&quot;N&quot;), optional)]
+    // number_5: Option&lt;u32&gt;,
+
+    // explicit consumer and a full postprocessing chain
+    </span><span class="attribute">#[bpaf(argument(<span class="string">&quot;N&quot;</span>), from_str(u32), optional)]
+    </span>number_6: <span class="prelude-ty">Option</span>&lt;u32&gt;,
+}</code></pre></div>
+</div></details><h2 id="provided-methods" class="small-section-header">Provided Methods<a href="#provided-methods" class="anchor"></a></h2><div class="methods"><details class="rustdoc-toggle" open><summary><div id="method.many" class="method has-srclink"><a class="srclink rightside" href="../src/bpaf/lib.rs.html#739-744">source</a><h4 class="code-header">fn <a href="#method.many" class="fnname">many</a>(self) -&gt; ParseMany&lt;Self&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</span></h4></div></summary><div class="docblock"><p>Consume zero or more items from a command line and collect them into <a href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="Vec"><code>Vec</code></a></p>
+<p><code>many</code> only collects elements that only consume something from the argument list.</p>
+<h5 id="combinatoric-usage"><a href="#combinatoric-usage">Combinatoric usage:</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>numbers() -&gt; <span class="kw">impl </span>Parser&lt;Vec&lt;u32&gt;&gt; {
+    short(<span class="string">&#39;n&#39;</span>)
+        .argument(<span class="string">&quot;NUM&quot;</span>)
+        .from_str::&lt;u32&gt;()
+        .many()
+}</code></pre></div>
+<h5 id="derive-usage"><a href="#derive-usage">Derive usage:</a></h5>
+<p><code>bpaf</code> would insert implicit <code>many</code> when resulting type is a vector</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+    <span class="attribute">#[bpaf(short, argument(<span class="string">&quot;NUM&quot;</span>))]
+    </span>numbers: Vec&lt;u32&gt;
+}</code></pre></div>
+<p>But it’s also possible to specify it explicitly, both cases renerate the same code.
+Note, since using <code>many</code> resets the postprocessing chain - you also need to specify
+<a href="trait.Parser.html#method.from_str"><code>from_str</code></a></p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+    <span class="attribute">#[bpaf(short, argument(<span class="string">&quot;NUM&quot;</span>), from_str(u32), many)]
+    </span>numbers: Vec&lt;u32&gt;
+}</code></pre></div>
+<h5 id="example"><a href="#example">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app -n 1 -n 2 -n 3
+// [1, 2, 3]</code></pre></div><h5 id="see-also"><a href="#see-also">See also</a></h5>
+<p><a href="trait.Parser.html#method.some"><code>some</code></a> also collects results to a vector but requires at least one
+element to succeed</p>
+</div></details><details class="rustdoc-toggle" open><summary><div id="method.some" class="method has-srclink"><a class="srclink rightside" href="../src/bpaf/lib.rs.html#790-798">source</a><h4 class="code-header">fn <a href="#method.some" class="fnname">some</a>(self, message: &amp;'static <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>) -&gt; ParseSome&lt;Self&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,</span></h4></div></summary><div class="docblock"><p>Consume one or more items from a command line</p>
+<p>Takes a string used as an error message if there’s no specified parameters</p>
+<p><code>some</code> only collects elements that only consume something from the argument list.</p>
+<h5 id="combinatoric-usage-1"><a href="#combinatoric-usage-1">Combinatoric usage:</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>numbers
+    = short(<span class="string">&#39;n&#39;</span>)
+    .argument(<span class="string">&quot;NUM&quot;</span>)
+    .from_str::&lt;u32&gt;()
+    .some(<span class="string">&quot;Need at least one number&quot;</span>);</code></pre></div>
+<h5 id="derive-usage-1"><a href="#derive-usage-1">Derive usage</a></h5>
+<p>Since using <code>some</code> resets the postprocessing chain - you also need to specify
+<a href="trait.Parser.html#method.from_str"><code>from_str</code></a> or similar, depending on your type</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+    <span class="attribute">#[bpaf(short, argument(<span class="string">&quot;NUM&quot;</span>), from_str(u32), some(<span class="string">&quot;Need at least one number&quot;</span>))]
+    </span>numbers: Vec&lt;u32&gt;
+}</code></pre></div>
+<h5 id="example-1"><a href="#example-1">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app
+// fails with &quot;Need at least one number&quot;
+$ app -n 1 -n 2 -n 3
+// [1, 2, 3]</code></pre></div><h5 id="see-also-1"><a href="#see-also-1">See also</a></h5>
+<p><a href="trait.Parser.html#method.many"><code>many</code></a> also collects results to a vector but succeeds with
+no matching values</p>
+</div></details><details class="rustdoc-toggle" open><summary><div id="method.optional" class="method has-srclink"><a class="srclink rightside" href="../src/bpaf/lib.rs.html#851-856">source</a><h4 class="code-header">fn <a href="#method.optional" class="fnname">optional</a>(self) -&gt; ParseOptional&lt;Self&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,</span></h4></div></summary><div class="docblock"><p>Turn a required argument into optional one</p>
+<p><code>optional</code> converts any failure caused by missing items into is <code>None</code> and passes
+the remaining parsing failures untouched.</p>
+<h5 id="combinatoric-usage-2"><a href="#combinatoric-usage-2">Combinatoric usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>number() -&gt; <span class="kw">impl </span>Parser&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;&gt; {
+    short(<span class="string">&#39;n&#39;</span>)
+        .argument(<span class="string">&quot;NUM&quot;</span>)
+        .from_str::&lt;u32&gt;()
+        .optional()
+}</code></pre></div>
+<h5 id="derive-usage-2"><a href="#derive-usage-2">Derive usage</a></h5>
+<p>By default <code>bpaf_derive</code> would automatically use optional for fields of type <code>Option&lt;T&gt;</code>,
+for as long as it’s not prevented from doing so by present postprocessing options</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+   <span class="attribute">#[bpaf(short, argument(<span class="string">&quot;NUM&quot;</span>))]
+   </span>number: <span class="prelude-ty">Option</span>&lt;u32&gt;
+}</code></pre></div>
+<p>But it’s also possible to specify it explicitly, in which case you need to specify
+a full postprocessing chain which starts from <a href="trait.Parser.html#method.from_str"><code>from_str</code></a> in this
+example.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+   <span class="attribute">#[bpaf(short, argument(<span class="string">&quot;NUM&quot;</span>), from_str(u32), optional)]
+   </span>number: <span class="prelude-ty">Option</span>&lt;u32&gt;
+}</code></pre></div>
+<h5 id="example-2"><a href="#example-2">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app
+// None
+$ app -n 42
+// Some(42)</code></pre></div></div></details><details class="rustdoc-toggle" open><summary><div id="method.parse" class="method has-srclink"><a class="srclink rightside" href="../src/bpaf/lib.rs.html#906-919">source</a><h4 class="code-header">fn <a href="#method.parse" class="fnname">parse</a>&lt;F, R, E&gt;(self, f: F) -&gt; ParseWith&lt;T, Self, F, E, R&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(T) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;R, E&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;E: <a class="trait" href="https://doc.rust-lang.org/nightly/alloc/string/trait.ToString.html" title="trait alloc::string::ToString">ToString</a>,</span></h4></div></summary><div class="docblock"><p>Apply a failing transformation to a contained value</p>
+<p>This is a most general of transforming parsers and you can express remaining ones
+terms of it: <a href="trait.Parser.html#method.map"><code>map</code></a>, <a href="trait.Parser.html#method.from_str"><code>from_str</code></a> and
+<a href="trait.Parser.html#method.guard"><code>guard</code></a>.</p>
+<p>Examples given here are a bit artificail, to parse a value from string you should use
+<a href="trait.Parser.html#method.from_str"><code>from_str</code></a>.</p>
+<h5 id="combinatoric-usage-3"><a href="#combinatoric-usage-3">Combinatoric usage:</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>number() -&gt; <span class="kw">impl </span>Parser&lt;u32&gt; {
+    short(<span class="string">&#39;n&#39;</span>)
+        .argument(<span class="string">&quot;NUM&quot;</span>)
+        .parse(|s| u32::from_str(<span class="kw-2">&amp;</span>s))
+}</code></pre></div>
+<h5 id="derive-usage-3"><a href="#derive-usage-3">Derive usage:</a></h5>
+<p><code>parse</code> takes a single parameter: function name to call. Function type should match
+parameter <code>F</code> used by <code>parse</code> in combinatoric API.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>read_number(s: String) -&gt; <span class="prelude-ty">Result</span>&lt;u32, ParseIntError&gt; {
+    u32::from_str(<span class="kw-2">&amp;</span>s)
+}
+
+<span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+    <span class="attribute">#[bpaf(short, argument(<span class="string">&quot;NUM&quot;</span>), parse(read_number))]
+    </span>number: u32
+}</code></pre></div>
+<h5 id="example-3"><a href="#example-3">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app -n 12
+// 12
+// fails with &quot;Couldn&#39;t parse &quot;pi&quot;: invalid numeric literal&quot;</code></pre></div></div></details><details class="rustdoc-toggle" open><summary><div id="method.map" class="method has-srclink"><a class="srclink rightside" href="../src/bpaf/lib.rs.html#957-968">source</a><h4 class="code-header">fn <a href="#method.map" class="fnname">map</a>&lt;F, R&gt;(self, map: F) -&gt; ParseMap&lt;T, Self, F, R&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(T) -&gt; R + 'static,</span></h4></div></summary><div class="docblock"><p>Apply a pure transformation to a contained value</p>
+<p>A common case of <a href="trait.Parser.html#method.parse"><code>parse</code></a> method, exists mostly for convenience.</p>
+<h5 id="combinatoric-usage-4"><a href="#combinatoric-usage-4">Combinatoric usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>number() -&gt; <span class="kw">impl </span>Parser&lt;u32&gt; {
+    short(<span class="string">&#39;n&#39;</span>)
+        .argument(<span class="string">&quot;NUM&quot;</span>)
+        .from_str::&lt;u32&gt;()
+        .map(|v| v * <span class="number">2</span>)
+}</code></pre></div>
+<h5 id="derive-usage-4"><a href="#derive-usage-4">Derive usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>double(num: u32) -&gt; u32 {
+    num * <span class="number">2
+</span>}
+
+<span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+    <span class="attribute">#[bpaf(short, argument(<span class="string">&quot;NUM&quot;</span>), from_str(u32), map(double))]
+    </span>number: u32,
+}</code></pre></div>
+<h5 id="example-4"><a href="#example-4">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app -n 21
+// 42</code></pre></div></div></details><details class="rustdoc-toggle" open><summary><div id="method.from_str" class="method has-srclink"><a class="srclink rightside" href="../src/bpaf/lib.rs.html#1021-1029">source</a><h4 class="code-header">fn <a href="#method.from_str" class="fnname">from_str</a>&lt;R&gt;(self) -&gt; ParseFromStr&lt;Self, R&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,</span></h4></div></summary><div class="docblock"><p>Parse stored <a href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="String"><code>String</code></a> using <a href="https://doc.rust-lang.org/nightly/core/str/traits/trait.FromStr.html"><code>FromStr</code></a> instance</p>
+<p>A common case of <a href="trait.Parser.html#method.parse"><code>parse</code></a> method, exists mostly for convenience.</p>
+<h5 id="combinatoric-usage-5"><a href="#combinatoric-usage-5">Combinatoric usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>speed() -&gt; <span class="kw">impl </span>Parser&lt;f64&gt; {
+    short(<span class="string">&#39;s&#39;</span>)
+        .argument(<span class="string">&quot;SPEED&quot;</span>)
+        .from_str::&lt;f64&gt;()
+}</code></pre></div>
+<h5 id="derive-usage-5"><a href="#derive-usage-5">Derive usage</a></h5>
+<p>By default <code>bpaf_derive</code> would use <a href="trait.Parser.html#method.from_str"><code>from_str</code></a> for any time it’s not
+familiar with so you don’t need to specify anything</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+    <span class="attribute">#[bpaf(short, argument(<span class="string">&quot;SPEED&quot;</span>))]
+    </span>speed: f64
+}</code></pre></div>
+<p>But it’s also possible to specify it explicitly</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+    <span class="attribute">#[bpaf(short, argument(<span class="string">&quot;SPEED&quot;</span>), from_str(f64))]
+    </span>speed: f64
+}</code></pre></div>
+<h5 id="example-5"><a href="#example-5">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app -s pi
+// fails with &quot;Couldn&#39;t parse &quot;pi&quot;: invalid float literal&quot;
+$ app -s 3.1415
+// Version: 3.1415</code></pre></div><h5 id="see-also-2"><a href="#see-also-2">See also</a></h5>
+<p>Other parsing and restricting methods include <a href="trait.Parser.html#method.parse"><code>parse</code></a> and
+<a href="trait.Parser.html"><code>guard</code></a>. For transformations that can’t fail you can use <a href="trait.Parser.html#method.map"><code>map</code></a>.</p>
+</div></details><details class="rustdoc-toggle" open><summary><div id="method.guard" class="method has-srclink"><a class="srclink rightside" href="../src/bpaf/lib.rs.html#1077-1087">source</a><h4 class="code-header">fn <a href="#method.guard" class="fnname">guard</a>&lt;F&gt;(self, check: F, message: &amp;'static <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>) -&gt; ParseGuard&lt;Self, F&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>T) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>,</span></h4></div></summary><div class="docblock"><p>Validate or fail with a message</p>
+<p>If value doesn’t satisfy the constraint - parser fails with the specified error message.</p>
+<h5 id="combinatoric-usage-6"><a href="#combinatoric-usage-6">Combinatoric usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>number() -&gt; <span class="kw">impl </span>Parser&lt;u32&gt; {
+    short(<span class="string">&#39;n&#39;</span>)
+        .argument(<span class="string">&quot;NUM&quot;</span>)
+        .from_str::&lt;u32&gt;()
+        .guard(|n| <span class="kw-2">*</span>n &lt;= <span class="number">10</span>, <span class="string">&quot;Values greater than 10 are only available in the DLC pack!&quot;</span>)
+}</code></pre></div>
+<h5 id="derive-usage-6"><a href="#derive-usage-6">Derive usage</a></h5>
+<p>Unlike combinator counterpart, derive variant of <code>guard</code> takes a function name instead
+of a closure, mostly to keep thing clean. Second argument can be either a string literal
+or a constant name for a static <a href="https://doc.rust-lang.org/nightly/std/primitive.str.html" title="str"><code>str</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>dlc_check(number: <span class="kw-2">&amp;</span>u32) -&gt; bool {
+    <span class="kw-2">*</span>number &lt;= <span class="number">10
+</span>}
+
+<span class="kw">const </span>DLC_NEEDED: <span class="kw-2">&amp;</span>str = <span class="string">&quot;Values greater than 10 are only available in the DLC pack!&quot;</span>;
+
+<span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+    <span class="attribute">#[bpaf(short, argument(<span class="string">&quot;NUM&quot;</span>), guard(dlc_check, DLC_NEEDED))]
+    </span>number: u32,
+}</code></pre></div>
+<h5 id="example-6"><a href="#example-6">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app -n 100
+// fails with &quot;Values greater than 10 are only available in the DLC pack!&quot;
+$ app -n 5
+// 5</code></pre></div></div></details><details class="rustdoc-toggle" open><summary><div id="method.fallback" class="method has-srclink"><a class="srclink rightside" href="../src/bpaf/lib.rs.html#1134-1139">source</a><h4 class="code-header">fn <a href="#method.fallback" class="fnname">fallback</a>(self, value: T) -&gt; ParseFallback&lt;Self, T&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,</span></h4></div></summary><div class="docblock"><p>Use this value as default if value isn’t present on a command line</p>
+<p>Parser would still fail if value is present but failure comes from some transformation</p>
+<h5 id="combinatoric-usage-7"><a href="#combinatoric-usage-7">Combinatoric usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>number() -&gt; <span class="kw">impl </span>Parser&lt;u32&gt; {
+    short(<span class="string">&#39;n&#39;</span>)
+        .argument(<span class="string">&quot;NUM&quot;</span>)
+        .from_str::&lt;u32&gt;()
+        .fallback(<span class="number">42</span>)
+}</code></pre></div>
+<h5 id="derive-usage-7"><a href="#derive-usage-7">Derive usage</a></h5>
+<p>Expression in parens should have the right type, this example uses <code>u32</code> literal,
+but it can also be your own type if that’s what you are parsing, it can also be a function
+call.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+   <span class="attribute">#[bpaf(short, argument(<span class="string">&quot;NUM&quot;</span>), from_str(u32), fallback(<span class="number">42</span>))]
+   </span>number: u32
+}</code></pre></div>
+<h5 id="example-7"><a href="#example-7">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app -n 100
+// 10
+$ app
+// 42
+$ app -n pi
+// fails with &quot;Couldn&#39;t parse &quot;pi&quot;: invalid numeric literal&quot;</code></pre></div><h5 id="see-also-3"><a href="#see-also-3">See also</a></h5>
+<p><a href="trait.Parser.html#method.fallback_with"><code>fallback_with</code></a> would allow to try to fallback to a value that
+comes from a failing computation such as reading a file.</p>
+</div></details><details class="rustdoc-toggle" open><summary><div id="method.fallback_with" class="method has-srclink"><a class="srclink rightside" href="../src/bpaf/lib.rs.html#1195-1207">source</a><h4 class="code-header">fn <a href="#method.fallback_with" class="fnname">fallback_with</a>&lt;F, E&gt;(self, fallback: F) -&gt; ParseFallbackWith&lt;T, Self, F, E&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>() -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;T, E&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;E: <a class="trait" href="https://doc.rust-lang.org/nightly/alloc/string/trait.ToString.html" title="trait alloc::string::ToString">ToString</a>,</span></h4></div></summary><div class="docblock"><p>Use value produced by this function as default if value isn’t present</p>
+<p>Would still fail if value is present but failure comes from some earlier transformation</p>
+<h5 id="combinatoric-usage-8"><a href="#combinatoric-usage-8">Combinatoric usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>username() -&gt; <span class="kw">impl </span>Parser&lt;String&gt; {
+    long(<span class="string">&quot;user&quot;</span>)
+        .argument(<span class="string">&quot;USER&quot;</span>)
+        .fallback_with::&lt;<span class="kw">_</span>, Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt;(||{
+            <span class="kw">let </span>output = std::process::Command::new(<span class="string">&quot;whoami&quot;</span>)
+                .stdout(std::process::Stdio::piped())
+                .spawn()<span class="question-mark">?
+                </span>.wait_with_output()<span class="question-mark">?
+                </span>.stdout;
+            <span class="prelude-val">Ok</span>(std::str::from_utf8(<span class="kw-2">&amp;</span>output)<span class="question-mark">?</span>.to_owned())
+        })
+}</code></pre></div>
+<h5 id="derive-usage-8"><a href="#derive-usage-8">Derive usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>get_current_user() -&gt; <span class="prelude-ty">Result</span>&lt;String, Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; {
+    <span class="kw">let </span>output = std::process::Command::new(<span class="string">&quot;whoami&quot;</span>)
+        .stdout(std::process::Stdio::piped())
+        .spawn()<span class="question-mark">?
+        </span>.wait_with_output()<span class="question-mark">?
+        </span>.stdout;
+    <span class="prelude-val">Ok</span>(std::str::from_utf8(<span class="kw-2">&amp;</span>output)<span class="question-mark">?</span>.to_owned())
+}
+
+<span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+    <span class="attribute">#[bpaf(long, argument(<span class="string">&quot;USER&quot;</span>), fallback_with(get_current_user))]
+    </span>user: String,
+}</code></pre></div>
+<h5 id="example-8"><a href="#example-8">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app --user bobert
+// &quot;bobert&quot;
+$ app
+// &quot;pacak&quot;</code></pre></div><h5 id="see-also-4"><a href="#see-also-4">See also</a></h5>
+<p><a href="trait.Parser.html#method.fallback"><code>fallback</code></a> implements similar logic expect that failures
+aren’t expected.</p>
+</div></details><details class="rustdoc-toggle" open><summary><div id="method.hide" class="method has-srclink"><a class="srclink rightside" href="../src/bpaf/lib.rs.html#1357-1362">source</a><h4 class="code-header">fn <a href="#method.hide" class="fnname">hide</a>(self) -&gt; ParseHide&lt;Self&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,</span></h4></div></summary><div class="docblock"><p>Ignore this parser during any sort of help generation</p>
+<p>Best used for optional parsers or parsers with a defined fallback, usually for implementing
+backward compatibility or hidden aliases</p>
+<h5 id="combinatoric-usage-9"><a href="#combinatoric-usage-9">Combinatoric usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="doccomment">/// bpaf would accept both `-W` and `-H` flags, but the help message
+/// would contain only `-H`
+</span><span class="kw">fn </span>rectangle() -&gt; <span class="kw">impl </span>Parser&lt;(u32, u32)&gt; {
+    <span class="kw">let </span>width = short(<span class="string">&#39;W&#39;</span>)
+        .argument(<span class="string">&quot;PX&quot;</span>)
+        .from_str::&lt;u32&gt;()
+        .fallback(<span class="number">10</span>)
+        .hide();
+    <span class="kw">let </span>height = short(<span class="string">&#39;H&#39;</span>)
+        .argument(<span class="string">&quot;PX&quot;</span>)
+        .from_str::&lt;u32&gt;()
+        .fallback(<span class="number">10</span>)
+        .hide();
+    <span class="macro">construct!</span>(width, height)
+}</code></pre></div>
+<h5 id="example-9"><a href="#example-9">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app -W 12 -H 15
+// (12, 15)
+$ app -H 333
+// (10, 333)
+$ app --help
+// contains -H but not -W</code></pre></div><h5 id="derive-usage-9"><a href="#derive-usage-9">Derive usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Rectangle {
+    <span class="attribute">#[bpaf(short(<span class="string">&#39;W&#39;</span>), argument(<span class="string">&quot;PX&quot;</span>), from_str(u32), fallback(<span class="number">10</span>), hide)]
+    </span>width: u32,
+    <span class="attribute">#[bpaf(short(<span class="string">&#39;H&#39;</span>), argument(<span class="string">&quot;PX&quot;</span>), from_str(u32))]
+    </span>height: u32,
+}</code></pre></div>
+<h5 id="example-10"><a href="#example-10">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app -W 12 -H 15
+// Rectangle { width: 12, height: 15 }
+$ app -H 333
+// Rectangle { width: 10, height: 333 }
+$ app --help
+// contains -H but not -W</code></pre></div></div></details><details class="rustdoc-toggle" open><summary><div id="method.group_help" class="method has-srclink"><a class="srclink rightside" href="../src/bpaf/lib.rs.html#1411-1419">source</a><h4 class="code-header">fn <a href="#method.group_help" class="fnname">group_help</a>(self, message: &amp;'static <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>) -&gt; ParseGroupHelp&lt;Self&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt;,</span></h4></div></summary><div class="docblock"><p>Attach help message to a complex parser</p>
+<p><code>bpaf</code> inserts the group help message before the block with all the fields
+from the inner parser and an empty line after the block.</p>
+<h5 id="combinatoric-usage-10"><a href="#combinatoric-usage-10">Combinatoric usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>rectangle() -&gt; <span class="kw">impl </span>Parser&lt;(u32, u32)&gt; {
+    <span class="kw">let </span>width = short(<span class="string">&#39;w&#39;</span>)
+        .argument(<span class="string">&quot;PX&quot;</span>)
+        .from_str::&lt;u32&gt;();
+    <span class="kw">let </span>height = short(<span class="string">&#39;h&#39;</span>)
+        .argument(<span class="string">&quot;PX&quot;</span>)
+        .from_str::&lt;u32&gt;();
+    <span class="macro">construct!</span>(width, height)
+        .group_help(<span class="string">&quot;Takes a rectangle&quot;</span>)
+}</code></pre></div>
+<h5 id="example-11"><a href="#example-11">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app --help
+&lt;skip&gt;
+            Takes a rectangle
+   -w &lt;PX&gt;  Width of the rectangle
+   -h &lt;PX&gt;  Height of the rectangle
+
+&lt;skip&gt;</code></pre></div><h5 id="derive-usage-10"><a href="#derive-usage-10">Derive usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Rectangle {
+    width: u32,
+    height: u32,
+}
+
+<span class="attribute">#[derive(Debug, Clone, Bpaf)]
+</span><span class="kw">struct </span>Options {
+    <span class="attribute">#[bpaf(external, group_help(<span class="string">&quot;Takes a rectangle&quot;</span>))]
+    </span>rectangle: Rectangle
+}</code></pre></div>
+</div></details><details class="rustdoc-toggle" open><summary><div id="method.to_options" class="method has-srclink"><a class="srclink rightside" href="../src/bpaf/lib.rs.html#1571-1580">source</a><h4 class="code-header">fn <a href="#method.to_options" class="fnname">to_options</a>(self) -&gt; <a class="struct" href="struct.OptionParser.html" title="struct bpaf::OptionParser">OptionParser</a>&lt;T&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt; + 'static,</span></h4></div></summary><div class="docblock"><p>Transform <code>Parser</code> into <a href="struct.OptionParser.html" title="OptionParser"><code>OptionParser</code></a> to attach metadata and run</p>
+<h5 id="combinatoric-usage-11"><a href="#combinatoric-usage-11">Combinatoric usage</a></h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>parser() -&gt; <span class="kw">impl </span>Parser&lt;u32&gt; {
+    short(<span class="string">&#39;i&#39;</span>)
+        .argument(<span class="string">&quot;ARG&quot;</span>)
+        .from_str::&lt;u32&gt;()
+}
+
+<span class="kw">fn </span>option_parser() -&gt; OptionParser&lt;u32&gt; {
+    parser()
+        .to_options()
+        .version(<span class="string">&quot;3.1415&quot;</span>)
+        .descr(<span class="string">&quot;This is a description&quot;</span>)
+}</code></pre></div>
+<p>See <a href="struct.OptionParser.html" title="OptionParser"><code>OptionParser</code></a> for more methods available after conversion.</p>
+<h5 id="derive-usage-11"><a href="#derive-usage-11">Derive usage</a></h5>
+<p>Add a top level <code>options</code> annotation to generate <a href="struct.OptionParser.html" title="OptionParser"><code>OptionParser</code></a> instead of default
+<a href="trait.Parser.html" title="Parser"><code>Parser</code></a>.</p>
+<p>In addition to <code>options</code> annotation you can also specify either <code>version</code> or
+<code>version(value)</code> annotation. Former uses version from <code>cargo</code>, later uses the
+specified value which should be an expression of type <code>&amp;'static str</code>, see
+<a href="struct.OptionParser.html#method.version"><code>version</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(Debug, Clone, Bpaf)]
+#[bpaf(options, version(<span class="string">&quot;3.1415&quot;</span>))]
+</span><span class="doccomment">/// This is a description
+</span><span class="kw">struct </span>Options {
+   verbose: bool,
+}</code></pre></div>
+<h5 id="example-12"><a href="#example-12">Example</a></h5><div class="example-wrap"><pre class="language-console"><code>$ app --version
+// Version: 3.1415
+$ app --help
+&lt;skip&gt;
+This is a description
+&lt;skip&gt;</code></pre></div></div></details></div><h2 id="implementors" class="small-section-header">Implementors<a href="#implementors" class="anchor"></a></h2><div class="item-list" id="implementors-list"><section id="impl-Parser%3CString%3E-for-Positional%3CString%3E" class="impl has-srclink"><a class="srclink rightside" href="../src/bpaf/params.rs.html#1310-1325">source</a><a href="#impl-Parser%3CString%3E-for-Positional%3CString%3E" class="anchor"></a><h3 class="code-header in-band">impl <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt; for <a class="struct" href="struct.Positional.html" title="struct bpaf::Positional">Positional</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</h3></section><section id="impl-Parser%3COsString%3E-for-Positional%3COsString%3E" class="impl has-srclink"><a class="srclink rightside" href="../src/bpaf/params.rs.html#1299-1308">source</a><a href="#impl-Parser%3COsString%3E-for-Positional%3COsString%3E" class="anchor"></a><h3 class="code-header in-band">impl <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/std/ffi/os_str/struct.OsString.html" title="struct std::ffi::os_str::OsString">OsString</a>&gt; for <a class="struct" href="struct.Positional.html" title="struct bpaf::Positional">Positional</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/std/ffi/os_str/struct.OsString.html" title="struct std::ffi::os_str::OsString">OsString</a>&gt;</h3></section><section id="impl-Parser%3CT%3E-for-Command%3CT%3E" class="impl has-srclink"><a class="srclink rightside" href="../src/bpaf/params.rs.html#983-1020">source</a><a href="#impl-Parser%3CT%3E-for-Command%3CT%3E" class="anchor"></a><h3 class="code-header in-band">impl&lt;T&gt; <a class="trait" href="trait.Parser.html" title="trait bpaf::Parser">Parser</a>&lt;T&gt; for <a class="struct" href="struct.Command.html" title="struct bpaf::Command">Command</a>&lt;T&gt;</h3></section></div><script src="../implementors/bpaf/trait.Parser.js" async></script></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="bpaf" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

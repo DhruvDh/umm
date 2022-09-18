@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/self_update-0.30.0/src/backends/github.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>github.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../self_update/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../self_update/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../self_update/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/self_update-0.32.0/src/backends/github.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>github.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../self_update/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../self_update/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../self_update/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -593,13 +593,25 @@
 <span id="593">593</span>
 <span id="594">594</span>
 <span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
 </pre><pre class="rust"><code><span class="doccomment">/*!
 GitHub releases
 */
 </span><span class="kw">use </span>std::env::{<span class="self">self</span>, consts::EXE_SUFFIX};
 <span class="kw">use </span>std::path::{Path, PathBuf};
 
-<span class="kw">use </span>indicatif::ProgressStyle;
 <span class="kw">use </span>reqwest::{<span class="self">self</span>, header};
 
 <span class="kw">use </span><span class="kw">crate</span>::backends::find_rel_next_link;
@@ -607,6 +619,7 @@ GitHub releases
     errors::<span class="kw-2">*</span>,
     get_target,
     update::{Release, ReleaseAsset, ReleaseUpdate},
+    DEFAULT_PROGRESS_CHARS, DEFAULT_PROGRESS_TEMPLATE,
 };
 
 <span class="kw">impl </span>ReleaseAsset {
@@ -833,7 +846,8 @@ GitHub releases
     no_confirm: bool,
     current_version: <span class="prelude-ty">Option</span>&lt;String&gt;,
     target_version: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    progress_style: <span class="prelude-ty">Option</span>&lt;ProgressStyle&gt;,
+    progress_template: String,
+    progress_chars: String,
     auth_token: <span class="prelude-ty">Option</span>&lt;String&gt;,
     custom_url: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
@@ -940,9 +954,14 @@ GitHub releases
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// Toggle download progress bar, defaults to `off`.
-    </span><span class="kw">pub fn </span>set_progress_style(<span class="kw-2">&amp;mut </span><span class="self">self</span>, progress_style: ProgressStyle) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.progress_style = <span class="prelude-val">Some</span>(progress_style);
+    <span class="doccomment">/// Set download progress style.
+    </span><span class="kw">pub fn </span>set_progress_style(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        progress_template: String,
+        progress_chars: String,
+    ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.progress_template = progress_template;
+        <span class="self">self</span>.progress_chars = progress_chars;
         <span class="self">self
     </span>}
 
@@ -1014,7 +1033,8 @@ GitHub releases
             },
             target_version: <span class="self">self</span>.target_version.as_ref().map(|v| v.to_owned()),
             show_download_progress: <span class="self">self</span>.show_download_progress,
-            progress_style: <span class="self">self</span>.progress_style.clone(),
+            progress_template: <span class="self">self</span>.progress_template.clone(),
+            progress_chars: <span class="self">self</span>.progress_chars.clone(),
             show_output: <span class="self">self</span>.show_output,
             no_confirm: <span class="self">self</span>.no_confirm,
             auth_token: <span class="self">self</span>.auth_token.clone(),
@@ -1037,7 +1057,8 @@ GitHub releases
     show_download_progress: bool,
     show_output: bool,
     no_confirm: bool,
-    progress_style: <span class="prelude-ty">Option</span>&lt;ProgressStyle&gt;,
+    progress_template: String,
+    progress_chars: String,
     auth_token: <span class="prelude-ty">Option</span>&lt;String&gt;,
     custom_url: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
@@ -1138,8 +1159,12 @@ GitHub releases
         <span class="self">self</span>.no_confirm
     }
 
-    <span class="kw">fn </span>progress_style(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ProgressStyle&gt; {
-        <span class="self">self</span>.progress_style.clone()
+    <span class="kw">fn </span>progress_template(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="self">self</span>.progress_template.to_owned()
+    }
+
+    <span class="kw">fn </span>progress_chars(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="self">self</span>.progress_chars.to_owned()
     }
 
     <span class="kw">fn </span>auth_token(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
@@ -1161,7 +1186,8 @@ GitHub releases
             no_confirm: <span class="bool-val">false</span>,
             current_version: <span class="prelude-val">None</span>,
             target_version: <span class="prelude-val">None</span>,
-            progress_style: <span class="prelude-val">None</span>,
+            progress_template: DEFAULT_PROGRESS_TEMPLATE.to_string(),
+            progress_chars: DEFAULT_PROGRESS_CHARS.to_string(),
             auth_token: <span class="prelude-val">None</span>,
             custom_url: <span class="prelude-val">None</span>,
         }
@@ -1189,4 +1215,4 @@ GitHub releases
     <span class="prelude-val">Ok</span>(headers)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="self_update" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="self_update" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

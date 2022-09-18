@@ -10,7 +10,7 @@ code</a> section for more information.</p>
 <p>Be aware that although this function avoids starving other independently
 spawned tasks, any other code running concurrently in the same task will
 be suspended during the call to <code>block_in_place</code>. This can happen e.g.
-when using the <a href="macro@join"><code>join!</code></a> macro. To avoid this issue, use
+when using the <a href="../macro.join.html"><code>join!</code></a> macro. To avoid this issue, use
 <a href="fn.spawn_blocking.html"><code>spawn_blocking</code></a> instead of <code>block_in_place</code>.</p>
 <p>Note that this function cannot be used within a <a href="../runtime/struct.Builder.html#method.new_current_thread"><code>current_thread</code></a> runtime
 because in this case there are no other worker threads to hand off tasks
@@ -42,4 +42,4 @@ task::block_in_place(<span class="kw">move </span>|| {
 });</code></pre></div>
 <h2 id="panics"><a href="#panics">Panics</a></h2>
 <p>This function panics if called from a <a href="../runtime/struct.Builder.html#method.new_current_thread"><code>current_thread</code></a> runtime.</p>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

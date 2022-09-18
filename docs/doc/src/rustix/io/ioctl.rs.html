@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rustix-0.34.8/src/io/ioctl.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ioctl.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rustix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rustix-0.35.9/src/io/ioctl.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ioctl.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rustix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -97,87 +97,13 @@
 <span id="97">97</span>
 <span id="98">98</span>
 <span id="99">99</span>
-<span id="100">100</span>
-<span id="101">101</span>
-<span id="102">102</span>
-<span id="103">103</span>
-<span id="104">104</span>
-<span id="105">105</span>
-<span id="106">106</span>
-<span id="107">107</span>
-<span id="108">108</span>
-<span id="109">109</span>
-<span id="110">110</span>
-<span id="111">111</span>
-<span id="112">112</span>
-<span id="113">113</span>
-<span id="114">114</span>
-<span id="115">115</span>
-<span id="116">116</span>
-<span id="117">117</span>
-<span id="118">118</span>
-<span id="119">119</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The Unix `ioctl` function is effectively lots of different functions
 //! hidden behind a single dynamic dispatch interface. In order to provide
 //! a type-safe API, rustix makes them all separate functions so that they
 //! can have dedicated static type signatures.
 
-</span><span class="kw">use crate</span>::{imp, io};
-<span class="kw">use </span>imp::fd::AsFd;
-
-<span class="attribute">#[cfg(not(any(windows, target_os = <span class="string">&quot;wasi&quot;</span>)))]
-</span><span class="kw">pub use </span>imp::io::{Termios, Winsize};
-
-<span class="doccomment">/// `ioctl(fd, TCGETS)`—Get terminal attributes.
-///
-/// Also known as `tcgetattr`.
-///
-/// # References
-///  - [POSIX `tcgetattr`]
-///  - [Linux `ioctl_tty`]
-///  - [Linux `termios`]
-///
-/// [POSIX `tcgetattr`]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/tcgetattr.html
-/// [Linux `ioctl_tty`]: https://man7.org/linux/man-pages/man4/tty_ioctl.4.html
-/// [Linux `termios`]: https://man7.org/linux/man-pages/man3/termios.3.html
-</span><span class="attribute">#[cfg(not(any(windows, target_os = <span class="string">&quot;wasi&quot;</span>)))]
-#[inline]
-#[doc(alias = <span class="string">&quot;tcgetattr&quot;</span>)]
-#[doc(alias = <span class="string">&quot;TCGETS&quot;</span>)]
-</span><span class="kw">pub fn </span>ioctl_tcgets&lt;Fd: AsFd&gt;(fd: Fd) -&gt; io::Result&lt;Termios&gt; {
-    imp::io::syscalls::ioctl_tcgets(fd.as_fd())
-}
-
-<span class="doccomment">/// `ioctl(fd, FIOCLEX)`—Set the close-on-exec flag.
-///
-/// Also known as `fcntl(fd, F_SETFD, FD_CLOEXEC)`.
-</span><span class="attribute">#[cfg(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>))]
-#[inline]
-#[doc(alias = <span class="string">&quot;FIOCLEX&quot;</span>)]
-#[doc(alias = <span class="string">&quot;FD_CLOEXEC&quot;</span>)]
-</span><span class="kw">pub fn </span>ioctl_fioclex&lt;Fd: AsFd&gt;(fd: Fd) -&gt; io::Result&lt;()&gt; {
-    imp::io::syscalls::ioctl_fioclex(fd.as_fd())
-}
-
-<span class="doccomment">/// `ioctl(fd, TIOCGWINSZ)`—Get the current terminal window size.
-///
-/// # References
-///  - [Linux]
-///
-/// [Linux]: https://man7.org/linux/man-pages/man4/tty_ioctl.4.html
-</span><span class="attribute">#[cfg(not(any(windows, target_os = <span class="string">&quot;wasi&quot;</span>)))]
-#[inline]
-#[doc(alias = <span class="string">&quot;TIOCGWINSZ&quot;</span>)]
-</span><span class="kw">pub fn </span>ioctl_tiocgwinsz&lt;Fd: AsFd&gt;(fd: Fd) -&gt; io::Result&lt;Winsize&gt; {
-    imp::io::syscalls::ioctl_tiocgwinsz(fd.as_fd())
-}
-
-<span class="doccomment">/// `ioctl(fd, FIONBIO, &amp;value)`—Enables or disables non-blocking mode.
-</span><span class="attribute">#[inline]
-#[doc(alias = <span class="string">&quot;FIONBIO&quot;</span>)]
-</span><span class="kw">pub fn </span>ioctl_fionbio&lt;Fd: AsFd&gt;(fd: Fd, value: bool) -&gt; io::Result&lt;()&gt; {
-    imp::io::syscalls::ioctl_fionbio(fd.as_fd(), value)
-}
+</span><span class="kw">use crate</span>::{backend, io};
+<span class="kw">use </span>backend::fd::AsFd;
 
 <span class="doccomment">/// `ioctl(fd, TIOCEXCL)`—Enables exclusive mode on a terminal.
 ///
@@ -189,7 +115,7 @@
 #[inline]
 #[doc(alias = <span class="string">&quot;TIOCEXCL&quot;</span>)]
 </span><span class="kw">pub fn </span>ioctl_tiocexcl&lt;Fd: AsFd&gt;(fd: Fd) -&gt; io::Result&lt;()&gt; {
-    imp::io::syscalls::ioctl_tiocexcl(fd.as_fd())
+    backend::io::syscalls::ioctl_tiocexcl(fd.as_fd())
 }
 
 <span class="doccomment">/// `ioctl(fd, TIOCNXCL)`—Disables exclusive mode on a terminal.
@@ -202,7 +128,39 @@
 #[inline]
 #[doc(alias = <span class="string">&quot;TIOCNXCL&quot;</span>)]
 </span><span class="kw">pub fn </span>ioctl_tiocnxcl&lt;Fd: AsFd&gt;(fd: Fd) -&gt; io::Result&lt;()&gt; {
-    imp::io::syscalls::ioctl_tiocnxcl(fd.as_fd())
+    backend::io::syscalls::ioctl_tiocnxcl(fd.as_fd())
+}
+
+<span class="doccomment">/// `ioctl(fd, FIOCLEX)`—Set the close-on-exec flag.
+///
+/// Also known as `fcntl(fd, F_SETFD, FD_CLOEXEC)`.
+///
+/// # References
+///  - [Linux]
+///  - [Winsock2]
+///
+/// [Linux]: https://man7.org/linux/man-pages/man2/ioctl.2.html
+/// [Winsock2]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-ioctlsocket
+</span><span class="attribute">#[cfg(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>))]
+#[inline]
+#[doc(alias = <span class="string">&quot;FIOCLEX&quot;</span>)]
+#[doc(alias = <span class="string">&quot;FD_CLOEXEC&quot;</span>)]
+</span><span class="kw">pub fn </span>ioctl_fioclex&lt;Fd: AsFd&gt;(fd: Fd) -&gt; io::Result&lt;()&gt; {
+    backend::io::syscalls::ioctl_fioclex(fd.as_fd())
+}
+
+<span class="doccomment">/// `ioctl(fd, FIONBIO, &amp;value)`—Enables or disables non-blocking mode.
+///
+/// # References
+///  - [Linux]
+///  - [Winsock2]
+///
+/// [Linux]: https://man7.org/linux/man-pages/man2/ioctl.2.html
+/// [Winsock2]: https://docs.microsoft.com/en-us/windows/win32/winsock/winsock-ioctls#unix-ioctl-codes
+</span><span class="attribute">#[inline]
+#[doc(alias = <span class="string">&quot;FIONBIO&quot;</span>)]
+</span><span class="kw">pub fn </span>ioctl_fionbio&lt;Fd: AsFd&gt;(fd: Fd, value: bool) -&gt; io::Result&lt;()&gt; {
+    backend::io::syscalls::ioctl_fionbio(fd.as_fd(), value)
 }
 
 <span class="doccomment">/// `ioctl(fd, FIONREAD)`—Returns the number of bytes ready to be read.
@@ -212,13 +170,15 @@
 ///
 /// # References
 ///  - [Linux]
+///  - [Winsock2]
 ///
 /// [Linux]: https://man7.org/linux/man-pages/man2/ioctl_tty.2.html
-</span><span class="attribute">#[cfg(not(any(windows, target_os = <span class="string">&quot;redox&quot;</span>)))]
+/// [Winsock2]: https://docs.microsoft.com/en-us/windows/win32/winsock/winsock-ioctls#unix-ioctl-codes
+</span><span class="attribute">#[cfg(not(target_os = <span class="string">&quot;redox&quot;</span>))]
 #[inline]
 #[doc(alias = <span class="string">&quot;FIONREAD&quot;</span>)]
 </span><span class="kw">pub fn </span>ioctl_fionread&lt;Fd: AsFd&gt;(fd: Fd) -&gt; io::Result&lt;u64&gt; {
-    imp::io::syscalls::ioctl_fionread(fd.as_fd())
+    backend::io::syscalls::ioctl_fionread(fd.as_fd())
 }
 
 <span class="doccomment">/// `ioctl(fd, BLKSSZGET)`—Returns the logical block size of a block device.
@@ -226,7 +186,7 @@
 #[inline]
 #[doc(alias = <span class="string">&quot;BLKSSZGET&quot;</span>)]
 </span><span class="kw">pub fn </span>ioctl_blksszget&lt;Fd: AsFd&gt;(fd: Fd) -&gt; io::Result&lt;u32&gt; {
-    imp::io::syscalls::ioctl_blksszget(fd.as_fd())
+    backend::io::syscalls::ioctl_blksszget(fd.as_fd())
 }
 
 <span class="doccomment">/// `ioctl(fd, BLKPBSZGET)`—Returns the physical block size of a block device.
@@ -234,7 +194,7 @@
 #[inline]
 #[doc(alias = <span class="string">&quot;BLKPBSZGET&quot;</span>)]
 </span><span class="kw">pub fn </span>ioctl_blkpbszget&lt;Fd: AsFd&gt;(fd: Fd) -&gt; io::Result&lt;u32&gt; {
-    imp::io::syscalls::ioctl_blkpbszget(fd.as_fd())
+    backend::io::syscalls::ioctl_blkpbszget(fd.as_fd())
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rustix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rustix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

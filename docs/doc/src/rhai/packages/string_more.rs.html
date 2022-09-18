@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/packages/string_more.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>string_more.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/packages/string_more.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>string_more.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1416,16 +1416,108 @@
 <span id="1416">1416</span>
 <span id="1417">1417</span>
 <span id="1418">1418</span>
+<span id="1419">1419</span>
+<span id="1420">1420</span>
+<span id="1421">1421</span>
+<span id="1422">1422</span>
+<span id="1423">1423</span>
+<span id="1424">1424</span>
+<span id="1425">1425</span>
+<span id="1426">1426</span>
+<span id="1427">1427</span>
+<span id="1428">1428</span>
+<span id="1429">1429</span>
+<span id="1430">1430</span>
+<span id="1431">1431</span>
+<span id="1432">1432</span>
+<span id="1433">1433</span>
+<span id="1434">1434</span>
+<span id="1435">1435</span>
+<span id="1436">1436</span>
+<span id="1437">1437</span>
+<span id="1438">1438</span>
+<span id="1439">1439</span>
+<span id="1440">1440</span>
+<span id="1441">1441</span>
+<span id="1442">1442</span>
+<span id="1443">1443</span>
+<span id="1444">1444</span>
+<span id="1445">1445</span>
+<span id="1446">1446</span>
+<span id="1447">1447</span>
+<span id="1448">1448</span>
+<span id="1449">1449</span>
+<span id="1450">1450</span>
+<span id="1451">1451</span>
+<span id="1452">1452</span>
+<span id="1453">1453</span>
+<span id="1454">1454</span>
+<span id="1455">1455</span>
+<span id="1456">1456</span>
+<span id="1457">1457</span>
+<span id="1458">1458</span>
+<span id="1459">1459</span>
+<span id="1460">1460</span>
+<span id="1461">1461</span>
+<span id="1462">1462</span>
+<span id="1463">1463</span>
+<span id="1464">1464</span>
+<span id="1465">1465</span>
+<span id="1466">1466</span>
+<span id="1467">1467</span>
+<span id="1468">1468</span>
+<span id="1469">1469</span>
+<span id="1470">1470</span>
+<span id="1471">1471</span>
+<span id="1472">1472</span>
+<span id="1473">1473</span>
+<span id="1474">1474</span>
+<span id="1475">1475</span>
+<span id="1476">1476</span>
+<span id="1477">1477</span>
+<span id="1478">1478</span>
+<span id="1479">1479</span>
+<span id="1480">1480</span>
+<span id="1481">1481</span>
+<span id="1482">1482</span>
+<span id="1483">1483</span>
+<span id="1484">1484</span>
+<span id="1485">1485</span>
+<span id="1486">1486</span>
+<span id="1487">1487</span>
+<span id="1488">1488</span>
+<span id="1489">1489</span>
+<span id="1490">1490</span>
+<span id="1491">1491</span>
+<span id="1492">1492</span>
+<span id="1493">1493</span>
+<span id="1494">1494</span>
+<span id="1495">1495</span>
+<span id="1496">1496</span>
+<span id="1497">1497</span>
+<span id="1498">1498</span>
+<span id="1499">1499</span>
+<span id="1500">1500</span>
+<span id="1501">1501</span>
+<span id="1502">1502</span>
+<span id="1503">1503</span>
+<span id="1504">1504</span>
+<span id="1505">1505</span>
+<span id="1506">1506</span>
+<span id="1507">1507</span>
+<span id="1508">1508</span>
+<span id="1509">1509</span>
+<span id="1510">1510</span>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::plugin::<span class="kw-2">*</span>;
-<span class="kw">use crate</span>::{def_package, Dynamic, ExclusiveRange, InclusiveRange, RhaiResultOf, StaticVec, INT};
+<span class="kw">use crate</span>::{
+    def_package, Dynamic, ExclusiveRange, InclusiveRange, RhaiResultOf, StaticVec, INT,
+    MAX_USIZE_INT,
+};
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::{any::TypeId, mem};
 
 <span class="kw">use </span><span class="kw">super</span>::string_basic::{print_with_func, FUNC_TO_STRING};
-
-<span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-</span><span class="kw">use </span><span class="kw">crate</span>::Blob;
 
 <span class="macro">def_package! </span>{
     <span class="doccomment">/// Package of additional string utilities over [`BasicStringPackage`][super::BasicStringPackage]
@@ -1451,7 +1543,7 @@
         <span class="kw">if </span>s.is_empty() {
             string.clone()
         } <span class="kw">else </span>{
-            <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, string, s).into()
+            <span class="macro">format!</span>(<span class="string">&quot;{string}{s}&quot;</span>).into()
         }
     }
     <span class="attribute">#[rhai_fn(name = <span class="string">&quot;+=&quot;</span>, name = <span class="string">&quot;append&quot;</span>)]
@@ -1459,7 +1551,7 @@
         <span class="kw">let </span>s = print_with_func(FUNC_TO_STRING, <span class="kw-2">&amp;</span>ctx, <span class="kw-2">&amp;mut </span>item);
 
         <span class="kw">if </span>!s.is_empty() {
-            <span class="kw-2">*</span>string = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, string, s).into();
+            <span class="kw-2">*</span>string = <span class="macro">format!</span>(<span class="string">&quot;{string}{s}&quot;</span>).into();
         }
     }
     <span class="attribute">#[rhai_fn(name = <span class="string">&quot;+&quot;</span>, pure)]
@@ -1480,7 +1572,10 @@
     <span class="comment">// The following are needed in order to override the generic versions with `Dynamic` parameters.
 
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;+&quot;</span>, pure)]
-    </span><span class="kw">pub fn </span>add_append_str(string1: <span class="kw-2">&amp;mut </span>ImmutableString, string2: <span class="kw-2">&amp;</span>str) -&gt; ImmutableString {
+    </span><span class="kw">pub fn </span>add_append_str(
+        string1: <span class="kw-2">&amp;mut </span>ImmutableString,
+        string2: ImmutableString,
+    ) -&gt; ImmutableString {
         <span class="kw-2">&amp;*</span>string1 + string2
     }
     <span class="attribute">#[rhai_fn(name = <span class="string">&quot;+&quot;</span>, pure)]
@@ -1489,7 +1584,7 @@
     }
     <span class="attribute">#[rhai_fn(name = <span class="string">&quot;+&quot;</span>)]
     </span><span class="kw">pub fn </span>add_prepend_char(character: char, string: <span class="kw-2">&amp;</span>str) -&gt; ImmutableString {
-        <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, character, string).into()
+        <span class="macro">format!</span>(<span class="string">&quot;{character}{string}&quot;</span>).into()
     }
 
     <span class="attribute">#[rhai_fn(name = <span class="string">&quot;+&quot;</span>)]
@@ -1502,27 +1597,65 @@
         string
     }
 
+    <span class="attribute">#[rhai_fn(name = <span class="string">&quot;+=&quot;</span>)]
+    </span><span class="kw">pub fn </span>add_assign_append_str(string1: <span class="kw-2">&amp;mut </span>ImmutableString, string2: ImmutableString) {
+        <span class="kw-2">*</span>string1 += string2
+    }
+    <span class="attribute">#[rhai_fn(name = <span class="string">&quot;+=&quot;</span>, pure)]
+    </span><span class="kw">pub fn </span>add_assign_append_char(string: <span class="kw-2">&amp;mut </span>ImmutableString, character: char) {
+        <span class="kw-2">*</span>string += character
+    }
+    <span class="attribute">#[rhai_fn(name = <span class="string">&quot;+=&quot;</span>)]
+    </span><span class="kw">pub fn </span>add_assign_append_unit(string: <span class="kw-2">&amp;mut </span>ImmutableString, item: ()) {
+        <span class="kw">let _ </span>= string;
+        <span class="kw">let _ </span>= item;
+    }
+
     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
     </span><span class="kw">pub mod </span>blob_functions {
+        <span class="kw">use </span><span class="kw">crate</span>::Blob;
+
         <span class="attribute">#[rhai_fn(name = <span class="string">&quot;+&quot;</span>, pure)]
-        </span><span class="kw">pub fn </span>add_append_blob(string: <span class="kw-2">&amp;mut </span>ImmutableString, utf8: Blob) -&gt; ImmutableString {
+        </span><span class="kw">pub fn </span>add_append(string: <span class="kw-2">&amp;mut </span>ImmutableString, utf8: Blob) -&gt; ImmutableString {
             <span class="kw">if </span>utf8.is_empty() {
-                string.clone()
-            } <span class="kw">else if </span>string.is_empty() {
-                String::from_utf8_lossy(<span class="kw-2">&amp;</span>utf8).into_owned().into()
+                <span class="kw">return </span>string.clone();
+            }
+
+            <span class="kw">let </span>s = String::from_utf8_lossy(<span class="kw-2">&amp;</span>utf8);
+
+            <span class="kw">if </span>string.is_empty() {
+                <span class="kw">match </span>s {
+                    std::borrow::Cow::Borrowed(<span class="kw">_</span>) =&gt; String::from_utf8(utf8).unwrap(),
+                    std::borrow::Cow::Owned(<span class="kw">_</span>) =&gt; s.into_owned(),
+                }
+                .into()
             } <span class="kw">else </span>{
-                <span class="kw">let </span><span class="kw-2">mut </span>s = <span class="kw">crate</span>::SmartString::from(string.as_str());
-                s.push_str(<span class="kw-2">&amp;</span>String::from_utf8_lossy(<span class="kw-2">&amp;</span>utf8));
-                s.into()
+                <span class="kw">let </span><span class="kw-2">mut </span>x = SmartString::from(string.as_str());
+                x.push_str(s.as_ref());
+                x.into()
             }
         }
-        <span class="attribute">#[rhai_fn(name = <span class="string">&quot;append&quot;</span>)]
-        </span><span class="kw">pub fn </span>add_blob(string: <span class="kw-2">&amp;mut </span>ImmutableString, utf8: Blob) {
+        <span class="attribute">#[rhai_fn(name = <span class="string">&quot;+=&quot;</span>, name = <span class="string">&quot;append&quot;</span>)]
+        </span><span class="kw">pub fn </span>add(string: <span class="kw-2">&amp;mut </span>ImmutableString, utf8: Blob) {
             <span class="kw">let </span><span class="kw-2">mut </span>s = <span class="kw">crate</span>::SmartString::from(string.as_str());
             <span class="kw">if </span>!utf8.is_empty() {
                 s.push_str(<span class="kw-2">&amp;</span>String::from_utf8_lossy(<span class="kw-2">&amp;</span>utf8));
                 <span class="kw-2">*</span>string = s.into();
             }
+        }
+        <span class="attribute">#[rhai_fn(name = <span class="string">&quot;+&quot;</span>)]
+        </span><span class="kw">pub fn </span>add_prepend(utf8: Blob, string: <span class="kw-2">&amp;</span>str) -&gt; ImmutableString {
+            <span class="kw">let </span>s = String::from_utf8_lossy(<span class="kw-2">&amp;</span>utf8);
+            <span class="kw">let </span><span class="kw-2">mut </span>s = <span class="kw">match </span>s {
+                std::borrow::Cow::Borrowed(<span class="kw">_</span>) =&gt; String::from_utf8(utf8).unwrap(),
+                std::borrow::Cow::Owned(<span class="kw">_</span>) =&gt; s.into_owned(),
+            };
+
+            <span class="kw">if </span>!string.is_empty() {
+                s.push_str(string);
+            }
+
+            s.into()
         }
     }
 
@@ -1543,6 +1676,11 @@
             string.chars().count() <span class="kw">as </span>INT
         }
     }
+    <span class="doccomment">/// Return true if the string is empty.
+    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;is_empty&quot;</span>, get = <span class="string">&quot;is_empty&quot;</span>)]
+    </span><span class="kw">pub fn </span>is_empty(string: <span class="kw-2">&amp;</span>str) -&gt; bool {
+        string.len() == <span class="number">0
+    </span>}
     <span class="doccomment">/// Return the length of the string, in number of bytes used to store it in UTF-8 encoding.
     ///
     /// # Example
@@ -1638,10 +1776,11 @@
     /// ```
     </span><span class="kw">pub fn </span>truncate(string: <span class="kw-2">&amp;mut </span>ImmutableString, len: INT) {
         <span class="kw">if </span>len &gt; <span class="number">0 </span>{
+            <span class="kw">let </span>len = len.min(MAX_USIZE_INT) <span class="kw">as </span>usize;
             <span class="kw">let </span>chars: StaticVec&lt;<span class="kw">_</span>&gt; = string.chars().collect();
             <span class="kw">let </span>copy = string.make_mut();
             copy.clear();
-            copy.extend(chars.into_iter().take(len <span class="kw">as </span>usize));
+            copy.extend(chars.into_iter().take(len));
         } <span class="kw">else </span>{
             clear(string);
         }
@@ -1717,10 +1856,11 @@
         len: INT,
     ) -&gt; ImmutableString {
         <span class="kw">if </span>string.is_empty() || len &lt;= <span class="number">0 </span>{
-            <span class="kw">return </span>ctx.engine().const_empty_string();
+            <span class="kw">return </span>ctx.engine().get_interned_string(<span class="string">&quot;&quot;</span>);
         }
+        <span class="kw">let </span>len = len.min(MAX_USIZE_INT) <span class="kw">as </span>usize;
 
-        <span class="kw">let </span><span class="kw-2">mut </span>chars = StaticVec::&lt;char&gt;::with_capacity(len <span class="kw">as </span>usize);
+        <span class="kw">let </span><span class="kw-2">mut </span>chars = StaticVec::&lt;char&gt;::with_capacity(len);
 
         <span class="kw">for _ in </span><span class="number">0</span>..len {
             <span class="kw">match </span>string.make_mut().pop() {
@@ -1837,7 +1977,7 @@
     /// ```
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;make_upper&quot;</span>)]
     </span><span class="kw">pub fn </span>make_upper_char(character: <span class="kw-2">&amp;mut </span>char) {
-        <span class="kw-2">*</span>character = to_upper_char(<span class="kw-2">*</span>character)
+        <span class="kw-2">*</span>character = to_upper_char(<span class="kw-2">*</span>character);
     }
     <span class="doccomment">/// Convert the character to lower-case and return it as a new character.
     ///
@@ -1873,7 +2013,7 @@
     /// ```
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;make_lower&quot;</span>)]
     </span><span class="kw">pub fn </span>make_lower_char(character: <span class="kw-2">&amp;mut </span>char) {
-        <span class="kw-2">*</span>character = to_lower_char(<span class="kw-2">*</span>character)
+        <span class="kw-2">*</span>character = to_lower_char(<span class="kw-2">*</span>character);
     }
 
     <span class="doccomment">/// Return `true` if the string starts with a specified string.
@@ -1931,24 +2071,27 @@
         }
 
         <span class="kw">let </span>start = <span class="kw">if </span>start &lt; <span class="number">0 </span>{
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(n) = start.checked_abs() {
-                <span class="kw">let </span>chars: Vec&lt;<span class="kw">_</span>&gt; = string.chars().collect();
-                <span class="kw">let </span>num_chars = chars.len();
-                <span class="kw">if </span>n <span class="kw">as </span>usize &gt; num_chars {
-                    <span class="number">0
-                </span>} <span class="kw">else </span>{
-                    chars
-                        .into_iter()
-                        .take(num_chars - n <span class="kw">as </span>usize)
-                        .collect::&lt;String&gt;()
-                        .len()
-                }
-            } <span class="kw">else </span>{
+            <span class="kw">let </span>abs_start = start.unsigned_abs();
+
+            <span class="kw">if </span>abs_start <span class="kw">as </span>u64 &gt; MAX_USIZE_INT <span class="kw">as </span>u64 {
+                <span class="kw">return </span>-<span class="number">1 </span><span class="kw">as </span>INT;
+            }
+
+            <span class="kw">let </span>abs_start = abs_start <span class="kw">as </span>usize;
+            <span class="kw">let </span>chars: Vec&lt;<span class="kw">_</span>&gt; = string.chars().collect();
+            <span class="kw">let </span>num_chars = chars.len();
+            <span class="kw">if </span>abs_start &gt; num_chars {
                 <span class="number">0
-            </span>}
+            </span>} <span class="kw">else </span>{
+                chars
+                    .into_iter()
+                    .take(num_chars - abs_start)
+                    .collect::&lt;String&gt;()
+                    .len()
+            }
         } <span class="kw">else if </span>start == <span class="number">0 </span>{
             <span class="number">0
-        </span>} <span class="kw">else if </span>start <span class="kw">as </span>usize &gt;= string.chars().count() {
+        </span>} <span class="kw">else if </span>start &gt; MAX_USIZE_INT || start <span class="kw">as </span>usize &gt;= string.chars().count() {
             <span class="kw">return </span>-<span class="number">1 </span><span class="kw">as </span>INT;
         } <span class="kw">else </span>{
             string
@@ -1958,10 +2101,9 @@
                 .len()
         };
 
-        string[start..]
-            .find(character)
-            .map(|index| string[<span class="number">0</span>..start + index].chars().count() <span class="kw">as </span>INT)
-            .unwrap_or(-<span class="number">1 </span><span class="kw">as </span>INT)
+        string[start..].find(character).map_or(-<span class="number">1 </span><span class="kw">as </span>INT, |index| {
+            string[<span class="number">0</span>..start + index].chars().count() <span class="kw">as </span>INT
+        })
     }
     <span class="doccomment">/// Find the specified `character` in the string and return the first index where it is found.
     /// If the `character` is not found, `-1` is returned.
@@ -1982,8 +2124,7 @@
         </span>} <span class="kw">else </span>{
             string
                 .find(character)
-                .map(|index| string[<span class="number">0</span>..index].chars().count() <span class="kw">as </span>INT)
-                .unwrap_or(-<span class="number">1 </span><span class="kw">as </span>INT)
+                .map_or(-<span class="number">1 </span><span class="kw">as </span>INT, |index| string[<span class="number">0</span>..index].chars().count() <span class="kw">as </span>INT)
         }
     }
     <span class="doccomment">/// Find the specified sub-string in the string, starting from the specified `start` position,
@@ -2012,24 +2153,27 @@
         }
 
         <span class="kw">let </span>start = <span class="kw">if </span>start &lt; <span class="number">0 </span>{
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(n) = start.checked_abs() {
-                <span class="kw">let </span>chars = string.chars().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
-                <span class="kw">let </span>num_chars = chars.len();
-                <span class="kw">if </span>n <span class="kw">as </span>usize &gt; num_chars {
-                    <span class="number">0
-                </span>} <span class="kw">else </span>{
-                    chars
-                        .into_iter()
-                        .take(num_chars - n <span class="kw">as </span>usize)
-                        .collect::&lt;String&gt;()
-                        .len()
-                }
-            } <span class="kw">else </span>{
+            <span class="kw">let </span>abs_start = start.unsigned_abs();
+
+            <span class="kw">if </span>abs_start <span class="kw">as </span>u64 &gt; MAX_USIZE_INT <span class="kw">as </span>u64 {
+                <span class="kw">return </span>-<span class="number">1 </span><span class="kw">as </span>INT;
+            }
+
+            <span class="kw">let </span>abs_start = abs_start <span class="kw">as </span>usize;
+            <span class="kw">let </span>chars = string.chars().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+            <span class="kw">let </span>num_chars = chars.len();
+            <span class="kw">if </span>abs_start &gt; num_chars {
                 <span class="number">0
-            </span>}
+            </span>} <span class="kw">else </span>{
+                chars
+                    .into_iter()
+                    .take(num_chars - abs_start)
+                    .collect::&lt;String&gt;()
+                    .len()
+            }
         } <span class="kw">else if </span>start == <span class="number">0 </span>{
             <span class="number">0
-        </span>} <span class="kw">else if </span>start <span class="kw">as </span>usize &gt;= string.chars().count() {
+        </span>} <span class="kw">else if </span>start &gt; MAX_USIZE_INT || start <span class="kw">as </span>usize &gt;= string.chars().count() {
             <span class="kw">return </span>-<span class="number">1 </span><span class="kw">as </span>INT;
         } <span class="kw">else </span>{
             string
@@ -2041,8 +2185,9 @@
 
         string[start..]
             .find(find_string)
-            .map(|index| string[<span class="number">0</span>..start + index].chars().count() <span class="kw">as </span>INT)
-            .unwrap_or(-<span class="number">1 </span><span class="kw">as </span>INT)
+            .map_or(-<span class="number">1 </span><span class="kw">as </span>INT, |index| {
+                string[<span class="number">0</span>..start + index].chars().count() <span class="kw">as </span>INT
+            })
     }
     <span class="doccomment">/// Find the specified `character` in the string and return the first index where it is found.
     /// If the `character` is not found, `-1` is returned.
@@ -2063,8 +2208,7 @@
         </span>} <span class="kw">else </span>{
             string
                 .find(find_string)
-                .map(|index| string[<span class="number">0</span>..index].chars().count() <span class="kw">as </span>INT)
-                .unwrap_or(-<span class="number">1 </span><span class="kw">as </span>INT)
+                .map_or(-<span class="number">1 </span><span class="kw">as </span>INT, |index| string[<span class="number">0</span>..index].chars().count() <span class="kw">as </span>INT)
         }
     }
 
@@ -2087,19 +2231,27 @@
     /// ```
     </span><span class="kw">pub fn </span>get(string: <span class="kw-2">&amp;</span>str, index: INT) -&gt; Dynamic {
         <span class="kw">if </span>index &gt;= <span class="number">0 </span>{
+            <span class="kw">if </span>index &gt; MAX_USIZE_INT {
+                <span class="kw">return </span>Dynamic::UNIT;
+            }
+
             string
                 .chars()
                 .nth(index <span class="kw">as </span>usize)
                 .map_or_else(|| Dynamic::UNIT, Into::into)
-        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(abs_index) = index.checked_abs() {
+        } <span class="kw">else </span>{
             <span class="comment">// Count from end if negative
-            </span>string
+            </span><span class="kw">let </span>abs_index = index.unsigned_abs();
+
+            <span class="kw">if </span>abs_index <span class="kw">as </span>u64 &gt; MAX_USIZE_INT <span class="kw">as </span>u64 {
+                <span class="kw">return </span>Dynamic::UNIT;
+            }
+
+            string
                 .chars()
                 .rev()
                 .nth((abs_index <span class="kw">as </span>usize) - <span class="number">1</span>)
                 .map_or_else(|| Dynamic::UNIT, Into::into)
-        } <span class="kw">else </span>{
-            Dynamic::UNIT
         }
     }
     <span class="doccomment">/// Set the `index` position in the string to a new `character`.
@@ -2127,17 +2279,29 @@
     /// ```
     </span><span class="kw">pub fn </span>set(string: <span class="kw-2">&amp;mut </span>ImmutableString, index: INT, character: char) {
         <span class="kw">if </span>index &gt;= <span class="number">0 </span>{
+            <span class="kw">if </span>index &gt; MAX_USIZE_INT {
+                <span class="kw">return</span>;
+            }
+
             <span class="kw">let </span>index = index <span class="kw">as </span>usize;
+
             <span class="kw-2">*</span>string = string
                 .chars()
                 .enumerate()
                 .map(|(i, ch)| <span class="kw">if </span>i == index { character } <span class="kw">else </span>{ ch })
                 .collect();
-        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(abs_index) = index.checked_abs() {
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>abs_index = index.unsigned_abs();
+
+            <span class="kw">if </span>abs_index <span class="kw">as </span>u64 &gt; MAX_USIZE_INT <span class="kw">as </span>u64 {
+                <span class="kw">return</span>;
+            }
+
+            <span class="kw">let </span>abs_index = abs_index <span class="kw">as </span>usize;
             <span class="kw">let </span>string_len = string.chars().count();
 
-            <span class="kw">if </span>abs_index <span class="kw">as </span>usize &lt;= string_len {
-                <span class="kw">let </span>index = string_len - (abs_index <span class="kw">as </span>usize);
+            <span class="kw">if </span>abs_index &lt;= string_len {
+                <span class="kw">let </span>index = string_len - abs_index;
                 <span class="kw-2">*</span>string = string
                     .chars()
                     .enumerate()
@@ -2209,26 +2373,29 @@
         len: INT,
     ) -&gt; ImmutableString {
         <span class="kw">if </span>string.is_empty() {
-            <span class="kw">return </span>ctx.engine().const_empty_string();
+            <span class="kw">return </span>ctx.engine().get_interned_string(<span class="string">&quot;&quot;</span>);
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>chars = StaticVec::with_capacity(string.len());
 
         <span class="kw">let </span>offset = <span class="kw">if </span>string.is_empty() || len &lt;= <span class="number">0 </span>{
-            <span class="kw">return </span>ctx.engine().const_empty_string();
+            <span class="kw">return </span>ctx.engine().get_interned_string(<span class="string">&quot;&quot;</span>);
         } <span class="kw">else if </span>start &lt; <span class="number">0 </span>{
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(n) = start.checked_abs() {
-                chars.extend(string.chars());
-                <span class="kw">if </span>n <span class="kw">as </span>usize &gt; chars.len() {
-                    <span class="number">0
-                </span>} <span class="kw">else </span>{
-                    chars.len() - n <span class="kw">as </span>usize
-                }
-            } <span class="kw">else </span>{
+            <span class="kw">let </span>abs_start = start.unsigned_abs();
+
+            <span class="kw">if </span>abs_start <span class="kw">as </span>u64 &gt; MAX_USIZE_INT <span class="kw">as </span>u64 {
+                <span class="kw">return </span>ctx.engine().get_interned_string(<span class="string">&quot;&quot;</span>);
+            }
+
+            <span class="kw">let </span>abs_start = abs_start <span class="kw">as </span>usize;
+            chars.extend(string.chars());
+            <span class="kw">if </span>abs_start &gt; chars.len() {
                 <span class="number">0
-            </span>}
-        } <span class="kw">else if </span>start <span class="kw">as </span>usize &gt;= string.chars().count() {
-            <span class="kw">return </span>ctx.engine().const_empty_string();
+            </span>} <span class="kw">else </span>{
+                chars.len() - abs_start
+            }
+        } <span class="kw">else if </span>start &gt; MAX_USIZE_INT || start <span class="kw">as </span>usize &gt;= string.chars().count() {
+            <span class="kw">return </span>ctx.engine().get_interned_string(<span class="string">&quot;&quot;</span>);
         } <span class="kw">else </span>{
             start <span class="kw">as </span>usize
         };
@@ -2247,7 +2414,7 @@
             .iter()
             .skip(offset)
             .take(len)
-            .cloned()
+            .copied()
             .collect::&lt;String&gt;()
             .into()
     }
@@ -2274,7 +2441,7 @@
         start: INT,
     ) -&gt; ImmutableString {
         <span class="kw">if </span>string.is_empty() {
-            ctx.engine().const_empty_string()
+            ctx.engine().get_interned_string(<span class="string">&quot;&quot;</span>)
         } <span class="kw">else </span>{
             <span class="kw">let </span>len = string.len() <span class="kw">as </span>INT;
             sub_string(ctx, string, start, len)
@@ -2296,7 +2463,7 @@
     </span><span class="kw">pub fn </span>crop_range(string: <span class="kw-2">&amp;mut </span>ImmutableString, range: ExclusiveRange) {
         <span class="kw">let </span>start = INT::max(range.start, <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(range.end, start);
-        crop(string, start, end - start)
+        crop(string, start, end - start);
     }
     <span class="doccomment">/// Remove all characters from the string except those within an inclusive `range`.
     ///
@@ -2313,7 +2480,7 @@
     </span><span class="kw">pub fn </span>crop_inclusive_range(string: <span class="kw-2">&amp;mut </span>ImmutableString, range: InclusiveRange) {
         <span class="kw">let </span>start = INT::max(<span class="kw-2">*</span>range.start(), <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(<span class="kw-2">*</span>range.end(), start);
-        crop(string, start, end - start + <span class="number">1</span>)
+        crop(string, start, end - start + <span class="number">1</span>);
     }
 
     <span class="doccomment">/// Remove all characters from the string except those within a range.
@@ -2349,17 +2516,20 @@
             string.make_mut().clear();
             <span class="kw">return</span>;
         } <span class="kw">else if </span>start &lt; <span class="number">0 </span>{
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(n) = start.checked_abs() {
-                chars.extend(string.chars());
-                <span class="kw">if </span>n <span class="kw">as </span>usize &gt; chars.len() {
-                    <span class="number">0
-                </span>} <span class="kw">else </span>{
-                    chars.len() - n <span class="kw">as </span>usize
-                }
-            } <span class="kw">else </span>{
+            <span class="kw">let </span>abs_start = start.unsigned_abs();
+
+            <span class="kw">if </span>abs_start <span class="kw">as </span>u64 &gt; MAX_USIZE_INT <span class="kw">as </span>u64 {
+                <span class="kw">return</span>;
+            }
+
+            <span class="kw">let </span>abs_start = abs_start <span class="kw">as </span>usize;
+            chars.extend(string.chars());
+            <span class="kw">if </span>abs_start &gt; chars.len() {
                 <span class="number">0
-            </span>}
-        } <span class="kw">else if </span>start <span class="kw">as </span>usize &gt;= string.chars().count() {
+            </span>} <span class="kw">else </span>{
+                chars.len() - abs_start
+            }
+        } <span class="kw">else if </span>start &gt; MAX_USIZE_INT || start <span class="kw">as </span>usize &gt;= string.chars().count() {
             string.make_mut().clear();
             <span class="kw">return</span>;
         } <span class="kw">else </span>{
@@ -2521,11 +2691,12 @@
         <span class="kw">if </span>len &lt;= <span class="number">0 </span>{
             <span class="kw">return </span><span class="prelude-val">Ok</span>(());
         }
+        <span class="kw">let </span>len = len.min(MAX_USIZE_INT) <span class="kw">as </span>usize;
         <span class="kw">let </span>_ctx = ctx;
 
         <span class="comment">// Check if string will be over max size limit
         </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
-        </span><span class="kw">if </span>_ctx.engine().max_string_size() &gt; <span class="number">0 </span>&amp;&amp; len <span class="kw">as </span>usize &gt; _ctx.engine().max_string_size() {
+        </span><span class="kw">if </span>_ctx.engine().max_string_size() &gt; <span class="number">0 </span>&amp;&amp; len &gt; _ctx.engine().max_string_size() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="kw">crate</span>::ERR::ErrorDataTooLarge(
                 <span class="string">&quot;Length of string&quot;</span>.to_string(),
                 <span class="kw">crate</span>::Position::NONE,
@@ -2535,10 +2706,10 @@
 
         <span class="kw">let </span>orig_len = string.chars().count();
 
-        <span class="kw">if </span>len <span class="kw">as </span>usize &gt; orig_len {
+        <span class="kw">if </span>len &gt; orig_len {
             <span class="kw">let </span>p = string.make_mut();
 
-            <span class="kw">for _ in </span><span class="number">0</span>..(len <span class="kw">as </span>usize - orig_len) {
+            <span class="kw">for _ in </span><span class="number">0</span>..(len - orig_len) {
                 p.push(character);
             }
 
@@ -2582,11 +2753,12 @@
         <span class="kw">if </span>len &lt;= <span class="number">0 </span>{
             <span class="kw">return </span><span class="prelude-val">Ok</span>(());
         }
+        <span class="kw">let </span>len = len.min(MAX_USIZE_INT) <span class="kw">as </span>usize;
         <span class="kw">let </span>_ctx = ctx;
 
         <span class="comment">// Check if string will be over max size limit
         </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
-        </span><span class="kw">if </span>_ctx.engine().max_string_size() &gt; <span class="number">0 </span>&amp;&amp; len <span class="kw">as </span>usize &gt; _ctx.engine().max_string_size() {
+        </span><span class="kw">if </span>_ctx.engine().max_string_size() &gt; <span class="number">0 </span>&amp;&amp; len &gt; _ctx.engine().max_string_size() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="kw">crate</span>::ERR::ErrorDataTooLarge(
                 <span class="string">&quot;Length of string&quot;</span>.to_string(),
                 <span class="kw">crate</span>::Position::NONE,
@@ -2597,16 +2769,16 @@
         <span class="kw">let </span><span class="kw-2">mut </span>str_len = string.chars().count();
         <span class="kw">let </span>padding_len = padding.chars().count();
 
-        <span class="kw">if </span>len <span class="kw">as </span>usize &gt; str_len {
+        <span class="kw">if </span>len &gt; str_len {
             <span class="kw">let </span>p = string.make_mut();
 
-            <span class="kw">while </span>str_len &lt; len <span class="kw">as </span>usize {
-                <span class="kw">if </span>str_len + padding_len &lt;= len <span class="kw">as </span>usize {
+            <span class="kw">while </span>str_len &lt; len {
+                <span class="kw">if </span>str_len + padding_len &lt;= len {
                     p.push_str(padding);
                     str_len += padding_len;
                 } <span class="kw">else </span>{
-                    p.extend(padding.chars().take(len <span class="kw">as </span>usize - str_len));
-                    str_len = len <span class="kw">as </span>usize;
+                    p.extend(padding.chars().take(len - str_len));
+                    str_len = len;
                 }
             }
 
@@ -2653,24 +2825,32 @@
         </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;split&quot;</span>)]
         </span><span class="kw">pub fn </span>split_at(ctx: NativeCallContext, string: <span class="kw-2">&amp;mut </span>ImmutableString, index: INT) -&gt; Array {
             <span class="kw">if </span>index &lt;= <span class="number">0 </span>{
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(n) = index.checked_abs() {
-                    <span class="kw">let </span>num_chars = string.chars().count();
-                    <span class="kw">if </span>n <span class="kw">as </span>usize &gt; num_chars {
-                        <span class="macro">vec!</span>[
-                            ctx.engine().const_empty_string().into(),
-                            string.as_str().into(),
-                        ]
-                    } <span class="kw">else </span>{
-                        <span class="kw">let </span>prefix: String = string.chars().take(num_chars - n <span class="kw">as </span>usize).collect();
-                        <span class="kw">let </span>prefix_len = prefix.len();
-                        <span class="macro">vec!</span>[prefix.into(), string[prefix_len..].into()]
-                    }
-                } <span class="kw">else </span>{
+                <span class="kw">let </span>abs_index = index.unsigned_abs();
+
+                <span class="kw">if </span>abs_index <span class="kw">as </span>u64 &gt; MAX_USIZE_INT <span class="kw">as </span>u64 {
+                    <span class="kw">return </span><span class="macro">vec!</span>[
+                        ctx.engine().get_interned_string(<span class="string">&quot;&quot;</span>).into(),
+                        string.as_str().into(),
+                    ];
+                }
+
+                <span class="kw">let </span>abs_index = abs_index <span class="kw">as </span>usize;
+                <span class="kw">let </span>num_chars = string.chars().count();
+                <span class="kw">if </span>abs_index &gt; num_chars {
                     <span class="macro">vec!</span>[
-                        ctx.engine().const_empty_string().into(),
+                        ctx.engine().get_interned_string(<span class="string">&quot;&quot;</span>).into(),
                         string.as_str().into(),
                     ]
+                } <span class="kw">else </span>{
+                    <span class="kw">let </span>prefix: String = string.chars().take(num_chars - abs_index).collect();
+                    <span class="kw">let </span>prefix_len = prefix.len();
+                    <span class="macro">vec!</span>[prefix.into(), string[prefix_len..].into()]
                 }
+            } <span class="kw">else if </span>index &gt; MAX_USIZE_INT {
+                <span class="macro">vec!</span>[
+                    string.as_str().into(),
+                    ctx.engine().get_interned_string(<span class="string">&quot;&quot;</span>).into(),
+                ]
             } <span class="kw">else </span>{
                 <span class="kw">let </span>prefix: String = string.chars().take(index <span class="kw">as </span>usize).collect();
                 <span class="kw">let </span>prefix_len = prefix.len();
@@ -2737,7 +2917,8 @@
         /// ```
         </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;split&quot;</span>)]
         </span><span class="kw">pub fn </span>splitn(string: <span class="kw-2">&amp;</span>str, delimiter: <span class="kw-2">&amp;</span>str, segments: INT) -&gt; Array {
-            <span class="kw">let </span>pieces: usize = <span class="kw">if </span>segments &lt; <span class="number">1 </span>{ <span class="number">1 </span>} <span class="kw">else </span>{ segments <span class="kw">as </span>usize };
+            <span class="kw">let </span>segments = segments.min(MAX_USIZE_INT) <span class="kw">as </span>usize;
+            <span class="kw">let </span>pieces: usize = <span class="kw">if </span>segments &lt; <span class="number">1 </span>{ <span class="number">1 </span>} <span class="kw">else </span>{ segments };
             string.splitn(pieces, delimiter).map(Into::into).collect()
         }
         <span class="doccomment">/// Split the string into segments based on a `delimiter` character, returning an array of the segments.
@@ -2767,7 +2948,8 @@
         /// ```
         </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;split&quot;</span>)]
         </span><span class="kw">pub fn </span>splitn_char(string: <span class="kw-2">&amp;</span>str, delimiter: char, segments: INT) -&gt; Array {
-            <span class="kw">let </span>pieces: usize = <span class="kw">if </span>segments &lt; <span class="number">1 </span>{ <span class="number">1 </span>} <span class="kw">else </span>{ segments <span class="kw">as </span>usize };
+            <span class="kw">let </span>segments = segments.min(MAX_USIZE_INT) <span class="kw">as </span>usize;
+            <span class="kw">let </span>pieces: usize = <span class="kw">if </span>segments &lt; <span class="number">1 </span>{ <span class="number">1 </span>} <span class="kw">else </span>{ segments };
             string.splitn(pieces, delimiter).map(Into::into).collect()
         }
         <span class="doccomment">/// Split the string into segments based on a `delimiter` string, returning an array of the
@@ -2798,7 +2980,8 @@
         /// ```
         </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;split_rev&quot;</span>)]
         </span><span class="kw">pub fn </span>rsplitn(string: <span class="kw-2">&amp;</span>str, delimiter: <span class="kw-2">&amp;</span>str, segments: INT) -&gt; Array {
-            <span class="kw">let </span>pieces: usize = <span class="kw">if </span>segments &lt; <span class="number">1 </span>{ <span class="number">1 </span>} <span class="kw">else </span>{ segments <span class="kw">as </span>usize };
+            <span class="kw">let </span>segments = segments.min(MAX_USIZE_INT) <span class="kw">as </span>usize;
+            <span class="kw">let </span>pieces: usize = <span class="kw">if </span>segments &lt; <span class="number">1 </span>{ <span class="number">1 </span>} <span class="kw">else </span>{ segments };
             string.rsplitn(pieces, delimiter).map(Into::into).collect()
         }
         <span class="doccomment">/// Split the string into segments based on a `delimiter` character, returning an array of
@@ -2829,10 +3012,11 @@
         /// ```
         </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;split_rev&quot;</span>)]
         </span><span class="kw">pub fn </span>rsplitn_char(string: <span class="kw-2">&amp;</span>str, delimiter: char, segments: INT) -&gt; Array {
-            <span class="kw">let </span>pieces: usize = <span class="kw">if </span>segments &lt; <span class="number">1 </span>{ <span class="number">1 </span>} <span class="kw">else </span>{ segments <span class="kw">as </span>usize };
+            <span class="kw">let </span>segments = segments.min(MAX_USIZE_INT) <span class="kw">as </span>usize;
+            <span class="kw">let </span>pieces: usize = <span class="kw">if </span>segments &lt; <span class="number">1 </span>{ <span class="number">1 </span>} <span class="kw">else </span>{ segments };
             string.rsplitn(pieces, delimiter).map(Into::into).collect()
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

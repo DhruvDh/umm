@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai_codegen-1.4.1/src/rhai_module.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rhai_module.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rhai_codegen/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rhai_codegen/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rhai_codegen/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai_codegen-1.4.2/src/rhai_module.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rhai_module.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rhai_codegen/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rhai_codegen/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rhai_codegen/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -403,8 +403,8 @@
         ..
     } <span class="kw">in </span>consts
     {
-        <span class="kw">let </span>const_literal = syn::LitStr::new(<span class="kw-2">&amp;</span>const_name, Span::call_site());
-        <span class="kw">let </span>const_ref = syn::Ident::new(<span class="kw-2">&amp;</span>const_name, Span::call_site());
+        <span class="kw">let </span>const_literal = syn::LitStr::new(const_name, Span::call_site());
+        <span class="kw">let </span>const_ref = syn::Ident::new(const_name, Span::call_site());
 
         <span class="kw">let </span>cfg_attrs: Vec&lt;<span class="kw">_</span>&gt; = cfg_attrs
             .iter()
@@ -427,7 +427,7 @@
         ..
     } <span class="kw">in </span>custom_types
     {
-        <span class="kw">let </span>const_literal = syn::LitStr::new(<span class="kw-2">&amp;</span>name, Span::call_site());
+        <span class="kw">let </span>const_literal = syn::LitStr::new(name, Span::call_site());
 
         <span class="kw">let </span>cfg_attrs: Vec&lt;<span class="kw">_</span>&gt; = cfg_attrs
             .iter()
@@ -444,7 +444,7 @@
     }
 
     <span class="kw">for </span>item_mod <span class="kw">in </span>sub_modules {
-        item_mod.update_scope(<span class="kw-2">&amp;</span>parent_scope);
+        item_mod.update_scope(parent_scope);
         <span class="kw">if </span>item_mod.skipped() {
             <span class="kw">continue</span>;
         }
@@ -475,7 +475,7 @@
     </span><span class="kw">let </span><span class="kw-2">mut </span>gen_fn_tokens = Vec::new();
 
     <span class="kw">for </span>function <span class="kw">in </span>fns {
-        function.update_scope(<span class="kw-2">&amp;</span>parent_scope);
+        function.update_scope(parent_scope);
         <span class="kw">if </span>function.skipped() {
             <span class="kw">continue</span>;
         }
@@ -558,7 +558,7 @@
 
             <span class="kw">let </span>ns_str = syn::Ident::new(
                 <span class="kw">match </span>namespace {
-                    FnNamespaceAccess::Unset =&gt; <span class="macro">unreachable!</span>(),
+                    FnNamespaceAccess::Unset =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;`namespace` should be set&quot;</span>),
                     FnNamespaceAccess::Global =&gt; <span class="string">&quot;Global&quot;</span>,
                     FnNamespaceAccess::Internal =&gt; <span class="string">&quot;Internal&quot;</span>,
                 },
@@ -658,7 +658,7 @@
     <span class="kw">let </span><span class="kw-2">mut </span>renames = BTreeMap::new();
     <span class="kw">let </span><span class="kw-2">mut </span>fn_defs = BTreeMap::new();
 
-    <span class="kw">for </span>item_fn <span class="kw">in </span>fns.iter() {
+    <span class="kw">for </span>item_fn <span class="kw">in </span>fns {
         <span class="kw">if </span>!item_fn.params().name.is_empty() || item_fn.params().special != FnSpecialAccess::None {
             <span class="kw">let </span><span class="kw-2">mut </span>names: Vec&lt;<span class="kw">_</span>&gt; = item_fn
                 .params()
@@ -715,4 +715,4 @@
     <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rhai_codegen" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rhai_codegen" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

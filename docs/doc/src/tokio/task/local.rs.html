@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-1.19.2/src/task/local.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>local.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../tokio/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-1.21.1/src/task/local.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>local.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../tokio/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -723,6 +723,217 @@
 <span id="723">723</span>
 <span id="724">724</span>
 <span id="725">725</span>
+<span id="726">726</span>
+<span id="727">727</span>
+<span id="728">728</span>
+<span id="729">729</span>
+<span id="730">730</span>
+<span id="731">731</span>
+<span id="732">732</span>
+<span id="733">733</span>
+<span id="734">734</span>
+<span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
+<span id="740">740</span>
+<span id="741">741</span>
+<span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
+<span id="746">746</span>
+<span id="747">747</span>
+<span id="748">748</span>
+<span id="749">749</span>
+<span id="750">750</span>
+<span id="751">751</span>
+<span id="752">752</span>
+<span id="753">753</span>
+<span id="754">754</span>
+<span id="755">755</span>
+<span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
+<span id="766">766</span>
+<span id="767">767</span>
+<span id="768">768</span>
+<span id="769">769</span>
+<span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
+<span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
+<span id="866">866</span>
+<span id="867">867</span>
+<span id="868">868</span>
+<span id="869">869</span>
+<span id="870">870</span>
+<span id="871">871</span>
+<span id="872">872</span>
+<span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
+<span id="885">885</span>
+<span id="886">886</span>
+<span id="887">887</span>
+<span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
+<span id="893">893</span>
+<span id="894">894</span>
+<span id="895">895</span>
+<span id="896">896</span>
+<span id="897">897</span>
+<span id="898">898</span>
+<span id="899">899</span>
+<span id="900">900</span>
+<span id="901">901</span>
+<span id="902">902</span>
+<span id="903">903</span>
+<span id="904">904</span>
+<span id="905">905</span>
+<span id="906">906</span>
+<span id="907">907</span>
+<span id="908">908</span>
+<span id="909">909</span>
+<span id="910">910</span>
+<span id="911">911</span>
+<span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Runs `!Send` futures on the current thread.
 </span><span class="kw">use </span><span class="kw">crate</span>::loom::sync::{Arc, Mutex};
 <span class="kw">use </span><span class="kw">crate</span>::runtime::task::{<span class="self">self</span>, JoinHandle, LocalOwnedTasks, Task};
@@ -735,6 +946,7 @@
 <span class="kw">use </span>std::future::Future;
 <span class="kw">use </span>std::marker::PhantomData;
 <span class="kw">use </span>std::pin::Pin;
+<span class="kw">use </span>std::rc::Rc;
 <span class="kw">use </span>std::task::Poll;
 
 <span class="kw">use </span>pin_project_lite::pin_project;
@@ -884,7 +1096,7 @@
     ///                     tokio::task::spawn_local(run_task(new_task));
     ///                 }
     ///                 // If the while loop returns, then all the LocalSpawner
-    ///                 // objects have have been dropped.
+    ///                 // objects have been dropped.
     ///             });
     ///
     ///             // This will return once all senders are dropped and all
@@ -940,7 +1152,7 @@
         </span>tick: Cell&lt;u8&gt;,
 
         <span class="doccomment">/// State available from thread-local.
-        </span>context: Context,
+        </span>context: Rc&lt;Context&gt;,
 
         <span class="doccomment">/// This type should not be Send.
         </span>_not_send: PhantomData&lt;<span class="kw-2">*const </span>()&gt;,
@@ -957,6 +1169,10 @@
 
     <span class="doccomment">/// State shared between threads.
     </span>shared: Arc&lt;Shared&gt;,
+
+    <span class="doccomment">/// True if a task panicked without being handled and the local set is
+    /// configured to shutdown on unhandled panic.
+    </span>unhandled_panic: Cell&lt;bool&gt;,
 }
 
 <span class="doccomment">/// LocalSet state shared between threads.
@@ -966,6 +1182,10 @@
 
     <span class="doccomment">/// Wake the `LocalSet` task.
     </span>waker: AtomicWaker,
+
+    <span class="doccomment">/// How to respond to unhandled task panics.
+    </span><span class="attribute">#[cfg(tokio_unstable)]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) unhandled_panic: <span class="kw">crate</span>::runtime::UnhandledPanic,
 }
 
 <span class="macro">pin_project! </span>{
@@ -977,7 +1197,7 @@
     }
 }
 
-<span class="macro">scoped_thread_local!</span>(<span class="kw">static </span>CURRENT: Context);
+<span class="macro">thread_local!</span>(<span class="kw">static </span>CURRENT: Cell&lt;<span class="prelude-ty">Option</span>&lt;Rc&lt;Context&gt;&gt;&gt; = Cell::new(<span class="prelude-val">None</span>));
 
 <span class="macro">cfg_rt! </span>{
     <span class="doccomment">/// Spawns a `!Send` future on the local task set.
@@ -1027,10 +1247,12 @@
           F::Output: <span class="lifetime">&#39;static
     </span>{
         CURRENT.with(|maybe_cx| {
-            <span class="kw">let </span>cx = maybe_cx
-                .expect(<span class="string">&quot;`spawn_local` called from outside of a `task::LocalSet`&quot;</span>);
+            <span class="kw">let </span>ctx = clone_rc(maybe_cx);
+            <span class="kw">match </span>ctx {
+                <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;`spawn_local` called from outside of a `task::LocalSet`&quot;</span>),
+                <span class="prelude-val">Some</span>(cx) =&gt; cx.spawn(future, name)
+            }
 
-            cx.spawn(future, name)
         })
     }
 }
@@ -1044,21 +1266,54 @@
 <span class="doccomment">/// How often it check the remote queue first.
 </span><span class="kw">const </span>REMOTE_FIRST_INTERVAL: u8 = <span class="number">31</span>;
 
+<span class="doccomment">/// Context guard for LocalSet
+</span><span class="kw">pub struct </span>LocalEnterGuard(<span class="prelude-ty">Option</span>&lt;Rc&lt;Context&gt;&gt;);
+
+<span class="kw">impl </span>Drop <span class="kw">for </span>LocalEnterGuard {
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        CURRENT.with(|ctx| {
+            ctx.replace(<span class="self">self</span>.<span class="number">0</span>.take());
+        })
+    }
+}
+
+<span class="kw">impl </span>fmt::Debug <span class="kw">for </span>LocalEnterGuard {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        f.debug_struct(<span class="string">&quot;LocalEnterGuard&quot;</span>).finish()
+    }
+}
+
 <span class="kw">impl </span>LocalSet {
     <span class="doccomment">/// Returns a new local task set.
     </span><span class="kw">pub fn </span>new() -&gt; LocalSet {
         LocalSet {
             tick: Cell::new(<span class="number">0</span>),
-            context: Context {
+            context: Rc::new(Context {
                 owned: LocalOwnedTasks::new(),
                 queue: VecDequeCell::with_capacity(INITIAL_CAPACITY),
                 shared: Arc::new(Shared {
                     queue: Mutex::new(<span class="prelude-val">Some</span>(VecDeque::with_capacity(INITIAL_CAPACITY))),
                     waker: AtomicWaker::new(),
+                    <span class="attribute">#[cfg(tokio_unstable)]
+                    </span>unhandled_panic: <span class="kw">crate</span>::runtime::UnhandledPanic::Ignore,
                 }),
-            },
+                unhandled_panic: Cell::new(<span class="bool-val">false</span>),
+            }),
             _not_send: PhantomData,
         }
+    }
+
+    <span class="doccomment">/// Enters the context of this `LocalSet`.
+    ///
+    /// The [`spawn_local`] method will spawn tasks on the `LocalSet` whose
+    /// context you are inside.
+    ///
+    /// [`spawn_local`]: fn@crate::task::spawn_local
+    </span><span class="kw">pub fn </span>enter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; LocalEnterGuard {
+        CURRENT.with(|ctx| {
+            <span class="kw">let </span>old = ctx.replace(<span class="prelude-val">Some</span>(<span class="self">self</span>.context.clone()));
+            LocalEnterGuard(old)
+        })
     }
 
     <span class="doccomment">/// Spawns a `!Send` task onto the local task set.
@@ -1168,7 +1423,8 @@
     /// [`Runtime::block_on`]: method@crate::runtime::Runtime::block_on
     /// [in-place blocking]: fn@crate::task::block_in_place
     /// [`spawn_blocking`]: fn@crate::task::spawn_blocking
-    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;rt&quot;</span>)]
+    </span><span class="attribute">#[track_caller]
+    #[cfg(feature = <span class="string">&quot;rt&quot;</span>)]
     #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">&quot;rt&quot;</span>)))]
     </span><span class="kw">pub fn </span>block_on&lt;F&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, rt: <span class="kw-2">&amp;</span><span class="kw">crate</span>::runtime::Runtime, future: F) -&gt; F::Output
     <span class="kw">where
@@ -1241,6 +1497,11 @@
     /// notified again.
     </span><span class="kw">fn </span>tick(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="kw">for _ in </span><span class="number">0</span>..MAX_TASKS_PER_TICK {
+            <span class="comment">// Make sure we didn&#39;t hit an unhandled panic
+            </span><span class="kw">if </span><span class="self">self</span>.context.unhandled_panic.get() {
+                <span class="macro">panic!</span>(<span class="string">&quot;a spawned task panicked and the LocalSet is configured to shutdown on unhandled panic&quot;</span>);
+            }
+
             <span class="kw">match </span><span class="self">self</span>.next_task() {
                 <span class="comment">// Run the task
                 //
@@ -1288,7 +1549,127 @@
     }
 
     <span class="kw">fn </span>with&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw">impl </span>FnOnce() -&gt; T) -&gt; T {
-        CURRENT.set(<span class="kw-2">&amp;</span><span class="self">self</span>.context, f)
+        CURRENT.with(|ctx| {
+            <span class="kw">struct </span>Reset&lt;<span class="lifetime">&#39;a</span>&gt; {
+                ctx_ref: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Cell&lt;<span class="prelude-ty">Option</span>&lt;Rc&lt;Context&gt;&gt;&gt;,
+                val: <span class="prelude-ty">Option</span>&lt;Rc&lt;Context&gt;&gt;,
+            }
+            <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Drop <span class="kw">for </span>Reset&lt;<span class="lifetime">&#39;a</span>&gt; {
+                <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+                    <span class="self">self</span>.ctx_ref.replace(<span class="self">self</span>.val.take());
+                }
+            }
+            <span class="kw">let </span>old = ctx.replace(<span class="prelude-val">Some</span>(<span class="self">self</span>.context.clone()));
+
+            <span class="kw">let </span>_reset = Reset {
+                ctx_ref: ctx,
+                val: old,
+            };
+
+            f()
+        })
+    }
+
+    <span class="doccomment">/// This method is like `with`, but it just calls `f` without setting the thread-local if that
+    /// fails.
+    </span><span class="kw">fn </span>with_if_possible&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw">impl </span>FnOnce() -&gt; T) -&gt; T {
+        <span class="kw">let </span><span class="kw-2">mut </span>f = <span class="prelude-val">Some</span>(f);
+
+        <span class="kw">let </span>res = CURRENT.try_with(|ctx| {
+            <span class="kw">struct </span>Reset&lt;<span class="lifetime">&#39;a</span>&gt; {
+                ctx_ref: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Cell&lt;<span class="prelude-ty">Option</span>&lt;Rc&lt;Context&gt;&gt;&gt;,
+                val: <span class="prelude-ty">Option</span>&lt;Rc&lt;Context&gt;&gt;,
+            }
+            <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Drop <span class="kw">for </span>Reset&lt;<span class="lifetime">&#39;a</span>&gt; {
+                <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+                    <span class="self">self</span>.ctx_ref.replace(<span class="self">self</span>.val.take());
+                }
+            }
+            <span class="kw">let </span>old = ctx.replace(<span class="prelude-val">Some</span>(<span class="self">self</span>.context.clone()));
+
+            <span class="kw">let </span>_reset = Reset {
+                ctx_ref: ctx,
+                val: old,
+            };
+
+            (f.take().unwrap())()
+        });
+
+        <span class="kw">match </span>res {
+            <span class="prelude-val">Ok</span>(res) =&gt; res,
+            <span class="prelude-val">Err</span>(_access_error) =&gt; (f.take().unwrap())(),
+        }
+    }
+}
+
+<span class="macro">cfg_unstable! </span>{
+    <span class="kw">impl </span>LocalSet {
+        <span class="doccomment">/// Configure how the `LocalSet` responds to an unhandled panic on a
+        /// spawned task.
+        ///
+        /// By default, an unhandled panic (i.e. a panic not caught by
+        /// [`std::panic::catch_unwind`]) has no impact on the `LocalSet`&#39;s
+        /// execution. The panic is error value is forwarded to the task&#39;s
+        /// [`JoinHandle`] and all other spawned tasks continue running.
+        ///
+        /// The `unhandled_panic` option enables configuring this behavior.
+        ///
+        /// * `UnhandledPanic::Ignore` is the default behavior. Panics on
+        ///   spawned tasks have no impact on the `LocalSet`&#39;s execution.
+        /// * `UnhandledPanic::ShutdownRuntime` will force the `LocalSet` to
+        ///   shutdown immediately when a spawned task panics even if that
+        ///   task&#39;s `JoinHandle` has not been dropped. All other spawned tasks
+        ///   will immediately terminate and further calls to
+        ///   [`LocalSet::block_on`] and [`LocalSet::run_until`] will panic.
+        ///
+        /// # Panics
+        ///
+        /// This method panics if called after the `LocalSet` has started
+        /// running.
+        ///
+        /// # Unstable
+        ///
+        /// This option is currently unstable and its implementation is
+        /// incomplete. The API may change or be removed in the future. See
+        /// tokio-rs/tokio#4516 for more details.
+        ///
+        /// # Examples
+        ///
+        /// The following demonstrates a `LocalSet` configured to shutdown on
+        /// panic. The first spawned task panics and results in the `LocalSet`
+        /// shutting down. The second spawned task never has a chance to
+        /// execute. The call to `run_until` will panic due to the runtime being
+        /// forcibly shutdown.
+        ///
+        /// ```should_panic
+        /// use tokio::runtime::UnhandledPanic;
+        ///
+        /// # #[tokio::main]
+        /// # async fn main() {
+        /// tokio::task::LocalSet::new()
+        ///     .unhandled_panic(UnhandledPanic::ShutdownRuntime)
+        ///     .run_until(async {
+        ///         tokio::task::spawn_local(async { panic!(&quot;boom&quot;); });
+        ///         tokio::task::spawn_local(async {
+        ///             // This task never completes
+        ///         });
+        ///
+        ///         // Do some work, but `run_until` will panic before it completes
+        /// # loop { tokio::task::yield_now().await; }
+        ///     })
+        ///     .await;
+        /// # }
+        /// ```
+        ///
+        /// [`JoinHandle`]: struct@crate::task::JoinHandle
+        </span><span class="kw">pub fn </span>unhandled_panic(<span class="kw-2">&amp;mut </span><span class="self">self</span>, behavior: <span class="kw">crate</span>::runtime::UnhandledPanic) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+            <span class="comment">// TODO: This should be set as a builder
+            </span>Rc::get_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>.context)
+                .and_then(|ctx| Arc::get_mut(<span class="kw-2">&amp;mut </span>ctx.shared))
+                .expect(<span class="string">&quot;Unhandled Panic behavior modified after starting LocalSet&quot;</span>)
+                .unhandled_panic = behavior;
+            <span class="self">self
+        </span>}
     }
 }
 
@@ -1330,7 +1711,7 @@
 
 <span class="kw">impl </span>Drop <span class="kw">for </span>LocalSet {
     <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="self">self</span>.with(|| {
+        <span class="self">self</span>.with_if_possible(|| {
             <span class="comment">// Shut down all tasks in the LocalOwnedTasks and close it to
             // prevent new tasks from ever being added.
             </span><span class="self">self</span>.context.owned.close_and_shutdown_all();
@@ -1408,23 +1789,33 @@
     }
 }
 
+<span class="kw">fn </span>clone_rc&lt;T&gt;(rc: <span class="kw-2">&amp;</span>Cell&lt;<span class="prelude-ty">Option</span>&lt;Rc&lt;T&gt;&gt;&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;Rc&lt;T&gt;&gt; {
+    <span class="kw">let </span>value = rc.take();
+    <span class="kw">let </span>cloned = value.clone();
+    rc.set(value);
+    cloned
+}
+
 <span class="kw">impl </span>Shared {
     <span class="doccomment">/// Schedule the provided task on the scheduler.
     </span><span class="kw">fn </span>schedule(<span class="kw-2">&amp;</span><span class="self">self</span>, task: task::Notified&lt;Arc&lt;<span class="self">Self</span>&gt;&gt;) {
-        CURRENT.with(|maybe_cx| <span class="kw">match </span>maybe_cx {
-            <span class="prelude-val">Some</span>(cx) <span class="kw">if </span>cx.shared.ptr_eq(<span class="self">self</span>) =&gt; {
-                cx.queue.push_back(task);
-            }
-            <span class="kw">_ </span>=&gt; {
-                <span class="comment">// First check whether the queue is still there (if not, the
-                // LocalSet is dropped). Then push to it if so, and if not,
-                // do nothing.
-                </span><span class="kw">let </span><span class="kw-2">mut </span>lock = <span class="self">self</span>.queue.lock();
+        CURRENT.with(|maybe_cx| {
+            <span class="kw">let </span>ctx = clone_rc(maybe_cx);
+            <span class="kw">match </span>ctx {
+                <span class="prelude-val">Some</span>(cx) <span class="kw">if </span>cx.shared.ptr_eq(<span class="self">self</span>) =&gt; {
+                    cx.queue.push_back(task);
+                }
+                <span class="kw">_ </span>=&gt; {
+                    <span class="comment">// First check whether the queue is still there (if not, the
+                    // LocalSet is dropped). Then push to it if so, and if not,
+                    // do nothing.
+                    </span><span class="kw">let </span><span class="kw-2">mut </span>lock = <span class="self">self</span>.queue.lock();
 
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(queue) = lock.as_mut() {
-                    queue.push_back(task);
-                    drop(lock);
-                    <span class="self">self</span>.waker.wake();
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(queue) = lock.as_mut() {
+                        queue.push_back(task);
+                        drop(lock);
+                        <span class="self">self</span>.waker.wake();
+                    }
                 }
             }
         });
@@ -1438,15 +1829,46 @@
 <span class="kw">impl </span>task::Schedule <span class="kw">for </span>Arc&lt;Shared&gt; {
     <span class="kw">fn </span>release(<span class="kw-2">&amp;</span><span class="self">self</span>, task: <span class="kw-2">&amp;</span>Task&lt;<span class="self">Self</span>&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;Task&lt;<span class="self">Self</span>&gt;&gt; {
         CURRENT.with(|maybe_cx| {
-            <span class="kw">let </span>cx = maybe_cx.expect(<span class="string">&quot;scheduler context missing&quot;</span>);
-            <span class="macro">assert!</span>(cx.shared.ptr_eq(<span class="self">self</span>));
-            cx.owned.remove(task)
+            <span class="kw">let </span>ctx = clone_rc(maybe_cx);
+            <span class="kw">match </span>ctx {
+                <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;scheduler context missing&quot;</span>),
+                <span class="prelude-val">Some</span>(cx) =&gt; {
+                    <span class="macro">assert!</span>(cx.shared.ptr_eq(<span class="self">self</span>));
+                    cx.owned.remove(task)
+                }
+            }
         })
     }
 
     <span class="kw">fn </span>schedule(<span class="kw-2">&amp;</span><span class="self">self</span>, task: task::Notified&lt;<span class="self">Self</span>&gt;) {
         Shared::schedule(<span class="self">self</span>, task);
     }
+
+    <span class="macro">cfg_unstable! </span>{
+        <span class="kw">fn </span>unhandled_panic(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+            <span class="kw">use </span><span class="kw">crate</span>::runtime::UnhandledPanic;
+
+            <span class="kw">match </span><span class="self">self</span>.unhandled_panic {
+                UnhandledPanic::Ignore =&gt; {
+                    <span class="comment">// Do nothing
+                </span>}
+                UnhandledPanic::ShutdownRuntime =&gt; {
+                    <span class="comment">// This hook is only called from within the runtime, so
+                    // `CURRENT` should match with `&amp;self`, i.e. there is no
+                    // opportunity for a nested scheduler to be called.
+                    </span>CURRENT.with(|maybe_cx| {
+                        <span class="kw">let </span>ctx = clone_rc(maybe_cx);
+                        <span class="kw">match </span>ctx {
+                        <span class="prelude-val">Some</span>(cx) <span class="kw">if </span>Arc::ptr_eq(<span class="self">self</span>, <span class="kw-2">&amp;</span>cx.shared) =&gt; {
+                            cx.unhandled_panic.set(<span class="bool-val">true</span>);
+                            cx.owned.close_and_shutdown_all();
+                        }
+                        <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;runtime core not set in CURRENT thread-local&quot;</span>),
+                    }})
+                }
+            }
+        }
+    }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

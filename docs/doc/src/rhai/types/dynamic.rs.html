@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/types/dynamic.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dynamic.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/types/dynamic.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dynamic.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -2083,64 +2083,10 @@
 <span id="2083">2083</span>
 <span id="2084">2084</span>
 <span id="2085">2085</span>
-<span id="2086">2086</span>
-<span id="2087">2087</span>
-<span id="2088">2088</span>
-<span id="2089">2089</span>
-<span id="2090">2090</span>
-<span id="2091">2091</span>
-<span id="2092">2092</span>
-<span id="2093">2093</span>
-<span id="2094">2094</span>
-<span id="2095">2095</span>
-<span id="2096">2096</span>
-<span id="2097">2097</span>
-<span id="2098">2098</span>
-<span id="2099">2099</span>
-<span id="2100">2100</span>
-<span id="2101">2101</span>
-<span id="2102">2102</span>
-<span id="2103">2103</span>
-<span id="2104">2104</span>
-<span id="2105">2105</span>
-<span id="2106">2106</span>
-<span id="2107">2107</span>
-<span id="2108">2108</span>
-<span id="2109">2109</span>
-<span id="2110">2110</span>
-<span id="2111">2111</span>
-<span id="2112">2112</span>
-<span id="2113">2113</span>
-<span id="2114">2114</span>
-<span id="2115">2115</span>
-<span id="2116">2116</span>
-<span id="2117">2117</span>
-<span id="2118">2118</span>
-<span id="2119">2119</span>
-<span id="2120">2120</span>
-<span id="2121">2121</span>
-<span id="2122">2122</span>
-<span id="2123">2123</span>
-<span id="2124">2124</span>
-<span id="2125">2125</span>
-<span id="2126">2126</span>
-<span id="2127">2127</span>
-<span id="2128">2128</span>
-<span id="2129">2129</span>
-<span id="2130">2130</span>
-<span id="2131">2131</span>
-<span id="2132">2132</span>
-<span id="2133">2133</span>
-<span id="2134">2134</span>
-<span id="2135">2135</span>
-<span id="2136">2136</span>
-<span id="2137">2137</span>
-<span id="2138">2138</span>
-<span id="2139">2139</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Helper module which defines the [`Dynamic`] data type and the
 //! [`Any`] trait to to allow custom type handling.
 
-</span><span class="kw">use </span><span class="kw">crate</span>::func::native::SendSync;
+</span><span class="kw">use </span><span class="kw">crate</span>::func::SendSync;
 <span class="kw">use crate</span>::{reify, ExclusiveRange, FnPtr, ImmutableString, InclusiveRange, INT};
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
@@ -2162,13 +2108,14 @@
 </span><span class="kw">pub use </span>instant::Instant;
 
 <span class="doccomment">/// The message: data type was checked
+</span><span class="attribute">#[allow(dead_code)]
 </span><span class="kw">const </span>CHECKED: <span class="kw-2">&amp;</span>str = <span class="string">&quot;data type was checked&quot;</span>;
 
 <span class="kw">mod </span>private {
-    <span class="kw">use </span><span class="kw">crate</span>::func::native::SendSync;
+    <span class="kw">use </span><span class="kw">crate</span>::func::SendSync;
     <span class="kw">use </span>std::any::Any;
 
-    <span class="doccomment">/// A sealed trait that prevents other crates from implementing [`Variant`].
+    <span class="doccomment">/// A sealed trait that prevents other crates from implementing [`Variant`][super::Variant].
     </span><span class="kw">pub trait </span>Sealed {}
 
     <span class="kw">impl</span>&lt;T: Any + Clone + SendSync&gt; Sealed <span class="kw">for </span>T {}
@@ -2191,7 +2138,7 @@
     </span><span class="attribute">#[must_use]
     </span><span class="kw">fn </span>as_any_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Any;
 
-    <span class="doccomment">/// Convert this [`Variant`] trait object to [`Box&lt;dyn Any&gt;`].
+    <span class="doccomment">/// Convert this [`Variant`] trait object to [`Box&lt;dyn Any&gt;`][Any].
     </span><span class="attribute">#[must_use]
     </span><span class="kw">fn </span>as_boxed_any(<span class="self">self</span>: Box&lt;<span class="self">Self</span>&gt;) -&gt; Box&lt;<span class="kw">dyn </span>Any&gt;;
 
@@ -2218,7 +2165,7 @@
     </span><span class="attribute">#[must_use]
     </span><span class="kw">fn </span>as_any_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Any;
 
-    <span class="doccomment">/// Convert this [`Variant`] trait object to [`Box&lt;dyn Any&gt;`].
+    <span class="doccomment">/// Convert this [`Variant`] trait object to [`Box&lt;dyn Any&gt;`][Any].
     </span><span class="attribute">#[must_use]
     </span><span class="kw">fn </span>as_boxed_any(<span class="self">self</span>: Box&lt;<span class="self">Self</span>&gt;) -&gt; Box&lt;<span class="kw">dyn </span>Any&gt;;
 
@@ -2325,7 +2272,9 @@
     </span>TimeStamp(Box&lt;Instant&gt;, Tag, AccessMode),
 
     <span class="doccomment">/// Any type as a trait object.
-    </span><span class="attribute">#[allow(clippy::redundant_allocation)]
+    ///
+    /// An extra level of redirection is used in order to avoid bloating the size of [`Dynamic`]
+    /// because `Box&lt;dyn Variant&gt;` is a fat pointer.
     </span>Variant(Box&lt;Box&lt;<span class="kw">dyn </span>Variant&gt;&gt;, Tag, AccessMode),
 
     <span class="doccomment">/// A _shared_ value of any type.
@@ -2358,7 +2307,7 @@
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
         <span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
-            DynamicReadLockInner::Reference(<span class="kw-2">ref </span>reference) =&gt; <span class="kw-2">*</span>reference,
+            DynamicReadLockInner::Reference(reference) =&gt; reference,
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
             </span>DynamicReadLockInner::Guard(<span class="kw-2">ref </span>guard) =&gt; guard.downcast_ref().expect(CHECKED),
         }
@@ -2486,11 +2435,52 @@
     </span><span class="attribute">#[inline]
     #[must_use]
     </span><span class="kw">pub fn </span>is&lt;T: Any + Clone&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;String&gt;() {
-            <span class="self">self</span>.type_id() == TypeId::of::&lt;ImmutableString&gt;()
-        } <span class="kw">else </span>{
-            <span class="self">self</span>.type_id() == TypeId::of::&lt;T&gt;()
+        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;()&gt;() {
+            <span class="kw">return </span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="number">0</span>, Union::Unit(..));
         }
+        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;bool&gt;() {
+            <span class="kw">return </span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="number">0</span>, Union::Bool(..));
+        }
+        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;char&gt;() {
+            <span class="kw">return </span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="number">0</span>, Union::Char(..));
+        }
+        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;INT&gt;() {
+            <span class="kw">return </span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="number">0</span>, Union::Int(..));
+        }
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
+        </span><span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::FLOAT&gt;() {
+            <span class="kw">return </span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="number">0</span>, Union::Float(..));
+        }
+        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;ImmutableString&gt;()
+            || TypeId::of::&lt;T&gt;() == TypeId::of::&lt;String&gt;()
+        {
+            <span class="kw">return </span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="number">0</span>, Union::Str(..));
+        }
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
+        </span><span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::Array&gt;() {
+            <span class="kw">return </span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="number">0</span>, Union::Array(..));
+        }
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
+        </span><span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::Blob&gt;() {
+            <span class="kw">return </span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="number">0</span>, Union::Blob(..));
+        }
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+        </span><span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::Map&gt;() {
+            <span class="kw">return </span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="number">0</span>, Union::Map(..));
+        }
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;decimal&quot;</span>)]
+        </span><span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;rust_decimal::Decimal&gt;() {
+            <span class="kw">return </span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="number">0</span>, Union::Decimal(..));
+        }
+        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;FnPtr&gt;() {
+            <span class="kw">return </span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="number">0</span>, Union::FnPtr(..));
+        }
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_std&quot;</span>))]
+        </span><span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::Instant&gt;() {
+            <span class="kw">return </span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="number">0</span>, Union::TimeStamp(..));
+        }
+
+        TypeId::of::&lt;T&gt;() == <span class="self">self</span>.type_id()
     }
     <span class="doccomment">/// Get the [`TypeId`] of the value held by this [`Dynamic`].
     ///
@@ -2523,12 +2513,7 @@
             Union::Variant(<span class="kw-2">ref </span>v, ..) =&gt; (<span class="kw-2">***</span>v).type_id(),
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            #[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; (<span class="kw-2">*</span>cell.borrow()).type_id(),
-
-            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            #[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; (<span class="kw-2">*</span>cell.read().unwrap()).type_id(),
+            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; (<span class="kw-2">*</span><span class="kw">crate</span>::func::locked_read(cell)).type_id(),
         }
     }
     <span class="doccomment">/// Get the name of the type of the value held by this [`Dynamic`].
@@ -2584,7 +2569,7 @@
         mem::discriminant(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>).hash(state);
 
         <span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
-            Union::Unit(..) =&gt; ().hash(state),
+            Union::Unit(..) =&gt; (),
             Union::Bool(<span class="kw-2">ref </span>b, ..) =&gt; b.hash(state),
             Union::Str(<span class="kw-2">ref </span>s, ..) =&gt; s.hash(state),
             Union::Char(<span class="kw-2">ref </span>c, ..) =&gt; c.hash(state),
@@ -2594,66 +2579,17 @@
             <span class="attribute">#[cfg(feature = <span class="string">&quot;decimal&quot;</span>)]
             </span>Union::Decimal(<span class="kw-2">ref </span>d, ..) =&gt; d.hash(state),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-            </span>Union::Array(<span class="kw-2">ref </span>a, ..) =&gt; a.as_ref().hash(state),
+            </span>Union::Array(<span class="kw-2">ref </span>a, ..) =&gt; a.hash(state),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-            </span>Union::Blob(<span class="kw-2">ref </span>a, ..) =&gt; a.as_ref().hash(state),
+            </span>Union::Blob(<span class="kw-2">ref </span>a, ..) =&gt; a.hash(state),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-            </span>Union::Map(<span class="kw-2">ref </span>m, ..) =&gt; m.as_ref().hash(state),
+            </span>Union::Map(<span class="kw-2">ref </span>m, ..) =&gt; m.hash(state),
             Union::FnPtr(<span class="kw-2">ref </span>f, ..) =&gt; f.hash(state),
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            #[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; (<span class="kw-2">*</span>cell.borrow()).hash(state),
+            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; (<span class="kw-2">*</span><span class="kw">crate</span>::func::locked_read(cell)).hash(state),
 
-            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            #[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; (<span class="kw-2">*</span>cell.read().unwrap()).hash(state),
-
-            Union::Variant(<span class="kw-2">ref </span>_v, ..) =&gt; {
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;only_i32&quot;</span>))]
-                #[cfg(not(feature = <span class="string">&quot;only_i64&quot;</span>))]
-                </span>{
-                    <span class="kw">let </span>value_any = (<span class="kw-2">***</span>_v).as_any();
-                    <span class="kw">let </span>type_id = value_any.type_id();
-
-                    <span class="kw">if </span>type_id == TypeId::of::&lt;u8&gt;() {
-                        TypeId::of::&lt;u8&gt;().hash(state);
-                        value_any.downcast_ref::&lt;u8&gt;().expect(CHECKED).hash(state);
-                    } <span class="kw">else if </span>type_id == TypeId::of::&lt;u16&gt;() {
-                        TypeId::of::&lt;u16&gt;().hash(state);
-                        value_any.downcast_ref::&lt;u16&gt;().expect(CHECKED).hash(state);
-                    } <span class="kw">else if </span>type_id == TypeId::of::&lt;u32&gt;() {
-                        TypeId::of::&lt;u32&gt;().hash(state);
-                        value_any.downcast_ref::&lt;u32&gt;().expect(CHECKED).hash(state);
-                    } <span class="kw">else if </span>type_id == TypeId::of::&lt;u64&gt;() {
-                        TypeId::of::&lt;u64&gt;().hash(state);
-                        value_any.downcast_ref::&lt;u64&gt;().expect(CHECKED).hash(state);
-                    } <span class="kw">else if </span>type_id == TypeId::of::&lt;i8&gt;() {
-                        TypeId::of::&lt;i8&gt;().hash(state);
-                        value_any.downcast_ref::&lt;i8&gt;().expect(CHECKED).hash(state);
-                    } <span class="kw">else if </span>type_id == TypeId::of::&lt;i16&gt;() {
-                        TypeId::of::&lt;i16&gt;().hash(state);
-                        value_any.downcast_ref::&lt;i16&gt;().expect(CHECKED).hash(state);
-                    } <span class="kw">else if </span>type_id == TypeId::of::&lt;i32&gt;() {
-                        TypeId::of::&lt;i32&gt;().hash(state);
-                        value_any.downcast_ref::&lt;i32&gt;().expect(CHECKED).hash(state);
-                    } <span class="kw">else if </span>type_id == TypeId::of::&lt;i64&gt;() {
-                        TypeId::of::&lt;i64&gt;().hash(state);
-                        value_any.downcast_ref::&lt;i64&gt;().expect(CHECKED).hash(state);
-                    }
-
-                    <span class="attribute">#[cfg(not(target_family = <span class="string">&quot;wasm&quot;</span>))]
-                    </span><span class="kw">if </span>type_id == TypeId::of::&lt;u128&gt;() {
-                        TypeId::of::&lt;u128&gt;().hash(state);
-                        value_any.downcast_ref::&lt;u128&gt;().expect(CHECKED).hash(state);
-                    } <span class="kw">else if </span>type_id == TypeId::of::&lt;i128&gt;() {
-                        TypeId::of::&lt;i128&gt;().hash(state);
-                        value_any.downcast_ref::&lt;i128&gt;().expect(CHECKED).hash(state);
-                    }
-                }
-
-                <span class="macro">unimplemented!</span>(<span class="string">&quot;a custom type cannot be hashed&quot;</span>)
-            }
+            Union::Variant(..) =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;{} cannot be hashed&quot;</span>, <span class="self">self</span>.type_name()),
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_std&quot;</span>))]
             </span>Union::TimeStamp(..) =&gt; <span class="macro">unimplemented!</span>(<span class="string">&quot;{} cannot be hashed&quot;</span>, <span class="self">self</span>.type_name()),
@@ -2689,49 +2625,47 @@
 
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;only_i32&quot;</span>))]
                 #[cfg(not(feature = <span class="string">&quot;only_i64&quot;</span>))]
-                </span><span class="kw">if </span>_type_id == TypeId::of::&lt;u8&gt;() {
-                    <span class="kw">return </span>fmt::Display::fmt(_value_any.downcast_ref::&lt;u8&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;u16&gt;() {
-                    <span class="kw">return </span>fmt::Display::fmt(_value_any.downcast_ref::&lt;u16&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;u32&gt;() {
-                    <span class="kw">return </span>fmt::Display::fmt(_value_any.downcast_ref::&lt;u32&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;u64&gt;() {
-                    <span class="kw">return </span>fmt::Display::fmt(_value_any.downcast_ref::&lt;u64&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;i8&gt;() {
-                    <span class="kw">return </span>fmt::Display::fmt(_value_any.downcast_ref::&lt;i8&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;i16&gt;() {
-                    <span class="kw">return </span>fmt::Display::fmt(_value_any.downcast_ref::&lt;i16&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;i32&gt;() {
-                    <span class="kw">return </span>fmt::Display::fmt(_value_any.downcast_ref::&lt;i32&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;i64&gt;() {
-                    <span class="kw">return </span>fmt::Display::fmt(_value_any.downcast_ref::&lt;i64&gt;().expect(CHECKED), f);
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;u8&gt;() {
+                    <span class="kw">return </span>fmt::Display::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;u16&gt;() {
+                    <span class="kw">return </span>fmt::Display::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;u32&gt;() {
+                    <span class="kw">return </span>fmt::Display::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;u64&gt;() {
+                    <span class="kw">return </span>fmt::Display::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;i8&gt;() {
+                    <span class="kw">return </span>fmt::Display::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;i16&gt;() {
+                    <span class="kw">return </span>fmt::Display::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;i32&gt;() {
+                    <span class="kw">return </span>fmt::Display::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;i64&gt;() {
+                    <span class="kw">return </span>fmt::Display::fmt(value, f);
                 }
 
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
                 #[cfg(not(feature = <span class="string">&quot;f32_float&quot;</span>))]
-                </span><span class="kw">if </span>_type_id == TypeId::of::&lt;f32&gt;() {
-                    <span class="kw">return </span>fmt::Display::fmt(_value_any.downcast_ref::&lt;f32&gt;().expect(CHECKED), f);
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;f32&gt;() {
+                    <span class="kw">return </span>fmt::Display::fmt(value, f);
                 }
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
                 #[cfg(feature = <span class="string">&quot;f32_float&quot;</span>)]
-                </span><span class="kw">if </span>_type_id == TypeId::of::&lt;f64&gt;() {
-                    <span class="kw">return </span>fmt::Display::fmt(_value_any.downcast_ref::&lt;f64&gt;().expect(CHECKED), f);
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;f64&gt;() {
+                    <span class="kw">return </span>fmt::Display::fmt(value, f);
                 }
 
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;only_i32&quot;</span>))]
                 #[cfg(not(feature = <span class="string">&quot;only_i64&quot;</span>))]
                 #[cfg(not(target_family = <span class="string">&quot;wasm&quot;</span>))]
-                </span><span class="kw">if </span>_type_id == TypeId::of::&lt;u128&gt;() {
-                    <span class="kw">return </span>fmt::Display::fmt(_value_any.downcast_ref::&lt;u128&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;i128&gt;() {
-                    <span class="kw">return </span>fmt::Display::fmt(_value_any.downcast_ref::&lt;i128&gt;().expect(CHECKED), f);
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;u128&gt;() {
+                    <span class="kw">return </span>fmt::Display::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;i128&gt;() {
+                    <span class="kw">return </span>fmt::Display::fmt(value, f);
                 }
 
-                <span class="kw">if </span>_type_id == TypeId::of::&lt;ExclusiveRange&gt;() {
-                    <span class="kw">let </span>range = _value_any.downcast_ref::&lt;ExclusiveRange&gt;().expect(CHECKED);
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(range) = _value_any.downcast_ref::&lt;ExclusiveRange&gt;() {
                     <span class="kw">return </span><span class="macro">write!</span>(f, <span class="string">&quot;{}..{}&quot;</span>, range.start, range.end);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;InclusiveRange&gt;() {
-                    <span class="kw">let </span>range = _value_any.downcast_ref::&lt;InclusiveRange&gt;().expect(CHECKED);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(range) = _value_any.downcast_ref::&lt;InclusiveRange&gt;() {
                     <span class="kw">return </span><span class="macro">write!</span>(f, <span class="string">&quot;{}..={}&quot;</span>, range.start(), range.end());
                 }
 
@@ -2794,49 +2728,47 @@
 
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;only_i32&quot;</span>))]
                 #[cfg(not(feature = <span class="string">&quot;only_i64&quot;</span>))]
-                </span><span class="kw">if </span>_type_id == TypeId::of::&lt;u8&gt;() {
-                    <span class="kw">return </span>fmt::Debug::fmt(_value_any.downcast_ref::&lt;u8&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;u16&gt;() {
-                    <span class="kw">return </span>fmt::Debug::fmt(_value_any.downcast_ref::&lt;u16&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;u32&gt;() {
-                    <span class="kw">return </span>fmt::Debug::fmt(_value_any.downcast_ref::&lt;u32&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;u64&gt;() {
-                    <span class="kw">return </span>fmt::Debug::fmt(_value_any.downcast_ref::&lt;u64&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;i8&gt;() {
-                    <span class="kw">return </span>fmt::Debug::fmt(_value_any.downcast_ref::&lt;i8&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;i16&gt;() {
-                    <span class="kw">return </span>fmt::Debug::fmt(_value_any.downcast_ref::&lt;i16&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;i32&gt;() {
-                    <span class="kw">return </span>fmt::Debug::fmt(_value_any.downcast_ref::&lt;i32&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;i64&gt;() {
-                    <span class="kw">return </span>fmt::Debug::fmt(_value_any.downcast_ref::&lt;i64&gt;().expect(CHECKED), f);
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;u8&gt;() {
+                    <span class="kw">return </span>fmt::Debug::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;u16&gt;() {
+                    <span class="kw">return </span>fmt::Debug::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;u32&gt;() {
+                    <span class="kw">return </span>fmt::Debug::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;u64&gt;() {
+                    <span class="kw">return </span>fmt::Debug::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;i8&gt;() {
+                    <span class="kw">return </span>fmt::Debug::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;i16&gt;() {
+                    <span class="kw">return </span>fmt::Debug::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;i32&gt;() {
+                    <span class="kw">return </span>fmt::Debug::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;i64&gt;() {
+                    <span class="kw">return </span>fmt::Debug::fmt(value, f);
                 }
 
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
                 #[cfg(not(feature = <span class="string">&quot;f32_float&quot;</span>))]
-                </span><span class="kw">if </span>_type_id == TypeId::of::&lt;f32&gt;() {
-                    <span class="kw">return </span>fmt::Debug::fmt(_value_any.downcast_ref::&lt;f32&gt;().expect(CHECKED), f);
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;f32&gt;() {
+                    <span class="kw">return </span>fmt::Debug::fmt(value, f);
                 }
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
                 #[cfg(feature = <span class="string">&quot;f32_float&quot;</span>)]
-                </span><span class="kw">if </span>_type_id == TypeId::of::&lt;f64&gt;() {
-                    <span class="kw">return </span>fmt::Debug::fmt(_value_any.downcast_ref::&lt;f64&gt;().expect(CHECKED), f);
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;f64&gt;() {
+                    <span class="kw">return </span>fmt::Debug::fmt(value, f);
                 }
 
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;only_i32&quot;</span>))]
                 #[cfg(not(feature = <span class="string">&quot;only_i64&quot;</span>))]
                 #[cfg(not(target_family = <span class="string">&quot;wasm&quot;</span>))]
-                </span><span class="kw">if </span>_type_id == TypeId::of::&lt;u128&gt;() {
-                    <span class="kw">return </span>fmt::Debug::fmt(_value_any.downcast_ref::&lt;u128&gt;().expect(CHECKED), f);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;i128&gt;() {
-                    <span class="kw">return </span>fmt::Debug::fmt(_value_any.downcast_ref::&lt;i128&gt;().expect(CHECKED), f);
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;u128&gt;() {
+                    <span class="kw">return </span>fmt::Debug::fmt(value, f);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(value) = _value_any.downcast_ref::&lt;i128&gt;() {
+                    <span class="kw">return </span>fmt::Debug::fmt(value, f);
                 }
 
-                <span class="kw">if </span>_type_id == TypeId::of::&lt;ExclusiveRange&gt;() {
-                    <span class="kw">let </span>range = _value_any.downcast_ref::&lt;ExclusiveRange&gt;().expect(CHECKED);
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(range) = _value_any.downcast_ref::&lt;ExclusiveRange&gt;() {
                     <span class="kw">return </span><span class="macro">write!</span>(f, <span class="string">&quot;{}..{}&quot;</span>, range.start, range.end);
-                } <span class="kw">else if </span>_type_id == TypeId::of::&lt;InclusiveRange&gt;() {
-                    <span class="kw">let </span>range = _value_any.downcast_ref::&lt;InclusiveRange&gt;().expect(CHECKED);
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(range) = _value_any.downcast_ref::&lt;InclusiveRange&gt;() {
                     <span class="kw">return </span><span class="macro">write!</span>(f, <span class="string">&quot;{}..={}&quot;</span>, range.start(), range.end());
                 }
 
@@ -2937,7 +2869,7 @@
     <span class="doccomment">/// A [`Dynamic`] containing the integer 1,000.
     </span><span class="kw">pub const </span>THOUSAND: <span class="self">Self </span>= <span class="self">Self</span>::from_int(<span class="number">1000</span>);
     <span class="doccomment">/// A [`Dynamic`] containing the integer 1,000,000.
-    </span><span class="kw">pub const </span>MILLION: <span class="self">Self </span>= <span class="self">Self</span>::from_int(<span class="number">1000000</span>);
+    </span><span class="kw">pub const </span>MILLION: <span class="self">Self </span>= <span class="self">Self</span>::from_int(<span class="number">1_000_000</span>);
     <span class="doccomment">/// A [`Dynamic`] containing the integer -1.
     </span><span class="kw">pub const </span>NEGATIVE_ONE: <span class="self">Self </span>= <span class="self">Self</span>::from_int(-<span class="number">1</span>);
     <span class="doccomment">/// A [`Dynamic`] containing the integer -2.
@@ -2976,7 +2908,7 @@
     ///
     /// Not available under `no_float`.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
-    </span><span class="kw">pub const </span>FLOAT_MILLION: <span class="self">Self </span>= <span class="self">Self</span>::from_float(<span class="number">1000000.0</span>);
+    </span><span class="kw">pub const </span>FLOAT_MILLION: <span class="self">Self </span>= <span class="self">Self</span>::from_float(<span class="number">1_000_000.0</span>);
     <span class="doccomment">/// A [`Dynamic`] containing `-1.0`.
     ///
     /// Not available under `no_float`.
@@ -3021,7 +2953,7 @@
     ///
     /// Not available under `no_float`.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
-    </span><span class="kw">pub const </span>FLOAT_MILLIONTH: <span class="self">Self </span>= <span class="self">Self</span>::from_float(<span class="number">0.000001</span>);
+    </span><span class="kw">pub const </span>FLOAT_MILLIONTH: <span class="self">Self </span>= <span class="self">Self</span>::from_float(<span class="number">0.000_001</span>);
     <span class="doccomment">/// A [`Dynamic`] containing π.
     ///
     /// Not available under `no_float`.
@@ -3065,16 +2997,19 @@
 
     <span class="doccomment">/// Create a new [`Dynamic`] from a [`bool`].
     </span><span class="attribute">#[inline(always)]
+    #[must_use]
     </span><span class="kw">pub const fn </span>from_bool(value: bool) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Bool(value, DEFAULT_TAG_VALUE, ReadWrite))
     }
     <span class="doccomment">/// Create a new [`Dynamic`] from an [`INT`].
     </span><span class="attribute">#[inline(always)]
+    #[must_use]
     </span><span class="kw">pub const fn </span>from_int(value: INT) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Int(value, DEFAULT_TAG_VALUE, ReadWrite))
     }
     <span class="doccomment">/// Create a new [`Dynamic`] from a [`char`].
     </span><span class="attribute">#[inline(always)]
+    #[must_use]
     </span><span class="kw">pub const fn </span>from_char(value: char) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Char(value, DEFAULT_TAG_VALUE, ReadWrite))
     }
@@ -3083,9 +3018,10 @@
     /// Not available under `no_float`.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
     #[inline(always)]
+    #[must_use]
     </span><span class="kw">pub const fn </span>from_float(value: <span class="kw">crate</span>::FLOAT) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Float(
-            <span class="kw">crate</span>::ast::FloatWrapper::new_const(value),
+            <span class="kw">crate</span>::ast::FloatWrapper::new(value),
             DEFAULT_TAG_VALUE,
             ReadWrite,
         ))
@@ -3095,24 +3031,28 @@
     /// Exported under the `decimal` feature only.
     </span><span class="attribute">#[cfg(feature = <span class="string">&quot;decimal&quot;</span>)]
     #[inline(always)]
+    #[must_use]
     </span><span class="kw">pub fn </span>from_decimal(value: rust_decimal::Decimal) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Decimal(value.into(), DEFAULT_TAG_VALUE, ReadWrite))
     }
     <span class="doccomment">/// Create a [`Dynamic`] from an [`Array`][crate::Array].
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
     #[inline(always)]
+    #[must_use]
     </span><span class="kw">pub fn </span>from_array(array: <span class="kw">crate</span>::Array) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Array(array.into(), DEFAULT_TAG_VALUE, ReadWrite))
     }
     <span class="doccomment">/// Create a [`Dynamic`] from a [`Blob`][crate::Blob].
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
     #[inline(always)]
+    #[must_use]
     </span><span class="kw">pub fn </span>from_blob(blob: <span class="kw">crate</span>::Blob) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Blob(blob.into(), DEFAULT_TAG_VALUE, ReadWrite))
     }
     <span class="doccomment">/// Create a [`Dynamic`] from a [`Map`][crate::Map].
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
     #[inline(always)]
+    #[must_use]
     </span><span class="kw">pub fn </span>from_map(map: <span class="kw">crate</span>::Map) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Map(map.into(), DEFAULT_TAG_VALUE, ReadWrite))
     }
@@ -3121,6 +3061,7 @@
     /// Not available under `no-std`.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_std&quot;</span>))]
     #[inline(always)]
+    #[must_use]
     </span><span class="kw">pub fn </span>from_timestamp(value: Instant) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::TimeStamp(value.into(), DEFAULT_TAG_VALUE, ReadWrite))
     }
@@ -3191,6 +3132,7 @@
     </span>}
     <span class="doccomment">/// Make this [`Dynamic`] read-only (i.e. a constant).
     </span><span class="attribute">#[inline(always)]
+    #[must_use]
     </span><span class="kw">pub fn </span>into_read_only(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>value = <span class="self">self</span>;
         value.set_access_mode(AccessMode::ReadOnly);
@@ -3200,34 +3142,27 @@
     ///
     /// Constant [`Dynamic`] values are read-only.
     ///
-    /// If a [`&amp;mut Dynamic`][Dynamic] to such a constant is passed to a Rust function, the function
-    /// can use this information to return an error of
-    /// [`ErrorAssignmentToConstant`][crate::EvalAltResult::ErrorAssignmentToConstant] if its value
-    /// is going to be modified.
+    /// # Usage
     ///
-    /// This safe-guards constant values from being modified from within Rust functions.
+    /// If a [`&amp;mut Dynamic`][Dynamic] to such a constant is passed to a Rust function, the function
+    /// can use this information to return the error
+    /// [`ErrorAssignmentToConstant`][crate::EvalAltResult::ErrorAssignmentToConstant] if its value
+    /// will be modified.
+    ///
+    /// This safe-guards constant values from being modified within Rust functions.
+    ///
+    /// # Shared Values
+    ///
+    /// If a [`Dynamic`] holds a _shared_ value, then it is read-only only if the shared value
+    /// itself is read-only.
     </span><span class="attribute">#[must_use]
     </span><span class="kw">pub fn </span>is_read_only(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-        </span><span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
-            Union::Shared(.., ReadOnly) =&gt; <span class="kw">return </span><span class="bool-val">true</span>,
-
-            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; {
-                <span class="kw">return match </span>cell.borrow().access_mode() {
-                    ReadWrite =&gt; <span class="bool-val">false</span>,
-                    ReadOnly =&gt; <span class="bool-val">true</span>,
-                }
-            }
-            <span class="attribute">#[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; {
-                <span class="kw">return match </span>cell.read().unwrap().access_mode() {
-                    ReadWrite =&gt; <span class="bool-val">false</span>,
-                    ReadOnly =&gt; <span class="bool-val">true</span>,
-                }
-            }
-
-            <span class="kw">_ </span>=&gt; (),
+        </span><span class="kw">if let </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) = <span class="self">self</span>.<span class="number">0 </span>{
+            <span class="kw">return match </span><span class="kw">crate</span>::func::locked_read(cell).access_mode() {
+                ReadWrite =&gt; <span class="bool-val">false</span>,
+                ReadOnly =&gt; <span class="bool-val">true</span>,
+            };
         }
 
         <span class="kw">match </span><span class="self">self</span>.access_mode() {
@@ -3253,12 +3188,7 @@
             </span>Union::Map(..) =&gt; <span class="bool-val">true</span>,
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            #[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; cell.borrow().is_hashable(),
-
-            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            #[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; cell.read().unwrap().is_hashable(),
+            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; <span class="kw">crate</span>::func::locked_read(cell).is_hashable(),
 
             <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
         }
@@ -3321,7 +3251,7 @@
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
         </span><span class="macro">reify!</span>(value, |v: <span class="kw">crate</span>::Blob| {
             <span class="comment">// don&#39;t use blob.into() because it&#39;ll be converted into an Array
-            </span><span class="kw">return </span>Dynamic::from_blob(v);
+            </span><span class="kw">return </span><span class="self">Self</span>::from_blob(v);
         });
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
         </span><span class="macro">reify!</span>(value, |v: <span class="kw">crate</span>::Map| <span class="kw">return </span>v.into());
@@ -3330,7 +3260,7 @@
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_std&quot;</span>))]
         </span><span class="macro">reify!</span>(value, |v: Instant| <span class="kw">return </span>v.into());
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-        </span><span class="macro">reify!</span>(value, |v: <span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Locked&lt;Dynamic&gt;&gt;| <span class="kw">return </span>v
+        </span><span class="macro">reify!</span>(value, |v: <span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Locked&lt;<span class="self">Self</span>&gt;&gt;| <span class="kw">return </span>v
             .into());
 
         <span class="self">Self</span>(Union::Variant(
@@ -3509,11 +3439,7 @@
     </span><span class="kw">pub fn </span>flatten_clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            #[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; cell.borrow().clone(),
-            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            #[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; cell.read().unwrap().clone(),
+            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; <span class="kw">crate</span>::func::locked_read(cell).clone(),
             <span class="kw">_ </span>=&gt; <span class="self">self</span>.clone(),
         }
     }
@@ -3528,11 +3454,8 @@
     </span><span class="kw">pub fn </span>flatten(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            </span>Union::Shared(cell, ..) =&gt; <span class="kw">crate</span>::func::native::shared_try_take(cell).map_or_else(
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-                </span>|cell| cell.borrow().clone(),
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-                </span>|cell| cell.read().unwrap().clone(),
+            </span>Union::Shared(cell, ..) =&gt; <span class="kw">crate</span>::func::shared_try_take(cell).map_or_else(
+                |<span class="kw-2">ref </span>cell| <span class="kw">crate</span>::func::locked_read(cell).clone(),
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
                 </span>|value| value.into_inner(),
                 <span class="attribute">#[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
@@ -3553,11 +3476,8 @@
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
             </span>Union::Shared(<span class="kw-2">ref mut </span>cell, ..) =&gt; {
                 <span class="kw">let </span>cell = mem::take(cell);
-                <span class="kw-2">*</span><span class="self">self </span>= <span class="kw">crate</span>::func::native::shared_try_take(cell).map_or_else(
-                    <span class="attribute">#[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-                    </span>|cell| cell.borrow().clone(),
-                    <span class="attribute">#[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-                    </span>|cell| cell.read().unwrap().clone(),
+                <span class="kw-2">*</span><span class="self">self </span>= <span class="kw">crate</span>::func::shared_try_take(cell).map_or_else(
+                    |<span class="kw-2">ref </span>cell| <span class="kw">crate</span>::func::locked_read(cell).clone(),
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
                     </span>|value| value.into_inner(),
                     <span class="attribute">#[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
@@ -3582,14 +3502,11 @@
     #[must_use]
     </span><span class="kw">pub fn </span>is_locked(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-        </span><span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
-            Union::Shared(<span class="kw-2">ref </span>_cell, ..) =&gt; {
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-                </span><span class="kw">return </span>_cell.try_borrow().is_err();
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-                </span><span class="kw">return </span><span class="bool-val">false</span>;
-            }
-            <span class="kw">_ </span>=&gt; (),
+        </span><span class="kw">if let </span>Union::Shared(<span class="kw-2">ref </span>_cell, ..) = <span class="self">self</span>.<span class="number">0 </span>{
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
+            </span><span class="kw">return </span>_cell.try_borrow().is_err();
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
+            </span><span class="kw">return </span><span class="bool-val">false</span>;
         }
 
         <span class="bool-val">false
@@ -3609,18 +3526,15 @@
         <span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
             </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; {
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-                </span><span class="kw">let </span>value = cell.borrow();
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-                </span><span class="kw">let </span>value = cell.read().unwrap();
+                <span class="kw">let </span>value = <span class="kw">crate</span>::func::locked_read(cell);
 
-                <span class="kw">if </span>(<span class="kw-2">*</span>value).type_id() != TypeId::of::&lt;T&gt;()
-                    &amp;&amp; TypeId::of::&lt;Dynamic&gt;() != TypeId::of::&lt;T&gt;()
+                <span class="kw">return if </span>(<span class="kw-2">*</span>value).type_id() != TypeId::of::&lt;T&gt;()
+                    &amp;&amp; TypeId::of::&lt;<span class="self">Self</span>&gt;() != TypeId::of::&lt;T&gt;()
                 {
-                    <span class="kw">return </span><span class="prelude-val">None</span>;
-                } <span class="kw">else </span>{
-                    <span class="kw">return </span><span class="prelude-val">Some</span>(DynamicReadLock(DynamicReadLockInner::Guard(value)));
-                }
+                    <span class="prelude-val">None
+                </span>} <span class="kw">else </span>{
+                    <span class="prelude-val">Some</span>(DynamicReadLock(DynamicReadLockInner::Guard(value)))
+                };
             }
             <span class="kw">_ </span>=&gt; (),
         }
@@ -3644,15 +3558,15 @@
         <span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
             </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; {
-                <span class="kw">let </span>guard = <span class="kw">crate</span>::func::native::locked_write(cell);
+                <span class="kw">let </span>guard = <span class="kw">crate</span>::func::locked_write(cell);
 
-                <span class="kw">if </span>(<span class="kw-2">*</span>guard).type_id() != TypeId::of::&lt;T&gt;()
-                    &amp;&amp; TypeId::of::&lt;Dynamic&gt;() != TypeId::of::&lt;T&gt;()
+                <span class="kw">return if </span>(<span class="kw-2">*</span>guard).type_id() != TypeId::of::&lt;T&gt;()
+                    &amp;&amp; TypeId::of::&lt;<span class="self">Self</span>&gt;() != TypeId::of::&lt;T&gt;()
                 {
-                    <span class="kw">return </span><span class="prelude-val">None</span>;
-                } <span class="kw">else </span>{
-                    <span class="kw">return </span><span class="prelude-val">Some</span>(DynamicWriteLock(DynamicWriteLockInner::Guard(guard)));
-                }
+                    <span class="prelude-val">None
+                </span>} <span class="kw">else </span>{
+                    <span class="prelude-val">Some</span>(DynamicWriteLock(DynamicWriteLockInner::Guard(guard)))
+                };
             }
             <span class="kw">_ </span>=&gt; (),
         }
@@ -3748,7 +3662,7 @@
                 <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
             };
         }
-        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;Dynamic&gt;() {
+        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="self">Self</span>&gt;() {
             <span class="kw">return </span><span class="self">self</span>.as_any().downcast_ref::&lt;T&gt;();
         }
 
@@ -3846,7 +3760,7 @@
                 <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
             };
         }
-        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;Dynamic&gt;() {
+        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="self">Self</span>&gt;() {
             <span class="kw">return </span><span class="self">self</span>.as_any_mut().downcast_mut::&lt;T&gt;();
         }
 
@@ -3959,11 +3873,8 @@
         <span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
             Union::Str(s, ..) =&gt; <span class="prelude-val">Ok</span>(s),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            </span>Union::Shared(cell, ..) =&gt; {
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-                </span><span class="kw">let </span>value = cell.borrow();
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-                </span><span class="kw">let </span>value = cell.read().unwrap();
+            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; {
+                <span class="kw">let </span>value = <span class="kw">crate</span>::func::locked_read(cell);
 
                 <span class="kw">match </span>value.<span class="number">0 </span>{
                     Union::Str(<span class="kw-2">ref </span>s, ..) =&gt; <span class="prelude-val">Ok</span>(s.clone()),
@@ -3981,11 +3892,8 @@
         <span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
             Union::Array(a, ..) =&gt; <span class="prelude-val">Ok</span>(<span class="kw-2">*</span>a),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            </span>Union::Shared(cell, ..) =&gt; {
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-                </span><span class="kw">let </span>value = cell.borrow();
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-                </span><span class="kw">let </span>value = cell.read().unwrap();
+            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; {
+                <span class="kw">let </span>value = <span class="kw">crate</span>::func::locked_read(cell);
 
                 <span class="kw">match </span>value.<span class="number">0 </span>{
                     Union::Array(<span class="kw-2">ref </span>a, ..) =&gt; <span class="prelude-val">Ok</span>(a.as_ref().clone()),
@@ -4014,16 +3922,13 @@
                     <span class="attribute">#[cfg(feature = <span class="string">&quot;no_closure&quot;</span>)]
                     </span><span class="kw">let </span>typ = v.type_name();
 
-                    v.try_cast::&lt;T&gt;().ok_or_else(|| typ)
+                    v.try_cast::&lt;T&gt;().ok_or(typ)
                 })
                 .collect(),
             Union::Blob(..) <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;u8&gt;() =&gt; <span class="prelude-val">Ok</span>(<span class="self">self</span>.cast::&lt;Vec&lt;T&gt;&gt;()),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            </span>Union::Shared(cell, ..) =&gt; {
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-                </span><span class="kw">let </span>value = cell.borrow();
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-                </span><span class="kw">let </span>value = cell.read().unwrap();
+            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; {
+                <span class="kw">let </span>value = <span class="kw">crate</span>::func::locked_read(cell);
 
                 <span class="kw">match </span>value.<span class="number">0 </span>{
                     Union::Array(<span class="kw-2">ref </span>a, ..) =&gt; {
@@ -4039,7 +3944,7 @@
                                 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_closure&quot;</span>)]
                                 </span><span class="kw">let </span>typ = v.type_name();
 
-                                v.read_lock::&lt;T&gt;().ok_or_else(|| typ).map(|v| v.clone())
+                                v.read_lock::&lt;T&gt;().ok_or(typ).map(|v| v.clone())
                             })
                             .collect()
                     }
@@ -4060,11 +3965,8 @@
         <span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
             Union::Blob(a, ..) =&gt; <span class="prelude-val">Ok</span>(<span class="kw-2">*</span>a),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            </span>Union::Shared(cell, ..) =&gt; {
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;sync&quot;</span>))]
-                </span><span class="kw">let </span>value = cell.borrow();
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;sync&quot;</span>)]
-                </span><span class="kw">let </span>value = cell.read().unwrap();
+            </span>Union::Shared(<span class="kw-2">ref </span>cell, ..) =&gt; {
+                <span class="kw">let </span>value = <span class="kw">crate</span>::func::locked_read(cell);
 
                 <span class="kw">match </span>value.<span class="number">0 </span>{
                     Union::Blob(<span class="kw-2">ref </span>a, ..) =&gt; <span class="prelude-val">Ok</span>(a.as_ref().clone()),
@@ -4145,7 +4047,7 @@
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>from(value: Vec&lt;T&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Array(
-            Box::new(value.into_iter().map(Dynamic::from).collect()),
+            Box::new(value.into_iter().map(<span class="self">Self</span>::from).collect()),
             DEFAULT_TAG_VALUE,
             ReadWrite,
         ))
@@ -4156,7 +4058,7 @@
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>from(value: <span class="kw-2">&amp;</span>[T]) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Array(
-            Box::new(value.iter().cloned().map(Dynamic::from).collect()),
+            Box::new(value.iter().cloned().map(<span class="self">Self</span>::from).collect()),
             DEFAULT_TAG_VALUE,
             ReadWrite,
         ))
@@ -4167,7 +4069,7 @@
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>from_iter&lt;X: IntoIterator&lt;Item = T&gt;&gt;(iter: X) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Array(
-            Box::new(iter.into_iter().map(Dynamic::from).collect()),
+            Box::new(iter.into_iter().map(<span class="self">Self</span>::from).collect()),
             DEFAULT_TAG_VALUE,
             ReadWrite,
         ))
@@ -4184,7 +4086,7 @@
             Box::new(
                 value
                     .into_iter()
-                    .map(|(k, v)| (k.into(), Dynamic::from(v)))
+                    .map(|(k, v)| (k.into(), <span class="self">Self</span>::from(v)))
                     .collect(),
             ),
             DEFAULT_TAG_VALUE,
@@ -4198,12 +4100,7 @@
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>from(value: std::collections::HashSet&lt;K&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Map(
-            Box::new(
-                value
-                    .into_iter()
-                    .map(|k| (k.into(), Dynamic::UNIT))
-                    .collect(),
-            ),
+            Box::new(value.into_iter().map(|k| (k.into(), <span class="self">Self</span>::UNIT)).collect()),
             DEFAULT_TAG_VALUE,
             ReadWrite,
         ))
@@ -4219,7 +4116,7 @@
             Box::new(
                 value
                     .into_iter()
-                    .map(|(k, v)| (k.into(), Dynamic::from(v)))
+                    .map(|(k, v)| (k.into(), <span class="self">Self</span>::from(v)))
                     .collect(),
             ),
             DEFAULT_TAG_VALUE,
@@ -4232,12 +4129,7 @@
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>from(value: std::collections::BTreeSet&lt;K&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Map(
-            Box::new(
-                value
-                    .into_iter()
-                    .map(|k| (k.into(), Dynamic::UNIT))
-                    .collect(),
-            ),
+            Box::new(value.into_iter().map(|k| (k.into(), <span class="self">Self</span>::UNIT)).collect()),
             DEFAULT_TAG_VALUE,
             ReadWrite,
         ))
@@ -4257,7 +4149,7 @@
     }
 }
 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-</span><span class="kw">impl </span>From&lt;<span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Locked&lt;Dynamic&gt;&gt;&gt; <span class="kw">for </span>Dynamic {
+</span><span class="kw">impl </span>From&lt;<span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Locked&lt;<span class="self">Self</span>&gt;&gt;&gt; <span class="kw">for </span>Dynamic {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>from(value: <span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Locked&lt;<span class="self">Self</span>&gt;&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(Union::Shared(value, DEFAULT_TAG_VALUE, ReadWrite))
@@ -4267,14 +4159,14 @@
 <span class="kw">impl </span>From&lt;ExclusiveRange&gt; <span class="kw">for </span>Dynamic {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>from(value: ExclusiveRange) -&gt; <span class="self">Self </span>{
-        Dynamic::from(value)
+        <span class="self">Self</span>::from(value)
     }
 }
 <span class="kw">impl </span>From&lt;InclusiveRange&gt; <span class="kw">for </span>Dynamic {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>from(value: InclusiveRange) -&gt; <span class="self">Self </span>{
-        Dynamic::from(value)
+        <span class="self">Self</span>::from(value)
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

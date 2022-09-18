@@ -15,7 +15,7 @@
 </div></details><h2 id="provided-methods" class="small-section-header">Provided Methods<a href="#provided-methods" class="anchor"></a></h2><div class="methods"><details class="rustdoc-toggle" open><summary><div id="method.read_until" class="method has-srclink"><a class="srclink rightside" href="../../src/tokio/io/util/async_buf_read_ext.rs.html#96-101">source</a><h4 class="code-header">fn <a href="#method.read_until" class="fnname">read_until</a>&lt;'a&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;'a mut self,<br>&nbsp;&nbsp;&nbsp;&nbsp;byte: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;buf: &amp;'a mut <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;<br>) -&gt; ReadUntil&lt;'a, Self&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a>,</span></h4></div></summary><div class="docblock"><p>Reads all bytes into <code>buf</code> until the delimiter <code>byte</code> or EOF is reached.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_until(<span class="kw-2">&amp;mut </span><span class="self">self</span>, byte: u8, buf: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_until(<span class="kw-2">&amp;mut </span><span class="self">self</span>, byte: u8, buf: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
 <p>This function will read bytes from the underlying stream until the
 delimiter or EOF is found. Once found, all bytes up to, and including,
 the delimiter (if found) will be appended to <code>buf</code>.</p>
@@ -28,7 +28,7 @@ will otherwise return any errors returned by <a href="trait.AsyncBufRead.html#ty
 present in <code>buf</code> and its length will have been adjusted appropriately.</p>
 <h5 id="cancel-safety"><a href="#cancel-safety">Cancel safety</a></h5>
 <p>If the method is used as the event in a
-<a href="crate::select"><code>tokio::select!</code></a> statement and some other branch
+<a href="../macro.select.html"><code>tokio::select!</code></a> statement and some other branch
 completes first, then some data may have been partially read. Any
 partially read bytes are appended to <code>buf</code>, and the method can be
 called again to continue reading until <code>byte</code>.</p>
@@ -78,7 +78,7 @@ in hyphen delimited segments:</p>
 them to the provided buffer.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>read_line(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>String) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>read_line(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>String) -&gt; io::Result&lt;usize&gt;;</code></pre></div>
 <p>This function will read bytes from the underlying stream until the
 newline delimiter (the 0xA byte) or EOF is found. Once found, all bytes
 up to, and including, the delimiter (if found) will be appended to
@@ -92,7 +92,7 @@ error is encountered then <code>buf</code> may contain some bytes already read i
 the event that all data read so far was valid UTF-8.</p>
 <h5 id="cancel-safety-1"><a href="#cancel-safety-1">Cancel safety</a></h5>
 <p>This method is not cancellation safe. If the method is used as the
-event in a <a href="crate::select"><code>tokio::select!</code></a> statement and some
+event in a <a href="../macro.select.html"><code>tokio::select!</code></a> statement and some
 other branch completes first, then some data may have been partially
 read, and this data is lost. There are no guarantees regarding the
 contents of <code>buf</code> when the call is cancelled. The current
@@ -176,7 +176,7 @@ to ensure that the bytes are never returned twice.</p>
 <p>An empty buffer returned indicates that the stream has reached EOF.</p>
 <p>Equivalent to:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">async fn </span>fill_buf(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>[u8]&gt;;</code></pre></div>
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>fill_buf(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>[u8]&gt;;</code></pre></div>
 <h5 id="errors-3"><a href="#errors-3">Errors</a></h5>
 <p>This function will return an I/O error if the underlying reader was
 read, but returned an error.</p>
@@ -217,4 +217,4 @@ slice.</p>
     <span class="macro">assert_eq!</span>(lines.next_line().<span class="kw">await</span>.unwrap(), <span class="prelude-val">Some</span>(String::from(<span class="string">&quot;dolor&quot;</span>)));
     <span class="macro">assert_eq!</span>(lines.next_line().<span class="kw">await</span>.unwrap(), <span class="prelude-val">None</span>);
 }</code></pre></div>
-</div></details></div><h2 id="implementors" class="small-section-header">Implementors<a href="#implementors" class="anchor"></a></h2><div class="item-list" id="implementors-list"><section id="impl-AsyncBufReadExt-for-R" class="impl has-srclink"><a class="srclink rightside" href="../../src/tokio/io/util/async_buf_read_ext.rs.html#351">source</a><a href="#impl-AsyncBufReadExt-for-R" class="anchor"></a><h3 class="code-header in-band">impl&lt;R:&nbsp;<a class="trait" href="trait.AsyncBufRead.html" title="trait tokio::io::AsyncBufRead">AsyncBufRead</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt; <a class="trait" href="trait.AsyncBufReadExt.html" title="trait tokio::io::AsyncBufReadExt">AsyncBufReadExt</a> for R</h3></section></div><script src="../../implementors/tokio/io/util/async_buf_read_ext/trait.AsyncBufReadExt.js" async></script></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</div></details></div><h2 id="implementors" class="small-section-header">Implementors<a href="#implementors" class="anchor"></a></h2><div class="item-list" id="implementors-list"><section id="impl-AsyncBufReadExt-for-R" class="impl has-srclink"><a class="srclink rightside" href="../../src/tokio/io/util/async_buf_read_ext.rs.html#351">source</a><a href="#impl-AsyncBufReadExt-for-R" class="anchor"></a><h3 class="code-header in-band">impl&lt;R:&nbsp;<a class="trait" href="trait.AsyncBufRead.html" title="trait tokio::io::AsyncBufRead">AsyncBufRead</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt; <a class="trait" href="trait.AsyncBufReadExt.html" title="trait tokio::io::AsyncBufReadExt">AsyncBufReadExt</a> for R</h3></section></div><script src="../../implementors/tokio/io/util/async_buf_read_ext/trait.AsyncBufReadExt.js" async></script></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

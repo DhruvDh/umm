@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/security-framework-2.6.1/src/authorization.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>authorization.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../security_framework/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../security_framework/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../security_framework/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/security-framework-2.7.0/src/authorization.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>authorization.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../security_framework/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../security_framework/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../security_framework/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -777,6 +777,45 @@
 <span id="777">777</span>
 <span id="778">778</span>
 <span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Authorization Services support.
 
 /// # Potential improvements
@@ -790,15 +829,20 @@
 <span class="kw">use </span>core_foundation::bundle::CFBundleRef;
 <span class="kw">use </span>core_foundation::dictionary::{CFDictionary, CFDictionaryRef};
 <span class="kw">use </span>core_foundation::string::{CFString, CFStringRef};
+<span class="attribute">#[cfg(all(target_os = <span class="string">&quot;macos&quot;</span>, feature = <span class="string">&quot;job-bless&quot;</span>))]
+</span><span class="kw">use </span>core_foundation::error::CFError;
+<span class="attribute">#[cfg(all(target_os = <span class="string">&quot;macos&quot;</span>, feature = <span class="string">&quot;job-bless&quot;</span>))]
+</span><span class="kw">use </span>core_foundation::error::CFErrorRef;
+<span class="attribute">#[cfg(all(target_os = <span class="string">&quot;macos&quot;</span>, feature = <span class="string">&quot;job-bless&quot;</span>))]
+</span><span class="kw">use </span>core_foundation::base::Boolean;
 <span class="kw">use </span>security_framework_sys::authorization <span class="kw">as </span>sys;
 <span class="kw">use </span>security_framework_sys::base::errSecConversionError;
+<span class="kw">use </span>std::convert::TryFrom;
+<span class="kw">use </span>std::ffi::{CStr, CString};
+<span class="kw">use </span>std::fs::File;
 <span class="kw">use </span>std::mem::MaybeUninit;
 <span class="kw">use </span>std::os::raw::c_void;
-<span class="kw">use </span>std::{
-    convert::TryFrom,
-    ffi::{CStr, CString},
-    fs::File,
-};
+<span class="kw">use </span>std::ptr::addr_of;
 <span class="kw">use </span>std::{convert::TryInto, marker::PhantomData};
 <span class="kw">use </span>sys::AuthorizationExternalForm;
 
@@ -1017,6 +1061,7 @@
 }
 
 <span class="doccomment">/// Used by `Authorization::set_item` to define the rules of he right.
+</span><span class="attribute">#[derive(Copy, Clone)]
 </span><span class="kw">pub enum </span>RightDefinition&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="doccomment">/// The dictionary will contain the keys and values that define the rules.
     </span>FromDictionary(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>CFDictionary&lt;CFStringRef, CFTypeRef&gt;),
@@ -1058,7 +1103,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Authorization {
+<span class="kw">impl </span>Authorization {
     <span class="doccomment">/// Creates an authorization object which has no environment or associated
     /// rights.
     </span><span class="attribute">#[inline]
@@ -1077,16 +1122,17 @@
     /// macOS 10.4 and later, you can also pass a user name and password in
     /// order to authorize a user without user interaction.
     </span><span class="kw">pub fn </span>new(
-        rights: <span class="prelude-ty">Option</span>&lt;AuthorizationItemSetStorage&gt;,
+        <span class="comment">// FIXME: this should have been by reference
+        </span>rights: <span class="prelude-ty">Option</span>&lt;AuthorizationItemSetStorage&gt;,
         environment: <span class="prelude-ty">Option</span>&lt;AuthorizationItemSetStorage&gt;,
         flags: Flags,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>rights_ptr = rights.as_ref().map_or(std::ptr::null(), |r| {
-            <span class="kw-2">&amp;</span>r.set <span class="kw">as </span><span class="kw-2">*const </span>sys::AuthorizationItemSet
+            <span class="macro">addr_of!</span>(r.set) <span class="kw">as </span><span class="kw-2">*const </span>sys::AuthorizationItemSet
         });
 
         <span class="kw">let </span>env_ptr = environment.as_ref().map_or(std::ptr::null(), |e| {
-            <span class="kw-2">&amp;</span>e.set <span class="kw">as </span><span class="kw-2">*const </span>sys::AuthorizationItemSet
+            <span class="macro">addr_of!</span>(e.set) <span class="kw">as </span><span class="kw-2">*const </span>sys::AuthorizationItemSet
         });
 
         <span class="kw">let </span><span class="kw-2">mut </span>handle = MaybeUninit::&lt;sys::AuthorizationRef&gt;::uninit();
@@ -1327,6 +1373,38 @@
         <span class="prelude-val">Ok</span>(<span class="self">self</span>.execute_with_privileges_internal(command.as_ref().as_os_str().as_bytes(), <span class="kw-2">&amp;</span>arguments, flags, <span class="bool-val">true</span>)<span class="question-mark">?</span>.unwrap())
     }
 
+    <span class="doccomment">/// Submits the executable for the given label as a `launchd` job.
+    </span><span class="attribute">#[cfg(all(target_os = <span class="string">&quot;macos&quot;</span>, feature = <span class="string">&quot;job-bless&quot;</span>))]
+    </span><span class="kw">pub fn </span>job_bless(<span class="kw-2">&amp;</span><span class="self">self</span>, label: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;(), CFError&gt; {
+
+        <span class="attribute">#[link(name = <span class="string">&quot;ServiceManagement&quot;</span>, kind = <span class="string">&quot;framework&quot;</span>)]
+        </span><span class="kw">extern </span><span class="string">&quot;C&quot; </span>{
+            <span class="kw">static </span>kSMDomainSystemLaunchd: CFStringRef;
+
+            <span class="kw">fn </span>SMJobBless(
+                domain: CFStringRef,
+                executableLabel: CFStringRef,
+                auth: sys::AuthorizationRef,
+                error: <span class="kw-2">*mut </span>CFErrorRef,
+            ) -&gt; Boolean;
+        }
+
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>error = std::ptr::null_mut();
+            SMJobBless(
+                kSMDomainSystemLaunchd,
+                CFString::new(label).as_concrete_TypeRef(),
+                <span class="self">self</span>.handle,
+                <span class="kw-2">&amp;mut </span>error
+            );
+            <span class="kw">if </span>!error.is_null() {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(CFError::wrap_under_create_rule(error));
+            }
+
+            <span class="prelude-val">Ok</span>(())
+        }
+    }
+
     <span class="comment">// Runs an executable tool with root privileges.
     </span><span class="attribute">#[cfg(target_os = <span class="string">&quot;macos&quot;</span>)]
     </span><span class="kw">fn </span>execute_with_privileges_internal(
@@ -1557,4 +1635,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="security_framework" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="security_framework" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

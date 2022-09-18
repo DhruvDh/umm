@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/self_update-0.30.0/src/backends/s3.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>s3.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../self_update/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../self_update/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../self_update/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/self_update-0.32.0/src/backends/s3.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>s3.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../self_update/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../self_update/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../self_update/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -652,6 +652,17 @@
 <span id="652">652</span>
 <span id="653">653</span>
 <span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
 </pre><pre class="rust"><code><span class="doccomment">/*!
 Amazon S3 releases
 */
@@ -660,8 +671,8 @@ Amazon S3 releases
     get_target,
     update::{Release, ReleaseAsset, ReleaseUpdate},
     version::bump_is_greater,
+    DEFAULT_PROGRESS_CHARS, DEFAULT_PROGRESS_TEMPLATE,
 };
-<span class="kw">use </span>indicatif::ProgressStyle;
 <span class="kw">use </span>quick_xml::events::Event;
 <span class="kw">use </span>quick_xml::Reader;
 <span class="kw">use </span>regex::Regex;
@@ -679,6 +690,7 @@ Amazon S3 releases
 #[derive(Clone, Copy, Debug)]
 </span><span class="kw">pub enum </span>EndPoint {
     S3,
+    S3DualStack,
     GCS,
     DigitalOceanSpaces,
 }
@@ -808,7 +820,8 @@ Amazon S3 releases
     no_confirm: bool,
     current_version: <span class="prelude-ty">Option</span>&lt;String&gt;,
     target_version: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    progress_style: <span class="prelude-ty">Option</span>&lt;ProgressStyle&gt;,
+    progress_template: String,
+    progress_chars: String,
     auth_token: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
 
@@ -828,7 +841,8 @@ Amazon S3 releases
             no_confirm: <span class="bool-val">false</span>,
             current_version: <span class="prelude-val">None</span>,
             target_version: <span class="prelude-val">None</span>,
-            progress_style: <span class="prelude-val">None</span>,
+            progress_template: DEFAULT_PROGRESS_TEMPLATE.to_string(),
+            progress_chars: DEFAULT_PROGRESS_CHARS.to_string(),
             auth_token: <span class="prelude-val">None</span>,
         }
     }
@@ -946,9 +960,14 @@ Amazon S3 releases
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// Toggle download progress bar, defaults to `off`.
-    </span><span class="kw">pub fn </span>set_progress_style(<span class="kw-2">&amp;mut </span><span class="self">self</span>, progress_style: ProgressStyle) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.progress_style = <span class="prelude-val">Some</span>(progress_style);
+    <span class="doccomment">/// Set download progress style.
+    </span><span class="kw">pub fn </span>set_progress_style(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        progress_template: String,
+        progress_chars: String,
+    ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.progress_template = progress_template;
+        <span class="self">self</span>.progress_chars = progress_chars;
         <span class="self">self
     </span>}
 
@@ -1012,7 +1031,8 @@ Amazon S3 releases
             },
             target_version: <span class="self">self</span>.target_version.as_ref().map(|v| v.to_owned()),
             show_download_progress: <span class="self">self</span>.show_download_progress,
-            progress_style: <span class="self">self</span>.progress_style.clone(),
+            progress_template: <span class="self">self</span>.progress_template.clone(),
+            progress_chars: <span class="self">self</span>.progress_chars.clone(),
             show_output: <span class="self">self</span>.show_output,
             no_confirm: <span class="self">self</span>.no_confirm,
             auth_token: <span class="self">self</span>.auth_token.clone(),
@@ -1036,7 +1056,8 @@ Amazon S3 releases
     show_download_progress: bool,
     show_output: bool,
     no_confirm: bool,
-    progress_style: <span class="prelude-ty">Option</span>&lt;ProgressStyle&gt;,
+    progress_template: String,
+    progress_chars: String,
     auth_token: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
 
@@ -1131,8 +1152,12 @@ Amazon S3 releases
         <span class="self">self</span>.no_confirm
     }
 
-    <span class="kw">fn </span>progress_style(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ProgressStyle&gt; {
-        <span class="self">self</span>.progress_style.clone()
+    <span class="kw">fn </span>progress_template(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="self">self</span>.progress_template.to_owned()
+    }
+
+    <span class="kw">fn </span>progress_chars(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="self">self</span>.progress_chars.to_owned()
     }
 
     <span class="kw">fn </span>auth_token(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
@@ -1155,28 +1180,25 @@ Amazon S3 releases
         <span class="prelude-val">None </span>=&gt; <span class="string">&quot;&quot;</span>.to_string(),
     };
 
+    <span class="kw">let </span>region = region
+        .as_ref()
+        .ok_or_else(|| Error::Config(<span class="string">&quot;`region` required&quot;</span>.to_string()));
+
     <span class="kw">let </span>download_base_url = <span class="kw">match </span>end_point {
-        EndPoint::S3 =&gt; {
-            <span class="kw">let </span>region = <span class="kw">if let </span><span class="prelude-val">Some</span>(region) = region {
-                region
-            } <span class="kw">else </span>{
-                <span class="macro">bail!</span>(Error::Config, <span class="string">&quot;`region` required&quot;</span>)
-            };
-            <span class="macro">format!</span>(<span class="string">&quot;https://{}.s3.{}.amazonaws.com/&quot;</span>, bucket_name, region)
-        }
-        EndPoint::DigitalOceanSpaces =&gt; {
-            <span class="kw">let </span>region = <span class="kw">if let </span><span class="prelude-val">Some</span>(region) = region {
-                region
-            } <span class="kw">else </span>{
-                <span class="macro">bail!</span>(Error::Config, <span class="string">&quot;`region` required&quot;</span>)
-            };
-            <span class="macro">format!</span>(<span class="string">&quot;https://{}.{}.digitaloceanspaces.com/&quot;</span>, bucket_name, region)
-        }
+        EndPoint::S3 =&gt; <span class="macro">format!</span>(<span class="string">&quot;https://{}.s3.{}.amazonaws.com/&quot;</span>, bucket_name, region<span class="question-mark">?</span>),
+        EndPoint::S3DualStack =&gt; <span class="macro">format!</span>(
+            <span class="string">&quot;https://{}.s3.dualstack.{}.amazonaws.com/&quot;</span>,
+            bucket_name, region<span class="question-mark">?
+        </span>),
+        EndPoint::DigitalOceanSpaces =&gt; <span class="macro">format!</span>(
+            <span class="string">&quot;https://{}.{}.digitaloceanspaces.com/&quot;</span>,
+            bucket_name, region<span class="question-mark">?
+        </span>),
         EndPoint::GCS =&gt; <span class="macro">format!</span>(<span class="string">&quot;https://storage.googleapis.com/{}/&quot;</span>, bucket_name),
     };
 
     <span class="kw">let </span>api_url = <span class="kw">match </span>end_point {
-        EndPoint::S3 | EndPoint::DigitalOceanSpaces =&gt; <span class="macro">format!</span>(
+        EndPoint::S3 | EndPoint::S3DualStack | EndPoint::DigitalOceanSpaces =&gt; <span class="macro">format!</span>(
             <span class="string">&quot;{}?list-type=2&amp;max-keys={}{}&quot;</span>,
             download_base_url, MAX_KEYS, prefix
         ),
@@ -1307,4 +1329,4 @@ Amazon S3 releases
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="self_update" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="self_update" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

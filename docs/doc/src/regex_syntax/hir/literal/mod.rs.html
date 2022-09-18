@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/regex-syntax-0.6.26/src/hir/literal/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../../normalize.css"><link rel="stylesheet" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../../ayu.css" disabled><link rel="stylesheet" href="../../../../dark.css" disabled><link rel="stylesheet" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../main.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../regex_syntax/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../../regex_syntax/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../regex_syntax/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/regex-syntax-0.6.27/src/hir/literal/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../../normalize.css"><link rel="stylesheet" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../../ayu.css" disabled><link rel="stylesheet" href="../../../../dark.css" disabled><link rel="stylesheet" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../main.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../regex_syntax/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../../regex_syntax/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../regex_syntax/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1684,10 +1684,6 @@
 <span id="1684">1684</span>
 <span id="1685">1685</span>
 <span id="1686">1686</span>
-<span id="1687">1687</span>
-<span id="1688">1688</span>
-<span id="1689">1689</span>
-<span id="1690">1690</span>
 </pre><pre class="rust"><code><span class="doccomment">/*!
 Provides routines for extracting literal prefixes and suffixes from an `Hir`.
 */
@@ -1915,7 +1911,7 @@ Provides routines for extracting literal prefixes and suffixes from an `Hir`.
         <span class="kw">if </span><span class="self">self</span>.lits.is_empty() {
             <span class="kw">return </span><span class="self">self</span>.to_empty();
         }
-        <span class="kw">let </span><span class="kw-2">mut </span>old: Vec&lt;Literal&gt; = <span class="self">self</span>.lits.iter().cloned().collect();
+        <span class="kw">let </span><span class="kw-2">mut </span>old = <span class="self">self</span>.lits.to_vec();
         <span class="kw">let </span><span class="kw-2">mut </span>new = <span class="self">self</span>.to_empty();
         <span class="lifetime">&#39;OUTER</span>: <span class="kw">while let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>candidate) = old.pop() {
             <span class="kw">if </span>candidate.is_empty() {
@@ -1946,15 +1942,13 @@ Provides routines for extracting literal prefixes and suffixes from an `Hir`.
                         old.push(lit3);
                         lit2.clear();
                     }
-                } <span class="kw">else </span>{
-                    <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = position(<span class="kw-2">&amp;</span>lit2, <span class="kw-2">&amp;</span>candidate) {
-                        lit2.cut();
-                        <span class="kw">let </span><span class="kw-2">mut </span>new_candidate = candidate.clone();
-                        new_candidate.truncate(i);
-                        new_candidate.cut();
-                        old.push(new_candidate);
-                        candidate.clear();
-                    }
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(i) = position(<span class="kw-2">&amp;</span>lit2, <span class="kw-2">&amp;</span>candidate) {
+                    lit2.cut();
+                    <span class="kw">let </span><span class="kw-2">mut </span>new_candidate = candidate.clone();
+                    new_candidate.truncate(i);
+                    new_candidate.cut();
+                    old.push(new_candidate);
+                    candidate.clear();
                 }
                 <span class="comment">// Oops, the candidate is already represented in the set.
                 </span><span class="kw">if </span>candidate.is_empty() {
@@ -2483,7 +2477,7 @@ Provides routines for extracting literal prefixes and suffixes from an `Hir`.
         </span>f(
             <span class="kw-2">&amp;</span>Hir::repetition(hir::Repetition {
                 kind: hir::RepetitionKind::ZeroOrMore,
-                greedy: greedy,
+                greedy,
                 hir: Box::new(e.clone()),
             }),
             lits,
@@ -2622,12 +2616,10 @@ Provides routines for extracting literal prefixes and suffixes from an `Hir`.
         <span class="kw">if </span>c.is_whitespace() {
             <span class="kw">let </span>escaped = <span class="kw">if </span>c <span class="kw">as </span>u32 &lt;= <span class="number">0x7F </span>{
                 escape_byte(c <span class="kw">as </span>u8)
+            } <span class="kw">else if </span>c <span class="kw">as </span>u32 &lt;= <span class="number">0xFFFF </span>{
+                <span class="macro">format!</span>(<span class="string">r&quot;\u{{{:04x}}}&quot;</span>, c <span class="kw">as </span>u32)
             } <span class="kw">else </span>{
-                <span class="kw">if </span>c <span class="kw">as </span>u32 &lt;= <span class="number">0xFFFF </span>{
-                    <span class="macro">format!</span>(<span class="string">r&quot;\u{{{:04x}}}&quot;</span>, c <span class="kw">as </span>u32)
-                } <span class="kw">else </span>{
-                    <span class="macro">format!</span>(<span class="string">r&quot;\U{{{:08x}}}&quot;</span>, c <span class="kw">as </span>u32)
-                }
+                <span class="macro">format!</span>(<span class="string">r&quot;\U{{{:08x}}}&quot;</span>, c <span class="kw">as </span>u32)
             };
             space_escaped.push_str(<span class="kw-2">&amp;</span>escaped);
         } <span class="kw">else </span>{
@@ -3379,4 +3371,4 @@ Provides routines for extracting literal prefixes and suffixes from an `Hir`.
     <span class="macro">test_lcs!</span>(lcs12, <span class="macro">vec!</span>[<span class="string">&quot;flub&quot;</span>, <span class="string">&quot;bub&quot;</span>, <span class="string">&quot;boob&quot;</span>, <span class="string">&quot;dub&quot;</span>], <span class="string">&quot;b&quot;</span>);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="regex_syntax" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="regex_syntax" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

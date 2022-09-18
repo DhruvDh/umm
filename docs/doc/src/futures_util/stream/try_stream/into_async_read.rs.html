@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-util-0.3.21/src/stream/try_stream/into_async_read.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>into_async_read.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../../normalize.css"><link rel="stylesheet" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../../ayu.css" disabled><link rel="stylesheet" href="../../../../dark.css" disabled><link rel="stylesheet" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../main.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../futures_util/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../../futures_util/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../futures_util/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-util-0.3.24/src/stream/try_stream/into_async_read.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>into_async_read.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../../normalize.css"><link rel="stylesheet" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../../ayu.css" disabled><link rel="stylesheet" href="../../../../dark.css" disabled><link rel="stylesheet" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../main.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../futures_util/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../../futures_util/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../futures_util/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -163,33 +163,30 @@
 <span id="163">163</span>
 <span id="164">164</span>
 <span id="165">165</span>
-</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::stream::TryStreamExt;
-<span class="kw">use </span>core::pin::Pin;
+<span id="166">166</span>
+</pre><pre class="rust"><code><span class="kw">use </span>core::pin::Pin;
 <span class="kw">use </span>futures_core::ready;
 <span class="kw">use </span>futures_core::stream::TryStream;
 <span class="kw">use </span>futures_core::task::{Context, Poll};
 <span class="kw">use </span>futures_io::{AsyncBufRead, AsyncRead, AsyncWrite};
+<span class="kw">use </span>pin_project_lite::pin_project;
 <span class="kw">use </span>std::cmp;
 <span class="kw">use </span>std::io::{Error, <span class="prelude-ty">Result</span>};
 
-<span class="doccomment">/// Reader for the [`into_async_read`](super::TryStreamExt::into_async_read) method.
-</span><span class="attribute">#[derive(Debug)]
-#[must_use = <span class="string">&quot;readers do nothing unless polled&quot;</span>]
-#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">&quot;io&quot;</span>)))]
-</span><span class="kw">pub struct </span>IntoAsyncRead&lt;St&gt;
-<span class="kw">where
-    </span>St: TryStream&lt;Error = Error&gt; + Unpin,
-    St::Ok: AsRef&lt;[u8]&gt;,
-{
-    stream: St,
-    state: ReadState&lt;St::Ok&gt;,
-}
-
-<span class="kw">impl</span>&lt;St&gt; Unpin <span class="kw">for </span>IntoAsyncRead&lt;St&gt;
-<span class="kw">where
-    </span>St: TryStream&lt;Error = Error&gt; + Unpin,
-    St::Ok: AsRef&lt;[u8]&gt;,
-{
+<span class="macro">pin_project! </span>{
+    <span class="doccomment">/// Reader for the [`into_async_read`](super::TryStreamExt::into_async_read) method.
+    </span><span class="attribute">#[derive(Debug)]
+    #[must_use = <span class="string">&quot;readers do nothing unless polled&quot;</span>]
+    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">&quot;io&quot;</span>)))]
+    </span><span class="kw">pub struct </span>IntoAsyncRead&lt;St&gt;
+    <span class="kw">where
+        </span>St: TryStream&lt;Error = Error&gt;,
+        St::Ok: AsRef&lt;[u8]&gt;,
+    {
+        <span class="attribute">#[pin]
+        </span>stream: St,
+        state: ReadState&lt;St::Ok&gt;,
+    }
 }
 
 <span class="attribute">#[derive(Debug)]
@@ -201,7 +198,7 @@
 
 <span class="kw">impl</span>&lt;St&gt; IntoAsyncRead&lt;St&gt;
 <span class="kw">where
-    </span>St: TryStream&lt;Error = Error&gt; + Unpin,
+    </span>St: TryStream&lt;Error = Error&gt;,
     St::Ok: AsRef&lt;[u8]&gt;,
 {
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>new(stream: St) -&gt; <span class="self">Self </span>{
@@ -211,16 +208,18 @@
 
 <span class="kw">impl</span>&lt;St&gt; AsyncRead <span class="kw">for </span>IntoAsyncRead&lt;St&gt;
 <span class="kw">where
-    </span>St: TryStream&lt;Error = Error&gt; + Unpin,
+    </span>St: TryStream&lt;Error = Error&gt;,
     St::Ok: AsRef&lt;[u8]&gt;,
 {
     <span class="kw">fn </span>poll_read(
-        <span class="kw-2">mut </span><span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;,
+        <span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;,
         cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;,
         buf: <span class="kw-2">&amp;mut </span>[u8],
     ) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>this = <span class="self">self</span>.project();
+
         <span class="kw">loop </span>{
-            <span class="kw">match </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.state {
+            <span class="kw">match </span>this.state {
                 ReadState::Ready { chunk, chunk_start } =&gt; {
                     <span class="kw">let </span>chunk = chunk.as_ref();
                     <span class="kw">let </span>len = cmp::min(buf.len(), chunk.len() - <span class="kw-2">*</span>chunk_start);
@@ -229,23 +228,23 @@
                     <span class="kw-2">*</span>chunk_start += len;
 
                     <span class="kw">if </span>chunk.len() == <span class="kw-2">*</span>chunk_start {
-                        <span class="self">self</span>.state = ReadState::PendingChunk;
+                        <span class="kw-2">*</span>this.state = ReadState::PendingChunk;
                     }
 
                     <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(len));
                 }
-                ReadState::PendingChunk =&gt; <span class="kw">match </span><span class="macro">ready!</span>(<span class="self">self</span>.stream.try_poll_next_unpin(cx)) {
+                ReadState::PendingChunk =&gt; <span class="kw">match </span><span class="macro">ready!</span>(this.stream.as_mut().try_poll_next(cx)) {
                     <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(chunk)) =&gt; {
                         <span class="kw">if </span>!chunk.as_ref().is_empty() {
-                            <span class="self">self</span>.state = ReadState::Ready { chunk, chunk_start: <span class="number">0 </span>};
+                            <span class="kw-2">*</span>this.state = ReadState::Ready { chunk, chunk_start: <span class="number">0 </span>};
                         }
                     }
                     <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(err)) =&gt; {
-                        <span class="self">self</span>.state = ReadState::Eof;
+                        <span class="kw-2">*</span>this.state = ReadState::Eof;
                         <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Err</span>(err));
                     }
                     <span class="prelude-val">None </span>=&gt; {
-                        <span class="self">self</span>.state = ReadState::Eof;
+                        <span class="kw-2">*</span>this.state = ReadState::Eof;
                         <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(<span class="number">0</span>));
                     }
                 },
@@ -259,51 +258,52 @@
 
 <span class="kw">impl</span>&lt;St&gt; AsyncWrite <span class="kw">for </span>IntoAsyncRead&lt;St&gt;
 <span class="kw">where
-    </span>St: TryStream&lt;Error = Error&gt; + AsyncWrite + Unpin,
+    </span>St: TryStream&lt;Error = Error&gt; + AsyncWrite,
     St::Ok: AsRef&lt;[u8]&gt;,
 {
-    <span class="kw">fn </span>poll_write(
-        <span class="kw-2">mut </span><span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;,
-        cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;,
-        buf: <span class="kw-2">&amp;</span>[u8],
-    ) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
-        Pin::new(<span class="kw-2">&amp;mut </span><span class="self">self</span>.stream).poll_write(cx, buf)
+    <span class="kw">fn </span>poll_write(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, buf: <span class="kw-2">&amp;</span>[u8]) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
+        <span class="kw">let </span>this = <span class="self">self</span>.project();
+        this.stream.poll_write(cx, buf)
     }
 
-    <span class="kw">fn </span>poll_flush(<span class="kw-2">mut </span><span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
-        Pin::new(<span class="kw-2">&amp;mut </span><span class="self">self</span>.stream).poll_flush(cx)
+    <span class="kw">fn </span>poll_flush(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="kw">let </span>this = <span class="self">self</span>.project();
+        this.stream.poll_flush(cx)
     }
 
-    <span class="kw">fn </span>poll_close(<span class="kw-2">mut </span><span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
-        Pin::new(<span class="kw-2">&amp;mut </span><span class="self">self</span>.stream).poll_close(cx)
+    <span class="kw">fn </span>poll_close(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="kw">let </span>this = <span class="self">self</span>.project();
+        this.stream.poll_close(cx)
     }
 }
 
 <span class="kw">impl</span>&lt;St&gt; AsyncBufRead <span class="kw">for </span>IntoAsyncRead&lt;St&gt;
 <span class="kw">where
-    </span>St: TryStream&lt;Error = Error&gt; + Unpin,
+    </span>St: TryStream&lt;Error = Error&gt;,
     St::Ok: AsRef&lt;[u8]&gt;,
 {
-    <span class="kw">fn </span>poll_fill_buf(<span class="kw-2">mut </span><span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>[u8]&gt;&gt; {
-        <span class="kw">while let </span>ReadState::PendingChunk = <span class="self">self</span>.state {
-            <span class="kw">match </span><span class="macro">ready!</span>(<span class="self">self</span>.stream.try_poll_next_unpin(cx)) {
+    <span class="kw">fn </span>poll_fill_buf(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>[u8]&gt;&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>this = <span class="self">self</span>.project();
+
+        <span class="kw">while let </span>ReadState::PendingChunk = this.state {
+            <span class="kw">match </span><span class="macro">ready!</span>(this.stream.as_mut().try_poll_next(cx)) {
                 <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(chunk)) =&gt; {
                     <span class="kw">if </span>!chunk.as_ref().is_empty() {
-                        <span class="self">self</span>.state = ReadState::Ready { chunk, chunk_start: <span class="number">0 </span>};
+                        <span class="kw-2">*</span>this.state = ReadState::Ready { chunk, chunk_start: <span class="number">0 </span>};
                     }
                 }
                 <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(err)) =&gt; {
-                    <span class="self">self</span>.state = ReadState::Eof;
+                    <span class="kw-2">*</span>this.state = ReadState::Eof;
                     <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Err</span>(err));
                 }
                 <span class="prelude-val">None </span>=&gt; {
-                    <span class="self">self</span>.state = ReadState::Eof;
+                    <span class="kw-2">*</span>this.state = ReadState::Eof;
                     <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span>[]));
                 }
             }
         }
 
-        <span class="kw">if let </span>ReadState::Ready { <span class="kw-2">ref </span>chunk, chunk_start } = <span class="self">self</span>.into_ref().get_ref().state {
+        <span class="kw">if let </span><span class="kw-2">&amp;mut </span>ReadState::Ready { <span class="kw-2">ref </span>chunk, chunk_start } = this.state {
             <span class="kw">let </span>chunk = chunk.as_ref();
             <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span>chunk[chunk_start..]));
         }
@@ -312,16 +312,18 @@
         </span>Poll::Ready(<span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span>[]))
     }
 
-    <span class="kw">fn </span>consume(<span class="kw-2">mut </span><span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, amount: usize) {
+    <span class="kw">fn </span>consume(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, amount: usize) {
+        <span class="kw">let </span>this = <span class="self">self</span>.project();
+
         <span class="comment">// https://github.com/rust-lang/futures-rs/pull/1556#discussion_r281644295
         </span><span class="kw">if </span>amount == <span class="number">0 </span>{
             <span class="kw">return</span>;
         }
-        <span class="kw">if let </span>ReadState::Ready { chunk, chunk_start } = <span class="kw-2">&amp;mut </span><span class="self">self</span>.state {
+        <span class="kw">if let </span>ReadState::Ready { chunk, chunk_start } = this.state {
             <span class="kw-2">*</span>chunk_start += amount;
             <span class="macro">debug_assert!</span>(<span class="kw-2">*</span>chunk_start &lt;= chunk.as_ref().len());
             <span class="kw">if </span><span class="kw-2">*</span>chunk_start &gt;= chunk.as_ref().len() {
-                <span class="self">self</span>.state = ReadState::PendingChunk;
+                <span class="kw-2">*</span>this.state = ReadState::PendingChunk;
             }
         } <span class="kw">else </span>{
             <span class="macro">debug_assert!</span>(<span class="bool-val">false</span>, <span class="string">&quot;Attempted to consume from IntoAsyncRead without chunk&quot;</span>);
@@ -329,4 +331,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="futures_util" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="futures_util" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

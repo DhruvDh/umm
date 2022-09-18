@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/bpaf-0.4.4/src/info.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>info.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../bpaf/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../bpaf/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../bpaf/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/bpaf-0.5.7/src/info.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>info.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../bpaf/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../bpaf/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../bpaf/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -651,53 +651,15 @@
 <span id="651">651</span>
 <span id="652">652</span>
 <span id="653">653</span>
-<span id="654">654</span>
-<span id="655">655</span>
-<span id="656">656</span>
-<span id="657">657</span>
-<span id="658">658</span>
-<span id="659">659</span>
-<span id="660">660</span>
-<span id="661">661</span>
-<span id="662">662</span>
-<span id="663">663</span>
-<span id="664">664</span>
-<span id="665">665</span>
-<span id="666">666</span>
-<span id="667">667</span>
-<span id="668">668</span>
-<span id="669">669</span>
-<span id="670">670</span>
-<span id="671">671</span>
-<span id="672">672</span>
-<span id="673">673</span>
-<span id="674">674</span>
-<span id="675">675</span>
-<span id="676">676</span>
-<span id="677">677</span>
-<span id="678">678</span>
-<span id="679">679</span>
-<span id="680">680</span>
-<span id="681">681</span>
-<span id="682">682</span>
-<span id="683">683</span>
-<span id="684">684</span>
-<span id="685">685</span>
-<span id="686">686</span>
-<span id="687">687</span>
-<span id="688">688</span>
-<span id="689">689</span>
-<span id="690">690</span>
-<span id="691">691</span>
-<span id="692">692</span>
-<span id="693">693</span>
-<span id="694">694</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Help message generation and rendering
 
 </span><span class="attribute">#![allow(clippy::write_with_newline)]
-</span><span class="kw">use </span>std::rc::Rc;
+</span><span class="kw">use </span>std::marker::PhantomData;
 
-<span class="kw">use crate</span>::{args::Args, params::short, DynParse, Parser};
+<span class="kw">use crate</span>::{
+    args::Args, item::Item, meta_help::render_help, meta_usage::to_usage_meta, params::short,
+    Command, Meta, ParseFailure, Parser,
+};
 
 <span class="doccomment">/// Unsuccessful command line parsing outcome, internal representation
 </span><span class="attribute">#[derive(Clone, Debug)]
@@ -709,13 +671,12 @@
     <span class="doccomment">/// Expected one of those values
     ///
     /// Used internally to generate better error messages
-    </span>Missing(Vec&lt;Meta&gt;),
+    </span>Missing(Vec&lt;Item&gt;),
 }
 
 <span class="kw">impl </span>Error {
-    <span class="attribute">#[doc(hidden)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>combine_with(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+    <span class="attribute">#[must_use]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>combine_with(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
         <span class="attribute">#[allow(clippy::match_same_arms)]
         </span><span class="kw">match </span>(<span class="self">self</span>, other) {
             <span class="comment">// help output takes priority
@@ -726,7 +687,7 @@
             </span>(a @ Error::Stderr(<span class="kw">_</span>), <span class="kw">_</span>) =&gt; a,
             (<span class="kw">_</span>, b @ Error::Stderr(<span class="kw">_</span>)) =&gt; b,
 
-            <span class="comment">// missing elements are combined
+            <span class="comment">// combine missing elements
             </span>(Error::Missing(<span class="kw-2">mut </span>a), Error::Missing(<span class="kw-2">mut </span>b)) =&gt; {
                 a.append(<span class="kw-2">&amp;mut </span>b);
                 Error::Missing(a)
@@ -735,391 +696,11 @@
     }
 }
 
-<span class="attribute">#[doc(hidden)]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-</span><span class="kw">pub enum </span>ItemKind {
-    Flag,
-    Command,
-    Decor,
-    Positional,
-}
-
-<span class="attribute">#[doc(hidden)]
-#[derive(Clone, Debug)]
-</span><span class="kw">pub struct </span>Item {
-    <span class="kw">pub </span>short: <span class="prelude-ty">Option</span>&lt;char&gt;,
-    <span class="kw">pub </span>long: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
-    <span class="kw">pub </span>metavar: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
-    <span class="kw">pub </span>help: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    <span class="kw">pub </span>kind: ItemKind,
-}
-
-<span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>Item {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">match </span><span class="self">self</span>.kind {
-            ItemKind::Flag =&gt; <span class="kw">match </span>(<span class="self">self</span>.short, <span class="self">self</span>.long, <span class="self">self</span>.metavar) {
-                (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(std::fmt::Error), <span class="comment">// Impossible
-                </span>(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(l), <span class="prelude-val">None</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;--{}&quot;</span>, l),
-                (<span class="prelude-val">Some</span>(s), <span class="kw">_</span>, <span class="prelude-val">None</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;-{}&quot;</span>, s),
-                (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(l), <span class="prelude-val">Some</span>(v)) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;--{} {}&quot;</span>, l, v),
-                (<span class="prelude-val">Some</span>(s), <span class="kw">_</span>, <span class="prelude-val">Some</span>(v)) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;-{} {}&quot;</span>, s, v),
-            },
-
-            ItemKind::Command =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;COMMAND ...&quot;</span>),
-            ItemKind::Positional =&gt; <span class="kw">match </span><span class="self">self</span>.metavar {
-                <span class="prelude-val">Some</span>(m) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;&lt;{}&gt;&quot;</span>, m),
-                <span class="prelude-val">None </span>=&gt; <span class="macro">write!</span>(f, <span class="string">&quot;&lt;FILE&gt;&quot;</span>),
-            },
-            ItemKind::Decor =&gt; <span class="prelude-val">Ok</span>(()),
-        }
-    }
-}
-
-<span class="kw">impl </span>Item {
-    <span class="attribute">#[doc(hidden)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>required(<span class="self">self</span>, required: bool) -&gt; Meta {
-        <span class="kw">if </span>required {
-            Meta::Required(Box::new(Meta::Item(<span class="self">self</span>)))
-        } <span class="kw">else </span>{
-            Meta::Optional(Box::new(Meta::Item(<span class="self">self</span>)))
-        }
-    }
-
-    <span class="attribute">#[doc(hidden)]
-    #[must_use]
-    </span><span class="kw">pub const fn </span>name_len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="number">0</span>;
-        res += <span class="kw">match </span><span class="self">self</span>.long {
-            <span class="prelude-val">Some</span>(s) =&gt; s.len() + <span class="number">3</span>,
-            <span class="prelude-val">None </span>=&gt; <span class="number">0</span>,
-        };
-        res += <span class="kw">match </span><span class="self">self</span>.metavar {
-            <span class="prelude-val">Some</span>(s) =&gt; s.len() + <span class="number">2</span>,
-            <span class="prelude-val">None </span>=&gt; <span class="number">0</span>,
-        };
-        res
-    }
-
-    <span class="attribute">#[doc(hidden)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>decoration&lt;M&gt;(help: <span class="prelude-ty">Option</span>&lt;M&gt;) -&gt; <span class="self">Self
-    </span><span class="kw">where
-        </span>M: Into&lt;String&gt;,
-    {
-        <span class="self">Self </span>{
-            short: <span class="prelude-val">None</span>,
-            long: <span class="prelude-val">None</span>,
-            metavar: <span class="prelude-val">None</span>,
-            help: help.map(Into::into),
-            kind: ItemKind::Decor,
-        }
-    }
-
-    <span class="attribute">#[doc(hidden)]
-    #[must_use]
-    </span><span class="kw">pub const fn </span>is_command(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">match </span><span class="self">self</span>.kind {
-            ItemKind::Command =&gt; <span class="bool-val">true</span>,
-            ItemKind::Flag | ItemKind::Decor | ItemKind::Positional =&gt; <span class="bool-val">false</span>,
-        }
-    }
-
-    <span class="attribute">#[doc(hidden)]
-    #[must_use]
-    </span><span class="kw">pub const fn </span>is_flag(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">match </span><span class="self">self</span>.kind {
-            ItemKind::Flag | ItemKind::Decor =&gt; <span class="bool-val">true</span>,
-            ItemKind::Command | ItemKind::Positional =&gt; <span class="bool-val">false</span>,
-        }
-    }
-}
-
-<span class="attribute">#[doc(hidden)]
-#[derive(Clone, Debug)]
-</span><span class="kw">pub enum </span>Meta {
-    <span class="doccomment">/// always fails
-    </span>Empty,
-
-    <span class="doccomment">///
-    </span>And(Vec&lt;Meta&gt;),
-    Or(Vec&lt;Meta&gt;),
-    Required(Box&lt;Meta&gt;),
-    Optional(Box&lt;Meta&gt;),
-    Item(Item),
-    Many(Box&lt;Meta&gt;),
-    Decorated(Box&lt;Meta&gt;, String),
-    Id,
-}
-
-<span class="attribute">#[doc(hidden)]
-</span><span class="kw">impl </span>Meta {
-    <span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>is_required(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">match </span><span class="self">self </span>{
-            Meta::And(xs) =&gt; xs.iter().any(Meta::is_required),
-            Meta::Or(xs) =&gt; xs.iter().all(Meta::is_required),
-            Meta::Required(<span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
-            Meta::Empty | Meta::Optional(<span class="kw">_</span>) | Meta::Many(<span class="kw">_</span>) | Meta::Id =&gt; <span class="bool-val">false</span>,
-            Meta::Item(i) =&gt; <span class="kw">match </span>i.kind {
-                ItemKind::Command =&gt; <span class="bool-val">true</span>,
-                ItemKind::Decor =&gt; <span class="bool-val">false</span>,
-                ItemKind::Flag | ItemKind::Positional =&gt; <span class="macro">unreachable!</span>(),
-            },
-            Meta::Decorated(x, <span class="kw">_</span>) =&gt; x.is_required(),
-        }
-    }
-
-    <span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>or(<span class="self">self</span>, other: Meta) -&gt; <span class="self">Self </span>{
-        <span class="kw">match </span>(<span class="self">self</span>, other) {
-            (Meta::Id | Meta::Empty, v) | (v, Meta::Empty | Meta::Id) =&gt; v,
-            (Meta::Or(<span class="kw-2">mut </span>a), Meta::Or(<span class="kw-2">mut </span>b)) =&gt; {
-                a.append(<span class="kw-2">&amp;mut </span>b);
-                Meta::Or(a)
-            }
-            (Meta::Or(<span class="kw-2">mut </span>a), b) =&gt; {
-                a.push(b);
-                Meta::Or(a)
-            }
-            (a, Meta::Or(<span class="kw-2">mut </span>b)) =&gt; {
-                b.push(a);
-                Meta::Or(b)
-            }
-            (a, b) =&gt; Meta::Or(<span class="macro">vec!</span>[a, b]),
-        }
-    }
-
-    <span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>and(<span class="self">self</span>, other: Meta) -&gt; <span class="self">Self </span>{
-        <span class="kw">match </span>(<span class="self">self</span>, other) {
-            (Meta::Id, a) =&gt; a,
-            (b, Meta::Id) =&gt; b,
-            (Meta::And(<span class="kw-2">mut </span>xs), Meta::And(<span class="kw-2">mut </span>ys)) =&gt; {
-                xs.append(<span class="kw-2">&amp;mut </span>ys);
-                Meta::And(xs)
-            }
-            (Meta::And(<span class="kw-2">mut </span>xs), b) =&gt; {
-                xs.push(b);
-                Meta::And(xs)
-            }
-            (a, Meta::And(<span class="kw-2">mut </span>ys)) =&gt; {
-                ys.push(a);
-                Meta::And(ys)
-            }
-            (a, b) =&gt; Meta::And(<span class="macro">vec!</span>[a, b]),
-        }
-    }
-
-    <span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>optional(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        <span class="kw">match </span><span class="self">self </span>{
-            Meta::Required(m) =&gt; Meta::Optional(m),
-            m @ (Meta::Optional(<span class="kw">_</span>)
-            | Meta::Empty
-            | Meta::And(<span class="kw">_</span>)
-            | Meta::Or(<span class="kw">_</span>)
-            | Meta::Item(<span class="kw">_</span>)
-            | Meta::Many(<span class="kw">_</span>)
-            | Meta::Decorated(..)
-            | Meta::Id) =&gt; Meta::Optional(Box::new(m)),
-        }
-    }
-
-    <span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>required(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        Meta::Required(Box::new(<span class="self">self</span>))
-    }
-
-    <span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>many(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        Meta::Many(Box::new(<span class="self">self</span>))
-    }
-
-    <span class="kw">pub fn </span>commands(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;Item&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>res = Vec::new();
-        <span class="self">self</span>.collect_items(<span class="kw-2">&amp;mut </span>res, Item::is_command);
-        res
-    }
-
-    <span class="kw">pub fn </span>flags(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;Item&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>res = Vec::new();
-        <span class="self">self</span>.collect_items(<span class="kw-2">&amp;mut </span>res, Item::is_flag);
-        res
-    }
-
-    <span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>decorate&lt;M&gt;(<span class="self">self</span>, msg: M) -&gt; <span class="self">Self
-    </span><span class="kw">where
-        </span>M: Into&lt;String&gt;,
-    {
-        Meta::Decorated(Box::new(<span class="self">self</span>), msg.into())
-    }
-
-    <span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">match </span><span class="self">self </span>{
-            Meta::Empty | Meta::Id =&gt; <span class="bool-val">true</span>,
-            Meta::And(xs) | Meta::Or(xs) =&gt; xs.iter().all(Meta::is_empty),
-            Meta::Required(x) | Meta::Optional(x) | Meta::Many(x) | Meta::Decorated(x, <span class="kw">_</span>) =&gt; {
-                x.is_empty()
-            }
-            Meta::Item(<span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
-        }
-    }
-
-    <span class="kw">fn </span>collect_items&lt;F&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, res: <span class="kw-2">&amp;mut </span>Vec&lt;Item&gt;, pred: F)
-    <span class="kw">where
-        </span>F: Fn(<span class="kw-2">&amp;</span>Item) -&gt; bool + Copy,
-    {
-        <span class="kw">match </span><span class="self">self </span>{
-            Meta::Empty | Meta::Id =&gt; {}
-            Meta::And(xs) | Meta::Or(xs) =&gt; {
-                <span class="kw">for </span>x <span class="kw">in </span>xs {
-                    x.collect_items(res, pred);
-                }
-            }
-            Meta::Required(a) | Meta::Many(a) | Meta::Optional(a) =&gt; a.collect_items(res, pred),
-            Meta::Item(i) =&gt; {
-                <span class="kw">if </span>pred(i) {
-                    res.push(i.clone());
-                }
-            }
-            Meta::Decorated(x, msg) =&gt; {
-                res.push(Item::decoration(<span class="prelude-val">Some</span>(msg)));
-                <span class="kw">let </span>prev_len = res.len();
-                x.collect_items(res, pred);
-                <span class="kw">if </span>res.len() == prev_len {
-                    res.pop();
-                } <span class="kw">else </span>{
-                    res.push(Item::decoration(<span class="prelude-val">None</span>::&lt;String&gt;));
-                }
-            }
-        }
-    }
-
-    <span class="kw">fn </span>is_simple(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">match </span><span class="self">self </span>{
-            Meta::Empty | Meta::Id | Meta::Item(<span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
-            Meta::And(<span class="kw">_</span>) | Meta::Or(<span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
-            Meta::Required(m) | Meta::Optional(m) | Meta::Many(m) | Meta::Decorated(m, <span class="kw">_</span>) =&gt; {
-                m.is_simple()
-            }
-        }
-    }
-}
-
-<span class="kw">fn </span>dedup(prev: <span class="kw-2">&amp;mut </span><span class="prelude-ty">Option</span>&lt;Item&gt;, cur: <span class="kw-2">&amp;</span>Meta) -&gt; bool {
-    <span class="kw">let </span>item = <span class="kw">if let </span>Meta::Item(item) = cur {
-        item
-    } <span class="kw">else </span>{
-        <span class="kw">return </span><span class="bool-val">true</span>;
-    };
-    <span class="kw">match </span>prev {
-        <span class="prelude-val">Some</span>(p) =&gt; {
-            <span class="kw">if </span>p.kind == ItemKind::Command &amp;&amp; item.kind == ItemKind::Command {
-                <span class="bool-val">false
-            </span>} <span class="kw">else </span>{
-                <span class="kw-2">*</span>prev = <span class="prelude-val">Some</span>(item.clone());
-                <span class="bool-val">true
-            </span>}
-        }
-        <span class="prelude-val">None </span>=&gt; {
-            <span class="kw-2">*</span>prev = <span class="prelude-val">Some</span>(item.clone());
-            <span class="bool-val">true
-        </span>}
-    }
-}
-
-<span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>Meta {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">match </span><span class="self">self </span>{
-            Meta::Empty =&gt; <span class="prelude-val">Ok</span>(()),
-            Meta::And(xs) =&gt; {
-                <span class="kw">for </span>(ix, x) <span class="kw">in </span>xs.iter().enumerate() {
-                    <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, x)<span class="question-mark">?</span>;
-                    <span class="kw">if </span>ix + <span class="number">1 </span>&lt; xs.len() &amp;&amp; !x.is_empty() {
-                        <span class="macro">write!</span>(f, <span class="string">&quot; &quot;</span>)<span class="question-mark">?</span>;
-                    }
-                }
-                <span class="prelude-val">Ok</span>(())
-            }
-            Meta::Or(xs) =&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>prev = <span class="prelude-val">None</span>;
-                <span class="kw">let </span>xs = xs
-                    .iter()
-                    .filter(|i| dedup(<span class="kw-2">&amp;mut </span>prev, i))
-                    .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
-                <span class="kw">let </span>required = <span class="self">self</span>.is_required();
-                <span class="kw">if </span>!required {
-                    <span class="macro">write!</span>(f, <span class="string">&quot;[&quot;</span>)<span class="question-mark">?</span>;
-                } <span class="kw">else if </span>xs.len() &gt; <span class="number">1 </span>{
-                    <span class="macro">write!</span>(f, <span class="string">&quot;(&quot;</span>)<span class="question-mark">?</span>;
-                } <span class="kw">else </span>{
-                    <span class="comment">// no arguments left, nothing to print here
-                </span>}
-                <span class="kw">for </span>(ix, x) <span class="kw">in </span>xs.iter().enumerate() {
-                    <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, x)<span class="question-mark">?</span>;
-                    <span class="kw">if </span>ix + <span class="number">1 </span>&lt; xs.len() {
-                        <span class="macro">write!</span>(f, <span class="string">&quot; | &quot;</span>)<span class="question-mark">?</span>;
-                    }
-                }
-                <span class="kw">if </span>!required {
-                    <span class="macro">write!</span>(f, <span class="string">&quot;]&quot;</span>)<span class="question-mark">?</span>;
-                } <span class="kw">else if </span>xs.len() &gt; <span class="number">1 </span>{
-                    <span class="macro">write!</span>(f, <span class="string">&quot;)&quot;</span>)<span class="question-mark">?</span>;
-                } <span class="kw">else </span>{
-                    <span class="comment">// no arguments left, nothing to print here
-                </span>}
-                <span class="prelude-val">Ok</span>(())
-            }
-            Meta::Required(m) <span class="kw">if </span>m.is_simple() =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, m),
-            Meta::Required(m) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;({})&quot;</span>, m),
-            Meta::Optional(m) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;[{}]&quot;</span>, m),
-            Meta::Many(m) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}...&quot;</span>, m),
-            Meta::Item(i) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, i),
-            Meta::Id =&gt; <span class="prelude-val">Ok</span>(()),
-            Meta::Decorated(x, <span class="kw">_</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, x),
-        }
-    }
-}
-
-<span class="kw">impl </span>From&lt;Item&gt; <span class="kw">for </span>Meta {
-    <span class="kw">fn </span>from(item: Item) -&gt; <span class="self">Self </span>{
-        Meta::Item(item)
-    }
-}
-
-<span class="doccomment">/// Parser with atteched meta information
-</span><span class="attribute">#[derive(Clone)]
-</span><span class="kw">pub struct </span>OptionParser&lt;T&gt; {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) parse: Rc&lt;DynParse&lt;T&gt;&gt;,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) parser_meta: Meta,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) help_meta: Meta,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) info: Info,
-}
-
-<span class="kw">impl</span>&lt;T&gt; OptionParser&lt;T&gt; {
-    <span class="doccomment">/// Return current help message for outer parser as a string
-    </span><span class="kw">pub fn </span>render_help(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;String, std::fmt::Error&gt; {
-        <span class="self">self</span>.info
-            .clone()
-            .render_help(<span class="self">self</span>.parser_meta.clone(), <span class="self">self</span>.help_meta.clone())
-    }
-}
-
 <span class="doccomment">/// Information about the parser
 ///
-/// ```rust
-/// # use bpaf::*;
-/// let info = Info::default()
-///                .version(env!(&quot;CARGO_PKG_VERSION&quot;))
-///                .descr(&quot;Does mothing&quot;)
-///                .footer(&quot;Beware of the Leopard&quot;);
-/// # drop(info);
-/// ```
+/// No longer public, users are only interacting with it via [`OptionParser`]
 </span><span class="attribute">#[derive(Debug, Clone, Default)]
-</span><span class="kw">pub struct </span>Info {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>Info {
     <span class="doccomment">/// version field, see [`version`][Info::version]
     </span><span class="kw">pub </span>version: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
     <span class="doccomment">/// Custom description field, see [`descr`][Info::descr]
@@ -1133,258 +714,595 @@
 }
 
 <span class="kw">impl </span>Info {
-    <span class="doccomment">/// Set a version field.
-    ///
-    /// By default bpaf won&#39;t include any version info and won&#39;t accept `--version` switch
-    ///
-    /// ```rust
-    /// # use bpaf::*;
-    /// let info = Info::default().version(env!(&quot;CARGO_PKG_VERSION&quot;));
-    /// # drop(info);
-    /// ```
-    </span><span class="attribute">#[must_use]
-    </span><span class="kw">pub const fn </span>version(<span class="kw-2">mut </span><span class="self">self</span>, version: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.version = <span class="prelude-val">Some</span>(version);
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">/// Set a program description
-    ///
-    /// ```rust
-    /// # use bpaf::*;
-    /// let info = Info::default().descr(&quot;This program calculates rectangle&#39;s area&quot;);
-    /// # drop(info);
-    /// ```
-    /// See complete example in `examples/rectangle.rs`
-    </span><span class="attribute">#[must_use]
-    </span><span class="kw">pub const fn </span>descr(<span class="kw-2">mut </span><span class="self">self</span>, descr: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.descr = <span class="prelude-val">Some</span>(descr);
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">/// Set a custom header before all the options
-    /// ```rust
-    /// # use bpaf::*;
-    /// let info = Info::default().header(&quot;header&quot;);
-    /// # drop(info);
-    /// ```
-    /// See complete example in `examples/rectangle.rs`
-    </span><span class="attribute">#[must_use]
-    </span><span class="kw">pub const fn </span>header(<span class="kw-2">mut </span><span class="self">self</span>, header: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.header = <span class="prelude-val">Some</span>(header);
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">/// Set a custom header after all the options
-    /// ```rust
-    /// # use bpaf::*;
-    /// let info = Info::default().header(&quot;footer&quot;);
-    /// # drop(info);
-    /// ```
-    /// See complete example in `examples/rectangle.rs`
-    </span><span class="attribute">#[must_use]
-    </span><span class="kw">pub const fn </span>footer(<span class="kw-2">mut </span><span class="self">self</span>, footer: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.footer = <span class="prelude-val">Some</span>(footer);
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">/// Replace generated usage string with a custom one
-    /// ```rust
-    /// # use bpaf::*;
-    /// let info = Info::default().usage(&quot;example [-v] -w &lt;PX&gt; -h &lt;PX&gt;&quot;);
-    /// # drop(info);
-    /// ```
-    /// See complete example in `examples/rectangle.rs`
-    </span><span class="attribute">#[must_use]
-    </span><span class="kw">pub const fn </span>usage(<span class="kw-2">mut </span><span class="self">self</span>, usage: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.usage = <span class="prelude-val">Some</span>(usage);
-        <span class="self">self
-    </span>}
-
-    <span class="kw">fn </span>help_parser(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Parser&lt;ExtraParams&gt; {
-        <span class="kw">let </span>help = short(<span class="string">&#39;h&#39;</span>)
-            .long(<span class="string">&quot;help&quot;</span>)
-            .help(<span class="string">&quot;Prints help information&quot;</span>)
-            .req_flag(ExtraParams::Help);
-
-        <span class="kw">match </span><span class="self">self</span>.version {
-            <span class="prelude-val">Some</span>(v) =&gt; help.or_else(
-                short(<span class="string">&#39;V&#39;</span>)
-                    .long(<span class="string">&quot;version&quot;</span>)
-                    .help(<span class="string">&quot;Prints version information&quot;</span>)
-                    .req_flag(ExtraParams::Version(v)),
-            ),
-            <span class="prelude-val">None </span>=&gt; help,
-        }
-    }
-
-    <span class="kw">fn </span>render_help(<span class="self">self</span>, parser_meta: Meta, help_meta: Meta) -&gt; <span class="prelude-ty">Result</span>&lt;String, std::fmt::Error&gt; {
-        <span class="kw">use </span>std::fmt::Write;
-        <span class="kw">let </span><span class="kw-2">mut </span>res = String::new();
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(t) = <span class="self">self</span>.descr {
-            <span class="macro">write!</span>(res, <span class="string">&quot;{}\n\n&quot;</span>, t)<span class="question-mark">?</span>;
-        }
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(u) = <span class="self">self</span>.usage {
-            <span class="macro">write!</span>(res, <span class="string">&quot;{}\n\n&quot;</span>, u)<span class="question-mark">?</span>;
-        } <span class="kw">else </span>{
-            <span class="macro">write!</span>(res, <span class="string">&quot;Usage: {}&quot;</span>, parser_meta)<span class="question-mark">?</span>;
-            <span class="comment">// strip unnecessary spaces inserted by previous writes
-            </span>res.truncate(res.trim_end_matches(<span class="string">&#39; &#39;</span>).len());
-            <span class="macro">write!</span>(res, <span class="string">&quot;\n&quot;</span>)<span class="question-mark">?</span>;
-        }
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(t) = <span class="self">self</span>.header {
-            <span class="macro">write!</span>(res, <span class="string">&quot;\n{}\n&quot;</span>, t)<span class="question-mark">?</span>;
-        }
-        <span class="kw">let </span>meta = Meta::and(parser_meta, help_meta);
-        <span class="kw">let </span>flags = <span class="kw-2">&amp;</span>meta.flags();
-
-        <span class="kw">let </span>max_name_width = flags.iter().map(Item::name_len).max().unwrap_or(<span class="number">0</span>);
-        <span class="kw">if </span>!flags.is_empty() {
-            <span class="macro">write!</span>(res, <span class="string">&quot;\nAvailable options:\n&quot;</span>)<span class="question-mark">?</span>;
-        }
-        <span class="kw">for </span>i <span class="kw">in </span>flags {
-            <span class="kw">match </span>i.short {
-                <span class="prelude-val">Some</span>(c) =&gt; <span class="macro">write!</span>(res, <span class="string">&quot;    -{}&quot;</span>, c)<span class="question-mark">?</span>,
-                <span class="prelude-val">None </span>=&gt; <span class="macro">write!</span>(res, <span class="string">&quot;      &quot;</span>)<span class="question-mark">?</span>,
-            }
-            <span class="kw">if </span>i.short.is_some() &amp;&amp; i.long.is_some() {
-                <span class="macro">write!</span>(res, <span class="string">&quot;, &quot;</span>)<span class="question-mark">?</span>;
-            } <span class="kw">else </span>{
-                <span class="macro">write!</span>(res, <span class="string">&quot;  &quot;</span>)<span class="question-mark">?</span>;
-            }
-            <span class="kw">match </span>(i.long, i.metavar) {
-                (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; <span class="macro">write!</span>(res, <span class="string">&quot;{:ident$}&quot;</span>, <span class="string">&quot;&quot;</span>, ident = max_name_width + <span class="number">2</span>)<span class="question-mark">?</span>,
-                (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(m)) =&gt; <span class="macro">write!</span>(
-                    res,
-                    <span class="string">&quot;&lt;{}&gt;{:ident$}&quot;</span>,
-                    m,
-                    <span class="string">&quot;&quot;</span>,
-                    ident = max_name_width - m.len()
-                )<span class="question-mark">?</span>,
-                (<span class="prelude-val">Some</span>(l), <span class="prelude-val">None</span>) =&gt; <span class="macro">write!</span>(res, <span class="string">&quot;--{:ident$}&quot;</span>, l, ident = max_name_width)<span class="question-mark">?</span>,
-                (<span class="prelude-val">Some</span>(l), <span class="prelude-val">Some</span>(m)) =&gt; <span class="macro">write!</span>(
-                    res,
-                    <span class="string">&quot;--{:ident$}&quot;</span>,
-                    <span class="macro">format!</span>(<span class="string">&quot;{} &lt;{}&gt;&quot;</span>, l, m),
-                    ident = max_name_width
-                )<span class="question-mark">?</span>,
-            }
-            <span class="kw">match </span><span class="kw-2">&amp;</span>i.help {
-                <span class="prelude-val">Some</span>(h) =&gt; {
-                    <span class="kw">for </span>(ix, line) <span class="kw">in </span>h.split(<span class="string">&#39;\n&#39;</span>).enumerate() {
-                        <span class="kw">if </span>ix == <span class="number">0 </span>{
-                            <span class="macro">write!</span>(res, <span class="string">&quot;{}\n&quot;</span>, line)<span class="question-mark">?</span>;
-                        } <span class="kw">else </span>{
-                            <span class="macro">write!</span>(res, <span class="string">&quot;{:ident$}{}\n&quot;</span>, <span class="string">&quot;&quot;</span>, line, ident = max_name_width + <span class="number">10</span>)<span class="question-mark">?</span>;
-                        }
-                    }
-                }
-                <span class="prelude-val">None </span>=&gt; {
-                    <span class="comment">// strip unnecessary spaces inserted by previous writes
-                    </span>res.truncate(res.trim_end_matches(<span class="string">&#39; &#39;</span>).len());
-                    <span class="macro">write!</span>(res, <span class="string">&quot;\n&quot;</span>)<span class="question-mark">?</span>;
-                }
-            }
-        }
-
-        <span class="kw">let </span>commands = <span class="kw-2">&amp;</span>meta.commands();
-        <span class="kw">if </span>!commands.is_empty() {
-            <span class="macro">write!</span>(res, <span class="string">&quot;\nAvailable commands:\n&quot;</span>)<span class="question-mark">?</span>;
-        }
-        <span class="kw">let </span>max_command_width = commands
-            .iter()
-            .map(|i| i.long.map_or(<span class="number">0</span>, str::len))
-            .max()
-            .unwrap_or(<span class="number">0</span>);
-        <span class="kw">for </span>c <span class="kw">in </span>commands {
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(l) = c.long {
-                <span class="macro">write!</span>(res, <span class="string">&quot;    {:indent$}&quot;</span>, l, indent = max_command_width)<span class="question-mark">?</span>;
-            } <span class="kw">else </span>{
-                <span class="macro">write!</span>(res, <span class="string">&quot;    {:indent$}&quot;</span>, <span class="string">&quot;&quot;</span>, indent = max_command_width)<span class="question-mark">?</span>;
-            }
-            <span class="kw">match </span><span class="kw-2">&amp;</span>c.help {
-                <span class="prelude-val">Some</span>(help) =&gt; {
-                    <span class="macro">write!</span>(res, <span class="string">&quot;  {}\n&quot;</span>, help)<span class="question-mark">?</span>;
-                }
-                <span class="prelude-val">None </span>=&gt; {
-                    <span class="comment">// strip unnecessary spaces inserted by previous writes
-                    </span>res.truncate(res.trim_end_matches(<span class="string">&#39; &#39;</span>).len());
-                    <span class="macro">writeln!</span>(res)<span class="question-mark">?</span>;
-                }
-            }
-        }
-
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(t) = <span class="self">self</span>.footer {
-            <span class="macro">write!</span>(res, <span class="string">&quot;\n{}\n&quot;</span>, t)<span class="question-mark">?</span>;
-        }
-        <span class="prelude-val">Ok</span>(res)
-    }
-
-    <span class="doccomment">/// Attach additional information to the parser
-    </span><span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>for_parser&lt;T&gt;(<span class="self">self</span>, parser: Parser&lt;T&gt;) -&gt; OptionParser&lt;T&gt;
-    <span class="kw">where
-        </span>T: <span class="lifetime">&#39;static </span>+ Clone + std::fmt::Debug,
-    {
-        <span class="kw">let </span>parser_meta = parser.meta.clone();
-        <span class="kw">let </span>help_meta = <span class="self">self</span>.help_parser().meta;
-        <span class="kw">let </span>Parser {
-            parse: p_parse,
-            meta: p_meta,
-        } = parser;
-        <span class="kw">let </span>info = <span class="self">self</span>.clone();
-        <span class="kw">let </span>p = <span class="kw">move </span>|args: Args| {
-            <span class="kw">let </span>err = <span class="kw">match </span>p_parse(args.clone()).and_then(check_unexpected) {
-                <span class="prelude-val">Ok</span>(r) =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(r),
-
-                <span class="comment">// Stderr means
-                </span><span class="prelude-val">Err</span>(Error::Stderr(e)) =&gt; Error::Stderr(e),
-
-                <span class="comment">// Stdout usually means a happy path such as calling --help or --version on one of
-                // the nested commands
-                </span><span class="prelude-val">Err</span>(Error::Stdout(e)) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Stdout(e)),
-                <span class="prelude-val">Err</span>(err) =&gt; err,
-            };
-
-            <span class="kw">match </span>(<span class="self">self</span>.help_parser().parse)(args) {
-                <span class="prelude-val">Ok</span>((ExtraParams::Help, <span class="kw">_</span>)) =&gt; {
-                    <span class="kw">let </span>msg = <span class="self">self
-                        </span>.clone()
-                        .render_help(p_meta.clone(), <span class="self">self</span>.help_parser().meta)
-                        .expect(<span class="string">&quot;Couldn&#39;t render help&quot;</span>);
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Stdout(msg));
-                }
-                <span class="prelude-val">Ok</span>((ExtraParams::Version(v), <span class="kw">_</span>)) =&gt; {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Stdout(<span class="macro">format!</span>(<span class="string">&quot;Version: {}&quot;</span>, v)));
-                }
-                <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {}
-            }
-            <span class="prelude-val">Err</span>(err)
-        };
-        OptionParser {
-            parse: Rc::new(p),
-            info,
-            parser_meta,
-            help_meta,
+    <span class="kw">fn </span>help_parser(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Parser&lt;ExtraParams&gt; {
+        ParseExtraParams {
+            version: <span class="self">self</span>.version,
         }
     }
 }
 
-<span class="attribute">#[doc(hidden)]
-#[derive(Clone, Debug)]
-</span><span class="kw">pub enum </span>ExtraParams {
+<span class="attribute">#[derive(Clone, Debug)]
+</span><span class="kw">enum </span>ExtraParams {
     Help,
     Version(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str),
 }
 
-<span class="kw">fn </span>check_unexpected&lt;T&gt;((t, args): (T, Args)) -&gt; <span class="prelude-ty">Result</span>&lt;(T, Args), Error&gt; {
+<span class="kw">fn </span>check_unexpected(args: <span class="kw-2">&amp;</span>Args) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
     <span class="kw">match </span>args.peek() {
-        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>((t, args)),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(()),
         <span class="prelude-val">Some</span>(item) =&gt; <span class="prelude-val">Err</span>(Error::Stderr(<span class="macro">format!</span>(
             <span class="string">&quot;{} is not expected in this context&quot;</span>,
             item
         ))),
     }
 }
+
+<span class="doccomment">/// Ready to run [`Parser`] with additional information attached
+///
+/// Created with [`to_options`](Parser::to_options)
+</span><span class="kw">pub struct </span>OptionParser&lt;T&gt; {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) inner: Box&lt;<span class="kw">dyn </span>Parser&lt;T&gt;&gt;,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) inner_type: PhantomData&lt;T&gt;,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) info: Info,
+}
+
+<span class="kw">impl</span>&lt;T&gt; OptionParser&lt;T&gt; {
+    <span class="doccomment">/// Execute the [`OptionParser`], extract a parsed value or print some diagnostic and exit
+    ///
+    /// # Usage
+    /// ```no_run
+    /// # use bpaf::*;
+    /// /// Parses number of repetitions of `-v` on a command line
+    /// fn verbosity() -&gt; OptionParser&lt;usize&gt; {
+    ///     let parser = short(&#39;v&#39;)
+    ///         .req_flag(())
+    ///         .many()
+    ///         .map(|xs|xs.len());
+    ///
+    ///     parser
+    ///         .to_options()
+    ///         .descr(&quot;Takes verbosity flag and does nothing else&quot;)
+    /// }
+    ///
+    /// fn main() {
+    ///     let verbosity: usize = verbosity().run();
+    /// }
+    /// ```
+    </span><span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>run(<span class="self">self</span>) -&gt; T
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+    {
+        <span class="kw">let </span><span class="kw-2">mut </span>arg_vec = Vec::new();
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;autocomplete&quot;</span>)]
+        </span><span class="kw">let </span><span class="kw-2">mut </span>complete_vec = Vec::new();
+
+        <span class="kw">let </span><span class="kw-2">mut </span>args = std::env::args_os();
+
+        <span class="attribute">#[allow(unused_variables)]
+        </span><span class="kw">let </span>name = args.next().expect(<span class="string">&quot;no command name from args_os?&quot;</span>);
+
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;autocomplete&quot;</span>)]
+        </span><span class="kw">for </span>arg <span class="kw">in </span>args {
+            <span class="kw">if </span>arg
+                .to_str()
+                .map_or(<span class="bool-val">false</span>, |s| s.starts_with(<span class="string">&quot;--bpaf-complete-&quot;</span>))
+            {
+                complete_vec.push(arg);
+            } <span class="kw">else </span>{
+                arg_vec.push(arg);
+            }
+        }
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;autocomplete&quot;</span>))]
+        </span>arg_vec.extend(args);
+
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;autocomplete&quot;</span>)]
+        </span><span class="kw">let </span>args = <span class="kw">crate</span>::complete_run::args_with_complete(name, <span class="kw-2">&amp;</span>arg_vec, <span class="kw-2">&amp;</span>complete_vec);
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;autocomplete&quot;</span>))]
+        </span><span class="kw">let </span>args = Args::from(arg_vec.as_slice());
+
+        <span class="kw">match </span><span class="self">self</span>.run_inner(args) {
+            <span class="prelude-val">Ok</span>(t) =&gt; t,
+            <span class="prelude-val">Err</span>(ParseFailure::Stdout(msg)) =&gt; {
+                <span class="macro">print!</span>(<span class="string">&quot;{}&quot;</span>, msg); <span class="comment">// completions are sad otherwise
+                </span>std::process::exit(<span class="number">0</span>);
+            }
+            <span class="prelude-val">Err</span>(ParseFailure::Stderr(msg)) =&gt; {
+                <span class="macro">eprintln!</span>(<span class="string">&quot;{}&quot;</span>, msg);
+                std::process::exit(<span class="number">1</span>);
+            }
+        }
+    }
+
+    <span class="doccomment">/// Execute the [`OptionParser`] and produce a values for unit tests or manual processing
+    ///
+    /// ```rust
+    /// # use bpaf::*;
+    /// # /*
+    /// #[test]
+    /// fn positional_argument() {
+    /// # */
+    ///     let parser =
+    ///         positional(&quot;FILE&quot;)
+    ///             .help(&quot;File to process&quot;)
+    ///             .to_options();
+    ///
+    ///     let help = parser
+    ///         .run_inner(Args::from(&amp;[&quot;--help&quot;]))
+    ///         .unwrap_err()
+    ///         .unwrap_stdout();
+    ///     let expected_help = &quot;\
+    /// Usage: &lt;FILE&gt;
+    ///
+    /// Available positional items:
+    ///     &lt;FILE&gt;  File to process
+    ///
+    /// Available options:
+    ///     -h, --help  Prints help information
+    /// &quot;;
+    ///     assert_eq!(expected_help, help);
+    /// # /*
+    /// }
+    /// # */
+    /// ```
+    ///
+    /// See also [`Args`] and it&#39;s `From` impls to produce input and
+    /// [`ParseFailure::unwrap_stderr`] / [`ParseFailure::unwrap_stdout`] for processing results.
+    ///
+    /// # Errors
+    ///
+    /// If parser can&#39;t produce desired result `run_inner` returns [`ParseFailure`]
+    /// which represents runtime behavior: one branch to print something to stdout and exit with
+    /// success and the other branch to print something to stderr and exit with failure.
+    ///
+    /// `bpaf` generates contents of this `ParseFailure` using expected textual output from
+    /// [`parse`](Parser::parse), stdout/stderr isn&#39;t actually captured.
+    ///
+    /// Exact string reperentations may change between versions including minor releases.
+    </span><span class="kw">pub fn </span>run_inner(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>args: Args) -&gt; <span class="prelude-ty">Result</span>&lt;T, ParseFailure&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+    {
+        <span class="kw">match </span><span class="self">self</span>.run_subparser(<span class="kw-2">&amp;mut </span>args) {
+            <span class="prelude-val">Ok</span>(t) <span class="kw">if </span>args.is_empty() =&gt; <span class="prelude-val">Ok</span>(t),
+            <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(ParseFailure::Stderr(<span class="macro">format!</span>(<span class="string">&quot;unexpected {:?}&quot;</span>, args))),
+            <span class="prelude-val">Err</span>(err) =&gt; <span class="kw">match </span>report_missing_items(err) {
+                Error::Stdout(msg) =&gt; <span class="prelude-val">Err</span>(ParseFailure::Stdout(msg)),
+                Error::Stderr(msg) =&gt; <span class="prelude-val">Err</span>(ParseFailure::Stderr(msg)),
+                Error::Missing(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
+            },
+        }
+    }
+
+    <span class="doccomment">/// Run subparser, implementation detail
+    </span><span class="attribute">#[doc(hidden)]
+    </span><span class="kw">pub fn </span>run_subparser(<span class="kw-2">&amp;</span><span class="self">self</span>, args: <span class="kw-2">&amp;mut </span>Args) -&gt; <span class="prelude-ty">Result</span>&lt;T, Error&gt; {
+        <span class="kw">let </span>depth = args.depth;
+        <span class="kw">let </span>res = <span class="self">self</span>.inner.eval(args);
+        <span class="kw">if let </span><span class="prelude-val">Err</span>(Error::Stdout(<span class="kw">_</span>)) = <span class="kw-2">&amp;</span>res {
+            <span class="kw">return </span>res;
+        }
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;autocomplete&quot;</span>)]
+        </span>args.check_complete()<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>err = <span class="kw">match </span>res {
+            <span class="prelude-val">Ok</span>(r) =&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = check_unexpected(args) {
+                    err
+                } <span class="kw">else </span>{
+                    <span class="kw">return </span><span class="prelude-val">Ok</span>(r);
+                }
+            }
+
+            <span class="comment">// Stderr means nested parser couldn&#39;t parse something, store it,
+            // report it if parsing --help and --version also fails
+            </span><span class="prelude-val">Err</span>(Error::Stderr(e)) =&gt; Error::Stderr(e),
+
+            <span class="comment">// Stdout usually means a happy path such as calling --help or --version on one of
+            // the nested commands
+            </span><span class="prelude-val">Err</span>(Error::Stdout(e)) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Stdout(e)),
+            <span class="prelude-val">Err</span>(err) =&gt; err,
+        };
+
+        <span class="kw">match </span><span class="self">self</span>.info.help_parser().eval(args) {
+            <span class="prelude-val">Ok</span>(ExtraParams::Help) =&gt; {
+                <span class="kw">let </span>msg = render_help(
+                    <span class="kw-2">&amp;</span><span class="self">self</span>.info,
+                    <span class="kw-2">&amp;</span><span class="self">self</span>.inner.meta(),
+                    <span class="kw-2">&amp;</span><span class="self">self</span>.info.help_parser().meta(),
+                )
+                .expect(<span class="string">&quot;Couldn&#39;t render help&quot;</span>);
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Stdout(msg));
+            }
+            <span class="prelude-val">Ok</span>(ExtraParams::Version(v)) =&gt; {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Stdout(<span class="macro">format!</span>(<span class="string">&quot;Version: {}&quot;</span>, v)));
+            }
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {}
+        }
+
+        <span class="kw">if </span><span class="kw">crate</span>::meta_youmean::should_suggest(<span class="kw-2">&amp;</span>err) &amp;&amp; args.depth == depth {
+            <span class="kw">crate</span>::meta_youmean::suggest(args, <span class="kw-2">&amp;</span><span class="self">self</span>.inner.meta())<span class="question-mark">?</span>;
+        }
+
+        <span class="prelude-val">Err</span>(report_missing_items(err))
+    }
+    <span class="doccomment">/// Get first line of description if Available
+    ///
+    /// Used internally to avoid duplicating description for [`command`].
+    </span><span class="attribute">#[doc(hidden)]
+    #[must_use]
+    </span><span class="kw">pub fn </span>short_descr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
+        <span class="self">self</span>.info.descr.and_then(|descr| descr.lines().next())
+    }
+
+    <span class="doccomment">/// Set the version field.
+    ///
+    /// By default `bpaf` won&#39;t include any version info and won&#39;t accept `--version` switch.
+    ///
+    /// # Combinatoric usage
+    ///
+    /// ```rust
+    /// use bpaf::*;
+    /// fn options() -&gt; OptionParser&lt;bool&gt;  {
+    ///    short(&#39;s&#39;)
+    ///        .switch()
+    ///        .to_options()
+    ///        .version(env!(&quot;CARGO_PKG_VERSION&quot;))
+    /// }
+    /// ```
+    ///
+    /// # Derive usage
+    ///
+    /// `version` annotation is available after `options` and `command` annotations, takes
+    /// an optional argument - version value to use, otherwise `bpaf_derive` would use value from cargo.
+    ///
+    /// ```rust
+    /// # use bpaf::*;
+    /// #[derive(Debug, Clone, Bpaf)]
+    /// #[bpaf(options, version)]
+    /// struct Options {
+    ///     #[bpaf(short)]
+    ///     switch: bool
+    /// }
+    /// ```
+    ///
+    /// # Example
+    /// ```console
+    /// $ app --version
+    /// Version: 0.5.0
+    /// ```
+    </span><span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>version(<span class="kw-2">mut </span><span class="self">self</span>, version: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.info.version = <span class="prelude-val">Some</span>(version);
+        <span class="self">self
+    </span>}
+    <span class="doccomment">/// Set the description field
+    ///
+    /// Description field should be 1-2 lines long briefly explaining program purpose. If
+    /// description field is present `bpaf` would print it right before the usage line.
+    ///
+    /// # Combinatoric usage
+    /// ```rust
+    /// # use bpaf::*;
+    /// fn options() -&gt; OptionParser&lt;bool&gt;  {
+    ///    short(&#39;s&#39;)
+    ///        .switch()
+    ///        .to_options()
+    ///        .descr(&quot;This is a description&quot;)
+    ///        .header(&quot;This is a header&quot;)
+    ///        .footer(&quot;This is a footer&quot;)
+    /// }
+    /// ```
+    ///
+    /// # Derive usage
+    ///
+    /// `bpaf_derive` uses doc comments on the `struct` / `enum` to derive description, it skips single empty
+    /// lines and uses double empty lines break it into blocks. `bpaf_derive` would use first block as the
+    /// description, second block - header, third block - footer.
+    ///
+    /// ```rust
+    /// # use bpaf::*;
+    /// #[derive(Debug, Clone, Bpaf)]
+    /// #[bpaf(options, version)]
+    /// /// This is a description
+    /// ///
+    /// ///
+    /// /// This is a header
+    /// ///
+    /// ///
+    /// /// This is a footer
+    /// ///
+    /// ///
+    /// /// This is just a comment
+    /// struct Options {
+    ///     #[bpaf(short)]
+    ///     switch: bool
+    /// }
+    /// ```
+    ///
+    /// # Example
+    ///
+    /// ```console
+    /// This is a description
+    ///
+    /// Usage: [-s]
+    ///
+    /// This is a header
+    ///
+    /// Available options:
+    ///     -s
+    ///     -h, --help     Prints help information
+    ///     -V, --version  Prints version information
+    ///
+    /// This is a footer
+    /// ```
+    </span><span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>descr(<span class="kw-2">mut </span><span class="self">self</span>, descr: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.info.descr = <span class="prelude-val">Some</span>(descr);
+        <span class="self">self
+    </span>}
+    <span class="doccomment">/// Set the header field
+    ///
+    /// `bpaf` displays the header between the usage line and a list of the available options in `--help` output
+    ///
+    /// # Combinatoric usage
+    /// ```rust
+    /// # use bpaf::*;
+    /// fn options() -&gt; OptionParser&lt;bool&gt;  {
+    ///    short(&#39;s&#39;)
+    ///        .switch()
+    ///        .to_options()
+    ///        .descr(&quot;This is a description&quot;)
+    ///        .header(&quot;This is a header&quot;)
+    ///        .footer(&quot;This is a footer&quot;)
+    /// }
+    /// ```
+    ///
+    /// # Derive usage
+    ///
+    /// `bpaf_derive` uses doc comments on the `struct` / `enum` to derive description, it skips single empty
+    /// lines and uses double empty lines break it into blocks. `bpaf_derive` would use first block as the
+    /// description, second block - header, third block - footer.
+    ///
+    /// ```rust
+    /// # use bpaf::*;
+    /// #[derive(Debug, Clone, Bpaf)]
+    /// #[bpaf(options, version)]
+    /// /// This is a description
+    /// ///
+    /// ///
+    /// /// This is a header
+    /// ///
+    /// ///
+    /// /// This is a footer
+    /// ///
+    /// ///
+    /// /// This is just a comment
+    /// struct Options {
+    ///     #[bpaf(short)]
+    ///     switch: bool
+    /// }
+    /// ```
+    ///
+    /// # Example
+    ///
+    /// ```console
+    /// This is a description
+    ///
+    /// Usage: [-s]
+    ///
+    /// This is a header
+    ///
+    /// Available options:
+    ///     -s
+    ///     -h, --help     Prints help information
+    ///     -V, --version  Prints version information
+    ///
+    /// This is a footer
+    /// ```
+    </span><span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>header(<span class="kw-2">mut </span><span class="self">self</span>, header: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.info.header = <span class="prelude-val">Some</span>(header);
+        <span class="self">self
+    </span>}
+    <span class="doccomment">/// Set the footer field
+    ///
+    /// `bpaf` displays the footer after list of the available options in `--help` output
+    ///
+    /// # Combinatoric usage
+    /// ```rust
+    /// # use bpaf::*;
+    /// fn options() -&gt; OptionParser&lt;bool&gt;  {
+    ///    short(&#39;s&#39;)
+    ///        .switch()
+    ///        .to_options()
+    ///        .descr(&quot;This is a description&quot;)
+    ///        .header(&quot;This is a header&quot;)
+    ///        .footer(&quot;This is a footer&quot;)
+    /// }
+    /// ```
+    ///
+    /// # Derive usage
+    ///
+    /// `bpaf_derive` uses doc comments on the `struct` / `enum` to derive description, it skips single empty
+    /// lines and uses double empty lines break it into blocks. `bpaf_derive` would use first block as the
+    /// description, second block - header, third block - footer.
+    ///
+    /// ```rust
+    /// # use bpaf::*;
+    /// #[derive(Debug, Clone, Bpaf)]
+    /// #[bpaf(options, version)]
+    /// /// This is a description
+    /// ///
+    /// ///
+    /// /// This is a header
+    /// ///
+    /// ///
+    /// /// This is a footer
+    /// ///
+    /// ///
+    /// /// This is just a comment
+    /// struct Options {
+    ///     #[bpaf(short)]
+    ///     switch: bool
+    /// }
+    /// ```
+    ///
+    /// # Example
+    ///
+    /// ```console
+    /// This is a description
+    ///
+    /// Usage: [-s]
+    ///
+    /// This is a header
+    ///
+    /// Available options:
+    ///     -s
+    ///     -h, --help     Prints help information
+    ///     -V, --version  Prints version information
+    ///
+    /// This is a footer
+    /// ```
+    </span><span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>footer(<span class="kw-2">mut </span><span class="self">self</span>, footer: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.info.footer = <span class="prelude-val">Some</span>(footer);
+        <span class="self">self
+    </span>}
+    <span class="doccomment">/// Set custom usage field
+    ///
+    /// Custom usage field to use instead of one derived by `bpaf`. Custom message should contain
+    /// `&quot;Usage: &quot;` prefix if you want to display one.
+    ///
+    /// Before using it `bpaf` would replace `&quot;{usage}&quot;` tokens inside a custom usage string with
+    /// automatically generated usage.
+    ///
+    /// # Combinatoric usage
+    /// ```rust
+    /// # use bpaf::*;
+    /// fn options() -&gt; OptionParser&lt;bool&gt;  {
+    ///    short(&#39;s&#39;)
+    ///        .switch()
+    ///        .to_options()
+    ///        .usage(&quot;Usage: my_program: {usage}&quot;)
+    /// }
+    /// ```
+    ///
+    /// # Derive usage
+    ///
+    /// Not available directly, but you can call `usage` on generated [`OptionParser`].
+    </span><span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>usage(<span class="kw-2">mut </span><span class="self">self</span>, usage: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.info.usage = <span class="prelude-val">Some</span>(usage);
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Turn `OptionParser` into subcommand parser
+    ///
+    /// This is identical to [`command`](crate::params::command)
+    </span><span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>command(<span class="self">self</span>, name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; Command&lt;T&gt;
+    <span class="kw">where
+        </span>T: <span class="lifetime">&#39;static</span>,
+    {
+        <span class="kw">crate</span>::params::command(name, <span class="self">self</span>)
+    }
+
+    <span class="doccomment">/// Check the invariants `bpaf` relies on for normal operations
+    ///
+    /// Takes a parameter whether to check for cosmetic invariants or not
+    /// (max help width exceeding 120 symbols, etc), currently not in use
+    ///
+    /// Best used as part of your test suite:
+    /// ```no_run
+    /// # use bpaf::*;
+    /// #[test]
+    /// fn check_options() {
+    /// # let options = || short(&#39;p&#39;).switch().to_options();
+    ///     options().check_invariants(false)
+    /// }
+    /// ```
+    ///
+    /// # Panics
+    ///
+    /// `check_invariants` indicates problems with panic
+    </span><span class="kw">pub fn </span>check_invariants(<span class="kw-2">&amp;</span><span class="self">self</span>, _cosmetic: bool) {
+        perform_invariant_check(<span class="kw-2">&amp;</span><span class="self">self</span>.inner.meta(), <span class="bool-val">true</span>);
+    }
+}
+
+<span class="kw">fn </span>report_missing_items(err: Error) -&gt; Error {
+    <span class="kw">match </span>err {
+        Error::Stdout(<span class="kw">_</span>) | Error::Stderr(<span class="kw">_</span>) =&gt; err,
+        Error::Missing(items) =&gt; Error::Stderr(<span class="macro">format!</span>(
+            <span class="string">&quot;Expected {}, pass --help for usage information&quot;</span>,
+            Meta::Or(items.into_iter().map(Meta::Item).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;())
+        )),
+    }
+}
+
+<span class="kw">fn </span>perform_invariant_check(meta: <span class="kw-2">&amp;</span>Meta, fresh: bool) {
+    <span class="kw">if </span>fresh {
+        to_usage_meta(meta);
+    }
+    <span class="kw">match </span>meta {
+        Meta::And(xs) | Meta::Or(xs) =&gt; {
+            <span class="kw">for </span>i <span class="kw">in </span>xs.iter() {
+                perform_invariant_check(i, <span class="bool-val">false</span>);
+            }
+        }
+        Meta::Optional(x) | Meta::Many(x) | Meta::Decorated(x, <span class="kw">_</span>) =&gt; {
+            perform_invariant_check(x, <span class="bool-val">false</span>);
+        }
+        Meta::Item(i) =&gt; <span class="kw">match </span>i {
+            Item::Command { meta, .. } =&gt; perform_invariant_check(meta, <span class="bool-val">true</span>),
+            Item::Positional { .. } | Item::Flag { .. } | Item::Argument { .. } =&gt; {}
+        },
+        Meta::Skip =&gt; {}
+    }
+}
+
+<span class="kw">struct </span>ParseExtraParams {
+    version: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
+}
+
+<span class="kw">impl </span>Parser&lt;ExtraParams&gt; <span class="kw">for </span>ParseExtraParams {
+    <span class="kw">fn </span>eval(<span class="kw-2">&amp;</span><span class="self">self</span>, args: <span class="kw-2">&amp;mut </span>Args) -&gt; <span class="prelude-ty">Result</span>&lt;ExtraParams, Error&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(ok) = ParseExtraParams::help().eval(args) {
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(ok);
+        }
+        <span class="kw">let </span>not_ok = Error::Stderr(String::from(<span class="string">&quot;Not a version or help flag&quot;</span>));
+        <span class="kw">let </span>ver = <span class="self">self</span>.version.ok_or_else(|| not_ok.clone())<span class="question-mark">?</span>;
+
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(ok) = <span class="self">Self</span>::ver(ver).eval(args) {
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(ok);
+        }
+        <span class="prelude-val">Err</span>(not_ok)
+    }
+
+    <span class="kw">fn </span>meta(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Meta {
+        <span class="kw">match </span><span class="self">self</span>.version {
+            <span class="prelude-val">Some</span>(ver) =&gt; Meta::And(<span class="macro">vec!</span>[<span class="self">Self</span>::help().meta(), <span class="self">Self</span>::ver(ver).meta()]),
+            <span class="prelude-val">None </span>=&gt; <span class="self">Self</span>::help().meta(),
+        }
+    }
+}
+
+<span class="kw">impl </span>ParseExtraParams {
+    <span class="attribute">#[inline(never)]
+    </span><span class="kw">fn </span>help() -&gt; <span class="kw">impl </span>Parser&lt;ExtraParams&gt; {
+        short(<span class="string">&#39;h&#39;</span>)
+            .long(<span class="string">&quot;help&quot;</span>)
+            .help(<span class="string">&quot;Prints help information&quot;</span>)
+            .req_flag(ExtraParams::Help)
+    }
+    <span class="attribute">#[inline(never)]
+    </span><span class="kw">fn </span>ver(version: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="kw">impl </span>Parser&lt;ExtraParams&gt; {
+        short(<span class="string">&#39;V&#39;</span>)
+            .long(<span class="string">&quot;version&quot;</span>)
+            .help(<span class="string">&quot;Prints version information&quot;</span>)
+            .req_flag(ExtraParams::Version(version))
+    }
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bpaf" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bpaf" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

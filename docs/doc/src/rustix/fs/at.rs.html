@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rustix-0.34.8/src/fs/at.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>at.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rustix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rustix-0.35.9/src/fs/at.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>at.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rustix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -379,6 +379,12 @@
 <span id="379">379</span>
 <span id="380">380</span>
 <span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
 </pre><pre class="rust"><code><span class="doccomment">//! POSIX-style `*at` functions.
 //!
 //! The `dirfd` argument to these functions may be a file descriptor for a
@@ -386,39 +392,38 @@
 //!
 //! [`cwd`]: crate::fs::cwd
 
-</span><span class="kw">use </span><span class="kw">crate</span>::ffi::{ZStr, ZString};
+</span><span class="kw">use </span><span class="kw">crate</span>::ffi::{CStr, CString};
+<span class="attribute">#[cfg(not(target_os = <span class="string">&quot;illumos&quot;</span>))]
+</span><span class="kw">use </span><span class="kw">crate</span>::fs::Access;
 <span class="attribute">#[cfg(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>))]
 </span><span class="kw">use </span><span class="kw">crate</span>::fs::CloneFlags;
+<span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>, target_os = <span class="string">&quot;wasi&quot;</span>)))]
+</span><span class="kw">use </span><span class="kw">crate</span>::fs::FileType;
 <span class="attribute">#[cfg(any(target_os = <span class="string">&quot;android&quot;</span>, target_os = <span class="string">&quot;linux&quot;</span>))]
 </span><span class="kw">use </span><span class="kw">crate</span>::fs::RenameFlags;
-<span class="kw">use </span><span class="kw">crate</span>::fs::{Stat, Timestamps};
+<span class="kw">use </span><span class="kw">crate</span>::fs::{AtFlags, Mode, OFlags, Stat, Timestamps};
 <span class="kw">use </span><span class="kw">crate</span>::io::{<span class="self">self</span>, OwnedFd};
 <span class="kw">use </span><span class="kw">crate</span>::path::SMALL_PATH_BUFFER_SIZE;
 <span class="attribute">#[cfg(not(target_os = <span class="string">&quot;wasi&quot;</span>))]
 </span><span class="kw">use </span><span class="kw">crate</span>::process::{Gid, Uid};
-<span class="kw">use crate</span>::{imp, path};
+<span class="kw">use crate</span>::{backend, path};
 <span class="kw">use </span>alloc::vec::Vec;
-<span class="kw">use </span>imp::fd::{AsFd, BorrowedFd};
-<span class="attribute">#[cfg(not(target_os = <span class="string">&quot;illumos&quot;</span>))]
-</span><span class="kw">use </span>imp::fs::Access;
-<span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>, target_os = <span class="string">&quot;wasi&quot;</span>)))]
-</span><span class="kw">use </span>imp::fs::FileType;
-<span class="kw">use </span>imp::fs::{AtFlags, Mode, OFlags};
-<span class="kw">use </span>imp::time::Nsecs;
+<span class="kw">use </span>backend::fd::{AsFd, BorrowedFd};
+<span class="kw">use </span>backend::time::types::Nsecs;
 
-<span class="kw">pub use </span>imp::fs::{Dev, RawMode};
+<span class="kw">pub use </span>backend::fs::types::{Dev, RawMode};
 
 <span class="doccomment">/// `UTIME_NOW` for use with [`utimensat`].
 ///
 /// [`utimensat`]: crate::fs::utimensat
 </span><span class="attribute">#[cfg(not(target_os = <span class="string">&quot;redox&quot;</span>))]
-</span><span class="kw">pub const </span>UTIME_NOW: Nsecs = imp::fs::UTIME_NOW <span class="kw">as </span>Nsecs;
+</span><span class="kw">pub const </span>UTIME_NOW: Nsecs = backend::fs::types::UTIME_NOW <span class="kw">as </span>Nsecs;
 
 <span class="doccomment">/// `UTIME_OMIT` for use with [`utimensat`].
 ///
 /// [`utimensat`]: crate::fs::utimensat
 </span><span class="attribute">#[cfg(not(target_os = <span class="string">&quot;redox&quot;</span>))]
-</span><span class="kw">pub const </span>UTIME_OMIT: Nsecs = imp::fs::UTIME_OMIT <span class="kw">as </span>Nsecs;
+</span><span class="kw">pub const </span>UTIME_OMIT: Nsecs = backend::fs::types::UTIME_OMIT <span class="kw">as </span>Nsecs;
 
 <span class="doccomment">/// `openat(dirfd, path, oflags, mode)`—Opens a file.
 ///
@@ -441,7 +446,9 @@
     oflags: OFlags,
     create_mode: Mode,
 ) -&gt; io::Result&lt;OwnedFd&gt; {
-    path.into_with_z_str(|path| imp::fs::syscalls::openat(dirfd.as_fd(), path, oflags, create_mode))
+    path.into_with_c_str(|path| {
+        backend::fs::syscalls::openat(dirfd.as_fd(), path, oflags, create_mode)
+    })
 }
 
 <span class="doccomment">/// `readlinkat(fd, path)`—Reads the contents of a symlink.
@@ -459,11 +466,11 @@
     dirfd: Fd,
     path: P,
     reuse: B,
-) -&gt; io::Result&lt;ZString&gt; {
-    path.into_with_z_str(|path| _readlinkat(dirfd.as_fd(), path, reuse.into()))
+) -&gt; io::Result&lt;CString&gt; {
+    path.into_with_c_str(|path| _readlinkat(dirfd.as_fd(), path, reuse.into()))
 }
 
-<span class="kw">fn </span>_readlinkat(dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, path: <span class="kw-2">&amp;</span>ZStr, <span class="kw-2">mut </span>buffer: Vec&lt;u8&gt;) -&gt; io::Result&lt;ZString&gt; {
+<span class="kw">fn </span>_readlinkat(dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, path: <span class="kw-2">&amp;</span>CStr, <span class="kw-2">mut </span>buffer: Vec&lt;u8&gt;) -&gt; io::Result&lt;CString&gt; {
     <span class="comment">// This code would benefit from having a better way to read into
     // uninitialized memory, but that requires `unsafe`.
     </span>buffer.clear();
@@ -471,13 +478,13 @@
     buffer.resize(buffer.capacity(), <span class="number">0_u8</span>);
 
     <span class="kw">loop </span>{
-        <span class="kw">let </span>nread = imp::fs::syscalls::readlinkat(dirfd.as_fd(), path, <span class="kw-2">&amp;mut </span>buffer)<span class="question-mark">?</span>;
+        <span class="kw">let </span>nread = backend::fs::syscalls::readlinkat(dirfd.as_fd(), path, <span class="kw-2">&amp;mut </span>buffer)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>nread = nread <span class="kw">as </span>usize;
         <span class="macro">assert!</span>(nread &lt;= buffer.len());
         <span class="kw">if </span>nread &lt; buffer.len() {
             buffer.resize(nread, <span class="number">0_u8</span>);
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(ZString::new(buffer).unwrap());
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(CString::new(buffer).unwrap());
         }
         buffer.reserve(<span class="number">1</span>); <span class="comment">// use `Vec` reallocation strategy to grow capacity exponentially
         </span>buffer.resize(buffer.capacity(), <span class="number">0_u8</span>);
@@ -494,7 +501,7 @@
 /// [Linux]: https://man7.org/linux/man-pages/man2/mkdirat.2.html
 </span><span class="attribute">#[inline]
 </span><span class="kw">pub fn </span>mkdirat&lt;P: path::Arg, Fd: AsFd&gt;(dirfd: Fd, path: P, mode: Mode) -&gt; io::Result&lt;()&gt; {
-    path.into_with_z_str(|path| imp::fs::syscalls::mkdirat(dirfd.as_fd(), path, mode))
+    path.into_with_c_str(|path| backend::fs::syscalls::mkdirat(dirfd.as_fd(), path, mode))
 }
 
 <span class="doccomment">/// `linkat(old_dirfd, old_path, new_dirfd, new_path, flags)`—Creates a hard
@@ -514,9 +521,9 @@
     new_path: Q,
     flags: AtFlags,
 ) -&gt; io::Result&lt;()&gt; {
-    old_path.into_with_z_str(|old_path| {
-        new_path.into_with_z_str(|new_path| {
-            imp::fs::syscalls::linkat(
+    old_path.into_with_c_str(|old_path| {
+        new_path.into_with_c_str(|new_path| {
+            backend::fs::syscalls::linkat(
                 old_dirfd.as_fd(),
                 old_path,
                 new_dirfd.as_fd(),
@@ -541,7 +548,7 @@
 /// [Linux]: https://man7.org/linux/man-pages/man2/unlinkat.2.html
 </span><span class="attribute">#[inline]
 </span><span class="kw">pub fn </span>unlinkat&lt;P: path::Arg, Fd: AsFd&gt;(dirfd: Fd, path: P, flags: AtFlags) -&gt; io::Result&lt;()&gt; {
-    path.into_with_z_str(|path| imp::fs::syscalls::unlinkat(dirfd.as_fd(), path, flags))
+    path.into_with_c_str(|path| backend::fs::syscalls::unlinkat(dirfd.as_fd(), path, flags))
 }
 
 <span class="doccomment">/// `renameat(old_dirfd, old_path, new_dirfd, new_path)`—Renames a file or
@@ -560,9 +567,14 @@
     new_dirfd: QFd,
     new_path: Q,
 ) -&gt; io::Result&lt;()&gt; {
-    old_path.into_with_z_str(|old_path| {
-        new_path.into_with_z_str(|new_path| {
-            imp::fs::syscalls::renameat(old_dirfd.as_fd(), old_path, new_dirfd.as_fd(), new_path)
+    old_path.into_with_c_str(|old_path| {
+        new_path.into_with_c_str(|new_path| {
+            backend::fs::syscalls::renameat(
+                old_dirfd.as_fd(),
+                old_path,
+                new_dirfd.as_fd(),
+                new_path,
+            )
         })
     })
 }
@@ -584,9 +596,9 @@
     new_path: Q,
     flags: RenameFlags,
 ) -&gt; io::Result&lt;()&gt; {
-    old_path.into_with_z_str(|old_path| {
-        new_path.into_with_z_str(|new_path| {
-            imp::fs::syscalls::renameat2(
+    old_path.into_with_c_str(|old_path| {
+        new_path.into_with_c_str(|new_path| {
+            backend::fs::syscalls::renameat2(
                 old_dirfd.as_fd(),
                 old_path,
                 new_dirfd.as_fd(),
@@ -611,9 +623,9 @@
     new_dirfd: Fd,
     new_path: Q,
 ) -&gt; io::Result&lt;()&gt; {
-    old_path.into_with_z_str(|old_path| {
-        new_path.into_with_z_str(|new_path| {
-            imp::fs::syscalls::symlinkat(old_path, new_dirfd.as_fd(), new_path)
+    old_path.into_with_c_str(|old_path| {
+        new_path.into_with_c_str(|new_path| {
+            backend::fs::syscalls::symlinkat(old_path, new_dirfd.as_fd(), new_path)
         })
     })
 }
@@ -634,7 +646,7 @@
 </span><span class="attribute">#[inline]
 #[doc(alias = <span class="string">&quot;fstatat&quot;</span>)]
 </span><span class="kw">pub fn </span>statat&lt;P: path::Arg, Fd: AsFd&gt;(dirfd: Fd, path: P, flags: AtFlags) -&gt; io::Result&lt;Stat&gt; {
-    path.into_with_z_str(|path| imp::fs::syscalls::statat(dirfd.as_fd(), path, flags))
+    path.into_with_c_str(|path| backend::fs::syscalls::statat(dirfd.as_fd(), path, flags))
 }
 
 <span class="doccomment">/// `faccessat(dirfd, path, access, flags)`—Tests permissions for a file or
@@ -655,7 +667,7 @@
     access: Access,
     flags: AtFlags,
 ) -&gt; io::Result&lt;()&gt; {
-    path.into_with_z_str(|path| imp::fs::syscalls::accessat(dirfd.as_fd(), path, access, flags))
+    path.into_with_c_str(|path| backend::fs::syscalls::accessat(dirfd.as_fd(), path, access, flags))
 }
 
 <span class="doccomment">/// `utimensat(dirfd, path, times, flags)`—Sets file or directory timestamps.
@@ -673,7 +685,7 @@
     times: <span class="kw-2">&amp;</span>Timestamps,
     flags: AtFlags,
 ) -&gt; io::Result&lt;()&gt; {
-    path.into_with_z_str(|path| imp::fs::syscalls::utimensat(dirfd.as_fd(), path, times, flags))
+    path.into_with_c_str(|path| backend::fs::syscalls::utimensat(dirfd.as_fd(), path, times, flags))
 }
 
 <span class="doccomment">/// `fchmodat(dirfd, path, mode, 0)`—Sets file or directory permissions.
@@ -681,8 +693,8 @@
 /// The flags argument is fixed to 0, so `AT_SYMLINK_NOFOLLOW` is not
 /// supported. &lt;details&gt;Platform support for this flag varies widely.&lt;/details&gt;
 ///
-/// Note that this implementation does not support `O_PATH` file descriptors,
-/// even on platforms where the host libc emulates it.
+/// This implementation does not support `O_PATH` file descriptors, even on
+/// platforms where the host libc emulates it.
 ///
 /// # References
 ///  - [POSIX]
@@ -694,7 +706,7 @@
 #[inline]
 #[doc(alias = <span class="string">&quot;fchmodat&quot;</span>)]
 </span><span class="kw">pub fn </span>chmodat&lt;P: path::Arg, Fd: AsFd&gt;(dirfd: Fd, path: P, mode: Mode) -&gt; io::Result&lt;()&gt; {
-    path.into_with_z_str(|path| imp::fs::syscalls::chmodat(dirfd.as_fd(), path, mode))
+    path.into_with_c_str(|path| backend::fs::syscalls::chmodat(dirfd.as_fd(), path, mode))
 }
 
 <span class="doccomment">/// `fclonefileat(src, dst_dir, dst, flags)`—Efficiently copies between files.
@@ -706,13 +718,13 @@
 </span><span class="attribute">#[cfg(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>))]
 #[inline]
 </span><span class="kw">pub fn </span>fclonefileat&lt;Fd: AsFd, DstFd: AsFd, P: path::Arg&gt;(
-    src: <span class="kw-2">&amp;</span>Fd,
-    dst_dir: <span class="kw-2">&amp;</span>DstFd,
+    src: Fd,
+    dst_dir: DstFd,
     dst: P,
     flags: CloneFlags,
 ) -&gt; io::Result&lt;()&gt; {
-    dst.into_with_z_str(|dst| {
-        imp::fs::syscalls::fclonefileat(src.as_fd(), dst_dir.as_fd(), <span class="kw-2">&amp;</span>dst, flags)
+    dst.into_with_c_str(|dst| {
+        backend::fs::syscalls::fclonefileat(src.as_fd(), dst_dir.as_fd(), <span class="kw-2">&amp;</span>dst, flags)
     })
 }
 
@@ -733,8 +745,8 @@
     mode: Mode,
     dev: Dev,
 ) -&gt; io::Result&lt;()&gt; {
-    path.into_with_z_str(|path| {
-        imp::fs::syscalls::mknodat(dirfd.as_fd(), path, file_type, mode, dev)
+    path.into_with_c_str(|path| {
+        backend::fs::syscalls::mknodat(dirfd.as_fd(), path, file_type, mode, dev)
     })
 }
 
@@ -752,13 +764,13 @@
 </span><span class="kw">pub fn </span>chownat&lt;P: path::Arg, Fd: AsFd&gt;(
     dirfd: Fd,
     path: P,
-    owner: Uid,
-    group: Gid,
+    owner: <span class="prelude-ty">Option</span>&lt;Uid&gt;,
+    group: <span class="prelude-ty">Option</span>&lt;Gid&gt;,
     flags: AtFlags,
 ) -&gt; io::Result&lt;()&gt; {
-    path.into_with_z_str(|path| {
-        imp::fs::syscalls::chownat(dirfd.as_fd(), path, owner, group, flags)
+    path.into_with_c_str(|path| {
+        backend::fs::syscalls::chownat(dirfd.as_fd(), path, owner, group, flags)
     })
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rustix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rustix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

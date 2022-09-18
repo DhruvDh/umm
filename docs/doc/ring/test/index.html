@@ -25,7 +25,7 @@ and you can mix and match within the same file. The empty sequence of bytes
 can only be represented with the quoted string form (<code>&quot;&quot;</code>).</p>
 <p>Here’s how you would consume the test data:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">use </span>ring::test;
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">use </span>ring::test;
 
 test::run(<span class="macro">test::test_file!</span>(<span class="string">&quot;hmac_tests.txt&quot;</span>), |section, test_case| {
     <span class="macro">assert_eq!</span>(section, <span class="string">&quot;&quot;</span>); <span class="comment">// This test doesn&#39;t use named sections.
@@ -79,21 +79,13 @@ stack backtrace:
 (<code>src/example_tests.txt</code>), the test inputs that led to the failure, and the
 stack trace to the line in the test code that panicked: entry 9 in the
 stack trace pointing to line 652 of the file <code>example.rs</code>.</p>
-</div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.File.html" title="ring::test::File struct">File</a></div><div class="item-right docblock-short"><p>A test input file.</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.TestCase.html" title="ring::test::TestCase struct">TestCase</a></div><div class="item-right docblock-short"><p>A test case. A test case consists of a set of named attributes. Every
+</div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.File.html" title="ring::test::File struct">File</a></div><div class="item-right docblock-short">A test input file.</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.TestCase.html" title="ring::test::TestCase struct">TestCase</a></div><div class="item-right docblock-short">A test case. A test case consists of a set of named attributes. Every
 attribute in the test case must be consumed exactly once; this helps catch
-typos and omissions.</p>
-</div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.compile_time_assert_clone.html" title="ring::test::compile_time_assert_clone fn">compile_time_assert_clone</a></div><div class="item-right docblock-short"><p><code>compile_time_assert_clone::&lt;T&gt;();</code> fails to compile if <code>T</code> doesn’t
-implement <code>Clone</code>.</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.compile_time_assert_copy.html" title="ring::test::compile_time_assert_copy fn">compile_time_assert_copy</a></div><div class="item-right docblock-short"><p><code>compile_time_assert_copy::&lt;T&gt;();</code> fails to compile if <code>T</code> doesn’t
-implement <code>Copy</code>.</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.compile_time_assert_send.html" title="ring::test::compile_time_assert_send fn">compile_time_assert_send</a></div><div class="item-right docblock-short"><p><code>compile_time_assert_send::&lt;T&gt;();</code> fails to compile if <code>T</code> doesn’t
-implement <code>Send</code>.</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.compile_time_assert_sync.html" title="ring::test::compile_time_assert_sync fn">compile_time_assert_sync</a></div><div class="item-right docblock-short"><p><code>compile_time_assert_sync::&lt;T&gt;();</code> fails to compile if <code>T</code> doesn’t
-implement <code>Sync</code>.</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.from_hex.html" title="ring::test::from_hex fn">from_hex</a></div><div class="item-right docblock-short"><p>Decode an string of hex digits into a sequence of bytes. The input must
-have an even number of digits.</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.run.html" title="ring::test::run fn">run</a></div><div class="item-right docblock-short"><p>Parses test cases out of the given file, calling <code>f</code> on each vector until
+typos and omissions.</div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.compile_time_assert_clone.html" title="ring::test::compile_time_assert_clone fn">compile_time_assert_clone</a></div><div class="item-right docblock-short"><code>compile_time_assert_clone::&lt;T&gt;();</code> fails to compile if <code>T</code> doesn’t
+implement <code>Clone</code>.</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.compile_time_assert_copy.html" title="ring::test::compile_time_assert_copy fn">compile_time_assert_copy</a></div><div class="item-right docblock-short"><code>compile_time_assert_copy::&lt;T&gt;();</code> fails to compile if <code>T</code> doesn’t
+implement <code>Copy</code>.</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.compile_time_assert_send.html" title="ring::test::compile_time_assert_send fn">compile_time_assert_send</a></div><div class="item-right docblock-short"><code>compile_time_assert_send::&lt;T&gt;();</code> fails to compile if <code>T</code> doesn’t
+implement <code>Send</code>.</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.compile_time_assert_sync.html" title="ring::test::compile_time_assert_sync fn">compile_time_assert_sync</a></div><div class="item-right docblock-short"><code>compile_time_assert_sync::&lt;T&gt;();</code> fails to compile if <code>T</code> doesn’t
+implement <code>Sync</code>.</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.from_hex.html" title="ring::test::from_hex fn">from_hex</a></div><div class="item-right docblock-short">Decode an string of hex digits into a sequence of bytes. The input must
+have an even number of digits.</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.run.html" title="ring::test::run fn">run</a></div><div class="item-right docblock-short">Parses test cases out of the given file, calling <code>f</code> on each vector until
 <code>f</code> fails or until all the test vectors have been read. <code>f</code> can indicate
-failure either by returning <code>Err()</code> or by panicking.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="ring" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+failure either by returning <code>Err()</code> or by panicking.</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="ring" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

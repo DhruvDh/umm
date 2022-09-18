@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/serde/metadata.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>metadata.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/serde/metadata.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>metadata.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -255,59 +255,34 @@
 <span id="255">255</span>
 <span id="256">256</span>
 <span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Serialization of functions metadata.
-
 </span><span class="attribute">#![cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
 
-</span><span class="kw">use </span><span class="kw">crate</span>::module::{calc_native_fn_hash, FuncInfo};
-<span class="kw">use crate</span>::{calc_fn_hash, Engine, AST};
-<span class="kw">use </span>serde::{Deserialize, Serialize};
+</span><span class="kw">use </span><span class="kw">crate</span>::api::type_names::format_type;
+<span class="kw">use </span><span class="kw">crate</span>::module::{calc_native_fn_hash, FuncInfo};
+<span class="kw">use crate</span>::{calc_fn_hash, Engine, FnAccess, SmartString, StaticVec, AST};
+<span class="kw">use </span>serde::Serialize;
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
-<span class="kw">use </span>std::{borrow::Cow, cmp::Ordering, collections::BTreeMap, iter::empty};
+<span class="kw">use </span>std::{borrow::Cow, cmp::Ordering, collections::BTreeMap};
 
-<span class="attribute">#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, Serialize, Deserialize)]
+<span class="attribute">#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, Serialize)]
 #[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
 </span><span class="kw">enum </span>FnType {
     Script,
     Native,
 }
 
-<span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, Serialize, Deserialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
-</span><span class="kw">enum </span>FnNamespace {
-    Global,
-    Internal,
-}
-
-<span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-</span><span class="kw">impl </span>From&lt;<span class="kw">crate</span>::FnNamespace&gt; <span class="kw">for </span>FnNamespace {
-    <span class="kw">fn </span>from(value: <span class="kw">crate</span>::FnNamespace) -&gt; <span class="self">Self </span>{
-        <span class="kw">match </span>value {
-            <span class="kw">crate</span>::FnNamespace::Global =&gt; <span class="self">Self</span>::Global,
-            <span class="kw">crate</span>::FnNamespace::Internal =&gt; <span class="self">Self</span>::Internal,
-        }
-    }
-}
-
-<span class="attribute">#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, Serialize, Deserialize)]
-#[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
-</span><span class="kw">enum </span>FnAccess {
-    Public,
-    Private,
-}
-
-<span class="kw">impl </span>From&lt;<span class="kw">crate</span>::FnAccess&gt; <span class="kw">for </span>FnAccess {
-    <span class="kw">fn </span>from(value: <span class="kw">crate</span>::FnAccess) -&gt; <span class="self">Self </span>{
-        <span class="kw">match </span>value {
-            <span class="kw">crate</span>::FnAccess::Public =&gt; <span class="self">Self</span>::Public,
-            <span class="kw">crate</span>::FnAccess::Private =&gt; <span class="self">Self</span>::Private,
-        }
-    }
-}
-
-<span class="attribute">#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+<span class="attribute">#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize)]
 #[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
 </span><span class="kw">struct </span>FnParam&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="attribute">#[serde(skip_serializing_if = <span class="string">&quot;Option::is_none&quot;</span>)]
@@ -316,28 +291,28 @@
     </span><span class="kw">pub </span>typ: <span class="prelude-ty">Option</span>&lt;Cow&lt;<span class="lifetime">&#39;a</span>, str&gt;&gt;,
 }
 
-<span class="attribute">#[derive(Debug, Clone, Eq, PartialEq, Hash, Serialize, Deserialize)]
+<span class="attribute">#[derive(Debug, Clone, Eq, PartialEq, Hash, Serialize)]
 #[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
 </span><span class="kw">struct </span>FnMetadata&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="kw">pub </span>base_hash: u64,
     <span class="kw">pub </span>full_hash: u64,
     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-    </span><span class="kw">pub </span>namespace: FnNamespace,
+    </span><span class="kw">pub </span>namespace: <span class="kw">crate</span>::FnNamespace,
     <span class="kw">pub </span>access: FnAccess,
-    <span class="kw">pub </span>name: String,
+    <span class="kw">pub </span>name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
     <span class="attribute">#[serde(rename = <span class="string">&quot;type&quot;</span>)]
     </span><span class="kw">pub </span>typ: FnType,
     <span class="kw">pub </span>num_params: usize,
-    <span class="attribute">#[serde(default, skip_serializing_if = <span class="string">&quot;Vec::is_empty&quot;</span>)]
-    </span><span class="kw">pub </span>params: Vec&lt;FnParam&lt;<span class="lifetime">&#39;a</span>&gt;&gt;,
+    <span class="attribute">#[serde(default, skip_serializing_if = <span class="string">&quot;StaticVec::is_empty&quot;</span>)]
+    </span><span class="kw">pub </span>params: StaticVec&lt;FnParam&lt;<span class="lifetime">&#39;a</span>&gt;&gt;,
     <span class="comment">// No idea why the following is needed otherwise serde comes back with a lifetime error
     </span><span class="attribute">#[serde(default, skip_serializing_if = <span class="string">&quot;Option::is_none&quot;</span>)]
     </span><span class="kw">pub </span>_dummy: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
-    <span class="attribute">#[serde(default, skip_serializing_if = <span class="string">&quot;String::is_empty&quot;</span>)]
-    </span><span class="kw">pub </span>return_type: String,
-    <span class="kw">pub </span>signature: String,
-    <span class="attribute">#[serde(default, skip_serializing_if = <span class="string">&quot;Vec::is_empty&quot;</span>)]
-    </span><span class="kw">pub </span>doc_comments: Vec&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
+    <span class="attribute">#[serde(default, skip_serializing_if = <span class="string">&quot;str::is_empty&quot;</span>)]
+    </span><span class="kw">pub </span>return_type: Cow&lt;<span class="lifetime">&#39;a</span>, str&gt;,
+    <span class="kw">pub </span>signature: SmartString,
+    <span class="attribute">#[serde(default, skip_serializing_if = <span class="string">&quot;StaticVec::is_empty&quot;</span>)]
+    </span><span class="kw">pub </span>doc_comments: StaticVec&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
 }
 
 <span class="kw">impl </span>PartialOrd <span class="kw">for </span>FnMetadata&lt;<span class="lifetime">&#39;_</span>&gt; {
@@ -348,7 +323,7 @@
 
 <span class="kw">impl </span>Ord <span class="kw">for </span>FnMetadata&lt;<span class="lifetime">&#39;_</span>&gt; {
     <span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; Ordering {
-        <span class="kw">match </span><span class="self">self</span>.name.cmp(<span class="kw-2">&amp;</span>other.name) {
+        <span class="kw">match </span><span class="self">self</span>.name.cmp(other.name) {
             Ordering::Equal =&gt; <span class="self">self</span>.num_params.cmp(<span class="kw-2">&amp;</span>other.num_params),
             cmp =&gt; cmp,
         }
@@ -357,13 +332,13 @@
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>FuncInfo&gt; <span class="kw">for </span>FnMetadata&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="kw">fn </span>from(info: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>FuncInfo) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span>base_hash = calc_fn_hash(<span class="kw-2">&amp;</span>info.metadata.name, info.metadata.params);
+        <span class="kw">let </span>base_hash = calc_fn_hash(<span class="kw-2">&amp;</span>info.name, info.num_params);
         <span class="kw">let </span>(typ, full_hash) = <span class="kw">if </span>info.func.is_script() {
             (FnType::Script, base_hash)
         } <span class="kw">else </span>{
             (
                 FnType::Native,
-                calc_native_fn_hash(empty::&lt;<span class="kw-2">&amp;</span>str&gt;(), <span class="kw-2">&amp;</span>info.metadata.name, <span class="kw-2">&amp;</span>info.param_types),
+                calc_native_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>info.name, <span class="kw-2">&amp;</span>info.param_types),
             )
         };
 
@@ -371,13 +346,12 @@
             base_hash,
             full_hash,
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-            </span>namespace: info.metadata.namespace.into(),
-            access: info.metadata.access.into(),
-            name: info.metadata.name.to_string(),
+            </span>namespace: info.namespace,
+            access: info.access,
+            name: <span class="kw-2">&amp;</span>info.name,
             typ,
-            num_params: info.metadata.params,
+            num_params: info.num_params,
             params: info
-                .metadata
                 .params_info
                 .iter()
                 .map(|s| {
@@ -386,13 +360,13 @@
                         <span class="string">&quot;_&quot; </span>=&gt; <span class="prelude-val">None</span>,
                         s =&gt; <span class="prelude-val">Some</span>(s),
                     };
-                    <span class="kw">let </span>typ = seg.next().map(|s| FuncInfo::format_type(s, <span class="bool-val">false</span>));
+                    <span class="kw">let </span>typ = seg.next().map(|s| format_type(s, <span class="bool-val">false</span>));
                     FnParam { name, typ }
                 })
                 .collect(),
             _dummy: <span class="prelude-val">None</span>,
-            return_type: FuncInfo::format_type(<span class="kw-2">&amp;</span>info.metadata.return_type, <span class="bool-val">true</span>).into_owned(),
-            signature: info.gen_signature(),
+            return_type: format_type(<span class="kw-2">&amp;</span>info.return_type, <span class="bool-val">true</span>),
+            signature: info.gen_signature().into(),
             doc_comments: <span class="kw">if </span>info.func.is_script() {
                 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_function&quot;</span>)]
                 </span><span class="macro">unreachable!</span>(<span class="string">&quot;script-defined functions should not exist under no_function&quot;</span>);
@@ -403,10 +377,10 @@
                     .expect(<span class="string">&quot;script-defined function&quot;</span>)
                     .comments
                     .iter()
-                    .map(Box::as_ref)
+                    .map(&lt;<span class="kw">_</span>&gt;::as_ref)
                     .collect()
             } <span class="kw">else </span>{
-                info.metadata.comments.iter().map(Box::as_ref).collect()
+                info.comments.iter().map(&lt;<span class="kw">_</span>&gt;::as_ref).collect()
             },
         }
     }
@@ -415,34 +389,108 @@
 <span class="attribute">#[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = <span class="string">&quot;camelCase&quot;</span>)]
 </span><span class="kw">struct </span>ModuleMetadata&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+    #[serde(skip_serializing_if = <span class="string">&quot;str::is_empty&quot;</span>)]
+    </span><span class="kw">pub </span>doc: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
     <span class="attribute">#[serde(skip_serializing_if = <span class="string">&quot;BTreeMap::is_empty&quot;</span>)]
     </span><span class="kw">pub </span>modules: BTreeMap&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str, <span class="self">Self</span>&gt;,
-    <span class="attribute">#[serde(skip_serializing_if = <span class="string">&quot;Vec::is_empty&quot;</span>)]
-    </span><span class="kw">pub </span>functions: Vec&lt;FnMetadata&lt;<span class="lifetime">&#39;a</span>&gt;&gt;,
+    <span class="attribute">#[serde(skip_serializing_if = <span class="string">&quot;StaticVec::is_empty&quot;</span>)]
+    </span><span class="kw">pub </span>functions: StaticVec&lt;FnMetadata&lt;<span class="lifetime">&#39;a</span>&gt;&gt;,
 }
 
 <span class="kw">impl </span>ModuleMetadata&lt;<span class="lifetime">&#39;_</span>&gt; {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+            </span>doc: <span class="string">&quot;&quot;</span>,
             modules: BTreeMap::new(),
-            functions: Vec::new(),
+            functions: StaticVec::new_const(),
         }
     }
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">crate</span>::Module&gt; <span class="kw">for </span>ModuleMetadata&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="kw">fn </span>from(module: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">crate</span>::Module) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span><span class="kw-2">mut </span>functions: Vec&lt;<span class="kw">_</span>&gt; = module.iter_fn().map(|f| f.into()).collect();
+        <span class="kw">let </span><span class="kw-2">mut </span>functions: StaticVec&lt;<span class="kw">_</span>&gt; = module.iter_fn().map(Into::into).collect();
         functions.sort();
 
         <span class="self">Self </span>{
+            doc: module.doc(),
             modules: module
                 .iter_sub_modules()
                 .map(|(name, m)| (name, m.as_ref().into()))
                 .collect(),
             functions,
         }
+    }
+}
+
+<span class="doccomment">/// Generate a list of all functions in JSON format.
+</span><span class="kw">pub fn </span>gen_metadata_to_json(
+    engine: <span class="kw-2">&amp;</span>Engine,
+    ast: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>AST&gt;,
+    include_standard_packages: bool,
+) -&gt; serde_json::Result&lt;String&gt; {
+    <span class="kw">let </span>_ast = ast;
+    <span class="kw">let </span><span class="kw-2">mut </span>global = ModuleMetadata::new();
+
+    <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+    </span><span class="kw">for </span>(name, m) <span class="kw">in </span><span class="kw-2">&amp;</span>engine.global_sub_modules {
+        global.modules.insert(name, m.as_ref().into());
+    }
+
+    engine
+        .global_modules
+        .iter()
+        .filter(|m| include_standard_packages || !m.standard)
+        .flat_map(|m| m.iter_fn())
+        .for_each(|f| {
+            <span class="attribute">#[allow(unused_mut)]
+            </span><span class="kw">let </span><span class="kw-2">mut </span>meta: FnMetadata = f.into();
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+            </span>{
+                meta.namespace = <span class="kw">crate</span>::FnNamespace::Global;
+            }
+            global.functions.push(meta);
+        });
+
+    <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+    </span><span class="kw">if let </span><span class="prelude-val">Some</span>(ast) = _ast {
+        <span class="kw">for </span>f <span class="kw">in </span>ast.shared_lib().iter_fn() {
+            <span class="attribute">#[allow(unused_mut)]
+            </span><span class="kw">let </span><span class="kw-2">mut </span>meta: FnMetadata = f.into();
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+            </span>{
+                meta.namespace = <span class="kw">crate</span>::FnNamespace::Global;
+            }
+            global.functions.push(meta);
+        }
+    }
+
+    global.functions.sort();
+
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+    </span><span class="kw">if let </span><span class="prelude-val">Some</span>(ast) = _ast {
+        global.doc = ast.doc();
+    }
+
+    serde_json::to_string_pretty(<span class="kw-2">&amp;</span>global)
+}
+
+<span class="attribute">#[cfg(feature = <span class="string">&quot;internals&quot;</span>)]
+</span><span class="kw">impl </span><span class="kw">crate</span>::api::definitions::Definitions&lt;<span class="lifetime">&#39;_</span>&gt; {
+    <span class="doccomment">/// Generate a list of all functions in JSON format.
+    ///
+    /// Functions from the following sources are included:
+    /// 1) Functions defined in an [`AST`][crate::AST]
+    /// 2) Functions registered into the global namespace
+    /// 3) Functions in static modules
+    /// 4) Functions in registered global packages
+    /// 5) Functions in standard packages (optional)
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>json(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; serde_json::Result&lt;String&gt; {
+        gen_metadata_to_json(<span class="self">self</span>.engine(), <span class="prelude-val">None</span>, <span class="self">self</span>.config().include_standard_packages)
     }
 }
 
@@ -457,47 +505,13 @@
     /// 3) Functions in static modules
     /// 4) Functions in registered global packages
     /// 5) Functions in standard packages (optional)
+    </span><span class="attribute">#[inline(always)]
     </span><span class="kw">pub fn </span>gen_fn_metadata_with_ast_to_json(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         ast: <span class="kw-2">&amp;</span>AST,
-        include_packages: bool,
+        include_standard_packages: bool,
     ) -&gt; serde_json::Result&lt;String&gt; {
-        <span class="kw">let </span>_ast = ast;
-        <span class="kw">let </span><span class="kw-2">mut </span>global = ModuleMetadata::new();
-
-        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-        </span><span class="kw">for </span>(name, m) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.global_sub_modules {
-            global.modules.insert(name, m.as_ref().into());
-        }
-
-        <span class="self">self</span>.global_modules
-            .iter()
-            .filter(|m| include_packages || !m.standard)
-            .flat_map(|m| m.iter_fn())
-            .for_each(|f| {
-                <span class="attribute">#[allow(unused_mut)]
-                </span><span class="kw">let </span><span class="kw-2">mut </span>meta: FnMetadata = f.into();
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-                </span>{
-                    meta.namespace = FnNamespace::Global;
-                }
-                global.functions.push(meta);
-            });
-
-        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-        </span><span class="kw">for </span>f <span class="kw">in </span>_ast.shared_lib().iter_fn() {
-            <span class="attribute">#[allow(unused_mut)]
-            </span><span class="kw">let </span><span class="kw-2">mut </span>meta: FnMetadata = f.into();
-            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-            </span>{
-                meta.namespace = FnNamespace::Global;
-            }
-            global.functions.push(meta);
-        }
-
-        global.functions.sort();
-
-        serde_json::to_string_pretty(<span class="kw-2">&amp;</span>global)
+        gen_metadata_to_json(<span class="self">self</span>, <span class="prelude-val">Some</span>(ast), include_standard_packages)
     }
 
     <span class="doccomment">/// Generate a list of all functions in JSON format.
@@ -506,11 +520,15 @@
     /// Functions from the following sources are included:
     /// 1) Functions registered into the global namespace
     /// 2) Functions in static modules
-    /// 3) Functions in global modules (optional)
+    /// 3) Functions in registered global packages
+    /// 4) Functions in standard packages (optional)
     </span><span class="attribute">#[inline(always)]
-    </span><span class="kw">pub fn </span>gen_fn_metadata_to_json(<span class="kw-2">&amp;</span><span class="self">self</span>, include_packages: bool) -&gt; serde_json::Result&lt;String&gt; {
-        <span class="self">self</span>.gen_fn_metadata_with_ast_to_json(<span class="kw-2">&amp;</span>AST::empty(), include_packages)
+    </span><span class="kw">pub fn </span>gen_fn_metadata_to_json(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        include_standard_packages: bool,
+    ) -&gt; serde_json::Result&lt;String&gt; {
+        gen_metadata_to_json(<span class="self">self</span>, <span class="prelude-val">None</span>, include_standard_packages)
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

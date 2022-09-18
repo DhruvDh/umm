@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/ast/stmt.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>stmt.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/ast/stmt.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>stmt.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -869,6 +869,163 @@
 <span id="869">869</span>
 <span id="870">870</span>
 <span id="871">871</span>
+<span id="872">872</span>
+<span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
+<span id="885">885</span>
+<span id="886">886</span>
+<span id="887">887</span>
+<span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
+<span id="893">893</span>
+<span id="894">894</span>
+<span id="895">895</span>
+<span id="896">896</span>
+<span id="897">897</span>
+<span id="898">898</span>
+<span id="899">899</span>
+<span id="900">900</span>
+<span id="901">901</span>
+<span id="902">902</span>
+<span id="903">903</span>
+<span id="904">904</span>
+<span id="905">905</span>
+<span id="906">906</span>
+<span id="907">907</span>
+<span id="908">908</span>
+<span id="909">909</span>
+<span id="910">910</span>
+<span id="911">911</span>
+<span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
+<span id="974">974</span>
+<span id="975">975</span>
+<span id="976">976</span>
+<span id="977">977</span>
+<span id="978">978</span>
+<span id="979">979</span>
+<span id="980">980</span>
+<span id="981">981</span>
+<span id="982">982</span>
+<span id="983">983</span>
+<span id="984">984</span>
+<span id="985">985</span>
+<span id="986">986</span>
+<span id="987">987</span>
+<span id="988">988</span>
+<span id="989">989</span>
+<span id="990">990</span>
+<span id="991">991</span>
+<span id="992">992</span>
+<span id="993">993</span>
+<span id="994">994</span>
+<span id="995">995</span>
+<span id="996">996</span>
+<span id="997">997</span>
+<span id="998">998</span>
+<span id="999">999</span>
+<span id="1000">1000</span>
+<span id="1001">1001</span>
+<span id="1002">1002</span>
+<span id="1003">1003</span>
+<span id="1004">1004</span>
+<span id="1005">1005</span>
+<span id="1006">1006</span>
+<span id="1007">1007</span>
+<span id="1008">1008</span>
+<span id="1009">1009</span>
+<span id="1010">1010</span>
+<span id="1011">1011</span>
+<span id="1012">1012</span>
+<span id="1013">1013</span>
+<span id="1014">1014</span>
+<span id="1015">1015</span>
+<span id="1016">1016</span>
+<span id="1017">1017</span>
+<span id="1018">1018</span>
+<span id="1019">1019</span>
+<span id="1020">1020</span>
+<span id="1021">1021</span>
+<span id="1022">1022</span>
+<span id="1023">1023</span>
+<span id="1024">1024</span>
+<span id="1025">1025</span>
+<span id="1026">1026</span>
+<span id="1027">1027</span>
+<span id="1028">1028</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Module defining script statements.
 
 </span><span class="kw">use super</span>::{ASTFlags, ASTNode, BinaryExpr, Expr, FnCallExpr, Ident};
@@ -883,7 +1040,7 @@
     hash::Hash,
     mem,
     num::NonZeroUsize,
-    ops::{Deref, DerefMut},
+    ops::{Deref, DerefMut, Range, RangeInclusive},
 };
 
 <span class="doccomment">/// _(internals)_ An op-assignment operator.
@@ -891,20 +1048,20 @@
 ///
 /// This type may hold a straight assignment (i.e. not an op-assignment).
 </span><span class="attribute">#[derive(Clone, Copy, Eq, PartialEq, Hash)]
-</span><span class="kw">pub struct </span>OpAssignment&lt;<span class="lifetime">&#39;a</span>&gt; {
+</span><span class="kw">pub struct </span>OpAssignment {
     <span class="doccomment">/// Hash of the op-assignment call.
     </span><span class="kw">pub </span>hash_op_assign: u64,
     <span class="doccomment">/// Hash of the underlying operator call (for fallback).
     </span><span class="kw">pub </span>hash_op: u64,
     <span class="doccomment">/// Op-assignment operator.
-    </span><span class="kw">pub </span>op_assign: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    </span><span class="kw">pub </span>op_assign: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
     <span class="doccomment">/// Underlying operator.
-    </span><span class="kw">pub </span>op: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    </span><span class="kw">pub </span>op: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
     <span class="doccomment">/// [Position] of the op-assignment operator.
     </span><span class="kw">pub </span>pos: Position,
 }
 
-<span class="kw">impl </span>OpAssignment&lt;<span class="lifetime">&#39;_</span>&gt; {
+<span class="kw">impl </span>OpAssignment {
     <span class="doccomment">/// Create a new [`OpAssignment`] that is only a straight assignment.
     </span><span class="attribute">#[must_use]
     #[inline(always)]
@@ -931,7 +1088,7 @@
     </span><span class="attribute">#[must_use]
     #[inline(always)]
     </span><span class="kw">pub fn </span>new_op_assignment(name: <span class="kw-2">&amp;</span>str, pos: Position) -&gt; <span class="self">Self </span>{
-        <span class="self">Self</span>::new_op_assignment_from_token(Token::lookup_from_syntax(name).expect(<span class="string">&quot;operator&quot;</span>), pos)
+        <span class="self">Self</span>::new_op_assignment_from_token(<span class="kw-2">&amp;</span>Token::lookup_from_syntax(name).expect(<span class="string">&quot;operator&quot;</span>), pos)
     }
     <span class="doccomment">/// Create a new [`OpAssignment`] from a [`Token`].
     ///
@@ -939,7 +1096,7 @@
     ///
     /// Panics if the token is not an op-assignment operator.
     </span><span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>new_op_assignment_from_token(op: Token, pos: Position) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>new_op_assignment_from_token(op: <span class="kw-2">&amp;</span>Token, pos: Position) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>op_raw = op
             .get_base_op_from_assignment()
             .expect(<span class="string">&quot;op-assignment operator&quot;</span>)
@@ -961,7 +1118,7 @@
     #[inline(always)]
     </span><span class="kw">pub fn </span>new_op_assignment_from_base(name: <span class="kw-2">&amp;</span>str, pos: Position) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::new_op_assignment_from_base_token(
-            Token::lookup_from_syntax(name).expect(<span class="string">&quot;operator&quot;</span>),
+            <span class="kw-2">&amp;</span>Token::lookup_from_syntax(name).expect(<span class="string">&quot;operator&quot;</span>),
             pos,
         )
     }
@@ -972,12 +1129,12 @@
     /// Panics if the token is cannot be converted into an op-assignment operator.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
-    </span><span class="kw">pub fn </span>new_op_assignment_from_base_token(op: Token, pos: Position) -&gt; <span class="self">Self </span>{
-        <span class="self">Self</span>::new_op_assignment_from_token(op.convert_to_op_assignment().expect(<span class="string">&quot;operator&quot;</span>), pos)
+    </span><span class="kw">pub fn </span>new_op_assignment_from_base_token(op: <span class="kw-2">&amp;</span>Token, pos: Position) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::new_op_assignment_from_token(<span class="kw-2">&amp;</span>op.convert_to_op_assignment().expect(<span class="string">&quot;operator&quot;</span>), pos)
     }
 }
 
-<span class="kw">impl </span>fmt::Debug <span class="kw">for </span>OpAssignment&lt;<span class="lifetime">&#39;_</span>&gt; {
+<span class="kw">impl </span>fmt::Debug <span class="kw">for </span>OpAssignment {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
         <span class="kw">if </span><span class="self">self</span>.is_op_assignment() {
             f.debug_struct(<span class="string">&quot;OpAssignment&quot;</span>)
@@ -993,47 +1150,169 @@
     }
 }
 
-<span class="doccomment">/// A statements block with a condition.
+<span class="doccomment">/// An expression with a condition.
 ///
 /// The condition may simply be [`Expr::BoolConstant`] with `true` if there is actually no condition.
-</span><span class="attribute">#[derive(Debug, Clone, Hash)]
-</span><span class="kw">pub struct </span>ConditionalStmtBlock {
+</span><span class="attribute">#[derive(Debug, Clone, Default, Hash)]
+</span><span class="kw">pub struct </span>ConditionalExpr {
     <span class="doccomment">/// Condition.
     </span><span class="kw">pub </span>condition: Expr,
-    <span class="doccomment">/// Statements block.
-    </span><span class="kw">pub </span>statements: StmtBlock,
+    <span class="doccomment">/// Expression.
+    </span><span class="kw">pub </span>expr: Expr,
 }
 
-<span class="kw">impl</span>&lt;B: Into&lt;StmtBlock&gt;&gt; From&lt;B&gt; <span class="kw">for </span>ConditionalStmtBlock {
+<span class="kw">impl</span>&lt;E: Into&lt;Expr&gt;&gt; From&lt;E&gt; <span class="kw">for </span>ConditionalExpr {
     <span class="attribute">#[inline(always)]
-    </span><span class="kw">fn </span>from(value: B) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">fn </span>from(value: E) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             condition: Expr::BoolConstant(<span class="bool-val">true</span>, Position::NONE),
-            statements: value.into(),
+            expr: value.into(),
         }
     }
 }
 
-<span class="kw">impl</span>&lt;B: Into&lt;StmtBlock&gt;&gt; From&lt;(Expr, B)&gt; <span class="kw">for </span>ConditionalStmtBlock {
+<span class="kw">impl</span>&lt;E: Into&lt;Expr&gt;&gt; From&lt;(Expr, E)&gt; <span class="kw">for </span>ConditionalExpr {
     <span class="attribute">#[inline(always)]
-    </span><span class="kw">fn </span>from(value: (Expr, B)) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">fn </span>from(value: (Expr, E)) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             condition: value.<span class="number">0</span>,
-            statements: value.<span class="number">1</span>.into(),
+            expr: value.<span class="number">1</span>.into(),
         }
     }
 }
+
+<span class="kw">impl </span>ConditionalExpr {
+    <span class="doccomment">/// Is the condition always `true`?
+    </span><span class="attribute">#[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub const fn </span>is_always_true(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="macro">matches!</span>(<span class="self">self</span>.condition, Expr::BoolConstant(<span class="bool-val">true</span>, ..))
+    }
+    <span class="doccomment">/// Is the condition always `false`?
+    </span><span class="attribute">#[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub const fn </span>is_always_false(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="macro">matches!</span>(<span class="self">self</span>.condition, Expr::BoolConstant(<span class="bool-val">false</span>, ..))
+    }
+}
+
+<span class="doccomment">/// _(internals)_ A type containing a range case for a `switch` statement.
+/// Exported under the `internals` feature only.
+</span><span class="attribute">#[derive(Clone, Hash)]
+</span><span class="kw">pub enum </span>RangeCase {
+    <span class="doccomment">/// Exclusive range.
+    </span>ExclusiveInt(Range&lt;INT&gt;, usize),
+    <span class="doccomment">/// Inclusive range.
+    </span>InclusiveInt(RangeInclusive&lt;INT&gt;, usize),
+}
+
+<span class="kw">impl </span>fmt::Debug <span class="kw">for </span>RangeCase {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::ExclusiveInt(r, n) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}..{} =&gt; {}&quot;</span>, r.start, r.end, n),
+            <span class="self">Self</span>::InclusiveInt(r, n) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}..={} =&gt; {}&quot;</span>, <span class="kw-2">*</span>r.start(), <span class="kw-2">*</span>r.end(), n),
+        }
+    }
+}
+
+<span class="kw">impl </span>From&lt;Range&lt;INT&gt;&gt; <span class="kw">for </span>RangeCase {
+    <span class="attribute">#[inline(always)]
+    </span><span class="kw">fn </span>from(value: Range&lt;INT&gt;) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::ExclusiveInt(value, usize::MAX)
+    }
+}
+
+<span class="kw">impl </span>From&lt;RangeInclusive&lt;INT&gt;&gt; <span class="kw">for </span>RangeCase {
+    <span class="attribute">#[inline(always)]
+    </span><span class="kw">fn </span>from(value: RangeInclusive&lt;INT&gt;) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::InclusiveInt(value, usize::MAX)
+    }
+}
+
+<span class="kw">impl </span>IntoIterator <span class="kw">for </span>RangeCase {
+    <span class="kw">type </span>Item = INT;
+    <span class="kw">type </span>IntoIter = Box&lt;<span class="kw">dyn </span>Iterator&lt;Item = <span class="self">Self</span>::Item&gt;&gt;;
+
+    <span class="attribute">#[inline(always)]
+    </span><span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::ExclusiveInt(r, ..) =&gt; Box::new(r),
+            <span class="self">Self</span>::InclusiveInt(r, ..) =&gt; Box::new(r),
+        }
+    }
+}
+
+<span class="kw">impl </span>RangeCase {
+    <span class="doccomment">/// Returns `true` if the range contains no items.
+    </span><span class="attribute">#[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::ExclusiveInt(r, ..) =&gt; r.is_empty(),
+            <span class="self">Self</span>::InclusiveInt(r, ..) =&gt; r.is_empty(),
+        }
+    }
+    <span class="doccomment">/// Size of the range.
+    </span><span class="attribute">#[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; INT {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::ExclusiveInt(r, ..) <span class="kw">if </span>r.is_empty() =&gt; <span class="number">0</span>,
+            <span class="self">Self</span>::ExclusiveInt(r, ..) =&gt; r.end - r.start,
+            <span class="self">Self</span>::InclusiveInt(r, ..) <span class="kw">if </span>r.is_empty() =&gt; <span class="number">0</span>,
+            <span class="self">Self</span>::InclusiveInt(r, ..) =&gt; <span class="kw-2">*</span>r.end() - <span class="kw-2">*</span>r.start() + <span class="number">1</span>,
+        }
+    }
+    <span class="doccomment">/// Is the specified number within this range?
+    </span><span class="attribute">#[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub fn </span>contains(<span class="kw-2">&amp;</span><span class="self">self</span>, n: INT) -&gt; bool {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::ExclusiveInt(r, ..) =&gt; r.contains(<span class="kw-2">&amp;</span>n),
+            <span class="self">Self</span>::InclusiveInt(r, ..) =&gt; r.contains(<span class="kw-2">&amp;</span>n),
+        }
+    }
+    <span class="doccomment">/// Is the specified range inclusive?
+    </span><span class="attribute">#[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub const fn </span>is_inclusive(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::ExclusiveInt(..) =&gt; <span class="bool-val">false</span>,
+            <span class="self">Self</span>::InclusiveInt(..) =&gt; <span class="bool-val">true</span>,
+        }
+    }
+    <span class="doccomment">/// Get the index to the [`ConditionalExpr`].
+    </span><span class="attribute">#[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub const fn </span>index(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::ExclusiveInt(.., n) | <span class="self">Self</span>::InclusiveInt(.., n) =&gt; <span class="kw-2">*</span>n,
+        }
+    }
+    <span class="doccomment">/// Set the index to the [`ConditionalExpr`].
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>set_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize) {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::ExclusiveInt(.., n) | <span class="self">Self</span>::InclusiveInt(.., n) =&gt; <span class="kw-2">*</span>n = index,
+        }
+    }
+}
+
+<span class="kw">pub type </span>CaseBlocksList = smallvec::SmallVec&lt;[usize; <span class="number">1</span>]&gt;;
 
 <span class="doccomment">/// _(internals)_ A type containing all cases for a `switch` statement.
 /// Exported under the `internals` feature only.
 </span><span class="attribute">#[derive(Debug, Clone, Hash)]
-</span><span class="kw">pub struct </span>SwitchCases {
-    <span class="doccomment">/// Dictionary mapping value hashes to [`ConditionalStmtBlock`]&#39;s.
-    </span><span class="kw">pub </span>cases: BTreeMap&lt;u64, Box&lt;ConditionalStmtBlock&gt;&gt;,
-    <span class="doccomment">/// Statements block for the default case (there can be no condition for the default case).
-    </span><span class="kw">pub </span>def_case: Box&lt;StmtBlock&gt;,
+</span><span class="kw">pub struct </span>SwitchCasesCollection {
+    <span class="doccomment">/// List of [`ConditionalExpr`]&#39;s.
+    </span><span class="kw">pub </span>expressions: StaticVec&lt;ConditionalExpr&gt;,
+    <span class="doccomment">/// Dictionary mapping value hashes to [`ConditionalExpr`]&#39;s.
+    </span><span class="kw">pub </span>cases: BTreeMap&lt;u64, CaseBlocksList&gt;,
     <span class="doccomment">/// List of range cases.
-    </span><span class="kw">pub </span>ranges: StaticVec&lt;(INT, INT, bool, Box&lt;ConditionalStmtBlock&gt;)&gt;,
+    </span><span class="kw">pub </span>ranges: StaticVec&lt;RangeCase&gt;,
+    <span class="doccomment">/// Statements block for the default case (there can be no condition for the default case).
+    </span><span class="kw">pub </span>def_case: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 }
 
 <span class="doccomment">/// _(internals)_ A `try-catch` block.
@@ -1065,7 +1344,12 @@
 <span class="doccomment">/// _(internals)_ A scoped block of statements.
 /// Exported under the `internals` feature only.
 </span><span class="attribute">#[derive(Clone, Hash, Default)]
-</span><span class="kw">pub struct </span>StmtBlock(StmtBlockContainer, Span);
+</span><span class="kw">pub struct </span>StmtBlock {
+    <span class="doccomment">/// List of [statements][Stmt].
+    </span>block: StmtBlockContainer,
+    <span class="doccomment">/// [Position] of the statements block.
+    </span>span: Span,
+}
 
 <span class="kw">impl </span>StmtBlock {
     <span class="doccomment">/// A [`StmtBlock`] that does not exist.
@@ -1086,76 +1370,81 @@
     </span><span class="kw">pub fn </span>new_with_span(statements: <span class="kw">impl </span>IntoIterator&lt;Item = Stmt&gt;, span: Span) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>statements: smallvec::SmallVec&lt;<span class="kw">_</span>&gt; = statements.into_iter().collect();
         statements.shrink_to_fit();
-        <span class="self">Self</span>(statements, span)
+        <span class="self">Self </span>{
+            block: statements,
+            span,
+        }
     }
     <span class="doccomment">/// Create an empty [`StmtBlock`].
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub const fn </span>empty(pos: Position) -&gt; <span class="self">Self </span>{
-        <span class="self">Self</span>(StmtBlockContainer::new_const(), Span::new(pos, pos))
+        <span class="self">Self </span>{
+            block: StmtBlockContainer::new_const(),
+            span: Span::new(pos, pos),
+        }
     }
-    <span class="doccomment">/// Is this statements block empty?
+    <span class="doccomment">/// Returns `true` if this statements block contains no statements.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.<span class="number">0</span>.is_empty()
+        <span class="self">self</span>.block.is_empty()
     }
     <span class="doccomment">/// Number of statements in this statements block.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="self">self</span>.<span class="number">0</span>.len()
+        <span class="self">self</span>.block.len()
     }
     <span class="doccomment">/// Get the statements of this statements block.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub fn </span>statements(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[Stmt] {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
-    </span>}
+        <span class="kw-2">&amp;</span><span class="self">self</span>.block
+    }
     <span class="doccomment">/// Extract the statements.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>take_statements(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; StmtBlockContainer {
-        mem::take(<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0</span>)
+        mem::take(<span class="kw-2">&amp;mut </span><span class="self">self</span>.block)
     }
     <span class="doccomment">/// Get an iterator over the statements of this statements block.
     </span><span class="attribute">#[inline(always)]
-    #[must_use]
     </span><span class="kw">pub fn </span>iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span>Stmt&gt; {
-        <span class="self">self</span>.<span class="number">0</span>.iter()
+        <span class="self">self</span>.block.iter()
     }
     <span class="doccomment">/// Get the start position (location of the beginning `{`) of this statements block.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub const fn </span>position(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Position {
-        (<span class="self">self</span>.<span class="number">1</span>).start()
+        (<span class="self">self</span>.span).start()
     }
     <span class="doccomment">/// Get the end position (location of the ending `}`) of this statements block.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub const fn </span>end_position(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Position {
-        (<span class="self">self</span>.<span class="number">1</span>).end()
+        (<span class="self">self</span>.span).end()
     }
     <span class="doccomment">/// Get the positions (locations of the beginning `{` and ending `}`) of this statements block.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub const fn </span>span(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Span {
-        <span class="self">self</span>.<span class="number">1
-    </span>}
+        <span class="self">self</span>.span
+    }
     <span class="doccomment">/// Get the positions (locations of the beginning `{` and ending `}`) of this statements block
     /// or a default.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub const fn </span>span_or_else(<span class="kw-2">&amp;</span><span class="self">self</span>, def_start_pos: Position, def_end_pos: Position) -&gt; Span {
         Span::new(
-            (<span class="self">self</span>.<span class="number">1</span>).start().or_else(def_start_pos),
-            (<span class="self">self</span>.<span class="number">1</span>).end().or_else(def_end_pos),
+            (<span class="self">self</span>.span).start().or_else(def_start_pos),
+            (<span class="self">self</span>.span).end().or_else(def_end_pos),
         )
     }
     <span class="doccomment">/// Set the positions of this statements block.
     </span><span class="attribute">#[inline(always)]
     </span><span class="kw">pub fn </span>set_position(<span class="kw-2">&amp;mut </span><span class="self">self</span>, start_pos: Position, end_pos: Position) {
-        <span class="self">self</span>.<span class="number">1 </span>= Span::new(start_pos, end_pos);
+        <span class="self">self</span>.span = Span::new(start_pos, end_pos);
     }
 }
 
@@ -1164,37 +1453,37 @@
 
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
-    </span>}
+        <span class="kw-2">&amp;</span><span class="self">self</span>.block
+    }
 }
 
 <span class="kw">impl </span>DerefMut <span class="kw">for </span>StmtBlock {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Target {
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0
-    </span>}
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.block
+    }
 }
 
 <span class="kw">impl </span>AsRef&lt;[Stmt]&gt; <span class="kw">for </span>StmtBlock {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[Stmt] {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
-    </span>}
+        <span class="kw-2">&amp;</span><span class="self">self</span>.block
+    }
 }
 
 <span class="kw">impl </span>AsMut&lt;[Stmt]&gt; <span class="kw">for </span>StmtBlock {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>as_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[Stmt] {
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0
-    </span>}
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.block
+    }
 }
 
 <span class="kw">impl </span>fmt::Debug <span class="kw">for </span>StmtBlock {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
         f.write_str(<span class="string">&quot;Block&quot;</span>)<span class="question-mark">?</span>;
-        fmt::Debug::fmt(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, f)<span class="question-mark">?</span>;
-        <span class="kw">if </span>!<span class="self">self</span>.<span class="number">1</span>.is_none() {
-            <span class="macro">write!</span>(f, <span class="string">&quot; @ {:?}&quot;</span>, <span class="self">self</span>.<span class="number">1</span>)<span class="question-mark">?</span>;
+        fmt::Debug::fmt(<span class="kw-2">&amp;</span><span class="self">self</span>.block, f)<span class="question-mark">?</span>;
+        <span class="kw">if </span>!<span class="self">self</span>.span.is_none() {
+            <span class="macro">write!</span>(f, <span class="string">&quot; @ {:?}&quot;</span>, <span class="self">self</span>.span())<span class="question-mark">?</span>;
         }
         <span class="prelude-val">Ok</span>(())
     }
@@ -1205,10 +1494,16 @@
     </span><span class="kw">fn </span>from(stmt: Stmt) -&gt; <span class="self">Self </span>{
         <span class="kw">match </span>stmt {
             Stmt::Block(block) =&gt; <span class="kw-2">*</span>block,
-            Stmt::Noop(pos) =&gt; <span class="self">Self</span>(StmtBlockContainer::new_const(), Span::new(pos, pos)),
+            Stmt::Noop(pos) =&gt; <span class="self">Self </span>{
+                block: StmtBlockContainer::new_const(),
+                span: Span::new(pos, pos),
+            },
             <span class="kw">_ </span>=&gt; {
                 <span class="kw">let </span>pos = stmt.position();
-                <span class="self">Self</span>(<span class="macro">vec!</span>[stmt].into(), Span::new(pos, Position::NONE))
+                <span class="self">Self </span>{
+                    block: <span class="macro">vec!</span>[stmt].into(),
+                    span: Span::new(pos, Position::NONE),
+                }
             }
         }
     }
@@ -1223,14 +1518,24 @@
 
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
-        <span class="self">self</span>.<span class="number">0</span>.into_iter()
+        <span class="self">self</span>.block.into_iter()
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; IntoIterator <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StmtBlock {
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Stmt;
+    <span class="kw">type </span>IntoIter = std::slice::Iter&lt;<span class="lifetime">&#39;a</span>, Stmt&gt;;
+
+    <span class="attribute">#[inline(always)]
+    </span><span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
+        <span class="self">self</span>.block.iter()
     }
 }
 
 <span class="kw">impl </span>Extend&lt;Stmt&gt; <span class="kw">for </span>StmtBlock {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>extend&lt;T: IntoIterator&lt;Item = Stmt&gt;&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, iter: T) {
-        <span class="self">self</span>.<span class="number">0</span>.extend(iter)
+        <span class="self">self</span>.block.extend(iter);
     }
 }
 
@@ -1250,7 +1555,7 @@
     /// 0) Hash table for (condition, block)
     /// 1) Default block
     /// 2) List of ranges: (start, end, inclusive, condition, statement)
-    </span>Switch(Box&lt;(Expr, SwitchCases)&gt;, Position),
+    </span>Switch(Box&lt;(Expr, SwitchCasesCollection)&gt;, Position),
     <span class="doccomment">/// `while` expr `{` stmt `}` | `loop` `{` stmt `}`
     ///
     /// If the guard expression is [`UNIT`][Expr::Unit], then it is a `loop` statement.
@@ -1272,7 +1577,7 @@
     /// * [`CONSTANT`][ASTFlags::CONSTANT] = `const`
     </span>Var(Box&lt;(Ident, Expr, <span class="prelude-ty">Option</span>&lt;NonZeroUsize&gt;)&gt;, ASTFlags, Position),
     <span class="doccomment">/// expr op`=` expr
-    </span>Assignment(Box&lt;(OpAssignment&lt;<span class="lifetime">&#39;static</span>&gt;, BinaryExpr)&gt;),
+    </span>Assignment(Box&lt;(OpAssignment, BinaryExpr)&gt;),
     <span class="doccomment">/// func `(` expr `,` ... `)`
     ///
     /// Note - this is a duplicate of [`Expr::FnCall`] to cover the very common pattern of a single
@@ -1317,7 +1622,7 @@
     /// This variant does not map to any language structure.  It is currently only used only to
     /// convert a normal variable into a shared variable when the variable is _captured_ by a closure.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-    </span>Share(Box&lt;<span class="kw">crate</span>::Identifier&gt;, Position),
+    </span>Share(<span class="kw">crate</span>::ImmutableString, Position),
 }
 
 <span class="kw">impl </span>Default <span class="kw">for </span>Stmt {
@@ -1334,14 +1639,14 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T: IntoIterator&lt;Item = Stmt&gt;&gt; From&lt;(T, Position, Position)&gt; <span class="kw">for </span>Stmt {
+<span class="kw">impl</span>&lt;T: IntoIterator&lt;Item = <span class="self">Self</span>&gt;&gt; From&lt;(T, Position, Position)&gt; <span class="kw">for </span>Stmt {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>from(value: (T, Position, Position)) -&gt; <span class="self">Self </span>{
         StmtBlock::new(value.<span class="number">0</span>, value.<span class="number">1</span>, value.<span class="number">2</span>).into()
     }
 }
 
-<span class="kw">impl</span>&lt;T: IntoIterator&lt;Item = Stmt&gt;&gt; From&lt;(T, Span)&gt; <span class="kw">for </span>Stmt {
+<span class="kw">impl</span>&lt;T: IntoIterator&lt;Item = <span class="self">Self</span>&gt;&gt; From&lt;(T, Span)&gt; <span class="kw">for </span>Stmt {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>from(value: (T, Span)) -&gt; <span class="self">Self </span>{
         StmtBlock::new_with_span(value.<span class="number">0</span>, value.<span class="number">1</span>).into()
@@ -1460,7 +1765,8 @@
             </span><span class="self">Self</span>::Noop(..) =&gt; <span class="bool-val">false</span>,
 
             <span class="self">Self</span>::Expr(e) =&gt; <span class="kw">match </span><span class="kw-2">&amp;**</span>e {
-                Expr::Custom(x, ..) <span class="kw">if </span>x.is_self_terminated() =&gt; <span class="bool-val">true</span>,
+                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+                </span>Expr::Custom(x, ..) <span class="kw">if </span>x.is_self_terminated() =&gt; <span class="bool-val">true</span>,
                 <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
             },
 
@@ -1487,24 +1793,28 @@
             <span class="self">Self</span>::Noop(..) =&gt; <span class="bool-val">true</span>,
             <span class="self">Self</span>::Expr(expr) =&gt; expr.is_pure(),
             <span class="self">Self</span>::If(x, ..) =&gt; {
-                x.<span class="number">0</span>.is_pure() &amp;&amp; x.<span class="number">1</span>.iter().all(Stmt::is_pure) &amp;&amp; x.<span class="number">2</span>.iter().all(Stmt::is_pure)
+                x.<span class="number">0</span>.is_pure() &amp;&amp; x.<span class="number">1</span>.iter().all(<span class="self">Self</span>::is_pure) &amp;&amp; x.<span class="number">2</span>.iter().all(<span class="self">Self</span>::is_pure)
             }
             <span class="self">Self</span>::Switch(x, ..) =&gt; {
-                x.<span class="number">0</span>.is_pure()
-                    &amp;&amp; x.<span class="number">1</span>.cases.values().all(|block| {
-                        block.condition.is_pure() &amp;&amp; block.statements.iter().all(Stmt::is_pure)
+                <span class="kw">let </span>(expr, sw) = <span class="kw-2">&amp;**</span>x;
+                expr.is_pure()
+                    &amp;&amp; sw.cases.values().flat_map(|cases| cases.iter()).all(|<span class="kw-2">&amp;</span>c| {
+                        <span class="kw">let </span>block = <span class="kw-2">&amp;</span>sw.expressions[c];
+                        block.condition.is_pure() &amp;&amp; block.expr.is_pure()
                     })
-                    &amp;&amp; x.<span class="number">1</span>.ranges.iter().all(|(.., block)| {
-                        block.condition.is_pure() &amp;&amp; block.statements.iter().all(Stmt::is_pure)
+                    &amp;&amp; sw.ranges.iter().all(|r| {
+                        <span class="kw">let </span>block = <span class="kw-2">&amp;</span>sw.expressions[r.index()];
+                        block.condition.is_pure() &amp;&amp; block.expr.is_pure()
                     })
-                    &amp;&amp; x.<span class="number">1</span>.def_case.iter().all(Stmt::is_pure)
+                    &amp;&amp; sw.def_case.is_some()
+                    &amp;&amp; sw.expressions[sw.def_case.unwrap()].expr.is_pure()
             }
 
             <span class="comment">// Loops that exit can be pure because it can never be infinite.
             </span><span class="self">Self</span>::While(x, ..) <span class="kw">if </span><span class="macro">matches!</span>(x.<span class="number">0</span>, Expr::BoolConstant(<span class="bool-val">false</span>, ..)) =&gt; <span class="bool-val">true</span>,
             <span class="self">Self</span>::Do(x, options, ..) <span class="kw">if </span><span class="macro">matches!</span>(x.<span class="number">0</span>, Expr::BoolConstant(..)) =&gt; <span class="kw">match </span>x.<span class="number">0 </span>{
                 Expr::BoolConstant(cond, ..) <span class="kw">if </span>cond == options.contains(ASTFlags::NEGATED) =&gt; {
-                    x.<span class="number">1</span>.iter().all(Stmt::is_pure)
+                    x.<span class="number">1</span>.iter().all(<span class="self">Self</span>::is_pure)
                 }
                 <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
             },
@@ -1514,13 +1824,13 @@
 
             <span class="comment">// For loops can be pure because if the iterable is pure, it is finite,
             // so infinite loops can never occur.
-            </span><span class="self">Self</span>::For(x, ..) =&gt; x.<span class="number">2</span>.is_pure() &amp;&amp; x.<span class="number">3</span>.iter().all(Stmt::is_pure),
+            </span><span class="self">Self</span>::For(x, ..) =&gt; x.<span class="number">2</span>.is_pure() &amp;&amp; x.<span class="number">3</span>.iter().all(<span class="self">Self</span>::is_pure),
 
             <span class="self">Self</span>::Var(..) | <span class="self">Self</span>::Assignment(..) | <span class="self">Self</span>::FnCall(..) =&gt; <span class="bool-val">false</span>,
-            <span class="self">Self</span>::Block(block, ..) =&gt; block.iter().all(|stmt| stmt.is_pure()),
+            <span class="self">Self</span>::Block(block, ..) =&gt; block.iter().all(<span class="self">Self</span>::is_pure),
             <span class="self">Self</span>::BreakLoop(..) | <span class="self">Self</span>::Return(..) =&gt; <span class="bool-val">false</span>,
             <span class="self">Self</span>::TryCatch(x, ..) =&gt; {
-                x.try_block.iter().all(Stmt::is_pure) &amp;&amp; x.catch_block.iter().all(Stmt::is_pure)
+                x.try_block.iter().all(<span class="self">Self</span>::is_pure) &amp;&amp; x.catch_block.iter().all(<span class="self">Self</span>::is_pure)
             }
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
@@ -1546,7 +1856,7 @@
             <span class="self">Self</span>::Var(..) =&gt; <span class="bool-val">true</span>,
 
             <span class="self">Self</span>::Expr(e) =&gt; <span class="kw">match </span><span class="kw-2">&amp;**</span>e {
-                Expr::Stmt(s) =&gt; s.iter().all(Stmt::is_block_dependent),
+                Expr::Stmt(s) =&gt; s.iter().all(<span class="self">Self</span>::is_block_dependent),
                 Expr::FnCall(x, ..) =&gt; !x.is_qualified() &amp;&amp; x.name == KEYWORD_EVAL,
                 <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
             },
@@ -1571,8 +1881,8 @@
         <span class="kw">match </span><span class="self">self </span>{
             <span class="self">Self</span>::Var(x, ..) =&gt; x.<span class="number">1</span>.is_pure(),
 
-            <span class="self">Self</span>::Expr(e) =&gt; <span class="kw">match </span>e.as_ref() {
-                Expr::Stmt(s) =&gt; s.iter().all(Stmt::is_internally_pure),
+            <span class="self">Self</span>::Expr(e) =&gt; <span class="kw">match </span><span class="kw-2">&amp;**</span>e {
+                Expr::Stmt(s) =&gt; s.iter().all(<span class="self">Self</span>::is_internally_pure),
                 <span class="kw">_ </span>=&gt; <span class="self">self</span>.is_pure(),
             },
 
@@ -1621,43 +1931,47 @@
                 <span class="kw">if </span>!x.<span class="number">0</span>.walk(path, on_node) {
                     <span class="kw">return </span><span class="bool-val">false</span>;
                 }
-                <span class="kw">for </span>s <span class="kw">in </span>x.<span class="number">1</span>.iter() {
+                <span class="kw">for </span>s <span class="kw">in </span><span class="kw-2">&amp;</span>x.<span class="number">1 </span>{
                     <span class="kw">if </span>!s.walk(path, on_node) {
                         <span class="kw">return </span><span class="bool-val">false</span>;
                     }
                 }
-                <span class="kw">for </span>s <span class="kw">in </span>x.<span class="number">2</span>.iter() {
+                <span class="kw">for </span>s <span class="kw">in </span><span class="kw-2">&amp;</span>x.<span class="number">2 </span>{
                     <span class="kw">if </span>!s.walk(path, on_node) {
                         <span class="kw">return </span><span class="bool-val">false</span>;
                     }
                 }
             }
             <span class="self">Self</span>::Switch(x, ..) =&gt; {
-                <span class="kw">if </span>!x.<span class="number">0</span>.walk(path, on_node) {
+                <span class="kw">let </span>(expr, sw) = <span class="kw-2">&amp;**</span>x;
+
+                <span class="kw">if </span>!expr.walk(path, on_node) {
                     <span class="kw">return </span><span class="bool-val">false</span>;
                 }
-                <span class="kw">for </span>b <span class="kw">in </span>x.<span class="number">1</span>.cases.values() {
-                    <span class="kw">if </span>!b.condition.walk(path, on_node) {
-                        <span class="kw">return </span><span class="bool-val">false</span>;
-                    }
-                    <span class="kw">for </span>s <span class="kw">in </span>b.statements.iter() {
-                        <span class="kw">if </span>!s.walk(path, on_node) {
+                <span class="kw">for </span>(.., blocks) <span class="kw">in </span><span class="kw-2">&amp;</span>sw.cases {
+                    <span class="kw">for </span><span class="kw-2">&amp;</span>b <span class="kw">in </span>blocks {
+                        <span class="kw">let </span>block = <span class="kw-2">&amp;</span>sw.expressions[b];
+
+                        <span class="kw">if </span>!block.condition.walk(path, on_node) {
+                            <span class="kw">return </span><span class="bool-val">false</span>;
+                        }
+                        <span class="kw">if </span>!block.expr.walk(path, on_node) {
                             <span class="kw">return </span><span class="bool-val">false</span>;
                         }
                     }
                 }
-                <span class="kw">for </span>(.., b) <span class="kw">in </span><span class="kw-2">&amp;</span>x.<span class="number">1</span>.ranges {
-                    <span class="kw">if </span>!b.condition.walk(path, on_node) {
+                <span class="kw">for </span>r <span class="kw">in </span><span class="kw-2">&amp;</span>sw.ranges {
+                    <span class="kw">let </span>block = <span class="kw-2">&amp;</span>sw.expressions[r.index()];
+
+                    <span class="kw">if </span>!block.condition.walk(path, on_node) {
                         <span class="kw">return </span><span class="bool-val">false</span>;
                     }
-                    <span class="kw">for </span>s <span class="kw">in </span>b.statements.iter() {
-                        <span class="kw">if </span>!s.walk(path, on_node) {
-                            <span class="kw">return </span><span class="bool-val">false</span>;
-                        }
+                    <span class="kw">if </span>!block.expr.walk(path, on_node) {
+                        <span class="kw">return </span><span class="bool-val">false</span>;
                     }
                 }
-                <span class="kw">for </span>s <span class="kw">in </span>x.<span class="number">1</span>.def_case.iter() {
-                    <span class="kw">if </span>!s.walk(path, on_node) {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(index) = sw.def_case {
+                    <span class="kw">if </span>!sw.expressions[index].expr.walk(path, on_node) {
                         <span class="kw">return </span><span class="bool-val">false</span>;
                     }
                 }
@@ -1676,7 +1990,7 @@
                 <span class="kw">if </span>!x.<span class="number">2</span>.walk(path, on_node) {
                     <span class="kw">return </span><span class="bool-val">false</span>;
                 }
-                <span class="kw">for </span>s <span class="kw">in </span>x.<span class="number">3</span>.iter() {
+                <span class="kw">for </span>s <span class="kw">in </span><span class="kw-2">&amp;</span>x.<span class="number">3 </span>{
                     <span class="kw">if </span>!s.walk(path, on_node) {
                         <span class="kw">return </span><span class="bool-val">false</span>;
                     }
@@ -1705,12 +2019,12 @@
                 }
             }
             <span class="self">Self</span>::TryCatch(x, ..) =&gt; {
-                <span class="kw">for </span>s <span class="kw">in </span>x.try_block.iter() {
+                <span class="kw">for </span>s <span class="kw">in </span><span class="kw-2">&amp;</span>x.try_block {
                     <span class="kw">if </span>!s.walk(path, on_node) {
                         <span class="kw">return </span><span class="bool-val">false</span>;
                     }
                 }
-                <span class="kw">for </span>s <span class="kw">in </span>x.catch_block.iter() {
+                <span class="kw">for </span>s <span class="kw">in </span><span class="kw-2">&amp;</span>x.catch_block {
                     <span class="kw">if </span>!s.walk(path, on_node) {
                         <span class="kw">return </span><span class="bool-val">false</span>;
                     }
@@ -1741,4 +2055,4 @@
     </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/eval/chaining.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>chaining.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/eval/chaining.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>chaining.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1033,42 +1033,13 @@
 <span id="1033">1033</span>
 <span id="1034">1034</span>
 <span id="1035">1035</span>
-<span id="1036">1036</span>
-<span id="1037">1037</span>
-<span id="1038">1038</span>
-<span id="1039">1039</span>
-<span id="1040">1040</span>
-<span id="1041">1041</span>
-<span id="1042">1042</span>
-<span id="1043">1043</span>
-<span id="1044">1044</span>
-<span id="1045">1045</span>
-<span id="1046">1046</span>
-<span id="1047">1047</span>
-<span id="1048">1048</span>
-<span id="1049">1049</span>
-<span id="1050">1050</span>
-<span id="1051">1051</span>
-<span id="1052">1052</span>
-<span id="1053">1053</span>
-<span id="1054">1054</span>
-<span id="1055">1055</span>
-<span id="1056">1056</span>
-<span id="1057">1057</span>
-<span id="1058">1058</span>
-<span id="1059">1059</span>
-<span id="1060">1060</span>
-<span id="1061">1061</span>
-<span id="1062">1062</span>
-<span id="1063">1063</span>
-<span id="1064">1064</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Types to support chaining operations (i.e. indexing and dotting).
 </span><span class="attribute">#![cfg(any(not(feature = <span class="string">&quot;no_index&quot;</span>), not(feature = <span class="string">&quot;no_object&quot;</span>)))]
 
 </span><span class="kw">use super</span>::{Caches, GlobalRuntimeState, Target};
 <span class="kw">use </span><span class="kw">crate</span>::ast::{ASTFlags, Expr, OpAssignment};
 <span class="kw">use </span><span class="kw">crate</span>::types::dynamic::Union;
-<span class="kw">use crate</span>::{Dynamic, Engine, Module, Position, RhaiResult, RhaiResultOf, Scope, StaticVec, ERR};
+<span class="kw">use crate</span>::{Dynamic, Engine, FnArgsVec, Module, Position, RhaiResult, RhaiResultOf, Scope, ERR};
 <span class="kw">use </span>std::hash::Hash;
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
@@ -1097,92 +1068,9 @@
     }
 }
 
-<span class="doccomment">/// Value of a chaining argument.
-</span><span class="attribute">#[derive(Debug, Clone, Hash)]
-</span><span class="kw">pub enum </span>ChainArgument {
-    <span class="doccomment">/// Dot-property access.
-    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-    </span>Property(Position),
-    <span class="doccomment">/// Arguments to a dot method call.
-    /// Wrapped values are the arguments plus the [position][Position] of the first argument.
-    ///
-    /// Since many dotted function calls have no arguments (e.g. `string.len()`), it is better to
-    /// reduce the size of [`ChainArgument`] by using a boxed slice.
-    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-    </span>MethodCallArgs(Box&lt;[Dynamic]&gt;, Position),
-    <span class="doccomment">/// Index value and [position][Position].
-    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-    </span>IndexValue(Dynamic, Position),
-}
-
-<span class="kw">impl </span>ChainArgument {
-    <span class="doccomment">/// Return the index value.
-    </span><span class="attribute">#[inline(always)]
-    #[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-    #[must_use]
-    </span><span class="kw">pub fn </span>into_index_value(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Dynamic&gt; {
-        <span class="kw">match </span><span class="self">self </span>{
-            <span class="self">Self</span>::IndexValue(value, ..) =&gt; <span class="prelude-val">Some</span>(value),
-            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-            </span><span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
-        }
-    }
-    <span class="doccomment">/// Return the list of method call arguments.
-    ///
-    /// # Panics
-    ///
-    /// Panics if the [`ChainArgument`] is not [`MethodCallArgs`][ChainArgument::MethodCallArgs].
-    </span><span class="attribute">#[inline(always)]
-    #[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-    #[must_use]
-    </span><span class="kw">pub fn </span>into_fn_call_args(<span class="self">self</span>) -&gt; (<span class="kw">crate</span>::FnArgsVec&lt;Dynamic&gt;, Position) {
-        <span class="kw">match </span><span class="self">self </span>{
-            <span class="self">Self</span>::MethodCallArgs(values, pos) <span class="kw">if </span>values.is_empty() =&gt; {
-                (<span class="kw">crate</span>::FnArgsVec::new_const(), pos)
-            }
-            <span class="self">Self</span>::MethodCallArgs(<span class="kw-2">mut </span>values, pos) =&gt; {
-                (values.iter_mut().map(std::mem::take).collect(), pos)
-            }
-            x =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;ChainArgument::MethodCallArgs expected but gets {:?}&quot;</span>, x),
-        }
-    }
-    <span class="doccomment">/// Return the [position][Position].
-    </span><span class="attribute">#[inline(always)]
-    #[must_use]
-    #[allow(dead_code)]
-    </span><span class="kw">pub const fn </span>position(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Position {
-        <span class="kw">match </span><span class="self">self </span>{
-            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-            </span>ChainArgument::Property(pos) =&gt; <span class="kw-2">*</span>pos,
-            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-            </span>ChainArgument::MethodCallArgs(.., pos) =&gt; <span class="kw-2">*</span>pos,
-            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-            </span>ChainArgument::IndexValue(.., pos) =&gt; <span class="kw-2">*</span>pos,
-        }
-    }
-    <span class="doccomment">/// Create n [`MethodCallArgs`][ChainArgument::MethodCallArgs].
-    </span><span class="attribute">#[inline(always)]
-    #[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-    #[must_use]
-    </span><span class="kw">pub fn </span>from_fn_call_args(values: <span class="kw">crate</span>::FnArgsVec&lt;Dynamic&gt;, pos: Position) -&gt; <span class="self">Self </span>{
-        <span class="kw">if </span>values.is_empty() {
-            <span class="self">Self</span>::MethodCallArgs(Box::default(), pos)
-        } <span class="kw">else </span>{
-            <span class="self">Self</span>::MethodCallArgs(values.into_boxed_slice(), pos)
-        }
-    }
-    <span class="doccomment">/// Create an [`IndexValue`][ChainArgument::IndexValue].
-    </span><span class="attribute">#[inline(always)]
-    #[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-    #[must_use]
-    </span><span class="kw">pub const fn </span>from_index_value(value: Dynamic, pos: Position) -&gt; <span class="self">Self </span>{
-        <span class="self">Self</span>::IndexValue(value, pos)
-    }
-}
-
 <span class="kw">impl </span>Engine {
     <span class="doccomment">/// Chain-evaluate a dot/index chain.
-    /// [`Position`] in [`EvalAltResult`] is [`NONE`][Position::NONE] and must be set afterwards.
+    /// [`Position`] in [`EvalAltResult`][crate::EvalAltResult] may be [`NONE`][Position::NONE] and should be set afterwards.
     </span><span class="kw">fn </span>eval_dot_index_chain_helper(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         global: <span class="kw-2">&amp;mut </span>GlobalRuntimeState,
@@ -1194,15 +1082,12 @@
         _parent: <span class="kw-2">&amp;</span>Expr,
         rhs: <span class="kw-2">&amp;</span>Expr,
         _parent_options: ASTFlags,
-        idx_values: <span class="kw-2">&amp;mut </span>StaticVec&lt;ChainArgument&gt;,
+        idx_values: <span class="kw-2">&amp;mut </span>FnArgsVec&lt;Dynamic&gt;,
         chain_type: ChainType,
         level: usize,
         new_val: <span class="prelude-ty">Option</span>&lt;(Dynamic, OpAssignment)&gt;,
     ) -&gt; RhaiResultOf&lt;(Dynamic, bool)&gt; {
         <span class="kw">let </span>is_ref_mut = target.is_ref();
-
-        <span class="comment">// Pop the last index value
-        </span><span class="kw">let </span>idx_val = idx_values.pop().unwrap();
 
         <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
         </span><span class="kw">let </span>scope = <span class="kw-2">&amp;mut </span>Scope::new();
@@ -1210,8 +1095,12 @@
         <span class="kw">match </span>chain_type {
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
             </span>ChainType::Indexing =&gt; {
+                <span class="comment">// Check for existence with the null conditional operator
+                </span><span class="kw">if </span>_parent_options.contains(ASTFlags::NEGATED) &amp;&amp; target.is::&lt;()&gt;() {
+                    <span class="kw">return </span><span class="prelude-val">Ok</span>((Dynamic::UNIT, <span class="bool-val">false</span>));
+                }
+
                 <span class="kw">let </span>pos = rhs.start_position();
-                <span class="kw">let </span>idx_val = idx_val.into_index_value().expect(<span class="string">&quot;`ChainType::Index`&quot;</span>);
 
                 <span class="kw">match </span>rhs {
                     <span class="comment">// xxx[idx].expr... | xxx[idx][expr]...
@@ -1221,6 +1110,7 @@
                         <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
                         </span><span class="self">self</span>.run_debugger(scope, global, lib, this_ptr, _parent, level)<span class="question-mark">?</span>;
 
+                        <span class="kw">let </span>idx_val = idx_values.pop().unwrap();
                         <span class="kw">let </span><span class="kw-2">mut </span>idx_val_for_setter = idx_val.clone();
                         <span class="kw">let </span>idx_pos = x.lhs.start_position();
                         <span class="kw">let </span>rhs_chain = rhs.into();
@@ -1265,6 +1155,7 @@
                         </span><span class="self">self</span>.run_debugger(scope, global, lib, this_ptr, _parent, level)<span class="question-mark">?</span>;
 
                         <span class="kw">let </span>(new_val, op_info) = new_val.expect(<span class="string">&quot;`Some`&quot;</span>);
+                        <span class="kw">let </span>idx_val = idx_values.pop().unwrap();
                         <span class="kw">let </span><span class="kw-2">mut </span>idx_val2 = idx_val.clone();
 
                         <span class="kw">let </span>try_setter = <span class="kw">match </span><span class="self">self</span>.get_indexed_mut(
@@ -1296,14 +1187,14 @@
                                 </span><span class="kw">if let </span><span class="prelude-val">Ok</span>(val) =
                                     <span class="self">self</span>.call_indexer_get(global, caches, lib, target, idx, level)
                                 {
-                                    <span class="kw">let </span><span class="kw-2">mut </span>res = val.into();
+                                    <span class="kw">let </span><span class="kw-2">mut </span>val = val.into();
                                     <span class="comment">// Run the op-assignment
                                     </span><span class="self">self</span>.eval_op_assignment(
-                                        global, caches, lib, op_info, <span class="kw-2">&amp;mut </span>res, root, new_val,
+                                        global, caches, lib, op_info, <span class="kw-2">&amp;mut </span>val, root, new_val,
                                         level,
                                     )<span class="question-mark">?</span>;
                                     <span class="comment">// Replace new value
-                                    </span>new_val = res.take_or_clone();
+                                    </span>new_val = val.take_or_clone();
                                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
                                     </span><span class="self">self</span>.check_data_size(<span class="kw-2">&amp;</span>new_val, op_info.pos)<span class="question-mark">?</span>;
                                 }
@@ -1323,6 +1214,8 @@
                         <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
                         </span><span class="self">self</span>.run_debugger(scope, global, lib, this_ptr, _parent, level)<span class="question-mark">?</span>;
 
+                        <span class="kw">let </span>idx_val = idx_values.pop().unwrap();
+
                         <span class="self">self</span>.get_indexed_mut(
                             global, caches, lib, target, idx_val, pos, <span class="bool-val">false</span>, <span class="bool-val">true</span>, level,
                         )
@@ -1333,19 +1226,32 @@
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
             </span>ChainType::Dotting =&gt; {
+                <span class="comment">// Check for existence with the Elvis operator
+                </span><span class="kw">if </span>_parent_options.contains(ASTFlags::NEGATED) &amp;&amp; target.is::&lt;()&gt;() {
+                    <span class="kw">return </span><span class="prelude-val">Ok</span>((Dynamic::UNIT, <span class="bool-val">false</span>));
+                }
+
                 <span class="kw">match </span>rhs {
                     <span class="comment">// xxx.fn_name(arg_expr_list)
                     </span>Expr::MethodCall(x, pos) <span class="kw">if </span>!x.is_qualified() &amp;&amp; new_val.is_none() =&gt; {
-                        <span class="kw">let </span><span class="kw">crate</span>::ast::FnCallExpr { name, hashes, .. } = x.as_ref();
-                        <span class="kw">let </span>call_args = <span class="kw-2">&amp;mut </span>idx_val.into_fn_call_args();
-
                         <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
                         </span><span class="kw">let </span>reset_debugger =
                             <span class="self">self</span>.run_debugger_with_reset(scope, global, lib, this_ptr, rhs, level)<span class="question-mark">?</span>;
 
+                        <span class="kw">let </span><span class="kw">crate</span>::ast::FnCallExpr {
+                            name, hashes, args, ..
+                        } = <span class="kw-2">&amp;**</span>x;
+
+                        <span class="kw">let </span>offset = idx_values.len() - args.len();
+                        <span class="kw">let </span>call_args = <span class="kw-2">&amp;mut </span>idx_values[offset..];
+                        <span class="kw">let </span>pos1 = args.get(<span class="number">0</span>).map_or(Position::NONE, Expr::position);
+
                         <span class="kw">let </span>result = <span class="self">self</span>.make_method_call(
-                            global, caches, lib, name, <span class="kw-2">*</span>hashes, target, call_args, <span class="kw-2">*</span>pos, level,
+                            global, caches, lib, name, <span class="kw-2">*</span>hashes, target, call_args, pos1, <span class="kw-2">*</span>pos,
+                            level,
                         );
+
+                        idx_values.truncate(offset);
 
                         <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
                         </span>global.debugger.reset_status(reset_debugger);
@@ -1395,16 +1301,15 @@
                         <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
                         </span><span class="self">self</span>.run_debugger(scope, global, lib, this_ptr, rhs, level)<span class="question-mark">?</span>;
 
-                        <span class="kw">let </span>((getter, hash_get), (setter, hash_set), name) = x.as_ref();
+                        <span class="kw">let </span>((getter, hash_get), (setter, hash_set), name) = <span class="kw-2">&amp;**</span>x;
                         <span class="kw">let </span>(<span class="kw-2">mut </span>new_val, op_info) = new_val.expect(<span class="string">&quot;`Some`&quot;</span>);
 
                         <span class="kw">if </span>op_info.is_op_assignment() {
-                            <span class="kw">let </span>hash = <span class="kw">crate</span>::ast::FnCallHashes::from_native(<span class="kw-2">*</span>hash_get);
                             <span class="kw">let </span>args = <span class="kw-2">&amp;mut </span>[target.as_mut()];
                             <span class="kw">let </span>(<span class="kw-2">mut </span>orig_val, ..) = <span class="self">self
-                                </span>.exec_fn_call(
-                                    <span class="prelude-val">None</span>, global, caches, lib, getter, hash, args, is_ref_mut,
-                                    <span class="bool-val">true</span>, <span class="kw-2">*</span>pos, level,
+                                </span>.call_native_fn(
+                                    global, caches, lib, getter, <span class="kw-2">*</span>hash_get, args, is_ref_mut,
+                                    <span class="bool-val">false</span>, <span class="kw-2">*</span>pos, level,
                                 )
                                 .or_else(|err| <span class="kw">match </span><span class="kw-2">*</span>err {
                                     <span class="comment">// Try an indexer if property does not exist
@@ -1435,10 +1340,9 @@
                             new_val = orig_val;
                         }
 
-                        <span class="kw">let </span>hash = <span class="kw">crate</span>::ast::FnCallHashes::from_native(<span class="kw-2">*</span>hash_set);
                         <span class="kw">let </span>args = <span class="kw-2">&amp;mut </span>[target.as_mut(), <span class="kw-2">&amp;mut </span>new_val];
-                        <span class="self">self</span>.exec_fn_call(
-                            <span class="prelude-val">None</span>, global, caches, lib, setter, hash, args, is_ref_mut, <span class="bool-val">true</span>, <span class="kw-2">*</span>pos,
+                        <span class="self">self</span>.call_native_fn(
+                            global, caches, lib, setter, <span class="kw-2">*</span>hash_set, args, is_ref_mut, <span class="bool-val">false</span>, <span class="kw-2">*</span>pos,
                             level,
                         )
                         .or_else(|err| <span class="kw">match </span><span class="kw-2">*</span>err {
@@ -1462,11 +1366,10 @@
                         <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
                         </span><span class="self">self</span>.run_debugger(scope, global, lib, this_ptr, rhs, level)<span class="question-mark">?</span>;
 
-                        <span class="kw">let </span>((getter, hash_get), <span class="kw">_</span>, name) = x.as_ref();
-                        <span class="kw">let </span>hash = <span class="kw">crate</span>::ast::FnCallHashes::from_native(<span class="kw-2">*</span>hash_get);
+                        <span class="kw">let </span>((getter, hash_get), <span class="kw">_</span>, name) = <span class="kw-2">&amp;**</span>x;
                         <span class="kw">let </span>args = <span class="kw-2">&amp;mut </span>[target.as_mut()];
-                        <span class="self">self</span>.exec_fn_call(
-                            <span class="prelude-val">None</span>, global, caches, lib, getter, hash, args, is_ref_mut, <span class="bool-val">true</span>, <span class="kw-2">*</span>pos,
+                        <span class="self">self</span>.call_native_fn(
+                            global, caches, lib, getter, <span class="kw-2">*</span>hash_get, args, is_ref_mut, <span class="bool-val">false</span>, <span class="kw-2">*</span>pos,
                             level,
                         )
                         .map_or_else(
@@ -1507,18 +1410,25 @@
                             </span>}
                             <span class="comment">// {xxx:map}.fn_name(arg_expr_list)[expr] | {xxx:map}.fn_name(arg_expr_list).expr
                             </span>Expr::MethodCall(<span class="kw-2">ref </span>x, pos) <span class="kw">if </span>!x.is_qualified() =&gt; {
-                                <span class="kw">let </span><span class="kw">crate</span>::ast::FnCallExpr { name, hashes, .. } = x.as_ref();
-                                <span class="kw">let </span>call_args = <span class="kw-2">&amp;mut </span>idx_val.into_fn_call_args();
-
                                 <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
                                 </span><span class="kw">let </span>reset_debugger = <span class="self">self</span>.run_debugger_with_reset(
                                     scope, global, lib, this_ptr, _node, level,
                                 )<span class="question-mark">?</span>;
 
+                                <span class="kw">let </span><span class="kw">crate</span>::ast::FnCallExpr {
+                                    name, hashes, args, ..
+                                } = <span class="kw-2">&amp;**</span>x;
+
+                                <span class="kw">let </span>offset = idx_values.len() - args.len();
+                                <span class="kw">let </span>call_args = <span class="kw-2">&amp;mut </span>idx_values[offset..];
+                                <span class="kw">let </span>pos1 = args.get(<span class="number">0</span>).map_or(Position::NONE, Expr::position);
+
                                 <span class="kw">let </span>result = <span class="self">self</span>.make_method_call(
-                                    global, caches, lib, name, <span class="kw-2">*</span>hashes, target, call_args, pos,
-                                    level,
+                                    global, caches, lib, name, <span class="kw-2">*</span>hashes, target, call_args, pos1,
+                                    pos, level,
                                 );
+
+                                idx_values.truncate(offset);
 
                                 <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
                                 </span>global.debugger.reset_status(reset_debugger);
@@ -1550,18 +1460,16 @@
                                 <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
                                 </span><span class="self">self</span>.run_debugger(scope, global, lib, this_ptr, _node, level)<span class="question-mark">?</span>;
 
-                                <span class="kw">let </span>((getter, hash_get), (setter, hash_set), name) = p.as_ref();
+                                <span class="kw">let </span>((getter, hash_get), (setter, hash_set), name) = <span class="kw-2">&amp;**</span>p;
                                 <span class="kw">let </span>rhs_chain = rhs.into();
-                                <span class="kw">let </span>hash_get = <span class="kw">crate</span>::ast::FnCallHashes::from_native(<span class="kw-2">*</span>hash_get);
-                                <span class="kw">let </span>hash_set = <span class="kw">crate</span>::ast::FnCallHashes::from_native(<span class="kw-2">*</span>hash_set);
                                 <span class="kw">let </span><span class="kw-2">mut </span>arg_values = [target.as_mut(), <span class="kw-2">&amp;mut </span>Dynamic::UNIT.clone()];
                                 <span class="kw">let </span>args = <span class="kw-2">&amp;mut </span>arg_values[..<span class="number">1</span>];
 
                                 <span class="comment">// Assume getters are always pure
                                 </span><span class="kw">let </span>(<span class="kw-2">mut </span>val, ..) = <span class="self">self
-                                    </span>.exec_fn_call(
-                                        <span class="prelude-val">None</span>, global, caches, lib, getter, hash_get, args,
-                                        is_ref_mut, <span class="bool-val">true</span>, pos, level,
+                                    </span>.call_native_fn(
+                                        global, caches, lib, getter, <span class="kw-2">*</span>hash_get, args, is_ref_mut,
+                                        <span class="bool-val">false</span>, pos, level,
                                     )
                                     .or_else(|err| <span class="kw">match </span><span class="kw-2">*</span>err {
                                         <span class="comment">// Try an indexer if property does not exist
@@ -1595,9 +1503,9 @@
                                     <span class="comment">// Re-use args because the first &amp;mut parameter will not be consumed
                                     </span><span class="kw">let </span><span class="kw-2">mut </span>arg_values = [target.as_mut(), val.as_mut()];
                                     <span class="kw">let </span>args = <span class="kw-2">&amp;mut </span>arg_values;
-                                    <span class="self">self</span>.exec_fn_call(
-                                        <span class="prelude-val">None</span>, global, caches, lib, setter, hash_set, args,
-                                        is_ref_mut, <span class="bool-val">true</span>, pos, level,
+                                    <span class="self">self</span>.call_native_fn(
+                                        global, caches, lib, setter, <span class="kw-2">*</span>hash_set, args, is_ref_mut,
+                                        <span class="bool-val">false</span>, pos, level,
                                     )
                                     .or_else(
                                         |err| <span class="kw">match </span><span class="kw-2">*</span>err {
@@ -1627,18 +1535,26 @@
                             }
                             <span class="comment">// xxx.fn_name(arg_expr_list)[expr] | xxx.fn_name(arg_expr_list).expr
                             </span>Expr::MethodCall(<span class="kw-2">ref </span>f, pos) <span class="kw">if </span>!f.is_qualified() =&gt; {
-                                <span class="kw">let </span><span class="kw">crate</span>::ast::FnCallExpr { name, hashes, .. } = f.as_ref();
-                                <span class="kw">let </span>rhs_chain = rhs.into();
-                                <span class="kw">let </span>args = <span class="kw-2">&amp;mut </span>idx_val.into_fn_call_args();
-
                                 <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
                                 </span><span class="kw">let </span>reset_debugger = <span class="self">self</span>.run_debugger_with_reset(
                                     scope, global, lib, this_ptr, _node, level,
                                 )<span class="question-mark">?</span>;
 
+                                <span class="kw">let </span><span class="kw">crate</span>::ast::FnCallExpr {
+                                    name, hashes, args, ..
+                                } = <span class="kw-2">&amp;**</span>f;
+                                <span class="kw">let </span>rhs_chain = rhs.into();
+
+                                <span class="kw">let </span>offset = idx_values.len() - args.len();
+                                <span class="kw">let </span>call_args = <span class="kw-2">&amp;mut </span>idx_values[offset..];
+                                <span class="kw">let </span>pos1 = args.get(<span class="number">0</span>).map_or(Position::NONE, Expr::position);
+
                                 <span class="kw">let </span>result = <span class="self">self</span>.make_method_call(
-                                    global, caches, lib, name, <span class="kw-2">*</span>hashes, target, args, pos, level,
+                                    global, caches, lib, name, <span class="kw-2">*</span>hashes, target, call_args, pos1,
+                                    pos, level,
                                 );
+
+                                idx_values.truncate(offset);
 
                                 <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
                                 </span>global.debugger.reset_status(reset_debugger);
@@ -1679,21 +1595,46 @@
         level: usize,
         new_val: <span class="prelude-ty">Option</span>&lt;(Dynamic, OpAssignment)&gt;,
     ) -&gt; RhaiResult {
-        <span class="kw">let </span>(<span class="kw">crate</span>::ast::BinaryExpr { lhs, rhs }, chain_type, options, op_pos) = <span class="kw">match </span>expr {
+        <span class="kw">let </span>chain_type = ChainType::from(expr);
+        <span class="kw">let </span>(<span class="kw">crate</span>::ast::BinaryExpr { lhs, rhs }, options, op_pos) = <span class="kw">match </span>expr {
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-            </span>Expr::Index(x, options, pos) =&gt; (x.as_ref(), ChainType::Indexing, <span class="kw-2">*</span>options, <span class="kw-2">*</span>pos),
+            </span>Expr::Index(x, options, pos) =&gt; (<span class="kw-2">&amp;**</span>x, <span class="kw-2">*</span>options, <span class="kw-2">*</span>pos),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-            </span>Expr::Dot(x, options, pos) =&gt; (x.as_ref(), ChainType::Dotting, <span class="kw-2">*</span>options, <span class="kw-2">*</span>pos),
+            </span>Expr::Dot(x, options, pos) =&gt; (<span class="kw-2">&amp;**</span>x, <span class="kw-2">*</span>options, <span class="kw-2">*</span>pos),
             expr =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;Expr::Index or Expr::Dot expected but gets {:?}&quot;</span>, expr),
         };
 
-        <span class="kw">let </span>idx_values = <span class="kw-2">&amp;mut </span>StaticVec::new_const();
+        <span class="kw">let </span>idx_values = <span class="kw-2">&amp;mut </span>FnArgsVec::new_const();
 
-        <span class="self">self</span>.eval_dot_index_chain_arguments(
-            scope, global, caches, lib, this_ptr, rhs, options, chain_type, idx_values, <span class="number">0</span>, level,
-        )<span class="question-mark">?</span>;
-
-        <span class="kw">let </span>is_assignment = new_val.is_some();
+        <span class="kw">match </span>rhs {
+            <span class="comment">// Short-circuit for simple property access: {expr}.prop
+            </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+            </span>Expr::Property(..) <span class="kw">if </span>chain_type == ChainType::Dotting =&gt; (),
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+            </span>Expr::Property(..) =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;unexpected Expr::Property for indexing&quot;</span>),
+            <span class="comment">// Short-circuit for simple method call: {expr}.func()
+            </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+            </span>Expr::FnCall(x, ..) <span class="kw">if </span>chain_type == ChainType::Dotting &amp;&amp; x.args.is_empty() =&gt; (),
+            <span class="comment">// Short-circuit for method call with all literal arguments: {expr}.func(1, 2, 3)
+            </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+            </span>Expr::FnCall(x, ..)
+                <span class="kw">if </span>chain_type == ChainType::Dotting &amp;&amp; x.args.iter().all(Expr::is_constant) =&gt;
+            {
+                idx_values.extend(x.args.iter().map(|expr| expr.get_literal_value().unwrap()))
+            }
+            <span class="comment">// Short-circuit for indexing with literal: {expr}[1]
+            </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
+            </span><span class="kw">_ if </span>chain_type == ChainType::Indexing &amp;&amp; rhs.is_constant() =&gt; {
+                idx_values.push(rhs.get_literal_value().unwrap())
+            }
+            <span class="comment">// All other patterns - evaluate the arguments chain
+            </span><span class="kw">_ </span>=&gt; {
+                <span class="self">self</span>.eval_dot_index_chain_arguments(
+                    scope, global, caches, lib, this_ptr, rhs, options, chain_type, idx_values, <span class="number">0</span>,
+                    level,
+                )<span class="question-mark">?</span>;
+            }
+        }
 
         <span class="kw">match </span>lhs {
             <span class="comment">// id.??? or id[???]
@@ -1714,29 +1655,28 @@
                     global, caches, lib, <span class="kw-2">&amp;mut </span><span class="prelude-val">None</span>, obj_ptr, root, expr, rhs, options, idx_values,
                     chain_type, level, new_val,
                 )
-                .map(|(v, ..)| v)
-                .map_err(|err| err.fill_position(op_pos))
             }
             <span class="comment">// {expr}.??? = ??? or {expr}[???] = ???
-            </span><span class="kw">_ if </span>is_assignment =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;cannot assign to an expression&quot;</span>),
+            </span><span class="kw">_ if </span>new_val.is_some() =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;cannot assign to an expression&quot;</span>),
             <span class="comment">// {expr}.??? or {expr}[???]
             </span>expr =&gt; {
-                <span class="kw">let </span>value = <span class="self">self</span>.eval_expr(scope, global, caches, lib, this_ptr, expr, level)<span class="question-mark">?</span>;
+                <span class="kw">let </span>value = <span class="self">self
+                    </span>.eval_expr(scope, global, caches, lib, this_ptr, expr, level)<span class="question-mark">?
+                    </span>.flatten();
                 <span class="kw">let </span>obj_ptr = <span class="kw-2">&amp;mut </span>value.into();
                 <span class="kw">let </span>root = (<span class="string">&quot;&quot;</span>, expr.start_position());
+
                 <span class="self">self</span>.eval_dot_index_chain_helper(
                     global, caches, lib, this_ptr, obj_ptr, root, expr, rhs, options, idx_values,
                     chain_type, level, new_val,
                 )
-                .map(|(v, ..)| <span class="kw">if </span>is_assignment { Dynamic::UNIT } <span class="kw">else </span>{ v })
-                .map_err(|err| err.fill_position(op_pos))
             }
         }
+        .map(|(v, ..)| v)
+        .map_err(|err| err.fill_position(op_pos))
     }
 
-    <span class="doccomment">/// Evaluate a chain of indexes and store the results in a [`StaticVec`].
-    /// [`StaticVec`] is used to avoid an allocation in the overwhelming cases of
-    /// just a few levels of indexing.
+    <span class="doccomment">/// Evaluate a chain of indexes and store the results in a [`FnArgsVec`].
     </span><span class="kw">fn </span>eval_dot_index_chain_arguments(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         scope: <span class="kw-2">&amp;mut </span>Scope,
@@ -1747,7 +1687,7 @@
         expr: <span class="kw-2">&amp;</span>Expr,
         parent_options: ASTFlags,
         _parent_chain_type: ChainType,
-        idx_values: <span class="kw-2">&amp;mut </span>StaticVec&lt;ChainArgument&gt;,
+        idx_values: <span class="kw-2">&amp;mut </span>FnArgsVec&lt;Dynamic&gt;,
         size: usize,
         level: usize,
     ) -&gt; RhaiResultOf&lt;()&gt; {
@@ -1759,22 +1699,13 @@
             </span>Expr::MethodCall(x, ..)
                 <span class="kw">if </span>_parent_chain_type == ChainType::Dotting &amp;&amp; !x.is_qualified() =&gt;
             {
-                <span class="kw">let </span><span class="kw">crate</span>::ast::FnCallExpr { args, .. } = x.as_ref();
-
-                <span class="kw">let </span>(values, pos) = args.iter().try_fold(
-                    (<span class="kw">crate</span>::FnArgsVec::with_capacity(args.len()), Position::NONE),
-                    |(<span class="kw-2">mut </span>values, <span class="kw-2">mut </span>pos), expr| {
-                        <span class="kw">let </span>(value, arg_pos) =
-                            <span class="self">self</span>.get_arg_value(scope, global, caches, lib, this_ptr, expr, level)<span class="question-mark">?</span>;
-                        <span class="kw">if </span>values.is_empty() {
-                            pos = arg_pos;
-                        }
-                        values.push(value.flatten());
-                        <span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, <span class="kw">crate</span>::RhaiError&gt;((values, pos))
-                    },
-                )<span class="question-mark">?</span>;
-
-                idx_values.push(ChainArgument::from_fn_call_args(values, pos));
+                <span class="kw">for </span>arg_expr <span class="kw">in </span><span class="kw-2">&amp;</span>x.args {
+                    idx_values.push(
+                        <span class="self">self</span>.get_arg_value(scope, global, caches, lib, this_ptr, arg_expr, level)<span class="question-mark">?
+                            </span>.<span class="number">0
+                            </span>.flatten(),
+                    );
+                }
             }
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
             </span>Expr::MethodCall(..) <span class="kw">if </span>_parent_chain_type == ChainType::Dotting =&gt; {
@@ -1782,44 +1713,35 @@
             }
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-            </span>Expr::Property(.., pos) <span class="kw">if </span>_parent_chain_type == ChainType::Dotting =&gt; {
-                idx_values.push(ChainArgument::Property(<span class="kw-2">*</span>pos))
-            }
+            </span>Expr::Property(..) <span class="kw">if </span>_parent_chain_type == ChainType::Dotting =&gt; (),
             Expr::Property(..) =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;unexpected Expr::Property for indexing&quot;</span>),
 
             Expr::Index(x, options, ..) | Expr::Dot(x, options, ..)
                 <span class="kw">if </span>!parent_options.contains(ASTFlags::BREAK) =&gt;
             {
-                <span class="kw">let </span><span class="kw">crate</span>::ast::BinaryExpr { lhs, rhs, .. } = x.as_ref();
+                <span class="kw">let </span><span class="kw">crate</span>::ast::BinaryExpr { lhs, rhs, .. } = <span class="kw-2">&amp;**</span>x;
+
+                <span class="kw">let </span><span class="kw-2">mut </span>_arg_values = FnArgsVec::new_const();
 
                 <span class="comment">// Evaluate in left-to-right order
-                </span><span class="kw">let </span>lhs_arg_val = <span class="kw">match </span>lhs {
+                </span><span class="kw">match </span>lhs {
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-                    </span>Expr::Property(.., pos) <span class="kw">if </span>_parent_chain_type == ChainType::Dotting =&gt; {
-                        ChainArgument::Property(<span class="kw-2">*</span>pos)
-                    }
+                    </span>Expr::Property(..) <span class="kw">if </span>_parent_chain_type == ChainType::Dotting =&gt; (),
                     Expr::Property(..) =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;unexpected Expr::Property for indexing&quot;</span>),
 
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
                     </span>Expr::MethodCall(x, ..)
                         <span class="kw">if </span>_parent_chain_type == ChainType::Dotting &amp;&amp; !x.is_qualified() =&gt;
                     {
-                        <span class="kw">let </span><span class="kw">crate</span>::ast::FnCallExpr { args, .. } = x.as_ref();
-
-                        <span class="kw">let </span>(values, pos) = args.iter().try_fold(
-                            (<span class="kw">crate</span>::FnArgsVec::with_capacity(args.len()), Position::NONE),
-                            |(<span class="kw-2">mut </span>values, <span class="kw-2">mut </span>pos), expr| {
-                                <span class="kw">let </span>(value, arg_pos) = <span class="self">self</span>.get_arg_value(
-                                    scope, global, caches, lib, this_ptr, expr, level,
-                                )<span class="question-mark">?</span>;
-                                <span class="kw">if </span>values.is_empty() {
-                                    pos = arg_pos
-                                }
-                                values.push(value.flatten());
-                                <span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, <span class="kw">crate</span>::RhaiError&gt;((values, pos))
-                            },
-                        )<span class="question-mark">?</span>;
-                        ChainArgument::from_fn_call_args(values, pos)
+                        <span class="kw">for </span>arg_expr <span class="kw">in </span><span class="kw-2">&amp;</span>x.args {
+                            _arg_values.push(
+                                <span class="self">self</span>.get_arg_value(
+                                    scope, global, caches, lib, this_ptr, arg_expr, level,
+                                )<span class="question-mark">?
+                                </span>.<span class="number">0
+                                </span>.flatten(),
+                            );
+                        }
                     }
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
                     </span>Expr::MethodCall(..) <span class="kw">if </span>_parent_chain_type == ChainType::Dotting =&gt; {
@@ -1830,13 +1752,14 @@
                         <span class="macro">unreachable!</span>(<span class="string">&quot;invalid dot expression: {:?}&quot;</span>, expr);
                     }
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-                    </span><span class="kw">_ if </span>_parent_chain_type == ChainType::Indexing =&gt; <span class="self">self
-                        </span>.eval_expr(scope, global, caches, lib, this_ptr, lhs, level)
-                        .map(|v| {
-                            ChainArgument::from_index_value(v.flatten(), lhs.start_position())
-                        })<span class="question-mark">?</span>,
+                    </span><span class="kw">_ if </span>_parent_chain_type == ChainType::Indexing =&gt; {
+                        _arg_values.push(
+                            <span class="self">self</span>.eval_expr(scope, global, caches, lib, this_ptr, lhs, level)<span class="question-mark">?
+                                </span>.flatten(),
+                        );
+                    }
                     expr =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;unknown chained expression: {:?}&quot;</span>, expr),
-                };
+                }
 
                 <span class="comment">// Push in reverse order
                 </span><span class="kw">let </span>chain_type = expr.into();
@@ -1846,7 +1769,9 @@
                     size, level,
                 )<span class="question-mark">?</span>;
 
-                idx_values.push(lhs_arg_val);
+                <span class="kw">if </span>!_arg_values.is_empty() {
+                    idx_values.extend(_arg_values);
+                }
             }
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
@@ -1855,8 +1780,8 @@
             }
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
             </span><span class="kw">_ if </span>_parent_chain_type == ChainType::Indexing =&gt; idx_values.push(
-                <span class="self">self</span>.eval_expr(scope, global, caches, lib, this_ptr, expr, level)
-                    .map(|v| ChainArgument::from_index_value(v.flatten(), expr.start_position()))<span class="question-mark">?</span>,
+                <span class="self">self</span>.eval_expr(scope, global, caches, lib, this_ptr, expr, level)<span class="question-mark">?
+                    </span>.flatten(),
             ),
             <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;unknown chained expression: {:?}&quot;</span>, expr),
         }
@@ -1865,7 +1790,6 @@
     }
 
     <span class="doccomment">/// Call a get indexer.
-    /// [`Position`] in [`EvalAltResult`] may be [`NONE`][Position::NONE] and should be set afterwards.
     </span><span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>call_indexer_get(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -1877,18 +1801,18 @@
         level: usize,
     ) -&gt; RhaiResultOf&lt;Dynamic&gt; {
         <span class="kw">let </span>args = <span class="kw-2">&amp;mut </span>[target, idx];
-        <span class="kw">let </span>hash_get = <span class="kw">crate</span>::ast::FnCallHashes::from_native(global.hash_idx_get());
+        <span class="kw">let </span>hash = global.hash_idx_get();
         <span class="kw">let </span>fn_name = <span class="kw">crate</span>::engine::FN_IDX_GET;
         <span class="kw">let </span>pos = Position::NONE;
+        <span class="kw">let </span>level = level + <span class="number">1</span>;
 
-        <span class="self">self</span>.exec_fn_call(
-            <span class="prelude-val">None</span>, global, caches, lib, fn_name, hash_get, args, <span class="bool-val">true</span>, <span class="bool-val">true</span>, pos, level,
+        <span class="self">self</span>.call_native_fn(
+            global, caches, lib, fn_name, hash, args, <span class="bool-val">true</span>, <span class="bool-val">false</span>, pos, level,
         )
         .map(|(r, ..)| r)
     }
 
     <span class="doccomment">/// Call a set indexer.
-    /// [`Position`] in [`EvalAltResult`] may be [`NONE`][Position::NONE] and should be set afterwards.
     </span><span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>call_indexer_set(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -1901,18 +1825,19 @@
         is_ref_mut: bool,
         level: usize,
     ) -&gt; RhaiResultOf&lt;(Dynamic, bool)&gt; {
-        <span class="kw">let </span>hash_set = <span class="kw">crate</span>::ast::FnCallHashes::from_native(global.hash_idx_set());
+        <span class="kw">let </span>hash = global.hash_idx_set();
         <span class="kw">let </span>args = <span class="kw-2">&amp;mut </span>[target, idx, new_val];
         <span class="kw">let </span>fn_name = <span class="kw">crate</span>::engine::FN_IDX_SET;
         <span class="kw">let </span>pos = Position::NONE;
+        <span class="kw">let </span>level = level + <span class="number">1</span>;
 
-        <span class="self">self</span>.exec_fn_call(
-            <span class="prelude-val">None</span>, global, caches, lib, fn_name, hash_set, args, is_ref_mut, <span class="bool-val">true</span>, pos, level,
+        <span class="self">self</span>.call_native_fn(
+            global, caches, lib, fn_name, hash, args, is_ref_mut, <span class="bool-val">false</span>, pos, level,
         )
     }
 
     <span class="doccomment">/// Get the value at the indexed position of a base type.
-    /// [`Position`] in [`EvalAltResult`] may be [`NONE`][Position::NONE] and should be set afterwards.
+    /// [`Position`] in [`EvalAltResult`][crate::EvalAltResult] may be [`NONE`][Position::NONE] and should be set afterwards.
     </span><span class="kw">fn </span>get_indexed_mut&lt;<span class="lifetime">&#39;t</span>&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         global: <span class="kw-2">&amp;mut </span>GlobalRuntimeState,
@@ -1974,13 +1899,16 @@
                     map.insert(index.clone().into(), Dynamic::UNIT);
                 }
 
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = map.get_mut(index.as_str()) {
-                    <span class="prelude-val">Ok</span>(Target::from(value))
-                } <span class="kw">else if </span><span class="self">self</span>.fail_on_invalid_map_property() {
-                    <span class="prelude-val">Err</span>(ERR::ErrorPropertyNotFound(index.to_string(), idx_pos).into())
-                } <span class="kw">else </span>{
-                    <span class="prelude-val">Ok</span>(Target::from(Dynamic::UNIT))
-                }
+                map.get_mut(index.as_str()).map_or_else(
+                    || {
+                        <span class="kw">if </span><span class="self">self</span>.fail_on_invalid_map_property() {
+                            <span class="prelude-val">Err</span>(ERR::ErrorPropertyNotFound(index.to_string(), idx_pos).into())
+                        } <span class="kw">else </span>{
+                            <span class="prelude-val">Ok</span>(Target::from(Dynamic::UNIT))
+                        }
+                    },
+                    |value| <span class="prelude-val">Ok</span>(Target::from(value)),
+                )
             }
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
@@ -2080,27 +2008,36 @@
                     .map_err(|typ| <span class="self">self</span>.make_type_mismatch_err::&lt;<span class="kw">crate</span>::INT&gt;(typ, idx_pos))<span class="question-mark">?</span>;
 
                 <span class="kw">let </span>(ch, offset) = <span class="kw">if </span>index &gt;= <span class="number">0 </span>{
+                    <span class="kw">if </span>index &gt;= <span class="kw">crate</span>::MAX_USIZE_INT {
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(
+                            ERR::ErrorStringBounds(s.chars().count(), index, idx_pos).into()
+                        );
+                    }
+
                     <span class="kw">let </span>offset = index <span class="kw">as </span>usize;
                     (
                         s.chars().nth(offset).ok_or_else(|| {
-                            <span class="kw">let </span>chars_len = s.chars().count();
-                            ERR::ErrorStringBounds(chars_len, index, idx_pos)
-                        })<span class="question-mark">?</span>,
-                        offset,
-                    )
-                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(abs_index) = index.checked_abs() {
-                    <span class="kw">let </span>offset = abs_index <span class="kw">as </span>usize;
-                    (
-                        <span class="comment">// Count from end if negative
-                        </span>s.chars().rev().nth(offset - <span class="number">1</span>).ok_or_else(|| {
-                            <span class="kw">let </span>chars_len = s.chars().count();
-                            ERR::ErrorStringBounds(chars_len, index, idx_pos)
+                            ERR::ErrorStringBounds(s.chars().count(), index, idx_pos)
                         })<span class="question-mark">?</span>,
                         offset,
                     )
                 } <span class="kw">else </span>{
-                    <span class="kw">let </span>chars_len = s.chars().count();
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(ERR::ErrorStringBounds(chars_len, index, idx_pos).into());
+                    <span class="kw">let </span>abs_index = index.unsigned_abs();
+
+                    <span class="kw">if </span>abs_index <span class="kw">as </span>u64 &gt; usize::MAX <span class="kw">as </span>u64 {
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(
+                            ERR::ErrorStringBounds(s.chars().count(), index, idx_pos).into()
+                        );
+                    }
+
+                    <span class="kw">let </span>offset = abs_index <span class="kw">as </span>usize;
+                    (
+                        <span class="comment">// Count from end if negative
+                        </span>s.chars().rev().nth(offset - <span class="number">1</span>).ok_or_else(|| {
+                            ERR::ErrorStringBounds(s.chars().count(), index, idx_pos)
+                        })<span class="question-mark">?</span>,
+                        offset,
+                    )
                 };
 
                 <span class="prelude-val">Ok</span>(Target::StringChar {
@@ -2108,6 +2045,11 @@
                     value: ch.into(),
                     index: offset,
                 })
+            }
+
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
+            </span>Dynamic(Union::Shared(..)) =&gt; {
+                <span class="macro">unreachable!</span>(<span class="string">&quot;`get_indexed_mut` cannot handle shared values&quot;</span>)
             }
 
             <span class="kw">_ if </span>use_indexers =&gt; <span class="self">self
@@ -2127,4 +2069,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

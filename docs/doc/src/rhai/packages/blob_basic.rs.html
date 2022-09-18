@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/packages/blob_basic.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>blob_basic.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/packages/blob_basic.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>blob_basic.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1586,17 +1586,22 @@
 <span id="1586">1586</span>
 <span id="1587">1587</span>
 <span id="1588">1588</span>
+<span id="1589">1589</span>
+<span id="1590">1590</span>
+<span id="1591">1591</span>
+<span id="1592">1592</span>
+<span id="1593">1593</span>
 </pre><pre class="rust"><code><span class="attribute">#![cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
 
 </span><span class="kw">use </span><span class="kw">crate</span>::eval::{calc_index, calc_offset_len};
 <span class="kw">use </span><span class="kw">crate</span>::plugin::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::{
     def_package, Array, Blob, Dynamic, ExclusiveRange, InclusiveRange, NativeCallContext, Position,
-    RhaiResultOf, INT, INT_BYTES,
+    RhaiResultOf, INT, INT_BYTES, MAX_USIZE_INT,
 };
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
-<span class="kw">use </span>std::{any::TypeId, mem};
+<span class="kw">use </span>std::{any::TypeId, borrow::Cow, mem};
 
 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
 </span><span class="kw">use crate</span>::{FLOAT, FLOAT_BYTES};
@@ -1662,6 +1667,7 @@
         len: INT,
         value: INT,
     ) -&gt; RhaiResultOf&lt;Blob&gt; {
+        <span class="kw">let </span>len = len.min(MAX_USIZE_INT);
         <span class="kw">let </span>len = <span class="kw">if </span>len &lt; <span class="number">0 </span>{ <span class="number">0 </span>} <span class="kw">else </span>{ len <span class="kw">as </span>usize };
         <span class="kw">let </span>_ctx = ctx;
 
@@ -1674,7 +1680,7 @@
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>blob = Blob::new();
-        blob.resize(len, (value &amp; <span class="number">0x000000ff</span>) <span class="kw">as </span>u8);
+        blob.resize(len, (value &amp; <span class="number">0x0000_00ff</span>) <span class="kw">as </span>u8);
         <span class="prelude-val">Ok</span>(blob)
     }
     <span class="doccomment">/// Convert the BLOB into an array of integers.
@@ -1692,6 +1698,27 @@
     </span><span class="kw">pub fn </span>to_array(blob: <span class="kw-2">&amp;mut </span>Blob) -&gt; Array {
         blob.iter().map(|<span class="kw-2">&amp;</span>ch| (ch <span class="kw">as </span>INT).into()).collect()
     }
+    <span class="doccomment">/// Convert the BLOB into a string.
+    ///
+    /// The byte stream must be valid UTF-8, otherwise an error is raised.
+    ///
+    /// # Example
+    ///
+    /// ```rhai
+    /// let b = blob(5, 0x42);
+    ///
+    /// let x = b.as_string();
+    ///
+    /// print(x);       // prints &quot;FFFFF&quot;
+    /// ```
+    </span><span class="kw">pub fn </span>as_string(blob: Blob) -&gt; String {
+        <span class="kw">let </span>s = String::from_utf8_lossy(<span class="kw-2">&amp;</span>blob);
+
+        <span class="kw">match </span>s {
+            Cow::Borrowed(<span class="kw">_</span>) =&gt; String::from_utf8(blob).unwrap(),
+            Cow::Owned(<span class="kw">_</span>) =&gt; s.into_owned(),
+        }
+    }
     <span class="doccomment">/// Return the length of the BLOB.
     ///
     /// # Example
@@ -1707,6 +1734,11 @@
     </span><span class="kw">pub fn </span>len(blob: <span class="kw-2">&amp;mut </span>Blob) -&gt; INT {
         blob.len() <span class="kw">as </span>INT
     }
+    <span class="doccomment">/// Return true if the BLOB is empty.
+    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;is_empty&quot;</span>, get = <span class="string">&quot;is_empty&quot;</span>, pure)]
+    </span><span class="kw">pub fn </span>is_empty(blob: <span class="kw-2">&amp;mut </span>Blob) -&gt; bool {
+        blob.len() == <span class="number">0
+    </span>}
     <span class="doccomment">/// Get the byte value at the `index` position in the BLOB.
     ///
     /// * If `index` &lt; 0, position counts from the end of the BLOB (`-1` is the last element).
@@ -1772,7 +1804,7 @@
         <span class="kw">let </span>(index, ..) = calc_offset_len(blob.len(), index, <span class="number">0</span>);
 
         <span class="kw">if </span>index &lt; blob.len() {
-            blob[index] = (value &amp; <span class="number">0x000000ff</span>) <span class="kw">as </span>u8;
+            blob[index] = (value &amp; <span class="number">0x0000_00ff</span>) <span class="kw">as </span>u8;
         }
     }
     <span class="doccomment">/// Add a new byte `value` to the end of the BLOB.
@@ -1788,8 +1820,9 @@
     ///
     /// print(b);       // prints &quot;[42]&quot;
     /// ```
+    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;push&quot;</span>, name = <span class="string">&quot;append&quot;</span>)]
     </span><span class="kw">pub fn </span>push(blob: <span class="kw-2">&amp;mut </span>Blob, value: INT) {
-        blob.push((value &amp; <span class="number">0x000000ff</span>) <span class="kw">as </span>u8);
+        blob.push((value &amp; <span class="number">0x0000_00ff</span>) <span class="kw">as </span>u8);
     }
     <span class="doccomment">/// Add another BLOB to the end of the BLOB.
     ///
@@ -1823,13 +1856,13 @@
     ///
     /// print(b);       // prints &quot;[424242424268656c 6c6f]&quot;
     /// ```
-    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;+=&quot;</span>, name = <span class="string">&quot;append&quot;</span>)]
+    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;append&quot;</span>)]
     </span><span class="kw">pub fn </span>append_str(blob: <span class="kw-2">&amp;mut </span>Blob, string: <span class="kw-2">&amp;</span>str) {
         <span class="kw">if </span>!string.is_empty() {
             blob.extend(string.as_bytes());
         }
     }
-    <span class="doccomment">/// Add a string (as UTF-8 encoded byte-stream) to the end of the BLOB
+    <span class="doccomment">/// Add a character (as UTF-8 encoded byte-stream) to the end of the BLOB
     ///
     /// # Example
     ///
@@ -1840,37 +1873,11 @@
     ///
     /// print(b);       // prints &quot;[424242424221]&quot;
     /// ```
-    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;+=&quot;</span>, name = <span class="string">&quot;append&quot;</span>)]
+    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;append&quot;</span>)]
     </span><span class="kw">pub fn </span>append_char(blob: <span class="kw-2">&amp;mut </span>Blob, character: char) {
         <span class="kw">let </span><span class="kw-2">mut </span>buf = [<span class="number">0_u8</span>; <span class="number">4</span>];
         <span class="kw">let </span>x = character.encode_utf8(<span class="kw-2">&amp;mut </span>buf);
         blob.extend(x.as_bytes());
-    }
-    <span class="doccomment">/// Add another BLOB to the end of the BLOB, returning it as a new BLOB.
-    ///
-    /// # Example
-    ///
-    /// ```rhai
-    /// let b1 = blob(5, 0x42);
-    /// let b2 = blob(3, 0x11);
-    ///
-    /// print(b1 + b2);     // prints &quot;[4242424242111111]&quot;
-    ///
-    /// print(b1);          // prints &quot;[4242424242]&quot;
-    /// ```
-    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;+&quot;</span>)]
-    </span><span class="kw">pub fn </span>concat(blob1: Blob, blob2: Blob) -&gt; Blob {
-        <span class="kw">if </span>!blob2.is_empty() {
-            <span class="kw">if </span>blob1.is_empty() {
-                blob2
-            } <span class="kw">else </span>{
-                <span class="kw">let </span><span class="kw-2">mut </span>blob = blob1;
-                blob.extend(blob2);
-                blob
-            }
-        } <span class="kw">else </span>{
-            blob1
-        }
     }
     <span class="doccomment">/// Add a byte `value` to the BLOB at a particular `index` position.
     ///
@@ -1890,7 +1897,7 @@
     /// print(b);       // prints &quot;[4242184242]&quot;
     /// ```
     </span><span class="kw">pub fn </span>insert(blob: <span class="kw-2">&amp;mut </span>Blob, index: INT, value: INT) {
-        <span class="kw">let </span>value = (value &amp; <span class="number">0x000000ff</span>) <span class="kw">as </span>u8;
+        <span class="kw">let </span>value = (value &amp; <span class="number">0x0000_00ff</span>) <span class="kw">as </span>u8;
 
         <span class="kw">if </span>blob.is_empty() {
             blob.push(value);
@@ -1929,20 +1936,21 @@
         <span class="kw">if </span>len &lt;= <span class="number">0 </span>{
             <span class="kw">return </span><span class="prelude-val">Ok</span>(());
         }
+        <span class="kw">let </span>len = len.min(MAX_USIZE_INT) <span class="kw">as </span>usize;
 
-        <span class="kw">let </span>value = (value &amp; <span class="number">0x000000ff</span>) <span class="kw">as </span>u8;
+        <span class="kw">let </span>value = (value &amp; <span class="number">0x0000_00ff</span>) <span class="kw">as </span>u8;
         <span class="kw">let </span>_ctx = ctx;
 
         <span class="comment">// Check if blob will be over max size limit
         </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
-        </span><span class="kw">if </span>_ctx.engine().max_array_size() &gt; <span class="number">0 </span>&amp;&amp; (len <span class="kw">as </span>usize) &gt; _ctx.engine().max_array_size() {
+        </span><span class="kw">if </span>_ctx.engine().max_array_size() &gt; <span class="number">0 </span>&amp;&amp; len &gt; _ctx.engine().max_array_size() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(
                 <span class="kw">crate</span>::ERR::ErrorDataTooLarge(<span class="string">&quot;Size of BLOB&quot;</span>.to_string(), Position::NONE).into(),
             );
         }
 
-        <span class="kw">if </span>len <span class="kw">as </span>usize &gt; blob.len() {
-            blob.resize(len <span class="kw">as </span>usize, value);
+        <span class="kw">if </span>len &gt; blob.len() {
+            blob.resize(len, value);
         }
 
         <span class="prelude-val">Ok</span>(())
@@ -2048,7 +2056,9 @@
     /// ```
     </span><span class="kw">pub fn </span>truncate(blob: <span class="kw-2">&amp;mut </span>Blob, len: INT) {
         <span class="kw">if </span>!blob.is_empty() {
-            <span class="kw">if </span>len &gt;= <span class="number">0 </span>{
+            <span class="kw">let </span>len = len.min(MAX_USIZE_INT);
+
+            <span class="kw">if </span>len &gt; <span class="number">0 </span>{
                 blob.truncate(len <span class="kw">as </span>usize);
             } <span class="kw">else </span>{
                 blob.clear();
@@ -2120,7 +2130,7 @@
     </span><span class="kw">pub fn </span>splice_range(blob: <span class="kw-2">&amp;mut </span>Blob, range: ExclusiveRange, replace: Blob) {
         <span class="kw">let </span>start = INT::max(range.start, <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(range.end, start);
-        splice(blob, start, end - start, replace)
+        splice(blob, start, end - start, replace);
     }
     <span class="doccomment">/// Replace an inclusive `range` of the BLOB with another BLOB.
     ///
@@ -2138,7 +2148,7 @@
     </span><span class="kw">pub fn </span>splice_range_inclusive(blob: <span class="kw-2">&amp;mut </span>Blob, range: InclusiveRange, replace: Blob) {
         <span class="kw">let </span>start = INT::max(<span class="kw-2">*</span>range.start(), <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(<span class="kw-2">*</span>range.end(), start);
-        splice(blob, start, end - start + <span class="number">1</span>, replace)
+        splice(blob, start, end - start + <span class="number">1</span>, replace);
     }
     <span class="doccomment">/// Replace a portion of the BLOB with another BLOB.
     ///
@@ -2541,7 +2551,7 @@
     /// * If number of bytes in `range` &lt; number of bytes for `INT`, zeros are padded.
     /// * If number of bytes in `range` &gt; number of bytes for `INT`, extra bytes are ignored.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob();
     ///
     /// b += 1; b += 2; b += 3; b += 4; b += 5;
@@ -2562,7 +2572,7 @@
     /// * If number of bytes in `range` &lt; number of bytes for `INT`, zeros are padded.
     /// * If number of bytes in `range` &gt; number of bytes for `INT`, extra bytes are ignored.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob();
     ///
     /// b += 1; b += 2; b += 3; b += 4; b += 5;
@@ -2589,7 +2599,7 @@
     /// * If number of bytes in range &lt; number of bytes for `INT`, zeros are padded.
     /// * If number of bytes in range &gt; number of bytes for `INT`, extra bytes are ignored.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob();
     ///
     /// b += 1; b += 2; b += 3; b += 4; b += 5;
@@ -2607,7 +2617,7 @@
     /// * If number of bytes in `range` &lt; number of bytes for `INT`, zeros are padded.
     /// * If number of bytes in `range` &gt; number of bytes for `INT`, extra bytes are ignored.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob();
     ///
     /// b += 1; b += 2; b += 3; b += 4; b += 5;
@@ -2628,7 +2638,7 @@
     /// * If number of bytes in `range` &lt; number of bytes for `INT`, zeros are padded.
     /// * If number of bytes in `range` &gt; number of bytes for `INT`, extra bytes are ignored.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob();
     ///
     /// b += 1; b += 2; b += 3; b += 4; b += 5;
@@ -2655,7 +2665,7 @@
     /// * If number of bytes in range &lt; number of bytes for `INT`, zeros are padded.
     /// * If number of bytes in range &gt; number of bytes for `INT`, extra bytes are ignored.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob();
     ///
     /// b += 1; b += 2; b += 3; b += 4; b += 5;
@@ -2801,7 +2811,7 @@
     /// * If number of bytes in `range` &lt; number of bytes for `INT`, extra bytes in `INT` are not written.
     /// * If number of bytes in `range` &gt; number of bytes for `INT`, extra bytes in `range` are not modified.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob(8);
     ///
     /// b.write_le_int(1..3, 0x12345678);
@@ -2812,7 +2822,7 @@
     </span><span class="kw">pub fn </span>write_le_int_range(blob: <span class="kw-2">&amp;mut </span>Blob, range: ExclusiveRange, value: INT) {
         <span class="kw">let </span>start = INT::max(range.start, <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(range.end, start);
-        write_le_int(blob, start, end - start, value)
+        write_le_int(blob, start, end - start, value);
     }
     <span class="doccomment">/// Write an `INT` value to the bytes within an inclusive `range` in the BLOB
     /// in little-endian byte order.
@@ -2820,7 +2830,7 @@
     /// * If number of bytes in `range` &lt; number of bytes for `INT`, extra bytes in `INT` are not written.
     /// * If number of bytes in `range` &gt; number of bytes for `INT`, extra bytes in `range` are not modified.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob(8);
     ///
     /// b.write_le_int(1..=3, 0x12345678);
@@ -2831,7 +2841,7 @@
     </span><span class="kw">pub fn </span>write_le_int_range_inclusive(blob: <span class="kw-2">&amp;mut </span>Blob, range: InclusiveRange, value: INT) {
         <span class="kw">let </span>start = INT::max(<span class="kw-2">*</span>range.start(), <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(<span class="kw-2">*</span>range.end(), start);
-        write_le_int(blob, start, end - start + <span class="number">1</span>, value)
+        write_le_int(blob, start, end - start + <span class="number">1</span>, value);
     }
     <span class="doccomment">/// Write an `INT` value to the bytes beginning at the `start` position in the BLOB
     /// in little-endian byte order.
@@ -2845,7 +2855,7 @@
     /// * If number of bytes in `range` &lt; number of bytes for `INT`, extra bytes in `INT` are not written.
     /// * If number of bytes in `range` &gt; number of bytes for `INT`, extra bytes in `range` are not modified.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob(8);
     ///
     /// b.write_le_int(1, 3, 0x12345678);
@@ -2854,7 +2864,7 @@
     /// ```
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;write_le&quot;</span>)]
     </span><span class="kw">pub fn </span>write_le_int(blob: <span class="kw-2">&amp;mut </span>Blob, start: INT, len: INT, value: INT) {
-        write_int(blob, start, len, value, <span class="bool-val">true</span>)
+        write_int(blob, start, len, value, <span class="bool-val">true</span>);
     }
     <span class="doccomment">/// Write an `INT` value to the bytes within an exclusive `range` in the BLOB
     /// in big-endian byte order.
@@ -2862,7 +2872,7 @@
     /// * If number of bytes in `range` &lt; number of bytes for `INT`, extra bytes in `INT` are not written.
     /// * If number of bytes in `range` &gt; number of bytes for `INT`, extra bytes in `range` are not modified.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob(8, 0x42);
     ///
     /// b.write_be_int(1..3, 0x99);
@@ -2873,7 +2883,7 @@
     </span><span class="kw">pub fn </span>write_be_int_range(blob: <span class="kw-2">&amp;mut </span>Blob, range: ExclusiveRange, value: INT) {
         <span class="kw">let </span>start = INT::max(range.start, <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(range.end, start);
-        write_be_int(blob, start, end - start, value)
+        write_be_int(blob, start, end - start, value);
     }
     <span class="doccomment">/// Write an `INT` value to the bytes within an inclusive `range` in the BLOB
     /// in big-endian byte order.
@@ -2881,7 +2891,7 @@
     /// * If number of bytes in `range` &lt; number of bytes for `INT`, extra bytes in `INT` are not written.
     /// * If number of bytes in `range` &gt; number of bytes for `INT`, extra bytes in `range` are not modified.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob(8, 0x42);
     ///
     /// b.write_be_int(1..=3, 0x99);
@@ -2892,7 +2902,7 @@
     </span><span class="kw">pub fn </span>write_be_int_range_inclusive(blob: <span class="kw-2">&amp;mut </span>Blob, range: InclusiveRange, value: INT) {
         <span class="kw">let </span>start = INT::max(<span class="kw-2">*</span>range.start(), <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(<span class="kw-2">*</span>range.end(), start);
-        write_be_int(blob, start, end - start + <span class="number">1</span>, value)
+        write_be_int(blob, start, end - start + <span class="number">1</span>, value);
     }
     <span class="doccomment">/// Write an `INT` value to the bytes beginning at the `start` position in the BLOB
     /// in big-endian byte order.
@@ -2906,7 +2916,7 @@
     /// * If number of bytes in `range` &lt; number of bytes for `INT`, extra bytes in `INT` are not written.
     /// * If number of bytes in `range` &gt; number of bytes for `INT`, extra bytes in `range` are not modified.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob(8, 0x42);
     ///
     /// b.write_be_int(1, 3, 0x99);
@@ -2915,7 +2925,7 @@
     /// ```
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;write_be&quot;</span>)]
     </span><span class="kw">pub fn </span>write_be_int(blob: <span class="kw-2">&amp;mut </span>Blob, start: INT, len: INT, value: INT) {
-        write_int(blob, start, len, value, <span class="bool-val">false</span>)
+        write_int(blob, start, len, value, <span class="bool-val">false</span>);
     }
 }
 
@@ -2952,7 +2962,7 @@
     </span><span class="kw">pub fn </span>write_le_float_range(blob: <span class="kw-2">&amp;mut </span>Blob, range: ExclusiveRange, value: FLOAT) {
         <span class="kw">let </span>start = INT::max(range.start, <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(range.end, start);
-        write_le_float(blob, start, end - start, value)
+        write_le_float(blob, start, end - start, value);
     }
     <span class="doccomment">/// Write a `FLOAT` value to the bytes within an inclusive `range` in the BLOB
     /// in little-endian byte order.
@@ -2963,7 +2973,7 @@
     </span><span class="kw">pub fn </span>write_le_float_range_inclusive(blob: <span class="kw-2">&amp;mut </span>Blob, range: InclusiveRange, value: FLOAT) {
         <span class="kw">let </span>start = INT::max(<span class="kw-2">*</span>range.start(), <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(<span class="kw-2">*</span>range.end(), start);
-        write_le_float(blob, start, end - start + <span class="number">1</span>, value)
+        write_le_float(blob, start, end - start + <span class="number">1</span>, value);
     }
     <span class="doccomment">/// Write a `FLOAT` value to the bytes beginning at the `start` position in the BLOB
     /// in little-endian byte order.
@@ -2978,7 +2988,7 @@
     /// * If number of bytes in `range` &gt; number of bytes for `FLOAT`, extra bytes in `range` are not modified.
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;write_le&quot;</span>)]
     </span><span class="kw">pub fn </span>write_le_float(blob: <span class="kw-2">&amp;mut </span>Blob, start: INT, len: INT, value: FLOAT) {
-        write_float(blob, start, len, value, <span class="bool-val">true</span>)
+        write_float(blob, start, len, value, <span class="bool-val">true</span>);
     }
     <span class="doccomment">/// Write a `FLOAT` value to the bytes within an exclusive `range` in the BLOB
     /// in big-endian byte order.
@@ -2989,7 +2999,7 @@
     </span><span class="kw">pub fn </span>write_be_float_range(blob: <span class="kw-2">&amp;mut </span>Blob, range: ExclusiveRange, value: FLOAT) {
         <span class="kw">let </span>start = INT::max(range.start, <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(range.end, start);
-        write_be_float(blob, start, end - start, value)
+        write_be_float(blob, start, end - start, value);
     }
     <span class="doccomment">/// Write a `FLOAT` value to the bytes within an inclusive `range` in the BLOB
     /// in big-endian byte order.
@@ -3000,7 +3010,7 @@
     </span><span class="kw">pub fn </span>write_be_float_range_inclusive(blob: <span class="kw-2">&amp;mut </span>Blob, range: InclusiveRange, value: FLOAT) {
         <span class="kw">let </span>start = INT::max(<span class="kw-2">*</span>range.start(), <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(<span class="kw-2">*</span>range.end(), start);
-        write_be_float(blob, start, end - start + <span class="number">1</span>, value)
+        write_be_float(blob, start, end - start + <span class="number">1</span>, value);
     }
     <span class="doccomment">/// Write a `FLOAT` value to the bytes beginning at the `start` position in the BLOB
     /// in big-endian byte order.
@@ -3015,7 +3025,7 @@
     /// * If number of bytes in `range` &gt; number of bytes for `FLOAT`, extra bytes in `range` are not modified.
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;write_be&quot;</span>)]
     </span><span class="kw">pub fn </span>write_be_float(blob: <span class="kw-2">&amp;mut </span>Blob, start: INT, len: INT, value: FLOAT) {
-        write_float(blob, start, len, value, <span class="bool-val">false</span>)
+        write_float(blob, start, len, value, <span class="bool-val">false</span>);
     }
 }
 
@@ -3052,7 +3062,7 @@
     /// * If number of bytes in `range` &lt; length of `string`, extra bytes in `string` are not written.
     /// * If number of bytes in `range` &gt; length of `string`, extra bytes in `range` are not modified.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob(8);
     ///
     /// b.write_utf8(1..5, &quot;朝には紅顔ありて夕べには白骨となる&quot;);
@@ -3063,14 +3073,14 @@
     </span><span class="kw">pub fn </span>write_utf8_string_range(blob: <span class="kw-2">&amp;mut </span>Blob, range: ExclusiveRange, string: <span class="kw-2">&amp;</span>str) {
         <span class="kw">let </span>start = INT::max(range.start, <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(range.end, start);
-        write_string(blob, start, end - start, string, <span class="bool-val">false</span>)
+        write_string(blob, start, end - start, string, <span class="bool-val">false</span>);
     }
     <span class="doccomment">/// Write a string to the bytes within an inclusive `range` in the BLOB in UTF-8 encoding.
     ///
     /// * If number of bytes in `range` &lt; length of `string`, extra bytes in `string` are not written.
     /// * If number of bytes in `range` &gt; length of `string`, extra bytes in `range` are not modified.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob(8);
     ///
     /// b.write_utf8(1..=5, &quot;朝には紅顔ありて夕べには白骨となる&quot;);
@@ -3081,7 +3091,7 @@
     </span><span class="kw">pub fn </span>write_utf8_string_range_inclusive(blob: <span class="kw-2">&amp;mut </span>Blob, range: InclusiveRange, string: <span class="kw-2">&amp;</span>str) {
         <span class="kw">let </span>start = INT::max(<span class="kw-2">*</span>range.start(), <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(<span class="kw-2">*</span>range.end(), start);
-        write_string(blob, start, end - start + <span class="number">1</span>, string, <span class="bool-val">false</span>)
+        write_string(blob, start, end - start + <span class="number">1</span>, string, <span class="bool-val">false</span>);
     }
     <span class="doccomment">/// Write a string to the bytes within an inclusive `range` in the BLOB in UTF-8 encoding.
     ///
@@ -3094,7 +3104,7 @@
     /// * If number of bytes in `range` &lt; length of `string`, extra bytes in `string` are not written.
     /// * If number of bytes in `range` &gt; length of `string`, extra bytes in `range` are not modified.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob(8);
     ///
     /// b.write_utf8(1, 5, &quot;朝には紅顔ありて夕べには白骨となる&quot;);
@@ -3103,7 +3113,7 @@
     /// ```
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;write_utf8&quot;</span>)]
     </span><span class="kw">pub fn </span>write_utf8_string(blob: <span class="kw-2">&amp;mut </span>Blob, start: INT, len: INT, string: <span class="kw-2">&amp;</span>str) {
-        write_string(blob, start, len, string, <span class="bool-val">false</span>)
+        write_string(blob, start, len, string, <span class="bool-val">false</span>);
     }
     <span class="doccomment">/// Write an ASCII string to the bytes within an exclusive `range` in the BLOB.
     ///
@@ -3113,7 +3123,7 @@
     /// * If number of bytes in `range` &lt; length of `string`, extra bytes in `string` are not written.
     /// * If number of bytes in `range` &gt; length of `string`, extra bytes in `range` are not modified.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob(8);
     ///
     /// b.write_ascii(1..5, &quot;hello, world!&quot;);
@@ -3124,7 +3134,7 @@
     </span><span class="kw">pub fn </span>write_ascii_string_range(blob: <span class="kw-2">&amp;mut </span>Blob, range: ExclusiveRange, string: <span class="kw-2">&amp;</span>str) {
         <span class="kw">let </span>start = INT::max(range.start, <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(range.end, start);
-        write_string(blob, start, end - start, string, <span class="bool-val">true</span>)
+        write_string(blob, start, end - start, string, <span class="bool-val">true</span>);
     }
     <span class="doccomment">/// Write an ASCII string to the bytes within an inclusive `range` in the BLOB.
     ///
@@ -3134,7 +3144,7 @@
     /// * If number of bytes in `range` &lt; length of `string`, extra bytes in `string` are not written.
     /// * If number of bytes in `range` &gt; length of `string`, extra bytes in `range` are not modified.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob(8);
     ///
     /// b.write_ascii(1..=5, &quot;hello, world!&quot;);
@@ -3149,7 +3159,7 @@
     ) {
         <span class="kw">let </span>start = INT::max(<span class="kw-2">*</span>range.start(), <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(<span class="kw-2">*</span>range.end(), start);
-        write_string(blob, start, end - start + <span class="number">1</span>, string, <span class="bool-val">true</span>)
+        write_string(blob, start, end - start + <span class="number">1</span>, string, <span class="bool-val">true</span>);
     }
     <span class="doccomment">/// Write an ASCII string to the bytes within an exclusive `range` in the BLOB.
     ///
@@ -3162,7 +3172,7 @@
     /// * If number of bytes in `range` &lt; length of `string`, extra bytes in `string` are not written.
     /// * If number of bytes in `range` &gt; length of `string`, extra bytes in `range` are not modified.
     ///
-    /// ```ignore
+    /// ```rhai
     /// let b = blob(8);
     ///
     /// b.write_ascii(1, 5, &quot;hello, world!&quot;);
@@ -3171,8 +3181,8 @@
     /// ```
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;write_ascii&quot;</span>)]
     </span><span class="kw">pub fn </span>write_ascii_string(blob: <span class="kw-2">&amp;mut </span>Blob, start: INT, len: INT, string: <span class="kw-2">&amp;</span>str) {
-        write_string(blob, start, len, string, <span class="bool-val">true</span>)
+        write_string(blob, start, len, string, <span class="bool-val">true</span>);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

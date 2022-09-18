@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/eval/global_state.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>global_state.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/eval/global_state.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>global_state.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -367,6 +367,17 @@
 <span id="367">367</span>
 <span id="368">368</span>
 <span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Global runtime state.
 
 </span><span class="kw">use crate</span>::{Dynamic, Engine, Identifier};
@@ -378,7 +389,7 @@
 </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
 #[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
 </span><span class="kw">pub type </span>GlobalConstants =
-    <span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Locked&lt;std::collections::BTreeMap&lt;Identifier, Dynamic&gt;&gt;&gt;;
+    <span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Locked&lt;std::collections::BTreeMap&lt;<span class="kw">crate</span>::ImmutableString, Dynamic&gt;&gt;&gt;;
 
 <span class="doccomment">/// _(internals)_ Global runtime states.
 /// Exported under the `internals` feature only.
@@ -394,7 +405,7 @@
 </span><span class="kw">pub struct </span>GlobalRuntimeState&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="doccomment">/// Stack of module names.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-    </span>keys: <span class="kw">crate</span>::StaticVec&lt;Identifier&gt;,
+    </span>keys: <span class="kw">crate</span>::StaticVec&lt;<span class="kw">crate</span>::ImmutableString&gt;,
     <span class="doccomment">/// Stack of imported [modules][crate::Module].
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
     </span>modules: <span class="kw">crate</span>::StaticVec&lt;<span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;&gt;,
@@ -447,8 +458,6 @@
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub fn </span>new(engine: <span class="kw-2">&amp;</span>Engine) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span>_engine = engine;
-
         <span class="self">Self </span>{
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
             </span>keys: <span class="kw">crate</span>::StaticVec::new_const(),
@@ -467,21 +476,21 @@
             #[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             </span>constants: <span class="prelude-val">None</span>,
 
-            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;debugging&quot;</span>))]
-            </span>tag: Dynamic::UNIT,
-            <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
-            </span>tag: <span class="kw">if let </span><span class="prelude-val">Some</span>((<span class="kw-2">ref </span>init, ..)) = engine.debugger {
-                init()
-            } <span class="kw">else </span>{
-                Dynamic::UNIT
-            },
+            tag: engine.default_tag().clone(),
 
             <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
-            </span>debugger: <span class="kw">crate</span>::eval::Debugger::new(<span class="kw">if </span>engine.debugger.is_some() {
-                <span class="kw">crate</span>::eval::DebuggerStatus::Init
-            } <span class="kw">else </span>{
-                <span class="kw">crate</span>::eval::DebuggerStatus::CONTINUE
-            }),
+            </span>debugger: <span class="kw">crate</span>::eval::Debugger::new(
+                <span class="kw">if </span>engine.debugger.is_some() {
+                    <span class="kw">crate</span>::eval::DebuggerStatus::Init
+                } <span class="kw">else </span>{
+                    <span class="kw">crate</span>::eval::DebuggerStatus::CONTINUE
+                },
+                <span class="kw">if let </span><span class="prelude-val">Some</span>((<span class="kw-2">ref </span>init, ..)) = engine.debugger {
+                    init(engine)
+                } <span class="kw">else </span>{
+                    Dynamic::UNIT
+                },
+            ),
 
             dummy: PhantomData::default(),
         }
@@ -527,13 +536,11 @@
     </span><span class="kw">pub fn </span>find_import(<span class="kw-2">&amp;</span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
         <span class="kw">let </span>len = <span class="self">self</span>.keys.len();
 
-        <span class="self">self</span>.keys.iter().rev().enumerate().find_map(|(i, key)| {
-            <span class="kw">if </span>key == name {
-                <span class="prelude-val">Some</span>(len - <span class="number">1 </span>- i)
-            } <span class="kw">else </span>{
-                <span class="prelude-val">None
-            </span>}
-        })
+        <span class="self">self</span>.keys
+            .iter()
+            .rev()
+            .position(|key| key.as_str() == name)
+            .map(|i| len - <span class="number">1 </span>- i)
     }
     <span class="doccomment">/// Push an imported [module][crate::Module] onto the stack.
     ///
@@ -542,7 +549,7 @@
     #[inline(always)]
     </span><span class="kw">pub fn </span>push_import(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        name: <span class="kw">impl </span>Into&lt;Identifier&gt;,
+        name: <span class="kw">impl </span>Into&lt;<span class="kw">crate</span>::ImmutableString&gt;,
         module: <span class="kw">impl </span>Into&lt;<span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;&gt;,
     ) {
         <span class="self">self</span>.keys.push(name.into());
@@ -568,7 +575,7 @@
             .iter()
             .rev()
             .zip(<span class="self">self</span>.modules.iter().rev())
-            .map(|(name, module)| (name.as_str(), module.as_ref()))
+            .map(|(name, module)| (name.as_str(), <span class="kw-2">&amp;**</span>module))
     }
     <span class="doccomment">/// Get an iterator to the stack of globally-imported [modules][crate::Module] in reverse order.
     ///
@@ -578,7 +585,7 @@
     #[inline]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>iter_imports_raw(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-    ) -&gt; <span class="kw">impl </span>Iterator&lt;Item = (<span class="kw-2">&amp;</span>Identifier, <span class="kw-2">&amp;</span><span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;)&gt; {
+    ) -&gt; <span class="kw">impl </span>Iterator&lt;Item = (<span class="kw-2">&amp;</span><span class="kw">crate</span>::ImmutableString, <span class="kw-2">&amp;</span><span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;)&gt; {
         <span class="self">self</span>.keys.iter().rev().zip(<span class="self">self</span>.modules.iter().rev())
     }
     <span class="doccomment">/// Get an iterator to the stack of globally-imported [modules][crate::Module] in forward order.
@@ -589,7 +596,7 @@
     #[inline]
     </span><span class="kw">pub fn </span>scan_imports_raw(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-    ) -&gt; <span class="kw">impl </span>Iterator&lt;Item = (<span class="kw-2">&amp;</span>Identifier, <span class="kw-2">&amp;</span><span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;)&gt; {
+    ) -&gt; <span class="kw">impl </span>Iterator&lt;Item = (<span class="kw-2">&amp;</span><span class="kw">crate</span>::ImmutableString, <span class="kw-2">&amp;</span><span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;)&gt; {
         <span class="self">self</span>.keys.iter().zip(<span class="self">self</span>.modules.iter())
     }
     <span class="doccomment">/// Does the specified function hash key exist in the stack of globally-imported
@@ -657,35 +664,35 @@
     </span><span class="attribute">#[cfg(any(not(feature = <span class="string">&quot;no_index&quot;</span>), not(feature = <span class="string">&quot;no_object&quot;</span>)))]
     #[must_use]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>hash_idx_get(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; u64 {
-        <span class="kw">if </span><span class="self">self</span>.fn_hash_indexing != (<span class="number">0</span>, <span class="number">0</span>) {
-            <span class="self">self</span>.fn_hash_indexing.<span class="number">0
-        </span>} <span class="kw">else </span>{
+        <span class="kw">if </span><span class="self">self</span>.fn_hash_indexing == (<span class="number">0</span>, <span class="number">0</span>) {
             <span class="kw">let </span>n1 = <span class="kw">crate</span>::calc_fn_hash(<span class="kw">crate</span>::engine::FN_IDX_GET, <span class="number">2</span>);
             <span class="kw">let </span>n2 = <span class="kw">crate</span>::calc_fn_hash(<span class="kw">crate</span>::engine::FN_IDX_SET, <span class="number">3</span>);
             <span class="self">self</span>.fn_hash_indexing = (n1, n2);
             n1
-        }
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.fn_hash_indexing.<span class="number">0
+        </span>}
     }
     <span class="doccomment">/// Get the pre-calculated index setter hash.
     </span><span class="attribute">#[cfg(any(not(feature = <span class="string">&quot;no_index&quot;</span>), not(feature = <span class="string">&quot;no_object&quot;</span>)))]
     #[must_use]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>hash_idx_set(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; u64 {
-        <span class="kw">if </span><span class="self">self</span>.fn_hash_indexing != (<span class="number">0</span>, <span class="number">0</span>) {
-            <span class="self">self</span>.fn_hash_indexing.<span class="number">1
-        </span>} <span class="kw">else </span>{
+        <span class="kw">if </span><span class="self">self</span>.fn_hash_indexing == (<span class="number">0</span>, <span class="number">0</span>) {
             <span class="kw">let </span>n1 = <span class="kw">crate</span>::calc_fn_hash(<span class="kw">crate</span>::engine::FN_IDX_GET, <span class="number">2</span>);
             <span class="kw">let </span>n2 = <span class="kw">crate</span>::calc_fn_hash(<span class="kw">crate</span>::engine::FN_IDX_SET, <span class="number">3</span>);
             <span class="self">self</span>.fn_hash_indexing = (n1, n2);
             n2
-        }
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.fn_hash_indexing.<span class="number">1
+        </span>}
     }
 }
 
 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
 </span><span class="kw">impl </span>IntoIterator <span class="kw">for </span>GlobalRuntimeState&lt;<span class="lifetime">&#39;_</span>&gt; {
-    <span class="kw">type </span>Item = (Identifier, <span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;);
+    <span class="kw">type </span>Item = (<span class="kw">crate</span>::ImmutableString, <span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;);
     <span class="kw">type </span>IntoIter = std::iter::Zip&lt;
-        std::iter::Rev&lt;smallvec::IntoIter&lt;[Identifier; <span class="number">3</span>]&gt;&gt;,
+        std::iter::Rev&lt;smallvec::IntoIter&lt;[<span class="kw">crate</span>::ImmutableString; <span class="number">3</span>]&gt;&gt;,
         std::iter::Rev&lt;smallvec::IntoIter&lt;[<span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;; <span class="number">3</span>]&gt;&gt;,
     &gt;;
 
@@ -699,7 +706,22 @@
 }
 
 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-</span><span class="kw">impl</span>&lt;K: Into&lt;Identifier&gt;, M: Into&lt;<span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;&gt;&gt; Extend&lt;(K, M)&gt;
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; IntoIterator <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>GlobalRuntimeState&lt;<span class="lifetime">&#39;_</span>&gt; {
+    <span class="kw">type </span>Item = (<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">crate</span>::ImmutableString, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;);
+    <span class="kw">type </span>IntoIter = std::iter::Zip&lt;
+        std::iter::Rev&lt;std::slice::Iter&lt;<span class="lifetime">&#39;a</span>, <span class="kw">crate</span>::ImmutableString&gt;&gt;,
+        std::iter::Rev&lt;std::slice::Iter&lt;<span class="lifetime">&#39;a</span>, <span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;&gt;&gt;,
+    &gt;;
+
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
+        <span class="kw">let </span>x = <span class="self">self</span>.keys.iter().rev().zip(<span class="self">self</span>.modules.iter().rev());
+        x
+    }
+}
+
+<span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+</span><span class="kw">impl</span>&lt;K: Into&lt;<span class="kw">crate</span>::ImmutableString&gt;, M: Into&lt;<span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt;&gt;&gt; Extend&lt;(K, M)&gt;
     <span class="kw">for </span>GlobalRuntimeState&lt;<span class="lifetime">&#39;_</span>&gt;
 {
     <span class="attribute">#[inline]
@@ -737,4 +759,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/tokenizer.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>tokenizer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/tokenizer.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>tokenizer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -2398,6 +2398,142 @@
 <span id="2398">2398</span>
 <span id="2399">2399</span>
 <span id="2400">2400</span>
+<span id="2401">2401</span>
+<span id="2402">2402</span>
+<span id="2403">2403</span>
+<span id="2404">2404</span>
+<span id="2405">2405</span>
+<span id="2406">2406</span>
+<span id="2407">2407</span>
+<span id="2408">2408</span>
+<span id="2409">2409</span>
+<span id="2410">2410</span>
+<span id="2411">2411</span>
+<span id="2412">2412</span>
+<span id="2413">2413</span>
+<span id="2414">2414</span>
+<span id="2415">2415</span>
+<span id="2416">2416</span>
+<span id="2417">2417</span>
+<span id="2418">2418</span>
+<span id="2419">2419</span>
+<span id="2420">2420</span>
+<span id="2421">2421</span>
+<span id="2422">2422</span>
+<span id="2423">2423</span>
+<span id="2424">2424</span>
+<span id="2425">2425</span>
+<span id="2426">2426</span>
+<span id="2427">2427</span>
+<span id="2428">2428</span>
+<span id="2429">2429</span>
+<span id="2430">2430</span>
+<span id="2431">2431</span>
+<span id="2432">2432</span>
+<span id="2433">2433</span>
+<span id="2434">2434</span>
+<span id="2435">2435</span>
+<span id="2436">2436</span>
+<span id="2437">2437</span>
+<span id="2438">2438</span>
+<span id="2439">2439</span>
+<span id="2440">2440</span>
+<span id="2441">2441</span>
+<span id="2442">2442</span>
+<span id="2443">2443</span>
+<span id="2444">2444</span>
+<span id="2445">2445</span>
+<span id="2446">2446</span>
+<span id="2447">2447</span>
+<span id="2448">2448</span>
+<span id="2449">2449</span>
+<span id="2450">2450</span>
+<span id="2451">2451</span>
+<span id="2452">2452</span>
+<span id="2453">2453</span>
+<span id="2454">2454</span>
+<span id="2455">2455</span>
+<span id="2456">2456</span>
+<span id="2457">2457</span>
+<span id="2458">2458</span>
+<span id="2459">2459</span>
+<span id="2460">2460</span>
+<span id="2461">2461</span>
+<span id="2462">2462</span>
+<span id="2463">2463</span>
+<span id="2464">2464</span>
+<span id="2465">2465</span>
+<span id="2466">2466</span>
+<span id="2467">2467</span>
+<span id="2468">2468</span>
+<span id="2469">2469</span>
+<span id="2470">2470</span>
+<span id="2471">2471</span>
+<span id="2472">2472</span>
+<span id="2473">2473</span>
+<span id="2474">2474</span>
+<span id="2475">2475</span>
+<span id="2476">2476</span>
+<span id="2477">2477</span>
+<span id="2478">2478</span>
+<span id="2479">2479</span>
+<span id="2480">2480</span>
+<span id="2481">2481</span>
+<span id="2482">2482</span>
+<span id="2483">2483</span>
+<span id="2484">2484</span>
+<span id="2485">2485</span>
+<span id="2486">2486</span>
+<span id="2487">2487</span>
+<span id="2488">2488</span>
+<span id="2489">2489</span>
+<span id="2490">2490</span>
+<span id="2491">2491</span>
+<span id="2492">2492</span>
+<span id="2493">2493</span>
+<span id="2494">2494</span>
+<span id="2495">2495</span>
+<span id="2496">2496</span>
+<span id="2497">2497</span>
+<span id="2498">2498</span>
+<span id="2499">2499</span>
+<span id="2500">2500</span>
+<span id="2501">2501</span>
+<span id="2502">2502</span>
+<span id="2503">2503</span>
+<span id="2504">2504</span>
+<span id="2505">2505</span>
+<span id="2506">2506</span>
+<span id="2507">2507</span>
+<span id="2508">2508</span>
+<span id="2509">2509</span>
+<span id="2510">2510</span>
+<span id="2511">2511</span>
+<span id="2512">2512</span>
+<span id="2513">2513</span>
+<span id="2514">2514</span>
+<span id="2515">2515</span>
+<span id="2516">2516</span>
+<span id="2517">2517</span>
+<span id="2518">2518</span>
+<span id="2519">2519</span>
+<span id="2520">2520</span>
+<span id="2521">2521</span>
+<span id="2522">2522</span>
+<span id="2523">2523</span>
+<span id="2524">2524</span>
+<span id="2525">2525</span>
+<span id="2526">2526</span>
+<span id="2527">2527</span>
+<span id="2528">2528</span>
+<span id="2529">2529</span>
+<span id="2530">2530</span>
+<span id="2531">2531</span>
+<span id="2532">2532</span>
+<span id="2533">2533</span>
+<span id="2534">2534</span>
+<span id="2535">2535</span>
+<span id="2536">2536</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Main module defining the lexer and parser.
 
 </span><span class="kw">use </span><span class="kw">crate</span>::engine::{
@@ -2410,7 +2546,7 @@
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::{
     borrow::Cow,
-    cell::Cell,
+    cell::RefCell,
     char, fmt,
     iter::{FusedIterator, Peekable},
     num::NonZeroUsize,
@@ -2420,11 +2556,14 @@
 };
 
 <span class="doccomment">/// _(internals)_ A type containing commands to control the tokenizer.
-</span><span class="attribute">#[derive(Debug, Clone, Eq, PartialEq, Hash, Copy)]
+</span><span class="attribute">#[derive(Debug, Clone, Eq, PartialEq, Default, Hash)]
 </span><span class="kw">pub struct </span>TokenizerControlBlock {
     <span class="doccomment">/// Is the current tokenizer position within an interpolated text string?
     /// This flag allows switching the tokenizer back to _text_ parsing after an interpolation stream.
     </span><span class="kw">pub </span>is_within_text: bool,
+    <span class="doccomment">/// Collection of global comments.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+    </span><span class="kw">pub </span>global_comments: Vec&lt;SmartString&gt;,
 }
 
 <span class="kw">impl </span>TokenizerControlBlock {
@@ -2434,12 +2573,14 @@
     </span><span class="kw">pub const fn </span>new() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             is_within_text: <span class="bool-val">false</span>,
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+            </span>global_comments: Vec::new(),
         }
     }
 }
 
 <span class="doccomment">/// _(internals)_ A shared object that allows control of the tokenizer from outside.
-</span><span class="kw">pub type </span>TokenizerControl = Rc&lt;Cell&lt;TokenizerControlBlock&gt;&gt;;
+</span><span class="kw">pub type </span>TokenizerControl = Rc&lt;RefCell&lt;TokenizerControlBlock&gt;&gt;;
 
 <span class="kw">type </span>LERR = LexError;
 
@@ -2605,7 +2746,7 @@
     }
     <span class="doccomment">/// Print this [`Position`] for debug purposes.
     </span><span class="attribute">#[inline]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug_print(<span class="kw-2">&amp;</span><span class="self">self</span>, _f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug_print(<span class="self">self</span>, _f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
         <span class="kw">if </span>!<span class="self">self</span>.is_none() {
             <span class="macro">write!</span>(_f, <span class="string">&quot; @ {:?}&quot;</span>, <span class="self">self</span>)<span class="question-mark">?</span>;
         }
@@ -2648,7 +2789,7 @@
             }
 
             <span class="attribute">#[cfg(feature = <span class="string">&quot;no_position&quot;</span>)]
-            </span><span class="macro">unreachable!</span>();
+            </span><span class="macro">unreachable!</span>(<span class="string">&quot;no position&quot;</span>);
         }
     }
 }
@@ -2683,7 +2824,7 @@
 
 <span class="doccomment">/// _(internals)_ A span consisting of a starting and an ending [positions][Position].
 /// Exported under the `internals` feature only.
-</span><span class="attribute">#[derive(Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy, Default)]
+</span><span class="attribute">#[derive(Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
 </span><span class="kw">pub struct </span>Span {
     <span class="doccomment">/// Starting [position][Position].
     </span>start: Position,
@@ -2691,8 +2832,15 @@
     </span>end: Position,
 }
 
+<span class="kw">impl </span>Default <span class="kw">for </span>Span {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::NONE
+    }
+}
+
 <span class="kw">impl </span>Span {
-    <span class="kw">pub const </span>NONE: <span class="self">Self </span>= <span class="self">Self</span>::new(Position::NONE, Position::NONE);
+    <span class="doccomment">/// Empty [`Span`].
+    </span><span class="kw">pub const </span>NONE: <span class="self">Self </span>= <span class="self">Self</span>::new(Position::NONE, Position::NONE);
 
     <span class="doccomment">/// Create a new [`Span`].
     </span><span class="attribute">#[inline(always)]
@@ -2721,22 +2869,29 @@
 }
 
 <span class="kw">impl </span>fmt::Display <span class="kw">for </span>Span {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-        <span class="kw">match </span>(<span class="self">self</span>.start().is_none(), <span class="self">self</span>.end().is_none()) {
-            (<span class="bool-val">false</span>, <span class="bool-val">false</span>) <span class="kw">if </span><span class="self">self</span>.start().line() != <span class="self">self</span>.end().line() =&gt; {
-                <span class="macro">write!</span>(f, <span class="string">&quot;{:?}-{:?}&quot;</span>, <span class="self">self</span>.start(), <span class="self">self</span>.end())
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="kw">let </span>_f = f;
+
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_position&quot;</span>))]
+        </span><span class="kw">match </span>(<span class="self">self</span>.start(), <span class="self">self</span>.end()) {
+            (Position::NONE, Position::NONE) =&gt; <span class="macro">write!</span>(_f, <span class="string">&quot;{:?}&quot;</span>, Position::NONE),
+            (Position::NONE, end) =&gt; <span class="macro">write!</span>(_f, <span class="string">&quot;..{:?}&quot;</span>, end),
+            (start, Position::NONE) =&gt; <span class="macro">write!</span>(_f, <span class="string">&quot;{:?}&quot;</span>, start),
+            (start, end) <span class="kw">if </span>start.line() != end.line() =&gt; {
+                <span class="macro">write!</span>(_f, <span class="string">&quot;{:?}-{:?}&quot;</span>, start, end)
             }
-            (<span class="bool-val">false</span>, <span class="bool-val">false</span>) =&gt; <span class="macro">write!</span>(
-                f,
+            (start, end) =&gt; <span class="macro">write!</span>(
+                _f,
                 <span class="string">&quot;{}:{}-{}&quot;</span>,
-                <span class="self">self</span>.start().line().unwrap(),
-                <span class="self">self</span>.start().position().unwrap_or(<span class="number">0</span>),
-                <span class="self">self</span>.end().position().unwrap_or(<span class="number">0</span>)
+                start.line().unwrap(),
+                start.position().unwrap_or(<span class="number">0</span>),
+                end.position().unwrap_or(<span class="number">0</span>)
             ),
-            (<span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;..{:?}&quot;</span>, <span class="self">self</span>.end()),
-            (<span class="bool-val">false</span>, <span class="bool-val">true</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.start()),
-            (<span class="bool-val">true</span>, <span class="bool-val">true</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{:?}&quot;</span>, Position::NONE),
         }
+
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;no_position&quot;</span>)]
+        </span><span class="prelude-val">Ok</span>(())
     }
 }
 
@@ -2819,6 +2974,18 @@
     </span>Comma,
     <span class="doccomment">/// `.`
     </span>Period,
+    <span class="doccomment">/// `?.`
+    ///
+    /// Reserved under the `no_object` feature.
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+    </span>Elvis,
+    <span class="doccomment">/// `??`
+    </span>DoubleQuestion,
+    <span class="doccomment">/// `?[`
+    ///
+    /// Reserved under the `no_object` feature.
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
+    </span>QuestionBracket,
     <span class="doccomment">/// `..`
     </span>ExclusiveRange,
     <span class="doccomment">/// `..=`
@@ -2943,9 +3110,19 @@
     <span class="doccomment">/// A reserved symbol.
     </span>Reserved(SmartString),
     <span class="doccomment">/// A custom keyword.
+    ///
+    /// Not available under `no_custom_syntax`.
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
     </span>Custom(SmartString),
     <span class="doccomment">/// End of the input stream.
     </span>EOF,
+}
+
+<span class="kw">impl </span>fmt::Display <span class="kw">for </span>Token {
+    <span class="attribute">#[inline(always)]
+    </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        f.write_str(<span class="kw-2">&amp;</span><span class="self">self</span>.syntax())
+    }
 }
 
 <span class="kw">impl </span>Token {
@@ -2975,6 +3152,11 @@
             Underscore =&gt; <span class="string">&quot;_&quot;</span>,
             Comma =&gt; <span class="string">&quot;,&quot;</span>,
             Period =&gt; <span class="string">&quot;.&quot;</span>,
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+            </span>Elvis =&gt; <span class="string">&quot;?.&quot;</span>,
+            DoubleQuestion =&gt; <span class="string">&quot;??&quot;</span>,
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
+            </span>QuestionBracket =&gt; <span class="string">&quot;?[&quot;</span>,
             ExclusiveRange =&gt; <span class="string">&quot;..&quot;</span>,
             InclusiveRange =&gt; <span class="string">&quot;..=&quot;</span>,
             MapStart =&gt; <span class="string">&quot;#{&quot;</span>,
@@ -3058,7 +3240,8 @@
             CharConstant(c) =&gt; c.to_string().into(),
             Identifier(s) =&gt; s.to_string().into(),
             Reserved(s) =&gt; s.to_string().into(),
-            Custom(s) =&gt; s.to_string().into(),
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+            </span>Custom(s) =&gt; s.to_string().into(),
             LexError(err) =&gt; err.to_string().into(),
             Comment(s) =&gt; s.to_string().into(),
 
@@ -3170,6 +3353,11 @@
             <span class="string">&quot;_&quot; </span>=&gt; Underscore,
             <span class="string">&quot;,&quot; </span>=&gt; Comma,
             <span class="string">&quot;.&quot; </span>=&gt; Period,
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+            </span><span class="string">&quot;?.&quot; </span>=&gt; Elvis,
+            <span class="string">&quot;??&quot; </span>=&gt; DoubleQuestion,
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
+            </span><span class="string">&quot;?[&quot; </span>=&gt; QuestionBracket,
             <span class="string">&quot;..&quot; </span>=&gt; ExclusiveRange,
             <span class="string">&quot;..=&quot; </span>=&gt; InclusiveRange,
             <span class="string">&quot;#{&quot; </span>=&gt; MapStart,
@@ -3221,6 +3409,11 @@
             <span class="string">&quot;**&quot; </span>=&gt; PowerOf,
             <span class="string">&quot;**=&quot; </span>=&gt; PowerOfAssign,
 
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;no_object&quot;</span>)]
+            </span><span class="string">&quot;?.&quot; </span>=&gt; Reserved(syntax.into()),
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;no_index&quot;</span>)]
+            </span><span class="string">&quot;?[&quot; </span>=&gt; Reserved(syntax.into()),
+
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             </span><span class="string">&quot;fn&quot; </span>=&gt; Fn,
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
@@ -3240,9 +3433,8 @@
             </span><span class="string">&quot;import&quot; </span>| <span class="string">&quot;export&quot; </span>| <span class="string">&quot;as&quot; </span>=&gt; Reserved(syntax.into()),
 
             <span class="comment">// List of reserved operators
-            </span><span class="string">&quot;===&quot; </span>| <span class="string">&quot;!==&quot; </span>| <span class="string">&quot;-&gt;&quot; </span>| <span class="string">&quot;&lt;-&quot; </span>| <span class="string">&quot;:=&quot; </span>| <span class="string">&quot;~&quot; </span>| <span class="string">&quot;::&lt;&quot; </span>| <span class="string">&quot;(*&quot; </span>| <span class="string">&quot;*)&quot; </span>| <span class="string">&quot;#&quot; </span>| <span class="string">&quot;#!&quot; </span>=&gt; {
-                Reserved(syntax.into())
-            }
+            </span><span class="string">&quot;===&quot; </span>| <span class="string">&quot;!==&quot; </span>| <span class="string">&quot;-&gt;&quot; </span>| <span class="string">&quot;&lt;-&quot; </span>| <span class="string">&quot;?&quot; </span>| <span class="string">&quot;:=&quot; </span>| <span class="string">&quot;:;&quot; </span>| <span class="string">&quot;~&quot; </span>| <span class="string">&quot;!.&quot; </span>| <span class="string">&quot;::&lt;&quot; </span>| <span class="string">&quot;(*&quot; </span>| <span class="string">&quot;*)&quot;
+            </span>| <span class="string">&quot;#&quot; </span>| <span class="string">&quot;#!&quot; </span>| <span class="string">&quot;@&quot; </span>| <span class="string">&quot;$&quot; </span>| <span class="string">&quot;++&quot; </span>| <span class="string">&quot;--&quot; </span>| <span class="string">&quot;...&quot; </span>| <span class="string">&quot;&lt;|&quot; </span>| <span class="string">&quot;|&gt;&quot; </span>=&gt; Reserved(syntax.into()),
 
             <span class="comment">// List of reserved keywords
             </span><span class="string">&quot;public&quot; </span>| <span class="string">&quot;protected&quot; </span>| <span class="string">&quot;super&quot; </span>| <span class="string">&quot;new&quot; </span>| <span class="string">&quot;use&quot; </span>| <span class="string">&quot;module&quot; </span>| <span class="string">&quot;package&quot; </span>| <span class="string">&quot;var&quot;
@@ -3262,25 +3454,28 @@
         })
     }
 
-    <span class="comment">// Is this token [`EOF`][Token::EOF]?
+    <span class="doccomment">/// Is this token [`EOF`][Token::EOF]?
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub const fn </span>is_eof(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="macro">matches!</span>(<span class="self">self</span>, <span class="self">Self</span>::EOF)
     }
 
-    <span class="comment">// If another operator is after these, it&#39;s probably an unary operator
-    // (not sure about `fn` name).
+    <span class="doccomment">/// If another operator is after these, it&#39;s probably a unary operator
+    /// (not sure about `fn` name).
     </span><span class="attribute">#[must_use]
     </span><span class="kw">pub const fn </span>is_next_unary(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="kw">use </span>Token::<span class="kw-2">*</span>;
 
         <span class="kw">match </span><span class="self">self </span>{
-            LexError(..)      |
+            LexError(..)     |
             SemiColon        | <span class="comment">// ; - is unary
             </span>Colon            | <span class="comment">// #{ foo: - is unary
             </span>Comma            | <span class="comment">// ( ... , -expr ) - is unary
             //Period           |
+            //Elvis            |
+            //DoubleQuestion   |
+            //QuestionBracket  |
             </span>ExclusiveRange            | <span class="comment">// .. - is unary
             </span>InclusiveRange   | <span class="comment">// ..= - is unary
             </span>LeftBrace        | <span class="comment">// { -expr } - is unary
@@ -3351,6 +3546,8 @@
 
             LessThan | LessThanEqualsTo | GreaterThan | GreaterThanEqualsTo =&gt; <span class="number">130</span>,
 
+            DoubleQuestion =&gt; <span class="number">135</span>,
+
             ExclusiveRange | InclusiveRange =&gt; <span class="number">140</span>,
 
             Plus | Minus =&gt; <span class="number">150</span>,
@@ -3386,12 +3583,18 @@
         <span class="kw">match </span><span class="self">self </span>{
             LeftBrace | RightBrace | LeftParen | RightParen | LeftBracket | RightBracket | Plus
             | UnaryPlus | Minus | UnaryMinus | Multiply | Divide | Modulo | PowerOf | LeftShift
-            | RightShift | SemiColon | Colon | DoubleColon | Comma | Period | ExclusiveRange
-            | InclusiveRange | MapStart | Equals | LessThan | GreaterThan | LessThanEqualsTo
-            | GreaterThanEqualsTo | EqualsTo | NotEqualsTo | Bang | Pipe | Or | XOr | Ampersand
-            | And | PlusAssign | MinusAssign | MultiplyAssign | DivideAssign | LeftShiftAssign
-            | RightShiftAssign | AndAssign | OrAssign | XOrAssign | ModuloAssign
-            | PowerOfAssign =&gt; <span class="bool-val">true</span>,
+            | RightShift | SemiColon | Colon | DoubleColon | Comma | Period | DoubleQuestion
+            | ExclusiveRange | InclusiveRange | MapStart | Equals | LessThan | GreaterThan
+            | LessThanEqualsTo | GreaterThanEqualsTo | EqualsTo | NotEqualsTo | Bang | Pipe
+            | Or | XOr | Ampersand | And | PlusAssign | MinusAssign | MultiplyAssign
+            | DivideAssign | LeftShiftAssign | RightShiftAssign | AndAssign | OrAssign
+            | XOrAssign | ModuloAssign | PowerOfAssign =&gt; <span class="bool-val">true</span>,
+
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+            </span>Elvis =&gt; <span class="bool-val">true</span>,
+
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
+            </span>QuestionBracket =&gt; <span class="bool-val">true</span>,
 
             <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
         }
@@ -3429,13 +3632,16 @@
     #[inline]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_function_name_for_override(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;SmartString, <span class="self">Self</span>&gt; {
         <span class="kw">match </span><span class="self">self </span>{
-            <span class="self">Self</span>::Custom(s) | <span class="self">Self</span>::Identifier(s) <span class="kw">if </span>is_valid_function_name(<span class="kw-2">&amp;</span>s) =&gt; <span class="prelude-val">Ok</span>(s),
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+            </span><span class="self">Self</span>::Custom(s) <span class="kw">if </span>is_valid_function_name(<span class="kw-2">&amp;</span>s) =&gt; <span class="prelude-val">Ok</span>(s),
+            <span class="self">Self</span>::Identifier(s) <span class="kw">if </span>is_valid_function_name(<span class="kw-2">&amp;</span>s) =&gt; <span class="prelude-val">Ok</span>(s),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="self">self</span>),
         }
     }
 
     <span class="doccomment">/// Is this token a custom keyword?
-    </span><span class="attribute">#[inline(always)]
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+    #[inline(always)]
     #[must_use]
     </span><span class="kw">pub const fn </span>is_custom(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="macro">matches!</span>(<span class="self">self</span>, <span class="self">Self</span>::Custom(..))
@@ -3457,6 +3663,8 @@
     </span><span class="kw">pub </span>max_string_size: <span class="prelude-ty">Option</span>&lt;NonZeroUsize&gt;,
     <span class="doccomment">/// Can the next token be a unary operator?
     </span><span class="kw">pub </span>next_token_cannot_be_unary: bool,
+    <span class="doccomment">/// Shared object to allow controlling the tokenizer externally.
+    </span><span class="kw">pub </span>tokenizer_control: TokenizerControl,
     <span class="doccomment">/// Is the tokenizer currently inside a block comment?
     </span><span class="kw">pub </span>comment_level: usize,
     <span class="doccomment">/// Include comments?
@@ -3561,7 +3769,7 @@
         </span><span class="kw">if </span>allow_interpolation
             &amp;&amp; next_char == <span class="string">&#39;$&#39;
             </span>&amp;&amp; escape.is_empty()
-            &amp;&amp; stream.peek_next().map(|ch| ch == <span class="string">&#39;{&#39;</span>).unwrap_or(<span class="bool-val">false</span>)
+            &amp;&amp; stream.peek_next().map_or(<span class="bool-val">false</span>, |ch| ch == <span class="string">&#39;{&#39;</span>)
         {
             interpolated = <span class="bool-val">true</span>;
             state.is_within_text_terminated_by = <span class="prelude-val">None</span>;
@@ -3591,7 +3799,7 @@
 
         <span class="kw">match </span>next_char {
             <span class="comment">// \r - ignore if followed by \n
-            </span><span class="string">&#39;\r&#39; </span><span class="kw">if </span>stream.peek_next().map(|ch| ch == <span class="string">&#39;\n&#39;</span>).unwrap_or(<span class="bool-val">false</span>) =&gt; (),
+            </span><span class="string">&#39;\r&#39; </span><span class="kw">if </span>stream.peek_next().map_or(<span class="bool-val">false</span>, |ch| ch == <span class="string">&#39;\n&#39;</span>) =&gt; (),
             <span class="comment">// \...
             </span><span class="string">&#39;\\&#39; </span><span class="kw">if </span>!verbatim &amp;&amp; escape.is_empty() =&gt; {
                 escape.push(<span class="string">&#39;\\&#39;</span>);
@@ -3617,7 +3825,7 @@
                 result.push(<span class="string">&#39;\r&#39;</span>);
             }
             <span class="comment">// \x??, \u????, \U????????
-            </span>ch @ <span class="string">&#39;x&#39; </span>| ch @ <span class="string">&#39;u&#39; </span>| ch @ <span class="string">&#39;U&#39; </span><span class="kw">if </span>!escape.is_empty() =&gt; {
+            </span>ch @ (<span class="string">&#39;x&#39; </span>| <span class="string">&#39;u&#39; </span>| <span class="string">&#39;U&#39;</span>) <span class="kw">if </span>!escape.is_empty() =&gt; {
                 <span class="kw">let </span><span class="kw-2">mut </span>seq = escape.clone();
                 escape.clear();
                 seq.push(ch);
@@ -3653,7 +3861,7 @@
             <span class="comment">// \{termination_char} - escaped
             </span><span class="kw">_ if </span>termination_char == next_char &amp;&amp; !escape.is_empty() =&gt; {
                 escape.clear();
-                result.push(next_char)
+                result.push(next_char);
             }
 
             <span class="comment">// Verbatim
@@ -3838,7 +4046,7 @@
         </span><span class="kw">let </span>return_comment = return_comment || is_doc_comment(comment.as_ref().expect(<span class="string">&quot;`Some`&quot;</span>));
 
         <span class="kw">if </span>return_comment {
-            <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Comment(comment.expect(<span class="string">&quot;`Some`&quot;</span>).into()), start_pos));
+            <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Comment(comment.expect(<span class="string">&quot;`Some`&quot;</span>)), start_pos));
         }
         <span class="kw">if </span>state.comment_level &gt; <span class="number">0 </span>{
             <span class="comment">// Reached EOF without ending comment block
@@ -3886,7 +4094,7 @@
                         }
                         <span class="attribute">#[cfg(any(not(feature = <span class="string">&quot;no_float&quot;</span>), feature = <span class="string">&quot;decimal&quot;</span>))]
                         </span><span class="string">&#39;.&#39; </span>=&gt; {
-                            stream.get_next().expect(<span class="string">&quot;`.`&quot;</span>);
+                            stream.get_next().unwrap();
 
                             <span class="comment">// Check if followed by digits or something that cannot start a property name
                             </span><span class="kw">match </span>stream.peek_next().unwrap_or(<span class="string">&#39;\0&#39;</span>) {
@@ -3933,7 +4141,7 @@
                                 </span><span class="string">&#39;+&#39; </span>| <span class="string">&#39;-&#39; </span>=&gt; {
                                     result.push(next_char);
                                     pos.advance();
-                                    result.push(stream.get_next().expect(<span class="string">&quot;`+` or `-`&quot;</span>));
+                                    result.push(stream.get_next().unwrap());
                                     pos.advance();
                                 }
                                 <span class="comment">// Not a floating-point number
@@ -3944,8 +4152,8 @@
                             }
                         }
                         <span class="comment">// 0x????, 0o????, 0b???? at beginning
-                        </span>ch @ <span class="string">&#39;x&#39; </span>| ch @ <span class="string">&#39;o&#39; </span>| ch @ <span class="string">&#39;b&#39; </span>| ch @ <span class="string">&#39;X&#39; </span>| ch @ <span class="string">&#39;O&#39; </span>| ch @ <span class="string">&#39;B&#39;
-                            </span><span class="kw">if </span>c == <span class="string">&#39;0&#39; </span>&amp;&amp; result.len() &lt;= <span class="number">1 </span>=&gt;
+                        </span>ch @ (<span class="string">&#39;x&#39; </span>| <span class="string">&#39;o&#39; </span>| <span class="string">&#39;b&#39; </span>| <span class="string">&#39;X&#39; </span>| <span class="string">&#39;O&#39; </span>| <span class="string">&#39;B&#39;</span>)
+                            <span class="kw">if </span>c == <span class="string">&#39;0&#39; </span>&amp;&amp; result.len() &lt;= <span class="number">1 </span>=&gt;
                         {
                             result.push(next_char);
                             eat_next(stream, pos);
@@ -3985,12 +4193,14 @@
 
                         UNSIGNED_INT::from_str_radix(<span class="kw-2">&amp;</span>out, radix)
                             .map(|v| v <span class="kw">as </span>INT)
-                            .map(Token::IntegerConstant)
-                            .unwrap_or_else(|<span class="kw">_</span>| {
-                                Token::LexError(
-                                    LERR::MalformedNumber(result.into_iter().collect()).into(),
-                                )
-                            })
+                            .map_or_else(
+                                |<span class="kw">_</span>| {
+                                    Token::LexError(
+                                        LERR::MalformedNumber(result.into_iter().collect()).into(),
+                                    )
+                                },
+                                Token::IntegerConstant,
+                            )
                     } <span class="kw">else </span>{
                         <span class="kw">let </span>out: String =
                             result.iter().filter(|&amp;&amp;c| c != NUMBER_SEPARATOR).collect();
@@ -4026,12 +4236,12 @@
 
             <span class="comment">// letter or underscore ...
             </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>))]
-            </span>(<span class="string">&#39;a&#39;</span>..=<span class="string">&#39;z&#39;</span>, ..) | (<span class="string">&#39;_&#39;</span>, ..) | (<span class="string">&#39;A&#39;</span>..=<span class="string">&#39;Z&#39;</span>, ..) =&gt; {
-                <span class="kw">return </span>get_identifier(stream, pos, start_pos, c);
+            </span>(<span class="string">&#39;a&#39;</span>..=<span class="string">&#39;z&#39; </span>| <span class="string">&#39;_&#39; </span>| <span class="string">&#39;A&#39;</span>..=<span class="string">&#39;Z&#39;</span>, ..) =&gt; {
+                <span class="kw">return </span><span class="prelude-val">Some</span>(get_identifier(stream, pos, start_pos, c));
             }
             <span class="attribute">#[cfg(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>)]
             </span>(ch, ..) <span class="kw">if </span>unicode_xid::UnicodeXID::is_xid_start(ch) || ch == <span class="string">&#39;_&#39; </span>=&gt; {
-                <span class="kw">return </span>get_identifier(stream, pos, start_pos, c);
+                <span class="kw">return </span><span class="prelude-val">Some</span>(get_identifier(stream, pos, start_pos, c));
             }
 
             <span class="comment">// &quot; - string literal
@@ -4219,6 +4429,11 @@
                             <span class="kw">_ </span>=&gt; <span class="prelude-val">Some</span>(<span class="string">&quot;///&quot;</span>.into()),
                         }
                     }
+                    <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+                    </span><span class="prelude-val">Some</span>(<span class="string">&#39;!&#39;</span>) =&gt; {
+                        eat_next(stream, pos);
+                        <span class="prelude-val">Some</span>(<span class="string">&quot;//!&quot;</span>.into())
+                    }
                     <span class="kw">_ if </span>state.include_comments =&gt; <span class="prelude-val">Some</span>(<span class="string">&quot;//&quot;</span>.into()),
                     <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
                 };
@@ -4243,7 +4458,15 @@
                 }
 
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(comment) = comment {
-                    <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Comment(comment), start_pos));
+                    <span class="kw">match </span>comment {
+                        <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+                        </span><span class="kw">_ if </span>comment.starts_with(<span class="string">&quot;//!&quot;</span>) =&gt; state
+                            .tokenizer_control
+                            .borrow_mut()
+                            .global_comments
+                            .push(comment),
+                        <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Comment(comment), start_pos)),
+                    }
                 }
             }
             (<span class="string">&#39;/&#39;</span>, <span class="string">&#39;*&#39;</span>) =&gt; {
@@ -4360,6 +4583,10 @@
                     start_pos,
                 ));
             }
+            (<span class="string">&#39;&lt;&#39;</span>, <span class="string">&#39;|&#39;</span>) =&gt; {
+                eat_next(stream, pos);
+                <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(<span class="string">&quot;&lt;|&quot;</span>.into()), start_pos));
+            }
             (<span class="string">&#39;&lt;&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::LessThan, start_pos)),
 
             (<span class="string">&#39;&gt;&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
@@ -4391,6 +4618,10 @@
 
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::NotEqualsTo, start_pos));
             }
+            (<span class="string">&#39;!&#39;</span>, <span class="string">&#39;.&#39;</span>) =&gt; {
+                eat_next(stream, pos);
+                <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(<span class="string">&quot;!.&quot;</span>.into()), start_pos));
+            }
             (<span class="string">&#39;!&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Bang, start_pos)),
 
             (<span class="string">&#39;|&#39;</span>, <span class="string">&#39;|&#39;</span>) =&gt; {
@@ -4400,6 +4631,10 @@
             (<span class="string">&#39;|&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
                 eat_next(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::OrAssign, start_pos));
+            }
+            (<span class="string">&#39;|&#39;</span>, <span class="string">&#39;&gt;&#39;</span>) =&gt; {
+                eat_next(stream, pos);
+                <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(<span class="string">&quot;|&gt;&quot;</span>.into()), start_pos));
             }
             (<span class="string">&#39;|&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Pipe, start_pos)),
 
@@ -4431,6 +4666,32 @@
 
             (<span class="string">&#39;$&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(<span class="string">&quot;$&quot;</span>.into()), start_pos)),
 
+            (<span class="string">&#39;?&#39;</span>, <span class="string">&#39;.&#39;</span>) =&gt; {
+                eat_next(stream, pos);
+                <span class="kw">return </span><span class="prelude-val">Some</span>((
+                    <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+                    </span>Token::Elvis,
+                    <span class="attribute">#[cfg(feature = <span class="string">&quot;no_object&quot;</span>)]
+                    </span>Token::Reserved(<span class="string">&quot;?.&quot;</span>.into()),
+                    start_pos,
+                ));
+            }
+            (<span class="string">&#39;?&#39;</span>, <span class="string">&#39;?&#39;</span>) =&gt; {
+                eat_next(stream, pos);
+                <span class="kw">return </span><span class="prelude-val">Some</span>((Token::DoubleQuestion, start_pos));
+            }
+            (<span class="string">&#39;?&#39;</span>, <span class="string">&#39;[&#39;</span>) =&gt; {
+                eat_next(stream, pos);
+                <span class="kw">return </span><span class="prelude-val">Some</span>((
+                    <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
+                    </span>Token::QuestionBracket,
+                    <span class="attribute">#[cfg(feature = <span class="string">&quot;no_index&quot;</span>)]
+                    </span>Token::Reserved(<span class="string">&quot;?[&quot;</span>.into()),
+                    start_pos,
+                ));
+            }
+            (<span class="string">&#39;?&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(<span class="string">&quot;?&quot;</span>.into()), start_pos)),
+
             (ch, ..) <span class="kw">if </span>ch.is_whitespace() =&gt; (),
 
             (ch, ..) =&gt; {
@@ -4453,7 +4714,7 @@
     pos: <span class="kw-2">&amp;mut </span>Position,
     start_pos: Position,
     first_char: char,
-) -&gt; <span class="prelude-ty">Option</span>&lt;(Token, Position)&gt; {
+) -&gt; (Token, Position) {
     <span class="kw">let </span><span class="kw-2">mut </span>result = smallvec::SmallVec::&lt;[char; <span class="number">8</span>]&gt;::new();
     result.push(first_char);
 
@@ -4467,25 +4728,25 @@
         }
     }
 
-    <span class="kw">let </span>is_valid_identifier = is_valid_identifier(result.iter().cloned());
+    <span class="kw">let </span>is_valid_identifier = is_valid_identifier(result.iter().copied());
 
     <span class="kw">let </span>identifier: String = result.into_iter().collect();
 
     <span class="kw">if let </span><span class="prelude-val">Some</span>(token) = Token::lookup_from_syntax(<span class="kw-2">&amp;</span>identifier) {
-        <span class="kw">return </span><span class="prelude-val">Some</span>((token, start_pos));
+        <span class="kw">return </span>(token, start_pos);
     }
 
     <span class="kw">if </span>!is_valid_identifier {
-        <span class="kw">return </span><span class="prelude-val">Some</span>((
+        <span class="kw">return </span>(
             Token::LexError(LERR::MalformedIdentifier(identifier).into()),
             start_pos,
-        ));
+        );
     }
 
-    <span class="prelude-val">Some</span>((Token::Identifier(identifier.into()), start_pos))
+    (Token::Identifier(identifier.into()), start_pos)
 }
 
-<span class="doccomment">/// Is this keyword allowed as a function?
+<span class="doccomment">/// Is a keyword allowed as a function?
 </span><span class="attribute">#[inline]
 #[must_use]
 </span><span class="kw">pub fn </span>is_keyword_function(name: <span class="kw-2">&amp;</span>str) -&gt; bool {
@@ -4500,7 +4761,8 @@
     }
 }
 
-<span class="doccomment">/// Is a text string a valid identifier?
+<span class="doccomment">/// _(internals)_ Is a text string a valid identifier?
+/// Exported under the `internals` feature only.
 </span><span class="attribute">#[must_use]
 </span><span class="kw">pub fn </span>is_valid_identifier(name: <span class="kw">impl </span>Iterator&lt;Item = char&gt;) -&gt; bool {
     <span class="kw">let </span><span class="kw-2">mut </span>first_alphabetic = <span class="bool-val">false</span>;
@@ -4518,7 +4780,8 @@
     first_alphabetic
 }
 
-<span class="doccomment">/// Is a text string a valid script-defined function name?
+<span class="doccomment">/// _(internals)_ Is a text string a valid script-defined function name?
+/// Exported under the `internals` feature only.
 </span><span class="attribute">#[inline(always)]
 #[must_use]
 </span><span class="kw">pub fn </span>is_valid_function_name(name: <span class="kw-2">&amp;</span>str) -&gt; bool {
@@ -4545,7 +4808,7 @@
 </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>))]
 #[inline(always)]
 #[must_use]
-</span><span class="kw">pub fn </span>is_id_first_alphabetic(x: char) -&gt; bool {
+</span><span class="kw">pub const fn </span>is_id_first_alphabetic(x: char) -&gt; bool {
     x.is_ascii_alphabetic()
 }
 
@@ -4553,7 +4816,7 @@
 </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>))]
 #[inline(always)]
 #[must_use]
-</span><span class="kw">pub fn </span>is_id_continue(x: char) -&gt; bool {
+</span><span class="kw">pub const fn </span>is_id_continue(x: char) -&gt; bool {
     x.is_ascii_alphanumeric() || x == <span class="string">&#39;_&#39;
 </span>}
 
@@ -4588,13 +4851,13 @@
             <span class="kw">if </span><span class="self">self</span>.index &gt;= <span class="self">self</span>.streams.len() {
                 <span class="comment">// No more streams
                 </span><span class="kw">return </span><span class="prelude-val">None</span>;
-            } <span class="kw">else if let </span><span class="prelude-val">Some</span>(ch) = <span class="self">self</span>.streams[<span class="self">self</span>.index].next() {
+            }
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(ch) = <span class="self">self</span>.streams[<span class="self">self</span>.index].next() {
                 <span class="comment">// Next character in current stream
                 </span><span class="kw">return </span><span class="prelude-val">Some</span>(ch);
-            } <span class="kw">else </span>{
-                <span class="comment">// Jump to the next stream
-                </span><span class="self">self</span>.index += <span class="number">1</span>;
             }
+            <span class="comment">// Jump to the next stream
+            </span><span class="self">self</span>.index += <span class="number">1</span>;
         }
     }
     <span class="kw">fn </span>peek_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;char&gt; {
@@ -4606,13 +4869,13 @@
             <span class="kw">if </span><span class="self">self</span>.index &gt;= <span class="self">self</span>.streams.len() {
                 <span class="comment">// No more streams
                 </span><span class="kw">return </span><span class="prelude-val">None</span>;
-            } <span class="kw">else if let </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>ch) = <span class="self">self</span>.streams[<span class="self">self</span>.index].peek() {
+            }
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>ch) = <span class="self">self</span>.streams[<span class="self">self</span>.index].peek() {
                 <span class="comment">// Next character in current stream
                 </span><span class="kw">return </span><span class="prelude-val">Some</span>(ch);
-            } <span class="kw">else </span>{
-                <span class="comment">// Jump to the next stream
-                </span><span class="self">self</span>.index += <span class="number">1</span>;
             }
+            <span class="comment">// Jump to the next stream
+            </span><span class="self">self</span>.index += <span class="number">1</span>;
         }
     }
 }
@@ -4626,8 +4889,6 @@
     </span><span class="kw">pub </span>state: TokenizeState,
     <span class="doccomment">/// Current position.
     </span><span class="kw">pub </span>pos: Position,
-    <span class="doccomment">/// Shared object to allow controlling the tokenizer externally.
-    </span><span class="kw">pub </span>tokenizer_control: TokenizerControl,
     <span class="doccomment">/// Input character stream.
     </span><span class="kw">pub </span>stream: MultiInputsStream&lt;<span class="lifetime">&#39;a</span>&gt;,
     <span class="doccomment">/// A processor function that maps a token to another.
@@ -4638,14 +4899,15 @@
     <span class="kw">type </span>Item = (Token, Position);
 
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>control = <span class="self">self</span>.tokenizer_control.get();
+        {
+            <span class="kw">let </span>control = <span class="kw-2">&amp;mut *</span><span class="self">self</span>.state.tokenizer_control.borrow_mut();
 
-        <span class="kw">if </span>control.is_within_text {
-            <span class="comment">// Switch to text mode terminated by back-tick
-            </span><span class="self">self</span>.state.is_within_text_terminated_by = <span class="prelude-val">Some</span>(<span class="string">&#39;`&#39;</span>);
-            <span class="comment">// Reset it
-            </span>control.is_within_text = <span class="bool-val">false</span>;
-            <span class="self">self</span>.tokenizer_control.set(control);
+            <span class="kw">if </span>control.is_within_text {
+                <span class="comment">// Switch to text mode terminated by back-tick
+                </span><span class="self">self</span>.state.is_within_text_terminated_by = <span class="prelude-val">Some</span>(<span class="string">&#39;`&#39;</span>);
+                <span class="comment">// Reset it
+                </span>control.is_within_text = <span class="bool-val">false</span>;
+            }
         }
 
         <span class="kw">let </span>(token, pos) = <span class="kw">match </span>get_next_token(<span class="kw-2">&amp;mut </span><span class="self">self</span>.stream, <span class="kw-2">&amp;mut </span><span class="self">self</span>.state, <span class="kw-2">&amp;mut </span><span class="self">self</span>.pos) {
@@ -4662,7 +4924,12 @@
             }
             <span class="comment">// Reserved keyword/symbol
             </span><span class="prelude-val">Some</span>((Token::Reserved(s), pos)) =&gt; (<span class="kw">match
-                </span>(<span class="kw-2">&amp;*</span>s, !<span class="self">self</span>.engine.custom_keywords.is_empty() &amp;&amp; <span class="self">self</span>.engine.custom_keywords.contains_key(<span class="kw-2">&amp;*</span>s))
+                </span>(<span class="kw-2">&amp;*</span>s,
+                    <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+                    </span>(!<span class="self">self</span>.engine.custom_keywords.is_empty() &amp;&amp; <span class="self">self</span>.engine.custom_keywords.contains_key(<span class="kw-2">&amp;*</span>s)),
+                    <span class="attribute">#[cfg(feature = <span class="string">&quot;no_custom_syntax&quot;</span>)]
+                    </span><span class="bool-val">false
+                </span>)
             {
                 (<span class="string">&quot;===&quot;</span>, <span class="bool-val">false</span>) =&gt; Token::LexError(LERR::ImproperSymbol(s.to_string(),
                     <span class="string">&quot;&#39;===&#39; is not a valid operator. This is not JavaScript! Should it be &#39;==&#39;?&quot;</span>.to_string(),
@@ -4684,27 +4951,32 @@
                 (<span class="string">&quot;::&lt;&quot;</span>, <span class="bool-val">false</span>) =&gt; Token::LexError(LERR::ImproperSymbol(s.to_string(),
                     <span class="string">&quot;&#39;::&lt;&gt;&#39; is not a valid symbol. This is not Rust! Should it be &#39;::&#39;?&quot;</span>.to_string(),
                 ).into()),
-                (<span class="string">&quot;(*&quot;</span>, <span class="bool-val">false</span>) | (<span class="string">&quot;*)&quot;</span>, <span class="bool-val">false</span>) =&gt; Token::LexError(LERR::ImproperSymbol(s.to_string(),
+                (<span class="string">&quot;(*&quot; </span>| <span class="string">&quot;*)&quot;</span>, <span class="bool-val">false</span>) =&gt; Token::LexError(LERR::ImproperSymbol(s.to_string(),
                     <span class="string">&quot;&#39;(* .. *)&#39; is not a valid comment format. This is not Pascal! Should it be &#39;/* .. */&#39;?&quot;</span>.to_string(),
                 ).into()),
                 (<span class="string">&quot;# {&quot;</span>, <span class="bool-val">false</span>) =&gt; Token::LexError(LERR::ImproperSymbol(s.to_string(),
                     <span class="string">&quot;&#39;#&#39; is not a valid symbol. Should it be &#39;#{&#39;?&quot;</span>.to_string(),
                 ).into()),
                 <span class="comment">// Reserved keyword/operator that is custom.
+                </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
                 </span>(.., <span class="bool-val">true</span>) =&gt; Token::Custom(s),
+                <span class="attribute">#[cfg(feature = <span class="string">&quot;no_custom_syntax&quot;</span>)]
+                </span>(.., <span class="bool-val">true</span>) =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;no custom operators&quot;</span>),
                 <span class="comment">// Reserved keyword that is not custom and disabled.
                 </span>(token, <span class="bool-val">false</span>) <span class="kw">if </span>!<span class="self">self</span>.engine.disabled_symbols.is_empty() &amp;&amp; <span class="self">self</span>.engine.disabled_symbols.contains(token) =&gt; {
-                    <span class="kw">let </span>msg = <span class="macro">format!</span>(<span class="string">&quot;reserved {} &#39;{}&#39; is disabled&quot;</span>, <span class="kw">if </span>is_valid_identifier(token.chars()) { <span class="string">&quot;keyword&quot;</span>} <span class="kw">else </span>{<span class="string">&quot;symbol&quot;</span>}, token);
+                    <span class="kw">let </span>msg = <span class="macro">format!</span>(<span class="string">&quot;reserved {} &#39;{token}&#39; is disabled&quot;</span>, <span class="kw">if </span>is_valid_identifier(token.chars()) { <span class="string">&quot;keyword&quot;</span>} <span class="kw">else </span>{<span class="string">&quot;symbol&quot;</span>});
                     Token::LexError(LERR::ImproperSymbol(s.to_string(), msg).into())
                 },
                 <span class="comment">// Reserved keyword/operator that is not custom.
                 </span>(.., <span class="bool-val">false</span>) =&gt; Token::Reserved(s),
             }, pos),
             <span class="comment">// Custom keyword
+            </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
             </span><span class="prelude-val">Some</span>((Token::Identifier(s), pos)) <span class="kw">if </span>!<span class="self">self</span>.engine.custom_keywords.is_empty() &amp;&amp; <span class="self">self</span>.engine.custom_keywords.contains_key(<span class="kw-2">&amp;*</span>s) =&gt; {
                 (Token::Custom(s), pos)
             }
             <span class="comment">// Custom keyword/symbol - must be disabled
+            </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
             </span><span class="prelude-val">Some</span>((token, pos)) <span class="kw">if </span>!<span class="self">self</span>.engine.custom_keywords.is_empty() &amp;&amp; <span class="self">self</span>.engine.custom_keywords.contains_key(token.literal_syntax()) =&gt; {
                 <span class="kw">if </span>!<span class="self">self</span>.engine.disabled_symbols.is_empty() &amp;&amp; <span class="self">self</span>.engine.disabled_symbols.contains(token.literal_syntax()) {
                     <span class="comment">// Disabled standard keyword/symbol
@@ -4766,7 +5038,7 @@
         input: <span class="kw">impl </span>IntoIterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>(<span class="kw">impl </span>AsRef&lt;str&gt; + <span class="lifetime">&#39;a</span>)&gt;,
         token_mapper: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>OnParseTokenCallback&gt;,
     ) -&gt; (TokenIterator&lt;<span class="lifetime">&#39;a</span>&gt;, TokenizerControl) {
-        <span class="kw">let </span>buffer: TokenizerControl = Cell::new(TokenizerControlBlock::new()).into();
+        <span class="kw">let </span>buffer: TokenizerControl = RefCell::new(TokenizerControlBlock::new()).into();
         <span class="kw">let </span>buffer2 = buffer.clone();
 
         (
@@ -4778,12 +5050,12 @@
                     <span class="attribute">#[cfg(feature = <span class="string">&quot;unchecked&quot;</span>)]
                     </span>max_string_size: <span class="prelude-val">None</span>,
                     next_token_cannot_be_unary: <span class="bool-val">false</span>,
+                    tokenizer_control: buffer,
                     comment_level: <span class="number">0</span>,
                     include_comments: <span class="bool-val">false</span>,
                     is_within_text_terminated_by: <span class="prelude-val">None</span>,
                 },
                 pos: Position::new(<span class="number">1</span>, <span class="number">0</span>),
-                tokenizer_control: buffer,
                 stream: MultiInputsStream {
                     buf: <span class="prelude-val">None</span>,
                     streams: input
@@ -4799,4 +5071,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

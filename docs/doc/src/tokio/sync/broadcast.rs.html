@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-1.19.2/src/sync/broadcast.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>broadcast.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../tokio/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-1.21.1/src/sync/broadcast.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>broadcast.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../tokio/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1158,24 +1158,6 @@
 <span id="1158">1158</span>
 <span id="1159">1159</span>
 <span id="1160">1160</span>
-<span id="1161">1161</span>
-<span id="1162">1162</span>
-<span id="1163">1163</span>
-<span id="1164">1164</span>
-<span id="1165">1165</span>
-<span id="1166">1166</span>
-<span id="1167">1167</span>
-<span id="1168">1168</span>
-<span id="1169">1169</span>
-<span id="1170">1170</span>
-<span id="1171">1171</span>
-<span id="1172">1172</span>
-<span id="1173">1173</span>
-<span id="1174">1174</span>
-<span id="1175">1175</span>
-<span id="1176">1176</span>
-<span id="1177">1177</span>
-<span id="1178">1178</span>
 </pre><pre class="rust"><code><span class="doccomment">//! A multi-producer, multi-consumer broadcast queue. Each sent value is seen by
 //! all consumers.
 //!
@@ -1514,9 +1496,6 @@
     <span class="doccomment">/// Uniquely identifies the `send` stored in the slot.
     </span>pos: u64,
 
-    <span class="doccomment">/// True signals the channel is closed.
-    </span>closed: bool,
-
     <span class="doccomment">/// The value being broadcast.
     ///
     /// The value is set by `send` when the write lock is held. When a reader
@@ -1537,6 +1516,14 @@
 
     <span class="doccomment">/// Should not be `Unpin`.
     </span>_p: PhantomPinned,
+}
+
+<span class="macro">generate_addr_of_methods! </span>{
+    <span class="kw">impl</span>&lt;&gt; Waiter {
+        <span class="kw">unsafe fn </span>addr_of_pointers(<span class="self">self</span>: NonNull&lt;<span class="self">Self</span>&gt;) -&gt; NonNull&lt;linked_list::Pointers&lt;Waiter&gt;&gt; {
+            <span class="kw-2">&amp;</span><span class="self">self</span>.pointers
+        }
+    }
 }
 
 <span class="kw">struct </span>RecvGuard&lt;<span class="lifetime">&#39;a</span>, T&gt; {
@@ -1608,6 +1595,7 @@
 ///
 /// This will panic if `capacity` is equal to `0` or larger
 /// than `usize::MAX / 2`.
+</span><span class="attribute">#[track_caller]
 </span><span class="kw">pub fn </span>channel&lt;T: Clone&gt;(<span class="kw-2">mut </span>capacity: usize) -&gt; (Sender&lt;T&gt;, Receiver&lt;T&gt;) {
     <span class="macro">assert!</span>(capacity &gt; <span class="number">0</span>, <span class="string">&quot;capacity is empty&quot;</span>);
     <span class="macro">assert!</span>(capacity &lt;= usize::MAX &gt;&gt; <span class="number">1</span>, <span class="string">&quot;requested capacity too large&quot;</span>);
@@ -1621,7 +1609,6 @@
         buffer.push(RwLock::new(Slot {
             rem: AtomicUsize::new(<span class="number">0</span>),
             pos: (i <span class="kw">as </span>u64).wrapping_sub(capacity <span class="kw">as </span>u64),
-            closed: <span class="bool-val">false</span>,
             val: UnsafeCell::new(<span class="prelude-val">None</span>),
         }));
     }
@@ -1706,8 +1693,43 @@
     /// }
     /// ```
     </span><span class="kw">pub fn </span>send(<span class="kw-2">&amp;</span><span class="self">self</span>, value: T) -&gt; <span class="prelude-ty">Result</span>&lt;usize, SendError&lt;T&gt;&gt; {
-        <span class="self">self</span>.send2(<span class="prelude-val">Some</span>(value))
-            .map_err(|SendError(maybe_v)| SendError(maybe_v.unwrap()))
+        <span class="kw">let </span><span class="kw-2">mut </span>tail = <span class="self">self</span>.shared.tail.lock();
+
+        <span class="kw">if </span>tail.rx_cnt == <span class="number">0 </span>{
+            <span class="kw">return </span><span class="prelude-val">Err</span>(SendError(value));
+        }
+
+        <span class="comment">// Position to write into
+        </span><span class="kw">let </span>pos = tail.pos;
+        <span class="kw">let </span>rem = tail.rx_cnt;
+        <span class="kw">let </span>idx = (pos &amp; <span class="self">self</span>.shared.mask <span class="kw">as </span>u64) <span class="kw">as </span>usize;
+
+        <span class="comment">// Update the tail position
+        </span>tail.pos = tail.pos.wrapping_add(<span class="number">1</span>);
+
+        <span class="comment">// Get the slot
+        </span><span class="kw">let </span><span class="kw-2">mut </span>slot = <span class="self">self</span>.shared.buffer[idx].write().unwrap();
+
+        <span class="comment">// Track the position
+        </span>slot.pos = pos;
+
+        <span class="comment">// Set remaining receivers
+        </span>slot.rem.with_mut(|v| <span class="kw-2">*</span>v = rem);
+
+        <span class="comment">// Write the value
+        </span>slot.val = UnsafeCell::new(<span class="prelude-val">Some</span>(value));
+
+        <span class="comment">// Release the slot lock before notifying the receivers.
+        </span>drop(slot);
+
+        tail.notify_rx();
+
+        <span class="comment">// Release the mutex. This must happen after the slot lock is released,
+        // otherwise the writer lock bit could be cleared while another thread
+        // is in the critical section.
+        </span>drop(tail);
+
+        <span class="prelude-val">Ok</span>(rem)
     }
 
     <span class="doccomment">/// Creates a new [`Receiver`] handle that will receive values sent **after**
@@ -1779,49 +1801,11 @@
         tail.rx_cnt
     }
 
-    <span class="kw">fn </span>send2(<span class="kw-2">&amp;</span><span class="self">self</span>, value: <span class="prelude-ty">Option</span>&lt;T&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;usize, SendError&lt;<span class="prelude-ty">Option</span>&lt;T&gt;&gt;&gt; {
+    <span class="kw">fn </span>close_channel(<span class="kw-2">&amp;</span><span class="self">self</span>) {
         <span class="kw">let </span><span class="kw-2">mut </span>tail = <span class="self">self</span>.shared.tail.lock();
-
-        <span class="kw">if </span>tail.rx_cnt == <span class="number">0 </span>{
-            <span class="kw">return </span><span class="prelude-val">Err</span>(SendError(value));
-        }
-
-        <span class="comment">// Position to write into
-        </span><span class="kw">let </span>pos = tail.pos;
-        <span class="kw">let </span>rem = tail.rx_cnt;
-        <span class="kw">let </span>idx = (pos &amp; <span class="self">self</span>.shared.mask <span class="kw">as </span>u64) <span class="kw">as </span>usize;
-
-        <span class="comment">// Update the tail position
-        </span>tail.pos = tail.pos.wrapping_add(<span class="number">1</span>);
-
-        <span class="comment">// Get the slot
-        </span><span class="kw">let </span><span class="kw-2">mut </span>slot = <span class="self">self</span>.shared.buffer[idx].write().unwrap();
-
-        <span class="comment">// Track the position
-        </span>slot.pos = pos;
-
-        <span class="comment">// Set remaining receivers
-        </span>slot.rem.with_mut(|v| <span class="kw-2">*</span>v = rem);
-
-        <span class="comment">// Set the closed bit if the value is `None`; otherwise write the value
-        </span><span class="kw">if </span>value.is_none() {
-            tail.closed = <span class="bool-val">true</span>;
-            slot.closed = <span class="bool-val">true</span>;
-        } <span class="kw">else </span>{
-            slot.val.with_mut(|ptr| <span class="kw">unsafe </span>{ <span class="kw-2">*</span>ptr = value });
-        }
-
-        <span class="comment">// Release the slot lock before notifying the receivers.
-        </span>drop(slot);
+        tail.closed = <span class="bool-val">true</span>;
 
         tail.notify_rx();
-
-        <span class="comment">// Release the mutex. This must happen after the slot lock is released,
-        // otherwise the writer lock bit could be cleared while another thread
-        // is in the critical section.
-        </span>drop(tail);
-
-        <span class="prelude-val">Ok</span>(rem)
     }
 }
 
@@ -1869,7 +1853,7 @@
 <span class="kw">impl</span>&lt;T&gt; Drop <span class="kw">for </span>Sender&lt;T&gt; {
     <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="kw">if </span><span class="number">1 </span>== <span class="self">self</span>.shared.num_tx.fetch_sub(<span class="number">1</span>, SeqCst) {
-            <span class="kw">let _ </span>= <span class="self">self</span>.send2(<span class="prelude-val">None</span>);
+            <span class="self">self</span>.close_channel();
         }
     }
 }
@@ -1953,14 +1937,6 @@
         </span><span class="kw">let </span><span class="kw-2">mut </span>slot = <span class="self">self</span>.shared.buffer[idx].read().unwrap();
 
         <span class="kw">if </span>slot.pos != <span class="self">self</span>.next {
-            <span class="kw">let </span>next_pos = slot.pos.wrapping_add(<span class="self">self</span>.shared.buffer.len() <span class="kw">as </span>u64);
-
-            <span class="comment">// The receiver has read all current values in the channel and there
-            // is no waiter to register
-            </span><span class="kw">if </span>waiter.is_none() &amp;&amp; next_pos == <span class="self">self</span>.next {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(TryRecvError::Empty);
-            }
-
             <span class="comment">// Release the `slot` lock before attempting to acquire the `tail`
             // lock. This is required because `send2` acquires the tail lock
             // first followed by the slot lock. Acquiring the locks in reverse
@@ -1982,6 +1958,13 @@
                 <span class="kw">let </span>next_pos = slot.pos.wrapping_add(<span class="self">self</span>.shared.buffer.len() <span class="kw">as </span>u64);
 
                 <span class="kw">if </span>next_pos == <span class="self">self</span>.next {
+                    <span class="comment">// At this point the channel is empty for *this* receiver. If
+                    // it&#39;s been closed, then that&#39;s what we return, otherwise we
+                    // set a waker and return empty.
+                    </span><span class="kw">if </span>tail.closed {
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(TryRecvError::Closed);
+                    }
+
                     <span class="comment">// Store the waker
                     </span><span class="kw">if let </span><span class="prelude-val">Some</span>((waiter, waker)) = waiter {
                         <span class="comment">// Safety: called while locked.
@@ -2015,22 +1998,7 @@
                 // catch up by skipping dropped messages and setting the
                 // internal cursor to the **oldest** message stored by the
                 // channel.
-                //
-                // However, finding the oldest position is a bit more
-                // complicated than `tail-position - buffer-size`. When
-                // the channel is closed, the tail position is incremented to
-                // signal a new `None` message, but `None` is not stored in the
-                // channel itself (see issue #2425 for why).
-                //
-                // To account for this, if the channel is closed, the tail
-                // position is decremented by `buffer-size + 1`.
-                </span><span class="kw">let </span><span class="kw-2">mut </span>adjust = <span class="number">0</span>;
-                <span class="kw">if </span>tail.closed {
-                    adjust = <span class="number">1
-                </span>}
-                <span class="kw">let </span>next = tail
-                    .pos
-                    .wrapping_sub(<span class="self">self</span>.shared.buffer.len() <span class="kw">as </span>u64 + adjust);
+                </span><span class="kw">let </span>next = tail.pos.wrapping_sub(<span class="self">self</span>.shared.buffer.len() <span class="kw">as </span>u64);
 
                 <span class="kw">let </span>missed = next.wrapping_sub(<span class="self">self</span>.next);
 
@@ -2050,10 +2018,6 @@
         }
 
         <span class="self">self</span>.next = <span class="self">self</span>.next.wrapping_add(<span class="number">1</span>);
-
-        <span class="kw">if </span>slot.closed {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(TryRecvError::Closed);
-        }
 
         <span class="prelude-val">Ok</span>(RecvGuard { slot })
     }
@@ -2317,8 +2281,8 @@
         ptr
     }
 
-    <span class="kw">unsafe fn </span>pointers(<span class="kw-2">mut </span>target: NonNull&lt;Waiter&gt;) -&gt; NonNull&lt;linked_list::Pointers&lt;Waiter&gt;&gt; {
-        NonNull::from(<span class="kw-2">&amp;mut </span>target.as_mut().pointers)
+    <span class="kw">unsafe fn </span>pointers(target: NonNull&lt;Waiter&gt;) -&gt; NonNull&lt;linked_list::Pointers&lt;Waiter&gt;&gt; {
+        Waiter::addr_of_pointers(target)
     }
 }
 
@@ -2355,4 +2319,4 @@
 
 <span class="kw">fn </span>is_unpin&lt;T: Unpin&gt;() {}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

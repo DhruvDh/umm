@@ -17,7 +17,7 @@
 <p><code>replace</code> allows consumption of a struct field by replacing it with another value.
 Without <code>replace</code> you can run into issues like these:</p>
 
-<div class='information'><div class='tooltip compile_fail'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered compile_fail"><code><span class="kw">struct </span>Buffer&lt;T&gt; { buf: Vec&lt;T&gt; }
+<div class="example-wrap compile_fail"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>Buffer&lt;T&gt; { buf: Vec&lt;T&gt; }
 
 <span class="kw">impl</span>&lt;T&gt; Buffer&lt;T&gt; {
     <span class="kw">fn </span>replace_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: usize, v: T) -&gt; T {
@@ -44,4 +44,4 @@ avoid the move. But <code>replace</code> can be used to disassociate the origina
 
 <span class="macro">assert_eq!</span>(buffer.replace_index(<span class="number">0</span>, <span class="number">2</span>), <span class="number">0</span>);
 <span class="macro">assert_eq!</span>(buffer.buf[<span class="number">0</span>], <span class="number">2</span>);</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

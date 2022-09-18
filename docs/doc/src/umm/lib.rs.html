@@ -132,6 +132,14 @@
 <span id="132">132</span>
 <span id="133">133</span>
 <span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # umm
 //!
 //! A scriptable build tool/grader/test runner for Java projects that don&#39;t use
@@ -154,16 +162,16 @@
 </span><span class="kw">pub mod </span>vscode;
 
 <span class="kw">use </span>anyhow::{
-    anyhow,
     Context,
     <span class="prelude-ty">Result</span>,
 };
 <span class="kw">use </span>constants::{
     BUILD_DIR,
     COURSE,
-    GRADING_SCRIPTS_URL,
     LIB_DIR,
+    POSTGREST_CLIENT,
     ROOT_DIR,
+    RUNTIME_HANDLE,
     TERM,
 };
 <span class="kw">use </span>grade::<span class="kw-2">*</span>;
@@ -177,13 +185,15 @@
     EvalAltResult,
 };
 <span class="kw">use </span>umm_derive::generate_rhai_variant;
-<span class="kw">use </span>util::download_to_string;
 
 <span class="doccomment">/// Defined for convenience
 </span><span class="kw">type </span>Dict = std::collections::HashMap&lt;String, String&gt;;
 
 <span class="doccomment">/// Prints the result of grading
 </span><span class="kw">pub fn </span>grade(assignment_name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>assignment_name = assignment_name.to_string();
+    <span class="kw">let </span>assignment_name = assignment_name.replace([<span class="string">&#39;\&quot;&#39;</span>, <span class="string">&#39;\\&#39;</span>], <span class="string">&quot;&quot;</span>);
+    <span class="macro">dbg!</span>(<span class="kw-2">&amp;</span>assignment_name);
     <span class="kw">let </span><span class="kw-2">mut </span>engine = Engine::new();
     engine
         .register_type::&lt;GradeResult&gt;()
@@ -191,45 +201,51 @@
         .register_type_with_name::&lt;File&gt;(<span class="string">&quot;JavaFile&quot;</span>)
         .register_type_with_name::&lt;Project&gt;(<span class="string">&quot;JavaProject&quot;</span>)
         .register_fn(<span class="string">&quot;show_results&quot;</span>, show_result)
-        .register_result_fn(<span class="string">&quot;clean&quot;</span>, clean_script)
-        .register_result_fn(<span class="string">&quot;new_project&quot;</span>, Project::new_script)
-        .register_result_fn(<span class="string">&quot;identify&quot;</span>, Project::identify_script)
-        .register_result_fn(<span class="string">&quot;check&quot;</span>, File::check_script)
-        .register_result_fn(<span class="string">&quot;run&quot;</span>, File::run_script)
-        .register_result_fn(<span class="string">&quot;test&quot;</span>, File::test_script)
-        .register_result_fn(<span class="string">&quot;grade_docs&quot;</span>, grade_docs_script)
-        .register_result_fn(<span class="string">&quot;grade_unit_tests&quot;</span>, grade_unit_tests_script)
-        .register_result_fn(<span class="string">&quot;grade_by_hidden_tests&quot;</span>, grade_by_hidden_tests_script)
-        .register_result_fn(<span class="string">&quot;grade_by_tests&quot;</span>, grade_by_tests_script);
+        .register_fn(<span class="string">&quot;clean&quot;</span>, clean_script)
+        .register_fn(<span class="string">&quot;new_project&quot;</span>, Project::new_script)
+        .register_fn(<span class="string">&quot;identify&quot;</span>, Project::identify_script)
+        .register_fn(<span class="string">&quot;check&quot;</span>, File::check_script)
+        .register_fn(<span class="string">&quot;run&quot;</span>, File::run_script)
+        .register_fn(<span class="string">&quot;test&quot;</span>, File::test_script)
+        .register_fn(<span class="string">&quot;grade_docs&quot;</span>, grade_docs_script)
+        .register_fn(<span class="string">&quot;grade_unit_tests&quot;</span>, grade_unit_tests_script)
+        .register_fn(<span class="string">&quot;grade_by_hidden_tests&quot;</span>, grade_by_hidden_tests_script)
+        .register_fn(<span class="string">&quot;grade_by_tests&quot;</span>, grade_by_tests_script);
 
     <span class="comment">// println!(&quot;{}&quot;, engine.gen_fn_signatures(false).join(&quot;\n&quot;));
+    </span><span class="kw">let </span>rt = RUNTIME_HANDLE.handle().clone();
 
-    </span><span class="kw">let </span>grading_scripts = download_to_string(GRADING_SCRIPTS_URL)<span class="question-mark">?</span>;
-    <span class="kw">let </span>grading_scripts: serde_json::Value = serde_json::from_str(<span class="kw-2">&amp;</span>grading_scripts)<span class="question-mark">?</span>;
-    <span class="kw">let </span>script_url = grading_scripts
-        .get(COURSE)
-        .ok_or_else(|| <span class="macro">anyhow!</span>(<span class="string">&quot;Could not find course: {}&quot;</span>, COURSE))<span class="question-mark">?
-        </span>.get(TERM)
-        .ok_or_else(|| <span class="macro">anyhow!</span>(<span class="string">&quot;Could not find term {} in {}&quot;</span>, TERM, COURSE))<span class="question-mark">?
-        </span>.get(assignment_name)
-        .ok_or_else(|| {
-            <span class="macro">anyhow!</span>(
-                <span class="string">&quot;No grading script found for {} in {}-{}&quot;</span>,
-                assignment_name,
-                COURSE,
-                TERM
-            )
-        })<span class="question-mark">?</span>;
-    <span class="kw">let </span>script_url = script_url.as_str().ok_or_else(|| {
-        <span class="macro">anyhow!</span>(
-            <span class="string">&quot;Script URL for {} in {}-{} is not a string&quot;</span>,
-            assignment_name,
-            COURSE,
-            TERM
-        )
-    })<span class="question-mark">?</span>;
+    <span class="kw">let </span>resp = rt.block_on(<span class="kw">async </span>{
+        POSTGREST_CLIENT
+            .from(<span class="string">&quot;grading_scripts&quot;</span>)
+            .eq(<span class="string">&quot;course&quot;</span>, COURSE)
+            .eq(<span class="string">&quot;term&quot;</span>, TERM)
+            .eq(<span class="string">&quot;assignment&quot;</span>, <span class="kw-2">&amp;</span>assignment_name)
+            .select(<span class="string">&quot;url&quot;</span>)
+            .single()
+            .execute()
+            .<span class="kw">await</span><span class="question-mark">?
+            </span>.text()
+            .<span class="kw">await
+            </span>.context(<span class="macro">format!</span>(
+                <span class="string">&quot;Could not get grading script for {assignment_name}&quot;
+            </span>))
+    });
+    <span class="kw">let </span>resp: serde_json::Value = serde_json::from_str(resp<span class="question-mark">?</span>.as_str())<span class="question-mark">?</span>;
+    <span class="kw">let </span>resp = resp.as_object().unwrap();
 
-    <span class="kw">let </span>script = download_to_string(script_url)<span class="question-mark">?</span>;
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(message) = resp.get(<span class="string">&quot;message&quot;</span>) {
+        <span class="macro">anyhow::bail!</span>(<span class="string">&quot;Error: {message}&quot;</span>);
+    }
+
+    <span class="kw">let </span>script_url = resp.get(<span class="string">&quot;url&quot;</span>).unwrap().as_str().unwrap();
+
+    <span class="kw">let </span>script = reqwest::blocking::get(script_url)
+        .context(<span class="macro">format!</span>(<span class="string">&quot;Cannot get url: {script_url}&quot;</span>))<span class="question-mark">?
+        </span>.text()
+        .context(<span class="macro">format!</span>(
+            <span class="string">&quot;Could not parse the response from {script_url} to text.&quot;
+        </span>))<span class="question-mark">?</span>;
     <span class="comment">// Run the script
     </span>engine.run(<span class="kw-2">&amp;</span>script)<span class="question-mark">?</span>;
 
@@ -267,4 +283,4 @@
 // TODO: make reedline shell optional behind a feature
 // TODO: Download jars only if required OR remove jar requirement altogether.
 </span></code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="umm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="umm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

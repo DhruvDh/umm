@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-util-0.3.21/src/lock/mutex.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mutex.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../futures_util/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../futures_util/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../futures_util/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-util-0.3.24/src/lock/mutex.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mutex.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../futures_util/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../futures_util/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../futures_util/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -404,16 +404,163 @@
 <span id="404">404</span>
 <span id="405">405</span>
 <span id="406">406</span>
-</pre><pre class="rust"><code><span class="kw">use </span>futures_core::future::{FusedFuture, Future};
-<span class="kw">use </span>futures_core::task::{Context, Poll, Waker};
-<span class="kw">use </span>slab::Slab;
-<span class="kw">use </span>std::cell::UnsafeCell;
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+</pre><pre class="rust"><code><span class="kw">use </span>std::cell::UnsafeCell;
 <span class="kw">use </span>std::marker::PhantomData;
 <span class="kw">use </span>std::ops::{Deref, DerefMut};
 <span class="kw">use </span>std::pin::Pin;
 <span class="kw">use </span>std::sync::atomic::{AtomicUsize, Ordering};
-<span class="kw">use </span>std::sync::Mutex <span class="kw">as </span>StdMutex;
+<span class="kw">use </span>std::sync::{Arc, Mutex <span class="kw">as </span>StdMutex};
 <span class="kw">use </span>std::{fmt, mem};
+
+<span class="kw">use </span>slab::Slab;
+
+<span class="kw">use </span>futures_core::future::{FusedFuture, Future};
+<span class="kw">use </span>futures_core::task::{Context, Poll, Waker};
 
 <span class="doccomment">/// A futures-aware mutex.
 ///
@@ -513,12 +660,32 @@
         </span>}
     }
 
+    <span class="doccomment">/// Attempt to acquire the lock immediately.
+    ///
+    /// If the lock is currently held, this will return `None`.
+    </span><span class="kw">pub fn </span>try_lock_owned(<span class="self">self</span>: <span class="kw-2">&amp;</span>Arc&lt;<span class="self">Self</span>&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;OwnedMutexGuard&lt;T&gt;&gt; {
+        <span class="kw">let </span>old_state = <span class="self">self</span>.state.fetch_or(IS_LOCKED, Ordering::Acquire);
+        <span class="kw">if </span>(old_state &amp; IS_LOCKED) == <span class="number">0 </span>{
+            <span class="prelude-val">Some</span>(OwnedMutexGuard { mutex: <span class="self">self</span>.clone() })
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
+    }
+
     <span class="doccomment">/// Acquire the lock asynchronously.
     ///
     /// This method returns a future that will resolve once the lock has been
     /// successfully acquired.
     </span><span class="kw">pub fn </span>lock(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; MutexLockFuture&lt;<span class="lifetime">&#39;_</span>, T&gt; {
         MutexLockFuture { mutex: <span class="prelude-val">Some</span>(<span class="self">self</span>), wait_key: WAIT_KEY_NONE }
+    }
+
+    <span class="doccomment">/// Acquire the lock asynchronously.
+    ///
+    /// This method returns a future that will resolve once the lock has been
+    /// successfully acquired.
+    </span><span class="kw">pub fn </span>lock_owned(<span class="self">self</span>: Arc&lt;<span class="self">Self</span>&gt;) -&gt; OwnedMutexLockFuture&lt;T&gt; {
+        OwnedMutexLockFuture { mutex: <span class="prelude-val">Some</span>(<span class="self">self</span>), wait_key: WAIT_KEY_NONE }
     }
 
     <span class="doccomment">/// Returns a mutable reference to the underlying data.
@@ -579,7 +746,118 @@
 }
 
 <span class="comment">// Sentinel for when no slot in the `Slab` has been dedicated to this object.
-</span><span class="kw">const </span>WAIT_KEY_NONE: usize = usize::max_value();
+</span><span class="kw">const </span>WAIT_KEY_NONE: usize = usize::MAX;
+
+<span class="doccomment">/// A future which resolves when the target mutex has been successfully acquired, owned version.
+</span><span class="kw">pub struct </span>OwnedMutexLockFuture&lt;T: <span class="question-mark">?</span>Sized&gt; {
+    <span class="comment">// `None` indicates that the mutex was successfully acquired.
+    </span>mutex: <span class="prelude-ty">Option</span>&lt;Arc&lt;Mutex&lt;T&gt;&gt;&gt;,
+    wait_key: usize,
+}
+
+<span class="kw">impl</span>&lt;T: <span class="question-mark">?</span>Sized&gt; fmt::Debug <span class="kw">for </span>OwnedMutexLockFuture&lt;T&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        f.debug_struct(<span class="string">&quot;OwnedMutexLockFuture&quot;</span>)
+            .field(<span class="string">&quot;was_acquired&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.mutex.is_none())
+            .field(<span class="string">&quot;mutex&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.mutex)
+            .field(
+                <span class="string">&quot;wait_key&quot;</span>,
+                <span class="kw-2">&amp;</span>(<span class="kw">if </span><span class="self">self</span>.wait_key == WAIT_KEY_NONE { <span class="prelude-val">None </span>} <span class="kw">else </span>{ <span class="prelude-val">Some</span>(<span class="self">self</span>.wait_key) }),
+            )
+            .finish()
+    }
+}
+
+<span class="kw">impl</span>&lt;T: <span class="question-mark">?</span>Sized&gt; FusedFuture <span class="kw">for </span>OwnedMutexLockFuture&lt;T&gt; {
+    <span class="kw">fn </span>is_terminated(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.mutex.is_none()
+    }
+}
+
+<span class="kw">impl</span>&lt;T: <span class="question-mark">?</span>Sized&gt; Future <span class="kw">for </span>OwnedMutexLockFuture&lt;T&gt; {
+    <span class="kw">type </span>Output = OwnedMutexGuard&lt;T&gt;;
+
+    <span class="kw">fn </span>poll(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="self">Self</span>::Output&gt; {
+        <span class="kw">let </span>this = <span class="self">self</span>.get_mut();
+
+        <span class="kw">let </span>mutex = this.mutex.as_ref().expect(<span class="string">&quot;polled OwnedMutexLockFuture after completion&quot;</span>);
+
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(lock) = mutex.try_lock_owned() {
+            mutex.remove_waker(this.wait_key, <span class="bool-val">false</span>);
+            this.mutex = <span class="prelude-val">None</span>;
+            <span class="kw">return </span>Poll::Ready(lock);
+        }
+
+        {
+            <span class="kw">let </span><span class="kw-2">mut </span>waiters = mutex.waiters.lock().unwrap();
+            <span class="kw">if </span>this.wait_key == WAIT_KEY_NONE {
+                this.wait_key = waiters.insert(Waiter::Waiting(cx.waker().clone()));
+                <span class="kw">if </span>waiters.len() == <span class="number">1 </span>{
+                    mutex.state.fetch_or(HAS_WAITERS, Ordering::Relaxed); <span class="comment">// released by mutex unlock
+                </span>}
+            } <span class="kw">else </span>{
+                waiters[this.wait_key].register(cx.waker());
+            }
+        }
+
+        <span class="comment">// Ensure that we haven&#39;t raced `MutexGuard::drop`&#39;s unlock path by
+        // attempting to acquire the lock again.
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(lock) = mutex.try_lock_owned() {
+            mutex.remove_waker(this.wait_key, <span class="bool-val">false</span>);
+            this.mutex = <span class="prelude-val">None</span>;
+            <span class="kw">return </span>Poll::Ready(lock);
+        }
+
+        Poll::Pending
+    }
+}
+
+<span class="kw">impl</span>&lt;T: <span class="question-mark">?</span>Sized&gt; Drop <span class="kw">for </span>OwnedMutexLockFuture&lt;T&gt; {
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(mutex) = <span class="self">self</span>.mutex.as_ref() {
+            <span class="comment">// This future was dropped before it acquired the mutex.
+            //
+            // Remove ourselves from the map, waking up another waiter if we
+            // had been awoken to acquire the lock.
+            </span>mutex.remove_waker(<span class="self">self</span>.wait_key, <span class="bool-val">true</span>);
+        }
+    }
+}
+
+<span class="doccomment">/// An RAII guard returned by the `lock_owned` and `try_lock_owned` methods.
+/// When this structure is dropped (falls out of scope), the lock will be
+/// unlocked.
+</span><span class="kw">pub struct </span>OwnedMutexGuard&lt;T: <span class="question-mark">?</span>Sized&gt; {
+    mutex: Arc&lt;Mutex&lt;T&gt;&gt;,
+}
+
+<span class="kw">impl</span>&lt;T: <span class="question-mark">?</span>Sized + fmt::Debug&gt; fmt::Debug <span class="kw">for </span>OwnedMutexGuard&lt;T&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        f.debug_struct(<span class="string">&quot;OwnedMutexGuard&quot;</span>)
+            .field(<span class="string">&quot;value&quot;</span>, &amp;&amp;<span class="kw-2">**</span><span class="self">self</span>)
+            .field(<span class="string">&quot;mutex&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.mutex)
+            .finish()
+    }
+}
+
+<span class="kw">impl</span>&lt;T: <span class="question-mark">?</span>Sized&gt; Drop <span class="kw">for </span>OwnedMutexGuard&lt;T&gt; {
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="self">self</span>.mutex.unlock()
+    }
+}
+
+<span class="kw">impl</span>&lt;T: <span class="question-mark">?</span>Sized&gt; Deref <span class="kw">for </span>OwnedMutexGuard&lt;T&gt; {
+    <span class="kw">type </span>Target = T;
+    <span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>T {
+        <span class="kw">unsafe </span>{ <span class="kw-2">&amp;*</span><span class="self">self</span>.mutex.value.get() }
+    }
+}
+
+<span class="kw">impl</span>&lt;T: <span class="question-mark">?</span>Sized&gt; DerefMut <span class="kw">for </span>OwnedMutexGuard&lt;T&gt; {
+    <span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>T {
+        <span class="kw">unsafe </span>{ <span class="kw-2">&amp;mut *</span><span class="self">self</span>.mutex.value.get() }
+    }
+}
 
 <span class="doccomment">/// A future which resolves when the target mutex has been successfully acquired.
 </span><span class="kw">pub struct </span>MutexLockFuture&lt;<span class="lifetime">&#39;a</span>, T: <span class="question-mark">?</span>Sized&gt; {
@@ -792,13 +1070,25 @@
 <span class="comment">// It&#39;s safe to switch which thread the acquire is being attempted on so long as
 // `T` can be accessed on that thread.
 </span><span class="kw">unsafe impl</span>&lt;T: <span class="question-mark">?</span>Sized + Send&gt; Send <span class="kw">for </span>MutexLockFuture&lt;<span class="lifetime">&#39;_</span>, T&gt; {}
+
 <span class="comment">// doesn&#39;t have any interesting `&amp;self` methods (only Debug)
 </span><span class="kw">unsafe impl</span>&lt;T: <span class="question-mark">?</span>Sized&gt; Sync <span class="kw">for </span>MutexLockFuture&lt;<span class="lifetime">&#39;_</span>, T&gt; {}
+
+<span class="comment">// It&#39;s safe to switch which thread the acquire is being attempted on so long as
+// `T` can be accessed on that thread.
+</span><span class="kw">unsafe impl</span>&lt;T: <span class="question-mark">?</span>Sized + Send&gt; Send <span class="kw">for </span>OwnedMutexLockFuture&lt;T&gt; {}
+
+<span class="comment">// doesn&#39;t have any interesting `&amp;self` methods (only Debug)
+</span><span class="kw">unsafe impl</span>&lt;T: <span class="question-mark">?</span>Sized&gt; Sync <span class="kw">for </span>OwnedMutexLockFuture&lt;T&gt; {}
 
 <span class="comment">// Safe to send since we don&#39;t track any thread-specific details-- the inner
 // lock is essentially spinlock-equivalent (attempt to flip an atomic bool)
 </span><span class="kw">unsafe impl</span>&lt;T: <span class="question-mark">?</span>Sized + Send&gt; Send <span class="kw">for </span>MutexGuard&lt;<span class="lifetime">&#39;_</span>, T&gt; {}
 <span class="kw">unsafe impl</span>&lt;T: <span class="question-mark">?</span>Sized + Sync&gt; Sync <span class="kw">for </span>MutexGuard&lt;<span class="lifetime">&#39;_</span>, T&gt; {}
+
+<span class="kw">unsafe impl</span>&lt;T: <span class="question-mark">?</span>Sized + Send&gt; Send <span class="kw">for </span>OwnedMutexGuard&lt;T&gt; {}
+<span class="kw">unsafe impl</span>&lt;T: <span class="question-mark">?</span>Sized + Sync&gt; Sync <span class="kw">for </span>OwnedMutexGuard&lt;T&gt; {}
+
 <span class="kw">unsafe impl</span>&lt;T: <span class="question-mark">?</span>Sized + Send, U: <span class="question-mark">?</span>Sized + Send&gt; Send <span class="kw">for </span>MappedMutexGuard&lt;<span class="lifetime">&#39;_</span>, T, U&gt; {}
 <span class="kw">unsafe impl</span>&lt;T: <span class="question-mark">?</span>Sized + Sync, U: <span class="question-mark">?</span>Sized + Sync&gt; Sync <span class="kw">for </span>MappedMutexGuard&lt;<span class="lifetime">&#39;_</span>, T, U&gt; {}
 
@@ -811,4 +1101,4 @@
     <span class="kw">let _ </span>= <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, guard);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="futures_util" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="futures_util" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/indexmap-1.8.2/src/map/core.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../indexmap/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../indexmap/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../indexmap/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/indexmap-1.9.1/src/map/core.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>core.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../indexmap/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../indexmap/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../indexmap/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -659,6 +659,45 @@
 <span id="659">659</span>
 <span id="660">660</span>
 <span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
+<span id="696">696</span>
+<span id="697">697</span>
+<span id="698">698</span>
+<span id="699">699</span>
+<span id="700">700</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This is the core implementation that doesn&#39;t depend on the hasher at all.
 //!
 //! The methods of `IndexMapCore` don&#39;t use any Hash properties of K.
@@ -679,7 +718,7 @@
 <span class="kw">use </span>core::ops::RangeBounds;
 
 <span class="kw">use </span><span class="kw">crate</span>::equivalent::Equivalent;
-<span class="kw">use </span><span class="kw">crate</span>::util::{enumerate, simplify_range};
+<span class="kw">use </span><span class="kw">crate</span>::util::simplify_range;
 <span class="kw">use crate</span>::{Bucket, Entries, HashValue};
 
 <span class="doccomment">/// Core of the map that does not depend on S
@@ -705,7 +744,8 @@
 
 <span class="attribute">#[inline]
 </span><span class="kw">fn </span>erase_index(table: <span class="kw-2">&amp;mut </span>RawTable&lt;usize&gt;, hash: HashValue, index: usize) {
-    table.erase_entry(hash.get(), <span class="kw">move </span>|<span class="kw-2">&amp;</span>i| i == index);
+    <span class="kw">let </span>erased = table.erase_entry(hash.get(), <span class="kw">move </span>|<span class="kw-2">&amp;</span>i| i == index);
+    <span class="macro">debug_assert!</span>(erased);
 }
 
 <span class="attribute">#[inline]
@@ -846,9 +886,7 @@
         <span class="kw">let </span>entries = <span class="self">self</span>.entries.split_off(at);
 
         <span class="kw">let </span><span class="kw-2">mut </span>indices = RawTable::with_capacity(entries.len());
-        <span class="kw">for </span>(i, entry) <span class="kw">in </span>enumerate(<span class="kw-2">&amp;</span>entries) {
-            indices.insert_no_grow(entry.hash.get(), i);
-        }
+        raw::insert_bulk_no_grow(<span class="kw-2">&amp;mut </span>indices, <span class="kw-2">&amp;</span>entries);
         <span class="self">Self </span>{ indices, entries }
     }
 
@@ -864,10 +902,11 @@
         <span class="self">self</span>.entries.reserve_exact(additional);
     }
 
-    <span class="doccomment">/// Shrink the capacity of the map as much as possible.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>shrink_to_fit(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="self">self</span>.indices.shrink_to(<span class="number">0</span>, get_hash(<span class="kw-2">&amp;</span><span class="self">self</span>.entries));
-        <span class="self">self</span>.entries.shrink_to_fit();
+    <span class="doccomment">/// Shrink the capacity of the map with a lower bound
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>shrink_to(<span class="kw-2">&amp;mut </span><span class="self">self</span>, min_capacity: usize) {
+        <span class="self">self</span>.indices
+            .shrink_to(min_capacity, get_hash(<span class="kw-2">&amp;</span><span class="self">self</span>.entries));
+        <span class="self">self</span>.entries.shrink_to(min_capacity);
     }
 
     <span class="doccomment">/// Remove the last key-value pair
@@ -944,29 +983,77 @@
     ///
     /// The index should already be removed from `self.indices`.
     </span><span class="kw">fn </span>shift_remove_finish(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize) -&gt; (K, V) {
-        <span class="comment">// use Vec::remove, but then we need to update the indices that point
-        // to all of the other entries that have to move
-        </span><span class="kw">let </span>entry = <span class="self">self</span>.entries.remove(index);
+        <span class="comment">// Correct indices that point to the entries that followed the removed entry.
+        </span><span class="self">self</span>.decrement_indices(index + <span class="number">1</span>, <span class="self">self</span>.entries.len());
 
-        <span class="comment">// correct indices that point to the entries that followed the removed entry.
-        // use a heuristic between a full sweep vs. a `find()` for every shifted item.
-        </span><span class="kw">let </span>raw_capacity = <span class="self">self</span>.indices.buckets();
-        <span class="kw">let </span>shifted_entries = <span class="kw-2">&amp;</span><span class="self">self</span>.entries[index..];
-        <span class="kw">if </span>shifted_entries.len() &gt; raw_capacity / <span class="number">2 </span>{
-            <span class="comment">// shift all indices greater than `index`
+        <span class="comment">// Use Vec::remove to actually remove the entry.
+        </span><span class="kw">let </span>entry = <span class="self">self</span>.entries.remove(index);
+        (entry.key, entry.value)
+    }
+
+    <span class="doccomment">/// Decrement all indices in the range `start..end`.
+    ///
+    /// The index `start - 1` should not exist in `self.indices`.
+    /// All entries should still be in their original positions.
+    </span><span class="kw">fn </span>decrement_indices(<span class="kw-2">&amp;mut </span><span class="self">self</span>, start: usize, end: usize) {
+        <span class="comment">// Use a heuristic between a full sweep vs. a `find()` for every shifted item.
+        </span><span class="kw">let </span>shifted_entries = <span class="kw-2">&amp;</span><span class="self">self</span>.entries[start..end];
+        <span class="kw">if </span>shifted_entries.len() &gt; <span class="self">self</span>.indices.buckets() / <span class="number">2 </span>{
+            <span class="comment">// Shift all indices in range.
             </span><span class="kw">for </span>i <span class="kw">in </span><span class="self">self</span>.indices_mut() {
-                <span class="kw">if </span><span class="kw-2">*</span>i &gt; index {
+                <span class="kw">if </span>start &lt;= <span class="kw-2">*</span>i &amp;&amp; <span class="kw-2">*</span>i &lt; end {
                     <span class="kw-2">*</span>i -= <span class="number">1</span>;
                 }
             }
         } <span class="kw">else </span>{
-            <span class="comment">// find each following entry to shift its index
-            </span><span class="kw">for </span>(i, entry) <span class="kw">in </span>(index + <span class="number">1</span>..).zip(shifted_entries) {
+            <span class="comment">// Find each entry in range to shift its index.
+            </span><span class="kw">for </span>(i, entry) <span class="kw">in </span>(start..end).zip(shifted_entries) {
                 update_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>.indices, entry.hash, i, i - <span class="number">1</span>);
             }
         }
+    }
 
-        (entry.key, entry.value)
+    <span class="doccomment">/// Increment all indices in the range `start..end`.
+    ///
+    /// The index `end` should not exist in `self.indices`.
+    /// All entries should still be in their original positions.
+    </span><span class="kw">fn </span>increment_indices(<span class="kw-2">&amp;mut </span><span class="self">self</span>, start: usize, end: usize) {
+        <span class="comment">// Use a heuristic between a full sweep vs. a `find()` for every shifted item.
+        </span><span class="kw">let </span>shifted_entries = <span class="kw-2">&amp;</span><span class="self">self</span>.entries[start..end];
+        <span class="kw">if </span>shifted_entries.len() &gt; <span class="self">self</span>.indices.buckets() / <span class="number">2 </span>{
+            <span class="comment">// Shift all indices in range.
+            </span><span class="kw">for </span>i <span class="kw">in </span><span class="self">self</span>.indices_mut() {
+                <span class="kw">if </span>start &lt;= <span class="kw-2">*</span>i &amp;&amp; <span class="kw-2">*</span>i &lt; end {
+                    <span class="kw-2">*</span>i += <span class="number">1</span>;
+                }
+            }
+        } <span class="kw">else </span>{
+            <span class="comment">// Find each entry in range to shift its index, updated in reverse so
+            // we never have duplicated indices that might have a hash collision.
+            </span><span class="kw">for </span>(i, entry) <span class="kw">in </span>(start..end).zip(shifted_entries).rev() {
+                update_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>.indices, entry.hash, i, i + <span class="number">1</span>);
+            }
+        }
+    }
+
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>move_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>, from: usize, to: usize) {
+        <span class="kw">let </span>from_hash = <span class="self">self</span>.entries[from].hash;
+        <span class="kw">if </span>from != to {
+            <span class="comment">// Use a sentinal index so other indices don&#39;t collide.
+            </span>update_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>.indices, from_hash, from, usize::MAX);
+
+            <span class="comment">// Update all other indices and rotate the entry positions.
+            </span><span class="kw">if </span>from &lt; to {
+                <span class="self">self</span>.decrement_indices(from + <span class="number">1</span>, to + <span class="number">1</span>);
+                <span class="self">self</span>.entries[from..=to].rotate_left(<span class="number">1</span>);
+            } <span class="kw">else if </span>to &lt; from {
+                <span class="self">self</span>.increment_indices(to, from);
+                <span class="self">self</span>.entries[to..=from].rotate_right(<span class="number">1</span>);
+            }
+
+            <span class="comment">// Change the sentinal index to its final position.
+            </span>update_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>.indices, from_hash, usize::MAX, to);
+        }
     }
 
     <span class="doccomment">/// Remove an entry by swapping it with the last
@@ -1033,15 +1120,9 @@
             <span class="comment">// Reinsert everything, as there are few kept indices
             </span><span class="self">self</span>.indices.clear();
 
-            <span class="comment">// Reinsert stable indices
-            </span><span class="kw">for </span>(i, entry) <span class="kw">in </span>enumerate(start_entries) {
-                <span class="self">self</span>.indices.insert_no_grow(entry.hash.get(), i);
-            }
-
-            <span class="comment">// Reinsert shifted indices
-            </span><span class="kw">for </span>(i, entry) <span class="kw">in </span>(start..).zip(shifted_entries) {
-                <span class="self">self</span>.indices.insert_no_grow(entry.hash.get(), i);
-            }
+            <span class="comment">// Reinsert stable indices, then shifted indices
+            </span>raw::insert_bulk_no_grow(<span class="kw-2">&amp;mut </span><span class="self">self</span>.indices, start_entries);
+            raw::insert_bulk_no_grow(<span class="kw-2">&amp;mut </span><span class="self">self</span>.indices, shifted_entries);
         } <span class="kw">else if </span>erased + shifted &lt; half_capacity {
             <span class="comment">// Find each affected index, as there are few to adjust
 
@@ -1066,7 +1147,8 @@
     <span class="kw">where
         </span>F: FnMut(<span class="kw-2">&amp;mut </span>K, <span class="kw-2">&amp;mut </span>V) -&gt; bool,
     {
-        <span class="comment">// Like Vec::retain in self.entries, but with mutable K and V.
+        <span class="comment">// FIXME: This could use Vec::retain_mut with MSRV 1.61.
+        // Like Vec::retain in self.entries, but with mutable K and V.
         // We swap-shift all the items we want to keep, truncate the rest,
         // then rebuild the raw hash table with the new indexes.
         </span><span class="kw">let </span>len = <span class="self">self</span>.entries.len();
@@ -1090,11 +1172,7 @@
 
     <span class="kw">fn </span>rebuild_hash_table(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="self">self</span>.indices.clear();
-        <span class="macro">debug_assert!</span>(<span class="self">self</span>.indices.capacity() &gt;= <span class="self">self</span>.entries.len());
-        <span class="kw">for </span>(i, entry) <span class="kw">in </span>enumerate(<span class="kw-2">&amp;</span><span class="self">self</span>.entries) {
-            <span class="comment">// We should never have to reallocate, so there&#39;s no need for a real hasher.
-            </span><span class="self">self</span>.indices.insert_no_grow(entry.hash.get(), i);
-        }
+        raw::insert_bulk_no_grow(<span class="kw-2">&amp;mut </span><span class="self">self</span>.indices, <span class="kw-2">&amp;</span><span class="self">self</span>.entries);
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>reverse(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
@@ -1321,4 +1399,4 @@
     assert_send_sync::&lt;Entry&lt;<span class="lifetime">&#39;_</span>, i32, i32&gt;&gt;();
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="indexmap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="indexmap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

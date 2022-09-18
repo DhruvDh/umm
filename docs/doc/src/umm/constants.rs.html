@@ -123,15 +123,23 @@
 <span id="123">123</span>
 <span id="124">124</span>
 <span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
 </pre><pre class="rust"><code><span class="attribute">#![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
 </span><span class="kw">use </span>std::path::PathBuf;
 
 <span class="kw">use </span>lazy_static::lazy_static;
+<span class="kw">use </span>postgrest::Postgrest;
 <span class="kw">use </span>tree_sitter;
 
-<span class="macro">lazy_static! </span>{
+<span class="comment">// TODO: replace with https://lib.rs/crates/state
+</span><span class="macro">lazy_static! </span>{
     <span class="doccomment">/// Path to project root
     </span><span class="kw">pub static </span><span class="kw-2">ref </span>ROOT_DIR: PathBuf = PathBuf::from(<span class="string">&quot;.&quot;</span>);
     <span class="doccomment">/// Directory for source files
@@ -148,17 +156,21 @@
     </span><span class="kw">pub static </span><span class="kw-2">ref </span>SEPARATOR: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="kw">if </span><span class="macro">cfg!</span>(windows) { <span class="string">&quot;;&quot; </span>} <span class="kw">else </span>{ <span class="string">&quot;:&quot; </span>};
     <span class="doccomment">/// Reference to treesitter language struct
     </span><span class="kw">pub static </span><span class="kw-2">ref </span>JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
+    <span class="doccomment">/// Supabase public api key
+    </span><span class="kw">pub static </span><span class="kw-2">ref </span>SUPABASE_KEY: String = <span class="string">&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5YW5jenRtempsZWtvamVwcm9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjA4NDA1NzgsImV4cCI6MTk3NjQxNjU3OH0.yMvOYM0AM61v6MRsHUSgO0BPrQHTde2AiKzE0b4H4lo&quot;</span>.to_string();
+    <span class="doccomment">/// PostGrest client
+    </span><span class="kw">pub static </span><span class="kw-2">ref </span>POSTGREST_CLIENT: Postgrest = Postgrest::new(<span class="string">&quot;https://uyancztmzjlekojeproj.supabase.co/rest/v1&quot;</span>)
+            .insert_header(<span class="string">&quot;apiKey&quot;</span>, SUPABASE_KEY.clone());
+    <span class="doccomment">/// Runtime
+    </span><span class="kw">pub static </span><span class="kw-2">ref </span>RUNTIME_HANDLE: tokio::runtime::Runtime = tokio::runtime::Runtime::new().unwrap();
+
 }
 
-<span class="doccomment">/// URL to download grading_scripts.json
-</span><span class="kw">pub const </span>GRADING_SCRIPTS_URL: <span class="kw-2">&amp;</span>str =
-    <span class="string">&quot;https://www.dropbox.com/s/g3nocl0nnpjmk28/grading_scripts.json?raw=1&quot;</span>;
-
 <span class="doccomment">/// Current term. TODO: Move this to init script
-</span><span class="kw">pub const </span>TERM: <span class="kw-2">&amp;</span>str = <span class="string">&quot;summer_22&quot;</span>;
+</span><span class="kw">pub const </span>TERM: <span class="kw-2">&amp;</span>str = <span class="string">&quot;Fall 2022&quot;</span>;
 
 <span class="doccomment">/// Current course. TODO: Move this to init script
-</span><span class="kw">pub const </span>COURSE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;itsc_2214&quot;</span>;
+</span><span class="kw">pub const </span>COURSE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;ITSC 2214&quot;</span>;
 
 <span class="doccomment">/// file name for JUnit platform console standard jar
 </span><span class="kw">pub const </span>JUNIT_PLATFORM: <span class="kw-2">&amp;</span>str = <span class="string">&quot;junit-platform-console-standalone-1.9.0-RC1.jar&quot;</span>;
@@ -249,4 +261,4 @@
 )
 &quot;#</span>;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="umm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="umm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

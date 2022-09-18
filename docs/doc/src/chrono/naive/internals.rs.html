@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/chrono-0.4.19/src/naive/internals.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>internals.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../chrono/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../chrono/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../chrono/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/chrono-0.4.22/src/naive/internals.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>internals.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../chrono/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../chrono/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../chrono/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -802,17 +802,6 @@
 <span id="802">802</span>
 <span id="803">803</span>
 <span id="804">804</span>
-<span id="805">805</span>
-<span id="806">806</span>
-<span id="807">807</span>
-<span id="808">808</span>
-<span id="809">809</span>
-<span id="810">810</span>
-<span id="811">811</span>
-<span id="812">812</span>
-<span id="813">813</span>
-<span id="814">814</span>
-<span id="815">815</span>
 </pre><pre class="rust"><code><span class="comment">// This is a part of Chrono.
 // See README.md and LICENSE.txt for details.
 
@@ -828,19 +817,18 @@
 //! but the conversion keeps the valid value valid and the invalid value invalid
 //! so that the user-facing `NaiveDate` can validate the input as late as possible.
 
-</span><span class="attribute">#![allow(dead_code)] </span><span class="comment">// some internal methods have been left for consistency
 </span><span class="attribute">#![cfg_attr(feature = <span class="string">&quot;__internal_bench&quot;</span>, allow(missing_docs))]
 
-</span><span class="kw">use </span>core::{fmt, i32};
-<span class="kw">use </span>div::{div_rem, mod_floor};
+</span><span class="kw">use </span><span class="kw">crate</span>::Weekday;
+<span class="kw">use </span>core::{fmt, i32};
+<span class="kw">use </span>num_integer::{div_rem, mod_floor};
 <span class="kw">use </span>num_traits::FromPrimitive;
-<span class="kw">use </span>Weekday;
 
 <span class="doccomment">/// The internal date representation. This also includes the packed `Mdf` value.
-</span><span class="kw">pub type </span>DateImpl = i32;
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">type </span>DateImpl = i32;
 
-<span class="kw">pub const </span>MAX_YEAR: DateImpl = i32::MAX &gt;&gt; <span class="number">13</span>;
-<span class="kw">pub const </span>MIN_YEAR: DateImpl = i32::MIN &gt;&gt; <span class="number">13</span>;
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>MAX_YEAR: DateImpl = i32::MAX &gt;&gt; <span class="number">13</span>;
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>MIN_YEAR: DateImpl = i32::MIN &gt;&gt; <span class="number">13</span>;
 
 <span class="doccomment">/// The year flags (aka the dominical letter).
 ///
@@ -850,23 +838,24 @@
 /// where `a` is `1` for the common year (simplifies the `Of` validation)
 /// and `bbb` is a non-zero `Weekday` (mapping `Mon` to 7) of the last day in the past year
 /// (simplifies the day of week calculation from the 1-based ordinal).
+</span><span class="attribute">#[allow(unreachable_pub)] </span><span class="comment">// public as an alias for benchmarks only
 </span><span class="attribute">#[derive(PartialEq, Eq, Copy, Clone)]
-</span><span class="kw">pub struct </span>YearFlags(<span class="kw">pub </span>u8);
+</span><span class="kw">pub struct </span>YearFlags(<span class="kw">pub</span>(<span class="kw">super</span>) u8);
 
-<span class="kw">pub const </span>A: YearFlags = YearFlags(<span class="number">0o15</span>);
-<span class="kw">pub const </span>AG: YearFlags = YearFlags(<span class="number">0o05</span>);
-<span class="kw">pub const </span>B: YearFlags = YearFlags(<span class="number">0o14</span>);
-<span class="kw">pub const </span>BA: YearFlags = YearFlags(<span class="number">0o04</span>);
-<span class="kw">pub const </span>C: YearFlags = YearFlags(<span class="number">0o13</span>);
-<span class="kw">pub const </span>CB: YearFlags = YearFlags(<span class="number">0o03</span>);
-<span class="kw">pub const </span>D: YearFlags = YearFlags(<span class="number">0o12</span>);
-<span class="kw">pub const </span>DC: YearFlags = YearFlags(<span class="number">0o02</span>);
-<span class="kw">pub const </span>E: YearFlags = YearFlags(<span class="number">0o11</span>);
-<span class="kw">pub const </span>ED: YearFlags = YearFlags(<span class="number">0o01</span>);
-<span class="kw">pub const </span>F: YearFlags = YearFlags(<span class="number">0o17</span>);
-<span class="kw">pub const </span>FE: YearFlags = YearFlags(<span class="number">0o07</span>);
-<span class="kw">pub const </span>G: YearFlags = YearFlags(<span class="number">0o16</span>);
-<span class="kw">pub const </span>GF: YearFlags = YearFlags(<span class="number">0o06</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>A: YearFlags = YearFlags(<span class="number">0o15</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>AG: YearFlags = YearFlags(<span class="number">0o05</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>B: YearFlags = YearFlags(<span class="number">0o14</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>BA: YearFlags = YearFlags(<span class="number">0o04</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>C: YearFlags = YearFlags(<span class="number">0o13</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>CB: YearFlags = YearFlags(<span class="number">0o03</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>D: YearFlags = YearFlags(<span class="number">0o12</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>DC: YearFlags = YearFlags(<span class="number">0o02</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>E: YearFlags = YearFlags(<span class="number">0o11</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>ED: YearFlags = YearFlags(<span class="number">0o01</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>F: YearFlags = YearFlags(<span class="number">0o17</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>FE: YearFlags = YearFlags(<span class="number">0o07</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>G: YearFlags = YearFlags(<span class="number">0o16</span>);
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>GF: YearFlags = YearFlags(<span class="number">0o06</span>);
 
 <span class="kw">static </span>YEAR_TO_FLAGS: [YearFlags; <span class="number">400</span>] = [
     BA, G, F, E, DC, B, A, G, FE, D, C, B, AG, F, E, D, CB, A, G, F, ED, C, B, A, GF, E, D, C, BA,
@@ -909,7 +898,7 @@
     <span class="number">96</span>, <span class="number">97</span>, <span class="number">97</span>, <span class="number">97</span>, <span class="number">97</span>, <span class="comment">// 400+1
 </span>];
 
-<span class="kw">pub fn </span>cycle_to_yo(cycle: u32) -&gt; (u32, u32) {
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>cycle_to_yo(cycle: u32) -&gt; (u32, u32) {
     <span class="kw">let </span>(<span class="kw-2">mut </span>year_mod_400, <span class="kw-2">mut </span>ordinal0) = div_rem(cycle, <span class="number">365</span>);
     <span class="kw">let </span>delta = u32::from(YEAR_DELTAS[year_mod_400 <span class="kw">as </span>usize]);
     <span class="kw">if </span>ordinal0 &lt; delta {
@@ -921,30 +910,32 @@
     (year_mod_400, ordinal0 + <span class="number">1</span>)
 }
 
-<span class="kw">pub fn </span>yo_to_cycle(year_mod_400: u32, ordinal: u32) -&gt; u32 {
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>yo_to_cycle(year_mod_400: u32, ordinal: u32) -&gt; u32 {
     year_mod_400 * <span class="number">365 </span>+ u32::from(YEAR_DELTAS[year_mod_400 <span class="kw">as </span>usize]) + ordinal - <span class="number">1
 </span>}
 
 <span class="kw">impl </span>YearFlags {
-    <span class="attribute">#[inline]
+    <span class="attribute">#[allow(unreachable_pub)] </span><span class="comment">// public as an alias for benchmarks only
+    </span><span class="attribute">#[doc(hidden)] </span><span class="comment">// for benchmarks only
+    </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>from_year(year: i32) -&gt; YearFlags {
         <span class="kw">let </span>year = mod_floor(year, <span class="number">400</span>);
         YearFlags::from_year_mod_400(year)
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>from_year_mod_400(year: i32) -&gt; YearFlags {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>from_year_mod_400(year: i32) -&gt; YearFlags {
         YEAR_TO_FLAGS[year <span class="kw">as </span>usize]
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>ndays(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>ndays(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
         <span class="kw">let </span>YearFlags(flags) = <span class="kw-2">*</span><span class="self">self</span>;
         <span class="number">366 </span>- u32::from(flags &gt;&gt; <span class="number">3</span>)
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>isoweek_delta(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>isoweek_delta(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
         <span class="kw">let </span>YearFlags(flags) = <span class="kw-2">*</span><span class="self">self</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>delta = u32::from(flags) &amp; <span class="number">0b0111</span>;
         <span class="kw">if </span>delta &lt; <span class="number">3 </span>{
@@ -954,7 +945,7 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>nisoweeks(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>nisoweeks(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
         <span class="kw">let </span>YearFlags(flags) = <span class="kw-2">*</span><span class="self">self</span>;
         <span class="number">52 </span>+ ((<span class="number">0b0000_0100_0000_0110 </span>&gt;&gt; flags <span class="kw">as </span>usize) &amp; <span class="number">1</span>)
     }
@@ -985,10 +976,9 @@
     }
 }
 
-<span class="kw">pub const </span>MIN_OL: u32 = <span class="number">1 </span>&lt;&lt; <span class="number">1</span>;
-<span class="kw">pub const </span>MAX_OL: u32 = <span class="number">366 </span>&lt;&lt; <span class="number">1</span>; <span class="comment">// larger than the non-leap last day `(365 &lt;&lt; 1) | 1`
-</span><span class="kw">pub const </span>MIN_MDL: u32 = (<span class="number">1 </span>&lt;&lt; <span class="number">6</span>) | (<span class="number">1 </span>&lt;&lt; <span class="number">1</span>);
-<span class="kw">pub const </span>MAX_MDL: u32 = (<span class="number">12 </span>&lt;&lt; <span class="number">6</span>) | (<span class="number">31 </span>&lt;&lt; <span class="number">1</span>) | <span class="number">1</span>;
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>MIN_OL: u32 = <span class="number">1 </span>&lt;&lt; <span class="number">1</span>;
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>MAX_OL: u32 = <span class="number">366 </span>&lt;&lt; <span class="number">1</span>; <span class="comment">// larger than the non-leap last day `(365 &lt;&lt; 1) | 1`
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const </span>MAX_MDL: u32 = (<span class="number">12 </span>&lt;&lt; <span class="number">6</span>) | (<span class="number">31 </span>&lt;&lt; <span class="number">1</span>) | <span class="number">1</span>;
 
 <span class="kw">const </span>XX: i8 = -<span class="number">128</span>;
 <span class="kw">static </span>MDL_TO_OL: [i8; MAX_MDL <span class="kw">as </span>usize + <span class="number">1</span>] = [
@@ -1080,7 +1070,7 @@
 /// The whole bits except for the least 3 bits are referred as `Ol` (ordinal and leap flag),
 /// which is an index to the `OL_TO_MDL` lookup table.
 </span><span class="attribute">#[derive(PartialEq, PartialOrd, Copy, Clone)]
-</span><span class="kw">pub struct </span>Of(<span class="kw">pub </span>u32);
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>Of(<span class="kw">pub</span>(<span class="kw">crate</span>) u32);
 
 <span class="kw">impl </span>Of {
     <span class="attribute">#[inline]
@@ -1093,13 +1083,13 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>new(ordinal: u32, YearFlags(flags): YearFlags) -&gt; Of {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>new(ordinal: u32, YearFlags(flags): YearFlags) -&gt; Of {
         <span class="kw">let </span>ordinal = Of::clamp_ordinal(ordinal);
         Of((ordinal &lt;&lt; <span class="number">4</span>) | u32::from(flags))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>from_mdf(Mdf(mdf): Mdf) -&gt; Of {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>from_mdf(Mdf(mdf): Mdf) -&gt; Of {
         <span class="kw">let </span>mdl = mdf &gt;&gt; <span class="number">3</span>;
         <span class="kw">match </span>MDL_TO_OL.get(mdl <span class="kw">as </span>usize) {
             <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>v) =&gt; Of(mdf.wrapping_sub((i32::from(v) <span class="kw">as </span>u32 &amp; <span class="number">0x3ff</span>) &lt;&lt; <span class="number">3</span>)),
@@ -1108,64 +1098,59 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>valid(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>valid(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="kw">let </span>Of(of) = <span class="kw-2">*</span><span class="self">self</span>;
         <span class="kw">let </span>ol = of &gt;&gt; <span class="number">3</span>;
-        MIN_OL &lt;= ol &amp;&amp; ol &lt;= MAX_OL
+        (MIN_OL..=MAX_OL).contains(<span class="kw-2">&amp;</span>ol)
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>ordinal(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>ordinal(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
         <span class="kw">let </span>Of(of) = <span class="kw-2">*</span><span class="self">self</span>;
         of &gt;&gt; <span class="number">4
     </span>}
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>with_ordinal(<span class="kw-2">&amp;</span><span class="self">self</span>, ordinal: u32) -&gt; Of {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>with_ordinal(<span class="kw-2">&amp;</span><span class="self">self</span>, ordinal: u32) -&gt; Of {
         <span class="kw">let </span>ordinal = Of::clamp_ordinal(ordinal);
         <span class="kw">let </span>Of(of) = <span class="kw-2">*</span><span class="self">self</span>;
         Of((of &amp; <span class="number">0b1111</span>) | (ordinal &lt;&lt; <span class="number">4</span>))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>flags(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; YearFlags {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>flags(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; YearFlags {
         <span class="kw">let </span>Of(of) = <span class="kw-2">*</span><span class="self">self</span>;
         YearFlags((of &amp; <span class="number">0b1111</span>) <span class="kw">as </span>u8)
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>with_flags(<span class="kw-2">&amp;</span><span class="self">self</span>, YearFlags(flags): YearFlags) -&gt; Of {
-        <span class="kw">let </span>Of(of) = <span class="kw-2">*</span><span class="self">self</span>;
-        Of((of &amp; !<span class="number">0b1111</span>) | u32::from(flags))
-    }
-
-    <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>weekday(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Weekday {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>weekday(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Weekday {
         <span class="kw">let </span>Of(of) = <span class="kw-2">*</span><span class="self">self</span>;
         Weekday::from_u32(((of &gt;&gt; <span class="number">4</span>) + (of &amp; <span class="number">0b111</span>)) % <span class="number">7</span>).unwrap()
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>isoweekdate_raw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (u32, Weekday) {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>isoweekdate_raw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (u32, Weekday) {
         <span class="comment">// week ordinal = ordinal + delta
         </span><span class="kw">let </span>Of(of) = <span class="kw-2">*</span><span class="self">self</span>;
         <span class="kw">let </span>weekord = (of &gt;&gt; <span class="number">4</span>).wrapping_add(<span class="self">self</span>.flags().isoweek_delta());
         (weekord / <span class="number">7</span>, Weekday::from_u32(weekord % <span class="number">7</span>).unwrap())
     }
 
-    <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>to_mdf(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Mdf {
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;cargo-clippy&quot;</span>, allow(clippy::wrong_self_convention))]
+    #[inline]
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>to_mdf(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Mdf {
         Mdf::from_of(<span class="kw-2">*</span><span class="self">self</span>)
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>succ(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Of {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>succ(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Of {
         <span class="kw">let </span>Of(of) = <span class="kw-2">*</span><span class="self">self</span>;
         Of(of + (<span class="number">1 </span>&lt;&lt; <span class="number">4</span>))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>pred(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Of {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>pred(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Of {
         <span class="kw">let </span>Of(of) = <span class="kw-2">*</span><span class="self">self</span>;
         Of(of - (<span class="number">1 </span>&lt;&lt; <span class="number">4</span>))
     }
@@ -1190,7 +1175,7 @@
 /// (month, day of month and leap flag),
 /// which is an index to the `MDL_TO_OL` lookup table.
 </span><span class="attribute">#[derive(PartialEq, PartialOrd, Copy, Clone)]
-</span><span class="kw">pub struct </span>Mdf(<span class="kw">pub </span>u32);
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>Mdf(<span class="kw">pub</span>(<span class="kw">super</span>) u32);
 
 <span class="kw">impl </span>Mdf {
     <span class="attribute">#[inline]
@@ -1212,14 +1197,14 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>new(month: u32, day: u32, YearFlags(flags): YearFlags) -&gt; Mdf {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>new(month: u32, day: u32, YearFlags(flags): YearFlags) -&gt; Mdf {
         <span class="kw">let </span>month = Mdf::clamp_month(month);
         <span class="kw">let </span>day = Mdf::clamp_day(day);
         Mdf((month &lt;&lt; <span class="number">9</span>) | (day &lt;&lt; <span class="number">4</span>) | u32::from(flags))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>from_of(Of(of): Of) -&gt; Mdf {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>from_of(Of(of): Of) -&gt; Mdf {
         <span class="kw">let </span>ol = of &gt;&gt; <span class="number">3</span>;
         <span class="kw">match </span>OL_TO_MDL.get(ol <span class="kw">as </span>usize) {
             <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>v) =&gt; Mdf(of + (u32::from(v) &lt;&lt; <span class="number">3</span>)),
@@ -1227,8 +1212,8 @@
         }
     }
 
-    <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>valid(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+    <span class="attribute">#[cfg(test)]
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>valid(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="kw">let </span>Mdf(mdf) = <span class="kw-2">*</span><span class="self">self</span>;
         <span class="kw">let </span>mdl = mdf &gt;&gt; <span class="number">3</span>;
         <span class="kw">match </span>MDL_TO_OL.get(mdl <span class="kw">as </span>usize) {
@@ -1238,45 +1223,40 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>month(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>month(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
         <span class="kw">let </span>Mdf(mdf) = <span class="kw-2">*</span><span class="self">self</span>;
         mdf &gt;&gt; <span class="number">9
     </span>}
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>with_month(<span class="kw-2">&amp;</span><span class="self">self</span>, month: u32) -&gt; Mdf {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>with_month(<span class="kw-2">&amp;</span><span class="self">self</span>, month: u32) -&gt; Mdf {
         <span class="kw">let </span>month = Mdf::clamp_month(month);
         <span class="kw">let </span>Mdf(mdf) = <span class="kw-2">*</span><span class="self">self</span>;
         Mdf((mdf &amp; <span class="number">0b1_1111_1111</span>) | (month &lt;&lt; <span class="number">9</span>))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>day(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>day(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
         <span class="kw">let </span>Mdf(mdf) = <span class="kw-2">*</span><span class="self">self</span>;
         (mdf &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0b1_1111
     </span>}
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>with_day(<span class="kw-2">&amp;</span><span class="self">self</span>, day: u32) -&gt; Mdf {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>with_day(<span class="kw-2">&amp;</span><span class="self">self</span>, day: u32) -&gt; Mdf {
         <span class="kw">let </span>day = Mdf::clamp_day(day);
         <span class="kw">let </span>Mdf(mdf) = <span class="kw-2">*</span><span class="self">self</span>;
         Mdf((mdf &amp; !<span class="number">0b1_1111_0000</span>) | (day &lt;&lt; <span class="number">4</span>))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>flags(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; YearFlags {
-        <span class="kw">let </span>Mdf(mdf) = <span class="kw-2">*</span><span class="self">self</span>;
-        YearFlags((mdf &amp; <span class="number">0b1111</span>) <span class="kw">as </span>u8)
-    }
-
-    <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>with_flags(<span class="kw-2">&amp;</span><span class="self">self</span>, YearFlags(flags): YearFlags) -&gt; Mdf {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>with_flags(<span class="kw-2">&amp;</span><span class="self">self</span>, YearFlags(flags): YearFlags) -&gt; Mdf {
         <span class="kw">let </span>Mdf(mdf) = <span class="kw-2">*</span><span class="self">self</span>;
         Mdf((mdf &amp; !<span class="number">0b1111</span>) | u32::from(flags))
     }
 
-    <span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>to_of(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Of {
+    <span class="attribute">#[cfg_attr(feature = <span class="string">&quot;cargo-clippy&quot;</span>, allow(clippy::wrong_self_convention))]
+    #[inline]
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>to_of(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Of {
         Of::from_mdf(<span class="kw-2">*</span><span class="self">self</span>)
     }
 }
@@ -1297,14 +1277,12 @@
 
 <span class="attribute">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
-    <span class="attribute">#[cfg(test)]
-    </span><span class="kw">extern crate </span>num_iter;
+    <span class="kw">use </span>num_iter::range_inclusive;
+    <span class="kw">use </span>std::u32;
 
-    <span class="kw">use </span><span class="self">self</span>::num_iter::range_inclusive;
     <span class="kw">use super</span>::{Mdf, Of};
     <span class="kw">use super</span>::{YearFlags, A, AG, B, BA, C, CB, D, DC, E, ED, F, FE, G, GF};
-    <span class="kw">use </span>std::u32;
-    <span class="kw">use </span>Weekday;
+    <span class="kw">use </span><span class="kw">crate</span>::Weekday;
 
     <span class="kw">const </span>NONLEAP_FLAGS: [YearFlags; <span class="number">7</span>] = [A, B, C, D, E, F, G];
     <span class="kw">const </span>LEAP_FLAGS: [YearFlags; <span class="number">7</span>] = [AG, BA, CB, DC, ED, FE, GF];
@@ -1629,4 +1607,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="chrono" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="chrono" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

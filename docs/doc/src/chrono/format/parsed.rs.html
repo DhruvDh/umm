@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/chrono-0.4.19/src/format/parsed.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parsed.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../chrono/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../chrono/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../chrono/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/chrono-0.4.22/src/format/parsed.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parsed.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../chrono/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../chrono/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../chrono/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1258,45 +1258,22 @@
 <span id="1258">1258</span>
 <span id="1259">1259</span>
 <span id="1260">1260</span>
-<span id="1261">1261</span>
-<span id="1262">1262</span>
-<span id="1263">1263</span>
-<span id="1264">1264</span>
-<span id="1265">1265</span>
-<span id="1266">1266</span>
-<span id="1267">1267</span>
-<span id="1268">1268</span>
-<span id="1269">1269</span>
-<span id="1270">1270</span>
-<span id="1271">1271</span>
-<span id="1272">1272</span>
-<span id="1273">1273</span>
-<span id="1274">1274</span>
-<span id="1275">1275</span>
-<span id="1276">1276</span>
-<span id="1277">1277</span>
-<span id="1278">1278</span>
-<span id="1279">1279</span>
-<span id="1280">1280</span>
-<span id="1281">1281</span>
-<span id="1282">1282</span>
-<span id="1283">1283</span>
 </pre><pre class="rust"><code><span class="comment">// This is a part of Chrono.
 // See README.md and LICENSE.txt for details.
 
 </span><span class="doccomment">//! A collection of parsed date and time items.
 //! They can be constructed incrementally while being checked for consistency.
 
-</span><span class="kw">use </span>num_traits::ToPrimitive;
-<span class="kw">use </span>oldtime::Duration <span class="kw">as </span>OldDuration;
+</span><span class="kw">use </span>num_integer::div_rem;
+<span class="kw">use </span>num_traits::ToPrimitive;
 
 <span class="kw">use super</span>::{ParseResult, IMPOSSIBLE, NOT_ENOUGH, OUT_OF_RANGE};
-<span class="kw">use </span>div::div_rem;
-<span class="kw">use </span>naive::{NaiveDate, NaiveDateTime, NaiveTime};
-<span class="kw">use </span>offset::{FixedOffset, LocalResult, Offset, TimeZone};
-<span class="kw">use </span>DateTime;
-<span class="kw">use </span>Weekday;
-<span class="kw">use </span>{Datelike, Timelike};
+<span class="kw">use </span><span class="kw">crate</span>::naive::{NaiveDate, NaiveDateTime, NaiveTime};
+<span class="kw">use </span><span class="kw">crate</span>::offset::{FixedOffset, LocalResult, Offset, TimeZone};
+<span class="kw">use </span><span class="kw">crate</span>::oldtime::Duration <span class="kw">as </span>OldDuration;
+<span class="kw">use </span><span class="kw">crate</span>::DateTime;
+<span class="kw">use </span><span class="kw">crate</span>::Weekday;
+<span class="kw">use crate</span>::{Datelike, Timelike};
 
 <span class="doccomment">/// Parsed parts of date and time. There are two classes of methods:
 ///
@@ -1305,8 +1282,7 @@
 ///
 /// - `to_*` methods try to make a concrete date and time value out of set fields.
 ///   It fully checks any remaining out-of-range conditions and inconsistent/impossible fields.
-</span><span class="attribute">#[allow(missing_copy_implementations)]
-#[derive(Clone, PartialEq, Debug)]
+</span><span class="attribute">#[derive(Clone, PartialEq, Eq, Debug, Default)]
 </span><span class="kw">pub struct </span>Parsed {
     <span class="doccomment">/// Year.
     ///
@@ -1406,34 +1382,6 @@
     } <span class="kw">else </span>{
         <span class="kw-2">*</span>old = <span class="prelude-val">Some</span>(new);
         <span class="prelude-val">Ok</span>(())
-    }
-}
-
-<span class="kw">impl </span>Default <span class="kw">for </span>Parsed {
-    <span class="kw">fn </span>default() -&gt; Parsed {
-        Parsed {
-            year: <span class="prelude-val">None</span>,
-            year_div_100: <span class="prelude-val">None</span>,
-            year_mod_100: <span class="prelude-val">None</span>,
-            isoyear: <span class="prelude-val">None</span>,
-            isoyear_div_100: <span class="prelude-val">None</span>,
-            isoyear_mod_100: <span class="prelude-val">None</span>,
-            month: <span class="prelude-val">None</span>,
-            week_from_sun: <span class="prelude-val">None</span>,
-            week_from_mon: <span class="prelude-val">None</span>,
-            isoweek: <span class="prelude-val">None</span>,
-            weekday: <span class="prelude-val">None</span>,
-            ordinal: <span class="prelude-val">None</span>,
-            day: <span class="prelude-val">None</span>,
-            hour_div_12: <span class="prelude-val">None</span>,
-            hour_mod_12: <span class="prelude-val">None</span>,
-            minute: <span class="prelude-val">None</span>,
-            second: <span class="prelude-val">None</span>,
-            nanosecond: <span class="prelude-val">None</span>,
-            timestamp: <span class="prelude-val">None</span>,
-            offset: <span class="prelude-val">None</span>,
-            _dummy: (),
-        }
     }
 }
 
@@ -1544,7 +1492,7 @@
     /// given hour number in 12-hour clocks.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>set_hour12(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: i64) -&gt; ParseResult&lt;()&gt; {
-        <span class="kw">if </span>value &lt; <span class="number">1 </span>|| value &gt; <span class="number">12 </span>{
+        <span class="kw">if </span>!(<span class="number">1</span>..=<span class="number">12</span>).contains(<span class="kw-2">&amp;</span>value) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(OUT_OF_RANGE);
         }
         set_if_consistent(<span class="kw-2">&amp;mut </span><span class="self">self</span>.hour_mod_12, value <span class="kw">as </span>u32 % <span class="number">12</span>)
@@ -1616,7 +1564,7 @@
                 // check if present quotient and/or modulo is consistent to the full year.
                 // since the presence of those fields means a positive full year,
                 // we should filter a negative full year first.
-                </span>(<span class="prelude-val">Some</span>(y), q, r @ <span class="prelude-val">Some</span>(<span class="number">0</span>...<span class="number">99</span>)) | (<span class="prelude-val">Some</span>(y), q, r @ <span class="prelude-val">None</span>) =&gt; {
+                </span>(<span class="prelude-val">Some</span>(y), q, r @ <span class="prelude-val">Some</span>(<span class="number">0</span>..=<span class="number">99</span>)) | (<span class="prelude-val">Some</span>(y), q, r @ <span class="prelude-val">None</span>) =&gt; {
                     <span class="kw">if </span>y &lt; <span class="number">0 </span>{
                         <span class="kw">return </span><span class="prelude-val">Err</span>(OUT_OF_RANGE);
                     }
@@ -1630,7 +1578,7 @@
 
                 <span class="comment">// the full year is missing but we have quotient and modulo.
                 // reconstruct the full year. make sure that the result is always positive.
-                </span>(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(q), <span class="prelude-val">Some</span>(r @ <span class="number">0</span>...<span class="number">99</span>)) =&gt; {
+                </span>(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(q), <span class="prelude-val">Some</span>(r @ <span class="number">0</span>..=<span class="number">99</span>)) =&gt; {
                     <span class="kw">if </span>q &lt; <span class="number">0 </span>{
                         <span class="kw">return </span><span class="prelude-val">Err</span>(OUT_OF_RANGE);
                     }
@@ -1640,7 +1588,7 @@
 
                 <span class="comment">// we only have modulo. try to interpret a modulo as a conventional two-digit year.
                 // note: we are affected by Rust issue #18060. avoid multiple range patterns.
-                </span>(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(r @ <span class="number">0</span>...<span class="number">99</span>)) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(r + <span class="kw">if </span>r &lt; <span class="number">70 </span>{ <span class="number">2000 </span>} <span class="kw">else </span>{ <span class="number">1900 </span>})),
+                </span>(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(r @ <span class="number">0</span>..=<span class="number">99</span>)) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(r + <span class="kw">if </span>r &lt; <span class="number">70 </span>{ <span class="number">2000 </span>} <span class="kw">else </span>{ <span class="number">1900 </span>})),
 
                 <span class="comment">// otherwise it is an out-of-bound or insufficient condition.
                 </span>(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="kw">_</span>), <span class="prelude-val">None</span>) =&gt; <span class="prelude-val">Err</span>(NOT_ENOUGH),
@@ -1811,32 +1759,32 @@
     /// It is able to handle leap seconds when given second is 60.
     </span><span class="kw">pub fn </span>to_naive_time(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ParseResult&lt;NaiveTime&gt; {
         <span class="kw">let </span>hour_div_12 = <span class="kw">match </span><span class="self">self</span>.hour_div_12 {
-            <span class="prelude-val">Some</span>(v @ <span class="number">0</span>...<span class="number">1</span>) =&gt; v,
+            <span class="prelude-val">Some</span>(v @ <span class="number">0</span>..=<span class="number">1</span>) =&gt; v,
             <span class="prelude-val">Some</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(OUT_OF_RANGE),
             <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(NOT_ENOUGH),
         };
         <span class="kw">let </span>hour_mod_12 = <span class="kw">match </span><span class="self">self</span>.hour_mod_12 {
-            <span class="prelude-val">Some</span>(v @ <span class="number">0</span>...<span class="number">11</span>) =&gt; v,
+            <span class="prelude-val">Some</span>(v @ <span class="number">0</span>..=<span class="number">11</span>) =&gt; v,
             <span class="prelude-val">Some</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(OUT_OF_RANGE),
             <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(NOT_ENOUGH),
         };
         <span class="kw">let </span>hour = hour_div_12 * <span class="number">12 </span>+ hour_mod_12;
 
         <span class="kw">let </span>minute = <span class="kw">match </span><span class="self">self</span>.minute {
-            <span class="prelude-val">Some</span>(v @ <span class="number">0</span>...<span class="number">59</span>) =&gt; v,
+            <span class="prelude-val">Some</span>(v @ <span class="number">0</span>..=<span class="number">59</span>) =&gt; v,
             <span class="prelude-val">Some</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(OUT_OF_RANGE),
             <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(NOT_ENOUGH),
         };
 
         <span class="comment">// we allow omitting seconds or nanoseconds, but they should be in the range.
         </span><span class="kw">let </span>(second, <span class="kw-2">mut </span>nano) = <span class="kw">match </span><span class="self">self</span>.second.unwrap_or(<span class="number">0</span>) {
-            v @ <span class="number">0</span>...<span class="number">59 </span>=&gt; (v, <span class="number">0</span>),
+            v @ <span class="number">0</span>..=<span class="number">59 </span>=&gt; (v, <span class="number">0</span>),
             <span class="number">60 </span>=&gt; (<span class="number">59</span>, <span class="number">1_000_000_000</span>),
             <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(OUT_OF_RANGE),
         };
         nano += <span class="kw">match </span><span class="self">self</span>.nanosecond {
-            <span class="prelude-val">Some</span>(v @ <span class="number">0</span>...<span class="number">999_999_999</span>) <span class="kw">if </span><span class="self">self</span>.second.is_some() =&gt; v,
-            <span class="prelude-val">Some</span>(<span class="number">0</span>...<span class="number">999_999_999</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(NOT_ENOUGH), <span class="comment">// second is missing
+            <span class="prelude-val">Some</span>(v @ <span class="number">0</span>..=<span class="number">999_999_999</span>) <span class="kw">if </span><span class="self">self</span>.second.is_some() =&gt; v,
+            <span class="prelude-val">Some</span>(<span class="number">0</span>..=<span class="number">999_999_999</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(NOT_ENOUGH), <span class="comment">// second is missing
             </span><span class="prelude-val">Some</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(OUT_OF_RANGE),
             <span class="prelude-val">None </span>=&gt; <span class="number">0</span>,
         };
@@ -1938,6 +1886,12 @@
         <span class="kw">let </span>offset = <span class="self">self</span>.offset.ok_or(NOT_ENOUGH)<span class="question-mark">?</span>;
         <span class="kw">let </span>datetime = <span class="self">self</span>.to_naive_datetime_with_offset(offset)<span class="question-mark">?</span>;
         <span class="kw">let </span>offset = FixedOffset::east_opt(offset).ok_or(OUT_OF_RANGE)<span class="question-mark">?</span>;
+
+        <span class="comment">// this is used to prevent an overflow when calling FixedOffset::from_local_datetime
+        </span>datetime
+            .checked_sub_signed(OldDuration::seconds(i64::from(offset.local_minus_utc())))
+            .ok_or(OUT_OF_RANGE)<span class="question-mark">?</span>;
+
         <span class="kw">match </span>offset.from_local_datetime(<span class="kw-2">&amp;</span>datetime) {
             LocalResult::None =&gt; <span class="prelude-val">Err</span>(IMPOSSIBLE),
             LocalResult::Single(t) =&gt; <span class="prelude-val">Ok</span>(t),
@@ -2004,10 +1958,10 @@
 </span><span class="kw">mod </span>tests {
     <span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::{IMPOSSIBLE, NOT_ENOUGH, OUT_OF_RANGE};
     <span class="kw">use </span><span class="kw">super</span>::Parsed;
-    <span class="kw">use </span>naive::{NaiveDate, NaiveTime, MAX_DATE, MIN_DATE};
-    <span class="kw">use </span>offset::{FixedOffset, TimeZone, Utc};
-    <span class="kw">use </span>Datelike;
-    <span class="kw">use </span>Weekday::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::naive::{NaiveDate, NaiveTime};
+    <span class="kw">use </span><span class="kw">crate</span>::offset::{FixedOffset, TimeZone, Utc};
+    <span class="kw">use </span><span class="kw">crate</span>::Datelike;
+    <span class="kw">use </span><span class="kw">crate</span>::Weekday::<span class="kw-2">*</span>;
 
     <span class="attribute">#[test]
     </span><span class="kw">fn </span>test_parsed_set_fields() {
@@ -2134,7 +2088,7 @@
         <span class="macro">assert_eq!</span>(<span class="macro">parse!</span>(year_div_100: <span class="number">19</span>, year_mod_100: -<span class="number">1</span>, month: <span class="number">1</span>, day: <span class="number">1</span>), <span class="prelude-val">Err</span>(OUT_OF_RANGE));
         <span class="macro">assert_eq!</span>(<span class="macro">parse!</span>(year_div_100: <span class="number">0</span>, year_mod_100: <span class="number">0</span>, month: <span class="number">1</span>, day: <span class="number">1</span>), ymd(<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>));
         <span class="macro">assert_eq!</span>(<span class="macro">parse!</span>(year_div_100: -<span class="number">1</span>, year_mod_100: <span class="number">42</span>, month: <span class="number">1</span>, day: <span class="number">1</span>), <span class="prelude-val">Err</span>(OUT_OF_RANGE));
-        <span class="kw">let </span>max_year = MAX_DATE.year();
+        <span class="kw">let </span>max_year = NaiveDate::MAX.year();
         <span class="macro">assert_eq!</span>(
             <span class="macro">parse!</span>(year_div_100: max_year / <span class="number">100</span>,
                           year_mod_100: max_year % <span class="number">100</span>, month: <span class="number">1</span>, day: <span class="number">1</span>),
@@ -2387,14 +2341,14 @@
 
         <span class="comment">// more timestamps
         </span><span class="kw">let </span>max_days_from_year_1970 =
-            MAX_DATE.signed_duration_since(NaiveDate::from_ymd(<span class="number">1970</span>, <span class="number">1</span>, <span class="number">1</span>));
+            NaiveDate::MAX.signed_duration_since(NaiveDate::from_ymd(<span class="number">1970</span>, <span class="number">1</span>, <span class="number">1</span>));
         <span class="kw">let </span>year_0_from_year_1970 =
             NaiveDate::from_ymd(<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>).signed_duration_since(NaiveDate::from_ymd(<span class="number">1970</span>, <span class="number">1</span>, <span class="number">1</span>));
         <span class="kw">let </span>min_days_from_year_1970 =
-            MIN_DATE.signed_duration_since(NaiveDate::from_ymd(<span class="number">1970</span>, <span class="number">1</span>, <span class="number">1</span>));
+            NaiveDate::MIN.signed_duration_since(NaiveDate::from_ymd(<span class="number">1970</span>, <span class="number">1</span>, <span class="number">1</span>));
         <span class="macro">assert_eq!</span>(
             <span class="macro">parse!</span>(timestamp: min_days_from_year_1970.num_seconds()),
-            ymdhms(MIN_DATE.year(), <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+            ymdhms(NaiveDate::MIN.year(), <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
         );
         <span class="macro">assert_eq!</span>(
             <span class="macro">parse!</span>(timestamp: year_0_from_year_1970.num_seconds()),
@@ -2402,7 +2356,7 @@
         );
         <span class="macro">assert_eq!</span>(
             <span class="macro">parse!</span>(timestamp: max_days_from_year_1970.num_seconds() + <span class="number">86399</span>),
-            ymdhms(MAX_DATE.year(), <span class="number">12</span>, <span class="number">31</span>, <span class="number">23</span>, <span class="number">59</span>, <span class="number">59</span>)
+            ymdhms(NaiveDate::MAX.year(), <span class="number">12</span>, <span class="number">31</span>, <span class="number">23</span>, <span class="number">59</span>, <span class="number">59</span>)
         );
 
         <span class="comment">// leap seconds #1: partial fields
@@ -2565,4 +2519,4 @@
     </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="chrono" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="chrono" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

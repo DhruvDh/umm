@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/parser.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/parser.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -3703,18 +3703,261 @@
 <span id="3703">3703</span>
 <span id="3704">3704</span>
 <span id="3705">3705</span>
+<span id="3706">3706</span>
+<span id="3707">3707</span>
+<span id="3708">3708</span>
+<span id="3709">3709</span>
+<span id="3710">3710</span>
+<span id="3711">3711</span>
+<span id="3712">3712</span>
+<span id="3713">3713</span>
+<span id="3714">3714</span>
+<span id="3715">3715</span>
+<span id="3716">3716</span>
+<span id="3717">3717</span>
+<span id="3718">3718</span>
+<span id="3719">3719</span>
+<span id="3720">3720</span>
+<span id="3721">3721</span>
+<span id="3722">3722</span>
+<span id="3723">3723</span>
+<span id="3724">3724</span>
+<span id="3725">3725</span>
+<span id="3726">3726</span>
+<span id="3727">3727</span>
+<span id="3728">3728</span>
+<span id="3729">3729</span>
+<span id="3730">3730</span>
+<span id="3731">3731</span>
+<span id="3732">3732</span>
+<span id="3733">3733</span>
+<span id="3734">3734</span>
+<span id="3735">3735</span>
+<span id="3736">3736</span>
+<span id="3737">3737</span>
+<span id="3738">3738</span>
+<span id="3739">3739</span>
+<span id="3740">3740</span>
+<span id="3741">3741</span>
+<span id="3742">3742</span>
+<span id="3743">3743</span>
+<span id="3744">3744</span>
+<span id="3745">3745</span>
+<span id="3746">3746</span>
+<span id="3747">3747</span>
+<span id="3748">3748</span>
+<span id="3749">3749</span>
+<span id="3750">3750</span>
+<span id="3751">3751</span>
+<span id="3752">3752</span>
+<span id="3753">3753</span>
+<span id="3754">3754</span>
+<span id="3755">3755</span>
+<span id="3756">3756</span>
+<span id="3757">3757</span>
+<span id="3758">3758</span>
+<span id="3759">3759</span>
+<span id="3760">3760</span>
+<span id="3761">3761</span>
+<span id="3762">3762</span>
+<span id="3763">3763</span>
+<span id="3764">3764</span>
+<span id="3765">3765</span>
+<span id="3766">3766</span>
+<span id="3767">3767</span>
+<span id="3768">3768</span>
+<span id="3769">3769</span>
+<span id="3770">3770</span>
+<span id="3771">3771</span>
+<span id="3772">3772</span>
+<span id="3773">3773</span>
+<span id="3774">3774</span>
+<span id="3775">3775</span>
+<span id="3776">3776</span>
+<span id="3777">3777</span>
+<span id="3778">3778</span>
+<span id="3779">3779</span>
+<span id="3780">3780</span>
+<span id="3781">3781</span>
+<span id="3782">3782</span>
+<span id="3783">3783</span>
+<span id="3784">3784</span>
+<span id="3785">3785</span>
+<span id="3786">3786</span>
+<span id="3787">3787</span>
+<span id="3788">3788</span>
+<span id="3789">3789</span>
+<span id="3790">3790</span>
+<span id="3791">3791</span>
+<span id="3792">3792</span>
+<span id="3793">3793</span>
+<span id="3794">3794</span>
+<span id="3795">3795</span>
+<span id="3796">3796</span>
+<span id="3797">3797</span>
+<span id="3798">3798</span>
+<span id="3799">3799</span>
+<span id="3800">3800</span>
+<span id="3801">3801</span>
+<span id="3802">3802</span>
+<span id="3803">3803</span>
+<span id="3804">3804</span>
+<span id="3805">3805</span>
+<span id="3806">3806</span>
+<span id="3807">3807</span>
+<span id="3808">3808</span>
+<span id="3809">3809</span>
+<span id="3810">3810</span>
+<span id="3811">3811</span>
+<span id="3812">3812</span>
+<span id="3813">3813</span>
+<span id="3814">3814</span>
+<span id="3815">3815</span>
+<span id="3816">3816</span>
+<span id="3817">3817</span>
+<span id="3818">3818</span>
+<span id="3819">3819</span>
+<span id="3820">3820</span>
+<span id="3821">3821</span>
+<span id="3822">3822</span>
+<span id="3823">3823</span>
+<span id="3824">3824</span>
+<span id="3825">3825</span>
+<span id="3826">3826</span>
+<span id="3827">3827</span>
+<span id="3828">3828</span>
+<span id="3829">3829</span>
+<span id="3830">3830</span>
+<span id="3831">3831</span>
+<span id="3832">3832</span>
+<span id="3833">3833</span>
+<span id="3834">3834</span>
+<span id="3835">3835</span>
+<span id="3836">3836</span>
+<span id="3837">3837</span>
+<span id="3838">3838</span>
+<span id="3839">3839</span>
+<span id="3840">3840</span>
+<span id="3841">3841</span>
+<span id="3842">3842</span>
+<span id="3843">3843</span>
+<span id="3844">3844</span>
+<span id="3845">3845</span>
+<span id="3846">3846</span>
+<span id="3847">3847</span>
+<span id="3848">3848</span>
+<span id="3849">3849</span>
+<span id="3850">3850</span>
+<span id="3851">3851</span>
+<span id="3852">3852</span>
+<span id="3853">3853</span>
+<span id="3854">3854</span>
+<span id="3855">3855</span>
+<span id="3856">3856</span>
+<span id="3857">3857</span>
+<span id="3858">3858</span>
+<span id="3859">3859</span>
+<span id="3860">3860</span>
+<span id="3861">3861</span>
+<span id="3862">3862</span>
+<span id="3863">3863</span>
+<span id="3864">3864</span>
+<span id="3865">3865</span>
+<span id="3866">3866</span>
+<span id="3867">3867</span>
+<span id="3868">3868</span>
+<span id="3869">3869</span>
+<span id="3870">3870</span>
+<span id="3871">3871</span>
+<span id="3872">3872</span>
+<span id="3873">3873</span>
+<span id="3874">3874</span>
+<span id="3875">3875</span>
+<span id="3876">3876</span>
+<span id="3877">3877</span>
+<span id="3878">3878</span>
+<span id="3879">3879</span>
+<span id="3880">3880</span>
+<span id="3881">3881</span>
+<span id="3882">3882</span>
+<span id="3883">3883</span>
+<span id="3884">3884</span>
+<span id="3885">3885</span>
+<span id="3886">3886</span>
+<span id="3887">3887</span>
+<span id="3888">3888</span>
+<span id="3889">3889</span>
+<span id="3890">3890</span>
+<span id="3891">3891</span>
+<span id="3892">3892</span>
+<span id="3893">3893</span>
+<span id="3894">3894</span>
+<span id="3895">3895</span>
+<span id="3896">3896</span>
+<span id="3897">3897</span>
+<span id="3898">3898</span>
+<span id="3899">3899</span>
+<span id="3900">3900</span>
+<span id="3901">3901</span>
+<span id="3902">3902</span>
+<span id="3903">3903</span>
+<span id="3904">3904</span>
+<span id="3905">3905</span>
+<span id="3906">3906</span>
+<span id="3907">3907</span>
+<span id="3908">3908</span>
+<span id="3909">3909</span>
+<span id="3910">3910</span>
+<span id="3911">3911</span>
+<span id="3912">3912</span>
+<span id="3913">3913</span>
+<span id="3914">3914</span>
+<span id="3915">3915</span>
+<span id="3916">3916</span>
+<span id="3917">3917</span>
+<span id="3918">3918</span>
+<span id="3919">3919</span>
+<span id="3920">3920</span>
+<span id="3921">3921</span>
+<span id="3922">3922</span>
+<span id="3923">3923</span>
+<span id="3924">3924</span>
+<span id="3925">3925</span>
+<span id="3926">3926</span>
+<span id="3927">3927</span>
+<span id="3928">3928</span>
+<span id="3929">3929</span>
+<span id="3930">3930</span>
+<span id="3931">3931</span>
+<span id="3932">3932</span>
+<span id="3933">3933</span>
+<span id="3934">3934</span>
+<span id="3935">3935</span>
+<span id="3936">3936</span>
+<span id="3937">3937</span>
+<span id="3938">3938</span>
+<span id="3939">3939</span>
+<span id="3940">3940</span>
+<span id="3941">3941</span>
+<span id="3942">3942</span>
+<span id="3943">3943</span>
+<span id="3944">3944</span>
+<span id="3945">3945</span>
+<span id="3946">3946</span>
+<span id="3947">3947</span>
+<span id="3948">3948</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Main module defining the lexer and parser.
 
-</span><span class="kw">use </span><span class="kw">crate</span>::api::custom_syntax::{markers::<span class="kw-2">*</span>, CustomSyntax};
-<span class="kw">use </span><span class="kw">crate</span>::api::events::VarDefInfo;
-<span class="kw">use </span><span class="kw">crate</span>::api::options::LanguageOptions;
+</span><span class="kw">use </span><span class="kw">crate</span>::api::events::VarDefInfo;
+<span class="kw">use </span><span class="kw">crate</span>::api::options::LangOptions;
 <span class="kw">use </span><span class="kw">crate</span>::ast::{
-    ASTFlags, BinaryExpr, ConditionalStmtBlock, CustomExpr, Expr, FnCallExpr, FnCallHashes, Ident,
-    OpAssignment, ScriptFnDef, Stmt, StmtBlock, StmtBlockContainer, SwitchCases, TryCatchBlock,
+    ASTFlags, BinaryExpr, CaseBlocksList, ConditionalExpr, Expr, FnCallExpr, FnCallHashes, Ident,
+    OpAssignment, RangeCase, ScriptFnDef, Stmt, StmtBlock, StmtBlockContainer,
+    SwitchCasesCollection, TryCatchBlock,
 };
 <span class="kw">use </span><span class="kw">crate</span>::engine::{Precedence, KEYWORD_THIS, OP_CONTAINS};
 <span class="kw">use </span><span class="kw">crate</span>::eval::GlobalRuntimeState;
-<span class="kw">use </span><span class="kw">crate</span>::func::hashing::get_hasher;
+<span class="kw">use </span><span class="kw">crate</span>::func::{hashing::get_hasher, StraightHashMap};
 <span class="kw">use </span><span class="kw">crate</span>::tokenizer::{
     is_keyword_function, is_valid_function_name, is_valid_identifier, Token, TokenStream,
     TokenizerControl,
@@ -3730,13 +3973,18 @@
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::{
     collections::BTreeMap,
+    fmt,
     hash::{Hash, Hasher},
     num::{NonZeroU8, NonZeroUsize},
 };
 
 <span class="kw">pub type </span>ParseResult&lt;T&gt; = <span class="prelude-ty">Result</span>&lt;T, ParseError&gt;;
 
-<span class="kw">type </span>FnLib = BTreeMap&lt;u64, Shared&lt;ScriptFnDef&gt;&gt;;
+<span class="kw">type </span>FnLib = StraightHashMap&lt;u64, Shared&lt;ScriptFnDef&gt;&gt;;
+
+<span class="kw">const </span>KEYWORD_SEMICOLON: <span class="kw-2">&amp;</span>str = Token::SemiColon.literal_syntax();
+
+<span class="kw">const </span>KEYWORD_CLOSE_BRACE: <span class="kw-2">&amp;</span>str = Token::RightBrace.literal_syntax();
 
 <span class="doccomment">/// Invalid variable name that acts as a search barrier in a [`Scope`].
 </span><span class="kw">const </span>SCOPE_SEARCH_BARRIER_MARKER: <span class="kw-2">&amp;</span>str = <span class="string">&quot;$ BARRIER $&quot;</span>;
@@ -3744,14 +3992,21 @@
 <span class="doccomment">/// The message: `TokenStream` never ends
 </span><span class="kw">const </span>NEVER_ENDS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;`Token`&quot;</span>;
 
+<span class="doccomment">/// Unroll `switch` ranges no larger than this.
+</span><span class="kw">const </span>SMALL_SWITCH_RANGE: INT = <span class="number">16</span>;
+
+<span class="doccomment">/// Number of string interners used: two additional for property getters/setters if not `no_object`
+</span><span class="kw">const </span>NUM_INTERNERS: usize = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;no_object&quot;</span>) { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">3 </span>};
+
 <span class="doccomment">/// _(internals)_ A type that encapsulates the current state of the parser.
 /// Exported under the `internals` feature only.
-</span><span class="attribute">#[derive(Debug)]
 </span><span class="kw">pub struct </span>ParseState&lt;<span class="lifetime">&#39;e</span>&gt; {
     <span class="doccomment">/// Input stream buffer containing the next character to read.
     </span><span class="kw">pub </span>tokenizer_control: TokenizerControl,
-    <span class="doccomment">/// Interned strings.
-    </span>interned_strings: StringsInterner,
+    <span class="doccomment">/// Controls whether parsing of an expression should stop given the next token.
+    </span><span class="kw">pub </span>expr_filter: <span class="kw">fn</span>(<span class="kw-2">&amp;</span>Token) -&gt; bool,
+    <span class="doccomment">/// String interners.
+    </span>interned_strings: [StringsInterner&lt;<span class="lifetime">&#39;e</span>&gt;; NUM_INTERNERS],
     <span class="doccomment">/// External [scope][Scope] with constants.
     </span><span class="kw">pub </span>scope: <span class="kw-2">&amp;</span><span class="lifetime">&#39;e </span>Scope&lt;<span class="lifetime">&#39;e</span>&gt;,
     <span class="doccomment">/// Global runtime state.
@@ -3771,30 +4026,63 @@
     </span><span class="kw">pub </span>allow_capture: bool,
     <span class="doccomment">/// Encapsulates a local stack with imported [module][crate::Module] names.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-    </span><span class="kw">pub </span>imports: StaticVec&lt;Identifier&gt;,
+    </span><span class="kw">pub </span>imports: StaticVec&lt;ImmutableString&gt;,
+    <span class="doccomment">/// List of globally-imported [module][crate::Module] names.
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+    </span><span class="kw">pub </span>global_imports: StaticVec&lt;ImmutableString&gt;,
     <span class="doccomment">/// Maximum levels of expression nesting (0 for unlimited).
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
     </span><span class="kw">pub </span>max_expr_depth: usize,
+}
+
+<span class="kw">impl </span>fmt::Debug <span class="kw">for </span>ParseState&lt;<span class="lifetime">&#39;_</span>&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>f = f.debug_struct(<span class="string">&quot;ParseState&quot;</span>);
+
+        f.field(<span class="string">&quot;tokenizer_control&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.tokenizer_control)
+            .field(<span class="string">&quot;interned_strings&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.interned_strings)
+            .field(<span class="string">&quot;scope&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.scope)
+            .field(<span class="string">&quot;global&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.global)
+            .field(<span class="string">&quot;stack&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.stack)
+            .field(<span class="string">&quot;block_stack_len&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.block_stack_len);
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
+        </span>f.field(<span class="string">&quot;external_vars&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.external_vars)
+            .field(<span class="string">&quot;allow_capture&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.allow_capture);
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+        </span>f.field(<span class="string">&quot;imports&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.imports)
+            .field(<span class="string">&quot;global_imports&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.global_imports);
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
+        </span>f.field(<span class="string">&quot;max_expr_depth&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.max_expr_depth);
+        f.finish()
+    }
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;e</span>&gt; ParseState&lt;<span class="lifetime">&#39;e</span>&gt; {
     <span class="doccomment">/// Create a new [`ParseState`].
     </span><span class="attribute">#[inline(always)]
     #[must_use]
-    </span><span class="kw">pub fn </span>new(engine: <span class="kw-2">&amp;</span>Engine, scope: <span class="kw-2">&amp;</span><span class="lifetime">&#39;e </span>Scope, tokenizer_control: TokenizerControl) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>new(
+        engine: <span class="kw-2">&amp;</span>Engine,
+        scope: <span class="kw-2">&amp;</span><span class="lifetime">&#39;e </span>Scope,
+        interned_strings: [StringsInterner&lt;<span class="lifetime">&#39;e</span>&gt;; NUM_INTERNERS],
+        tokenizer_control: TokenizerControl,
+    ) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             tokenizer_control,
+            expr_filter: |<span class="kw">_</span>| <span class="bool-val">true</span>,
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
             </span>external_vars: Vec::new(),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
             </span>allow_capture: <span class="bool-val">true</span>,
-            interned_strings: StringsInterner::new(),
+            interned_strings,
             scope,
             global: GlobalRuntimeState::new(engine),
             stack: Scope::new(),
             block_stack_len: <span class="number">0</span>,
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
             </span>imports: StaticVec::new_const(),
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+            </span>global_imports: StaticVec::new_const(),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
             </span>max_expr_depth: engine.max_expr_depth(),
         }
@@ -3808,6 +4096,7 @@
     /// If the variable is not present in the scope, the first return value is zero.
     ///
     /// The second return value indicates whether the barrier has been hit before finding the variable.
+    </span><span class="attribute">#[must_use]
     </span><span class="kw">pub fn </span>find_var(<span class="kw-2">&amp;</span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>str) -&gt; (usize, bool) {
         <span class="kw">let </span><span class="kw-2">mut </span>hit_barrier = <span class="bool-val">false</span>;
 
@@ -3836,31 +4125,52 @@
     /// The return value is the offset to be deducted from `ParseState::stack::len()`,
     /// i.e. the top element of [`ParseState`]&#39;s variables stack is offset 1.
     ///
-    /// Return `None` when the variable name is not found in the `stack`.
+    /// # Return value: `(index, is_func_name)`
+    ///
+    /// * `index`: `None` when the variable name is not found in the `stack`,
+    ///            otherwise the index value.
+    ///
+    /// * `is_func_name`: `true` if the variable is actually the name of a function
+    ///                   (in which case it will be converted into a function pointer).
     </span><span class="attribute">#[inline]
     #[must_use]
-    </span><span class="kw">pub fn </span>access_var(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>str, pos: Position) -&gt; <span class="prelude-ty">Option</span>&lt;NonZeroUsize&gt; {
+    </span><span class="kw">pub fn </span>access_var(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        name: <span class="kw-2">&amp;</span>str,
+        lib: <span class="kw-2">&amp;</span>FnLib,
+        pos: Position,
+    ) -&gt; (<span class="prelude-ty">Option</span>&lt;NonZeroUsize&gt;, bool) {
+        <span class="kw">let </span>_lib = lib;
         <span class="kw">let </span>_pos = pos;
 
         <span class="kw">let </span>(index, hit_barrier) = <span class="self">self</span>.find_var(name);
 
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+        </span><span class="kw">let </span>is_func_name = _lib.values().any(|f| f.name == name);
+
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;no_function&quot;</span>)]
+        </span><span class="kw">let </span>is_func_name = <span class="bool-val">false</span>;
+
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
         </span><span class="kw">if </span><span class="self">self</span>.allow_capture {
-            <span class="kw">if </span>index == <span class="number">0 </span>&amp;&amp; !<span class="self">self</span>.external_vars.iter().any(|v| v.as_str() == name) {
+            <span class="kw">if </span>!is_func_name &amp;&amp; index == <span class="number">0 </span>&amp;&amp; !<span class="self">self</span>.external_vars.iter().any(|v| v.as_str() == name)
+            {
                 <span class="self">self</span>.external_vars.push(<span class="kw">crate</span>::ast::Ident {
                     name: name.into(),
                     pos: _pos,
                 });
             }
         } <span class="kw">else </span>{
-            <span class="self">self</span>.allow_capture = <span class="bool-val">true
-        </span>}
+            <span class="self">self</span>.allow_capture = <span class="bool-val">true</span>;
+        }
 
-        <span class="kw">if </span>hit_barrier {
+        <span class="kw">let </span>index = <span class="kw">if </span>hit_barrier {
             <span class="prelude-val">None
         </span>} <span class="kw">else </span>{
             NonZeroUsize::new(index)
-        }
+        };
+
+        (index, is_func_name)
     }
 
     <span class="doccomment">/// Find a module by name in the [`ParseState`], searching in reverse.
@@ -3881,27 +4191,42 @@
             .iter()
             .rev()
             .enumerate()
-            .find(|<span class="kw-2">&amp;</span>(.., n)| n == name)
+            .find(|(.., n)| n.as_str() == name)
             .and_then(|(i, ..)| NonZeroUsize::new(i + <span class="number">1</span>))
-    }
-
-    <span class="doccomment">/// Get an interned identifier, creating one if it is not yet interned.
-    </span><span class="attribute">#[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>get_identifier(<span class="kw-2">&amp;mut </span><span class="self">self</span>, prefix: <span class="kw">impl </span>AsRef&lt;str&gt;, text: <span class="kw">impl </span>AsRef&lt;str&gt;) -&gt; Identifier {
-        <span class="self">self</span>.interned_strings.get(prefix, text).into()
     }
 
     <span class="doccomment">/// Get an interned string, creating one if it is not yet interned.
     </span><span class="attribute">#[inline(always)]
-    #[allow(dead_code)]
     #[must_use]
     </span><span class="kw">pub fn </span>get_interned_string(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        prefix: <span class="kw">impl </span>AsRef&lt;str&gt;,
-        text: <span class="kw">impl </span>AsRef&lt;str&gt;,
+        text: <span class="kw">impl </span>AsRef&lt;str&gt; + Into&lt;ImmutableString&gt;,
     ) -&gt; ImmutableString {
-        <span class="self">self</span>.interned_strings.get(prefix, text)
+        <span class="self">self</span>.interned_strings[<span class="number">0</span>].get(text)
+    }
+
+    <span class="doccomment">/// Get an interned property getter, creating one if it is not yet interned.
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+    #[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub fn </span>get_interned_getter(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        text: <span class="kw">impl </span>AsRef&lt;str&gt; + Into&lt;ImmutableString&gt;,
+    ) -&gt; ImmutableString {
+        <span class="self">self</span>.interned_strings[<span class="number">1</span>]
+            .get_with_mapper(|s| <span class="kw">crate</span>::engine::make_getter(s.as_ref()).into(), text)
+    }
+
+    <span class="doccomment">/// Get an interned property setter, creating one if it is not yet interned.
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+    #[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub fn </span>get_interned_setter(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        text: <span class="kw">impl </span>AsRef&lt;str&gt; + Into&lt;ImmutableString&gt;,
+    ) -&gt; ImmutableString {
+        <span class="self">self</span>.interned_strings[<span class="number">2</span>]
+            .get_with_mapper(|s| <span class="kw">crate</span>::engine::make_setter(s.as_ref()).into(), text)
     }
 }
 
@@ -3909,18 +4234,20 @@
 </span><span class="attribute">#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 </span><span class="kw">struct </span>ParseSettings {
     <span class="doccomment">/// Is the construct being parsed located at global level?
-    </span>is_global: bool,
-    <span class="doccomment">/// Is the construct being parsed located at function definition level?
+    </span>at_global_level: bool,
+    <span class="doccomment">/// Is the construct being parsed located inside a function definition?
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-    </span>is_function_scope: bool,
-    <span class="doccomment">/// Is the construct being parsed located inside a closure?
+    </span>in_fn_scope: bool,
+    <span class="doccomment">/// Is the construct being parsed located inside a closure definition?
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
     #[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-    </span>is_closure_scope: bool,
-    <span class="doccomment">/// Is the current position inside a loop?
+    </span>in_closure: bool,
+    <span class="doccomment">/// Is the construct being parsed located inside a breakable loop?
     </span>is_breakable: bool,
+    <span class="doccomment">/// Allow statements in blocks?
+    </span>allow_statements: bool,
     <span class="doccomment">/// Language options in effect (overrides Engine options).
-    </span>options: LanguageOptions,
+    </span>options: LangOptions,
     <span class="doccomment">/// Current expression nesting level.
     </span>level: usize,
     <span class="doccomment">/// Current position.
@@ -3943,10 +4270,8 @@
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
     #[inline]
     </span><span class="kw">pub fn </span>ensure_level_within_max_limit(<span class="kw-2">&amp;</span><span class="self">self</span>, limit: usize) -&gt; ParseResult&lt;()&gt; {
-        <span class="kw">if </span>limit &gt; <span class="number">0 </span>{
-            <span class="kw">if </span><span class="self">self</span>.level &gt; limit {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::ExprTooDeep.into_err(<span class="self">self</span>.pos));
-            }
+        <span class="kw">if </span>limit &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>.level &gt; limit {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::ExprTooDeep.into_err(<span class="self">self</span>.pos));
         }
         <span class="prelude-val">Ok</span>(())
     }
@@ -3979,18 +4304,14 @@
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
             </span><span class="self">Self</span>::Variable(x, ..) <span class="kw">if </span>!x.<span class="number">1</span>.is_empty() =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;qualified property&quot;</span>),
             <span class="self">Self</span>::Variable(x, .., pos) =&gt; {
-                <span class="kw">let </span>ident = x.<span class="number">3</span>;
-                <span class="kw">let </span>getter = state.get_identifier(<span class="kw">crate</span>::engine::FN_GET, <span class="kw-2">&amp;</span>ident);
+                <span class="kw">let </span>ident = x.<span class="number">3</span>.clone();
+                <span class="kw">let </span>getter = state.get_interned_getter(ident.as_str());
                 <span class="kw">let </span>hash_get = calc_fn_hash(<span class="kw-2">&amp;</span>getter, <span class="number">1</span>);
-                <span class="kw">let </span>setter = state.get_identifier(<span class="kw">crate</span>::engine::FN_SET, <span class="kw-2">&amp;</span>ident);
+                <span class="kw">let </span>setter = state.get_interned_setter(ident.as_str());
                 <span class="kw">let </span>hash_set = calc_fn_hash(<span class="kw-2">&amp;</span>setter, <span class="number">2</span>);
 
                 <span class="self">Self</span>::Property(
-                    Box::new((
-                        (getter, hash_get),
-                        (setter, hash_set),
-                        state.get_interned_string(<span class="string">&quot;&quot;</span>, <span class="kw-2">&amp;</span>ident),
-                    )),
+                    Box::new(((getter, hash_get), (setter, hash_set), ident)),
                     pos,
                 )
             }
@@ -4040,7 +4361,10 @@
 
 <span class="doccomment">/// Make sure that the next expression is not a statement expression (i.e. wrapped in `{}`).
 </span><span class="attribute">#[inline]
-</span><span class="kw">fn </span>ensure_not_statement_expr(input: <span class="kw-2">&amp;mut </span>TokenStream, type_name: <span class="kw">impl </span>ToString) -&gt; ParseResult&lt;()&gt; {
+</span><span class="kw">fn </span>ensure_not_statement_expr(
+    input: <span class="kw-2">&amp;mut </span>TokenStream,
+    type_name: <span class="kw-2">&amp;</span>(<span class="kw">impl </span>ToString + <span class="question-mark">?</span>Sized),
+) -&gt; ParseResult&lt;()&gt; {
     <span class="kw">match </span>input.peek().expect(NEVER_ENDS) {
         (Token::LeftBrace, pos) =&gt; <span class="prelude-val">Err</span>(PERR::ExprExpected(type_name.to_string()).into_err(<span class="kw-2">*</span>pos)),
         <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(()),
@@ -4092,6 +4416,7 @@
 }
 
 <span class="doccomment">/// Parse a variable name.
+</span><span class="attribute">#[inline]
 </span><span class="kw">fn </span>parse_var_name(input: <span class="kw-2">&amp;mut </span>TokenStream) -&gt; ParseResult&lt;(SmartString, Position)&gt; {
     <span class="kw">match </span>input.next().expect(NEVER_ENDS) {
         <span class="comment">// Variable name
@@ -4108,6 +4433,8 @@
 }
 
 <span class="doccomment">/// Parse a symbol.
+</span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+#[inline]
 </span><span class="kw">fn </span>parse_symbol(input: <span class="kw-2">&amp;mut </span>TokenStream) -&gt; ParseResult&lt;(SmartString, Position)&gt; {
     <span class="kw">match </span>input.next().expect(NEVER_ENDS) {
         <span class="comment">// Symbol
@@ -4159,7 +4486,7 @@
         input: <span class="kw-2">&amp;mut </span>TokenStream,
         state: <span class="kw-2">&amp;mut </span>ParseState,
         lib: <span class="kw-2">&amp;mut </span>FnLib,
-        id: Identifier,
+        id: ImmutableString,
         no_args: bool,
         capture_parent_scope: bool,
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))] </span>namespace: <span class="kw">crate</span>::ast::Namespace,
@@ -4183,7 +4510,7 @@
             </span>Token::EOF =&gt; {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MissingToken(
                     Token::RightParen.into(),
-                    <span class="macro">format!</span>(<span class="string">&quot;to close the arguments list of this function call &#39;{}&#39;&quot;</span>, id),
+                    <span class="macro">format!</span>(<span class="string">&quot;to close the arguments list of this function call &#39;{id}&#39;&quot;</span>),
                 )
                 .into_err(<span class="kw-2">*</span>token_pos))
             }
@@ -4196,24 +4523,32 @@
                 }
 
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-                </span><span class="kw">let </span>hash = <span class="kw">if </span>!namespace.is_empty() {
-                    <span class="kw">let </span>index = state.find_module(namespace.root());
+                </span><span class="kw">let </span>hash = <span class="kw">if </span>namespace.is_empty() {
+                    calc_fn_hash(<span class="kw-2">&amp;</span>id, <span class="number">0</span>)
+                } <span class="kw">else </span>{
+                    <span class="kw">let </span>root = namespace.root();
+                    <span class="kw">let </span>index = state.find_module(root);
 
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                    </span><span class="kw">let </span>relax = settings.is_function_scope;
-                    <span class="attribute">#[cfg(feature = <span class="string">&quot;no_function&quot;</span>)]
-                    </span><span class="kw">let </span>relax = <span class="bool-val">false</span>;
+                    #[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+                    </span><span class="kw">let </span>is_global = root == <span class="kw">crate</span>::engine::KEYWORD_GLOBAL;
+                    <span class="attribute">#[cfg(any(feature = <span class="string">&quot;no_function&quot;</span>, feature = <span class="string">&quot;no_module&quot;</span>))]
+                    </span><span class="kw">let </span>is_global = <span class="bool-val">false</span>;
 
-                    <span class="kw">if </span>!relax &amp;&amp; settings.options.strict_var &amp;&amp; index.is_none() {
-                        <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::ModuleUndefined(namespace.root().to_string())
-                            .into_err(namespace.position()));
+                    <span class="kw">if </span>settings.options.contains(LangOptions::STRICT_VAR)
+                        &amp;&amp; index.is_none()
+                        &amp;&amp; !is_global
+                        &amp;&amp; !state.global_imports.iter().any(|m| m.as_str() == root)
+                        &amp;&amp; !<span class="self">self</span>.global_sub_modules.contains_key(root)
+                    {
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(
+                            PERR::ModuleUndefined(root.to_string()).into_err(namespace.position())
+                        );
                     }
 
                     namespace.set_index(index);
 
-                    <span class="kw">crate</span>::calc_qualified_fn_hash(namespace.iter().map(|m| m.as_str()), <span class="kw-2">&amp;</span>id, <span class="number">0</span>)
-                } <span class="kw">else </span>{
-                    calc_fn_hash(<span class="kw-2">&amp;</span>id, <span class="number">0</span>)
+                    <span class="kw">crate</span>::calc_qualified_fn_hash(namespace.iter().map(Ident::as_str), <span class="kw-2">&amp;</span>id, <span class="number">0</span>)
                 };
                 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_module&quot;</span>)]
                 </span><span class="kw">let </span>hash = calc_fn_hash(<span class="kw-2">&amp;</span>id, <span class="number">0</span>);
@@ -4227,8 +4562,9 @@
                 args.shrink_to_fit();
 
                 <span class="kw">return </span><span class="prelude-val">Ok</span>(FnCallExpr {
-                    name: state.get_identifier(<span class="string">&quot;&quot;</span>, id),
+                    name: state.get_interned_string(id),
                     capture_parent_scope,
+                    is_native_operator: <span class="bool-val">false</span>,
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
                     </span>namespace,
                     hashes,
@@ -4256,28 +4592,35 @@
                     eat_token(input, Token::RightParen);
 
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-                    </span><span class="kw">let </span>hash = <span class="kw">if </span>!namespace.is_empty() {
-                        <span class="kw">let </span>index = state.find_module(namespace.root());
+                    </span><span class="kw">let </span>hash = <span class="kw">if </span>namespace.is_empty() {
+                        calc_fn_hash(<span class="kw-2">&amp;</span>id, args.len())
+                    } <span class="kw">else </span>{
+                        <span class="kw">let </span>root = namespace.root();
+                        <span class="kw">let </span>index = state.find_module(root);
 
                         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                        </span><span class="kw">let </span>relax = settings.is_function_scope;
-                        <span class="attribute">#[cfg(feature = <span class="string">&quot;no_function&quot;</span>)]
-                        </span><span class="kw">let </span>relax = <span class="bool-val">false</span>;
+                        #[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+                        </span><span class="kw">let </span>is_global = root == <span class="kw">crate</span>::engine::KEYWORD_GLOBAL;
+                        <span class="attribute">#[cfg(any(feature = <span class="string">&quot;no_function&quot;</span>, feature = <span class="string">&quot;no_module&quot;</span>))]
+                        </span><span class="kw">let </span>is_global = <span class="bool-val">false</span>;
 
-                        <span class="kw">if </span>!relax &amp;&amp; settings.options.strict_var &amp;&amp; index.is_none() {
-                            <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::ModuleUndefined(namespace.root().to_string())
+                        <span class="kw">if </span>settings.options.contains(LangOptions::STRICT_VAR)
+                            &amp;&amp; index.is_none()
+                            &amp;&amp; !is_global
+                            &amp;&amp; !state.global_imports.iter().any(|m| m.as_str() == root)
+                            &amp;&amp; !<span class="self">self</span>.global_sub_modules.contains_key(root)
+                        {
+                            <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::ModuleUndefined(root.to_string())
                                 .into_err(namespace.position()));
                         }
 
                         namespace.set_index(index);
 
                         <span class="kw">crate</span>::calc_qualified_fn_hash(
-                            namespace.iter().map(|m| m.as_str()),
+                            namespace.iter().map(Ident::as_str),
                             <span class="kw-2">&amp;</span>id,
                             args.len(),
                         )
-                    } <span class="kw">else </span>{
-                        calc_fn_hash(<span class="kw-2">&amp;</span>id, args.len())
                     };
                     <span class="attribute">#[cfg(feature = <span class="string">&quot;no_module&quot;</span>)]
                     </span><span class="kw">let </span>hash = calc_fn_hash(<span class="kw-2">&amp;</span>id, args.len());
@@ -4291,8 +4634,9 @@
                     args.shrink_to_fit();
 
                     <span class="kw">return </span><span class="prelude-val">Ok</span>(FnCallExpr {
-                        name: state.get_identifier(<span class="string">&quot;&quot;</span>, id),
+                        name: state.get_interned_string(id),
                         capture_parent_scope,
+                        is_native_operator: <span class="bool-val">false</span>,
                         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
                         </span>namespace,
                         hashes,
@@ -4309,7 +4653,7 @@
                 </span>(Token::EOF, pos) =&gt; {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MissingToken(
                         Token::RightParen.into(),
-                        <span class="macro">format!</span>(<span class="string">&quot;to close the arguments list of this function call &#39;{}&#39;&quot;</span>, id),
+                        <span class="macro">format!</span>(<span class="string">&quot;to close the arguments list of this function call &#39;{id}&#39;&quot;</span>),
                     )
                     .into_err(<span class="kw-2">*</span>pos))
                 }
@@ -4319,7 +4663,7 @@
                 </span>(.., pos) =&gt; {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MissingToken(
                         Token::Comma.into(),
-                        <span class="macro">format!</span>(<span class="string">&quot;to separate the arguments to function call &#39;{}&#39;&quot;</span>, id),
+                        <span class="macro">format!</span>(<span class="string">&quot;to separate the arguments to function call &#39;{id}&#39;&quot;</span>),
                     )
                     .into_err(<span class="kw-2">*</span>pos))
                 }
@@ -4336,6 +4680,8 @@
         state: <span class="kw-2">&amp;mut </span>ParseState,
         lib: <span class="kw-2">&amp;mut </span>FnLib,
         lhs: Expr,
+        options: ASTFlags,
+        check_index_type: bool,
         settings: ParseSettings,
     ) -&gt; ParseResult&lt;Expr&gt; {
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
@@ -4345,114 +4691,101 @@
 
         <span class="kw">let </span>idx_expr = <span class="self">self</span>.parse_expr(input, state, lib, settings.level_up())<span class="question-mark">?</span>;
 
-        <span class="comment">// Check type of indexing - must be integer or string
-        </span><span class="kw">match </span>idx_expr {
-            Expr::IntegerConstant(.., pos) =&gt; <span class="kw">match </span>lhs {
-                Expr::IntegerConstant(..)
-                | Expr::Array(..)
-                | Expr::StringConstant(..)
-                | Expr::InterpolatedString(..) =&gt; (),
+        <span class="comment">// Check types of indexing that cannot be overridden
+        // - arrays, maps, strings, bit-fields
+        </span><span class="kw">match </span>lhs {
+            <span class="kw">_ if </span>!check_index_type =&gt; (),
 
-                Expr::Map(..) =&gt; {
+            Expr::Map(..) =&gt; <span class="kw">match </span>idx_expr {
+                <span class="comment">// lhs[int]
+                </span>Expr::IntegerConstant(..) =&gt; {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
-                        <span class="string">&quot;Object map access expects string index, not a number&quot;</span>.into(),
-                    )
-                    .into_err(pos))
-                }
-
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
-                </span>Expr::FloatConstant(..) =&gt; {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
-                        <span class="string">&quot;Only arrays, object maps and strings can be indexed&quot;</span>.into(),
-                    )
-                    .into_err(lhs.start_position()))
-                }
-
-                Expr::CharConstant(..)
-                | Expr::And(..)
-                | Expr::Or(..)
-                | Expr::BoolConstant(..)
-                | Expr::Unit(..) =&gt; {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
-                        <span class="string">&quot;Only arrays, object maps and strings can be indexed&quot;</span>.into(),
-                    )
-                    .into_err(lhs.start_position()))
-                }
-
-                <span class="kw">_ </span>=&gt; (),
-            },
-
-            <span class="comment">// lhs[string]
-            </span>Expr::StringConstant(..) | Expr::InterpolatedString(..) =&gt; <span class="kw">match </span>lhs {
-                Expr::Map(..) =&gt; (),
-
-                Expr::Array(..) | Expr::StringConstant(..) | Expr::InterpolatedString(..) =&gt; {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
-                        <span class="string">&quot;Array or string expects numeric index, not a string&quot;</span>.into(),
+                        <span class="string">&quot;Object map expects string index, not a number&quot;</span>.into(),
                     )
                     .into_err(idx_expr.start_position()))
                 }
 
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
+                <span class="comment">// lhs[string]
+                </span>Expr::StringConstant(..) | Expr::InterpolatedString(..) =&gt; (),
+
+                <span class="comment">// lhs[float]
+                </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
                 </span>Expr::FloatConstant(..) =&gt; {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
-                        <span class="string">&quot;Only arrays, object maps and strings can be indexed&quot;</span>.into(),
+                        <span class="string">&quot;Object map expects string index, not a float&quot;</span>.into(),
                     )
-                    .into_err(lhs.start_position()))
+                    .into_err(idx_expr.start_position()))
                 }
-
-                Expr::CharConstant(..)
-                | Expr::And(..)
-                | Expr::Or(..)
-                | Expr::BoolConstant(..)
-                | Expr::Unit(..) =&gt; {
+                <span class="comment">// lhs[char]
+                </span>Expr::CharConstant(..) =&gt; {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
-                        <span class="string">&quot;Only arrays, object maps and strings can be indexed&quot;</span>.into(),
+                        <span class="string">&quot;Object map expects string index, not a character&quot;</span>.into(),
                     )
-                    .into_err(lhs.start_position()))
+                    .into_err(idx_expr.start_position()))
                 }
-
+                <span class="comment">// lhs[()]
+                </span>Expr::Unit(..) =&gt; {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
+                        <span class="string">&quot;Object map expects string index, not ()&quot;</span>.into(),
+                    )
+                    .into_err(idx_expr.start_position()))
+                }
+                <span class="comment">// lhs[??? &amp;&amp; ???], lhs[??? || ???], lhs[true], lhs[false]
+                </span>Expr::And(..) | Expr::Or(..) | Expr::BoolConstant(..) =&gt; {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
+                        <span class="string">&quot;Object map expects string index, not a boolean&quot;</span>.into(),
+                    )
+                    .into_err(idx_expr.start_position()))
+                }
                 <span class="kw">_ </span>=&gt; (),
             },
 
-            <span class="comment">// lhs[float]
-            </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
-            </span>x @ Expr::FloatConstant(..) =&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
-                    <span class="string">&quot;Array access expects integer index, not a float&quot;</span>.into(),
-                )
-                .into_err(x.start_position()))
-            }
-            <span class="comment">// lhs[char]
-            </span>x @ Expr::CharConstant(..) =&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
-                    <span class="string">&quot;Array access expects integer index, not a character&quot;</span>.into(),
-                )
-                .into_err(x.start_position()))
-            }
-            <span class="comment">// lhs[()]
-            </span>x @ Expr::Unit(..) =&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
-                    <span class="string">&quot;Array access expects integer index, not ()&quot;</span>.into(),
-                )
-                .into_err(x.start_position()))
-            }
-            <span class="comment">// lhs[??? &amp;&amp; ???], lhs[??? || ???]
-            </span>x @ Expr::And(..) | x @ Expr::Or(..) =&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
-                    <span class="string">&quot;Array access expects integer index, not a boolean&quot;</span>.into(),
-                )
-                .into_err(x.start_position()))
-            }
-            <span class="comment">// lhs[true], lhs[false]
-            </span>x @ Expr::BoolConstant(..) =&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
-                    <span class="string">&quot;Array access expects integer index, not a boolean&quot;</span>.into(),
-                )
-                .into_err(x.start_position()))
-            }
-            <span class="comment">// All other expressions
-            </span><span class="kw">_ </span>=&gt; (),
+            Expr::IntegerConstant(..)
+            | Expr::Array(..)
+            | Expr::StringConstant(..)
+            | Expr::InterpolatedString(..) =&gt; <span class="kw">match </span>idx_expr {
+                <span class="comment">// lhs[int]
+                </span>Expr::IntegerConstant(..) =&gt; (),
+
+                <span class="comment">// lhs[string]
+                </span>Expr::StringConstant(..) | Expr::InterpolatedString(..) =&gt; {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
+                        <span class="string">&quot;Array, string or bit-field expects numeric index, not a string&quot;</span>.into(),
+                    )
+                    .into_err(idx_expr.start_position()))
+                }
+                <span class="comment">// lhs[float]
+                </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
+                </span>Expr::FloatConstant(..) =&gt; {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
+                        <span class="string">&quot;Array, string or bit-field expects integer index, not a float&quot;</span>.into(),
+                    )
+                    .into_err(idx_expr.start_position()))
+                }
+                <span class="comment">// lhs[char]
+                </span>Expr::CharConstant(..) =&gt; {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
+                        <span class="string">&quot;Array, string or bit-field expects integer index, not a character&quot;</span>.into(),
+                    )
+                    .into_err(idx_expr.start_position()))
+                }
+                <span class="comment">// lhs[()]
+                </span>Expr::Unit(..) =&gt; {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
+                        <span class="string">&quot;Array, string or bit-field expects integer index, not ()&quot;</span>.into(),
+                    )
+                    .into_err(idx_expr.start_position()))
+                }
+                <span class="comment">// lhs[??? &amp;&amp; ???], lhs[??? || ???], lhs[true], lhs[false]
+                </span>Expr::And(..) | Expr::Or(..) | Expr::BoolConstant(..) =&gt; {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MalformedIndexExpr(
+                        <span class="string">&quot;Array, string or bit-field expects integer index, not a boolean&quot;</span>.into(),
+                    )
+                    .into_err(idx_expr.start_position()))
+                }
+                <span class="kw">_ </span>=&gt; (),
+            },
+            <span class="kw">_ </span>=&gt; (),
         }
 
         <span class="comment">// Check if there is a closing bracket
@@ -4463,28 +4796,35 @@
                 <span class="comment">// Any more indexing following?
                 </span><span class="kw">match </span>input.peek().expect(NEVER_ENDS) {
                     <span class="comment">// If another indexing level, right-bind it
-                    </span>(Token::LeftBracket, ..) =&gt; {
+                    </span>(Token::LeftBracket | Token::QuestionBracket, ..) =&gt; {
+                        <span class="kw">let </span>(token, pos) = input.next().expect(NEVER_ENDS);
                         <span class="kw">let </span>prev_pos = settings.pos;
-                        settings.pos = eat_token(input, Token::LeftBracket);
+                        settings.pos = pos;
                         <span class="comment">// Recursively parse the indexing chain, right-binding each
                         </span><span class="kw">let </span>idx_expr = <span class="self">self</span>.parse_index_chain(
                             input,
                             state,
                             lib,
                             idx_expr,
+                            <span class="kw">match </span>token {
+                                Token::LeftBracket =&gt; ASTFlags::NONE,
+                                Token::QuestionBracket =&gt; ASTFlags::NEGATED,
+                                <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;`[` or `?[`&quot;</span>),
+                            },
+                            <span class="bool-val">false</span>,
                             settings.level_up(),
                         )<span class="question-mark">?</span>;
                         <span class="comment">// Indexing binds to right
                         </span><span class="prelude-val">Ok</span>(Expr::Index(
                             BinaryExpr { lhs, rhs: idx_expr }.into(),
-                            ASTFlags::NONE,
+                            options,
                             prev_pos,
                         ))
                     }
                     <span class="comment">// Otherwise terminate the indexing chain
                     </span><span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(Expr::Index(
                         BinaryExpr { lhs, rhs: idx_expr }.into(),
-                        ASTFlags::BREAK,
+                        options | ASTFlags::BREAK,
                         settings.pos,
                     )),
                 }
@@ -4514,13 +4854,13 @@
         </span><span class="kw">let </span><span class="kw-2">mut </span>settings = settings;
         settings.pos = eat_token(input, Token::LeftBracket);
 
-        <span class="kw">let </span><span class="kw-2">mut </span>arr = StaticVec::new_const();
+        <span class="kw">let </span><span class="kw-2">mut </span>array = StaticVec::new_const();
 
         <span class="kw">loop </span>{
             <span class="kw">const </span>MISSING_RBRACKET: <span class="kw-2">&amp;</span>str = <span class="string">&quot;to end this array literal&quot;</span>;
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
-            </span><span class="kw">if </span><span class="self">self</span>.max_array_size() &gt; <span class="number">0 </span>&amp;&amp; arr.len() &gt;= <span class="self">self</span>.max_array_size() {
+            </span><span class="kw">if </span><span class="self">self</span>.max_array_size() &gt; <span class="number">0 </span>&amp;&amp; array.len() &gt;= <span class="self">self</span>.max_array_size() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::LiteralTooLarge(
                     <span class="string">&quot;Size of array literal&quot;</span>.to_string(),
                     <span class="self">self</span>.max_array_size(),
@@ -4542,7 +4882,7 @@
                 }
                 <span class="kw">_ </span>=&gt; {
                     <span class="kw">let </span>expr = <span class="self">self</span>.parse_expr(input, state, lib, settings.level_up())<span class="question-mark">?</span>;
-                    arr.push(expr);
+                    array.push(expr);
                 }
             }
 
@@ -4569,9 +4909,9 @@
             };
         }
 
-        arr.shrink_to_fit();
+        array.shrink_to_fit();
 
-        <span class="prelude-val">Ok</span>(Expr::Array(arr.into(), settings.pos))
+        <span class="prelude-val">Ok</span>(Expr::Array(array.into(), settings.pos))
     }
 
     <span class="doccomment">/// Parse a map literal.
@@ -4647,10 +4987,7 @@
                 (.., pos) =&gt; {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MissingToken(
                         Token::Colon.into(),
-                        <span class="macro">format!</span>(
-                            <span class="string">&quot;to follow the property &#39;{}&#39; in this object map literal&quot;</span>,
-                            name
-                        ),
+                        <span class="macro">format!</span>(<span class="string">&quot;to follow the property &#39;{name}&#39; in this object map literal&quot;</span>),
                     )
                     .into_err(pos))
                 }
@@ -4666,8 +5003,9 @@
             }
 
             <span class="kw">let </span>expr = <span class="self">self</span>.parse_expr(input, state, lib, settings.level_up())<span class="question-mark">?</span>;
-            <span class="kw">let </span>name = state.get_identifier(<span class="string">&quot;&quot;</span>, name);
             template.insert(name.clone(), <span class="kw">crate</span>::Dynamic::UNIT);
+
+            <span class="kw">let </span>name = state.get_interned_string(name);
             map.push((Ident { name, pos }, expr));
 
             <span class="kw">match </span>input.peek().expect(NEVER_ENDS) {
@@ -4726,15 +5064,16 @@
             }
         }
 
-        <span class="kw">let </span><span class="kw-2">mut </span>cases = BTreeMap::&lt;u64, Box&lt;ConditionalStmtBlock&gt;&gt;::new();
-        <span class="kw">let </span><span class="kw-2">mut </span>ranges = StaticVec::&lt;(INT, INT, bool, Box&lt;ConditionalStmtBlock&gt;)&gt;::new();
-        <span class="kw">let </span><span class="kw-2">mut </span>def_pos = Position::NONE;
-        <span class="kw">let </span><span class="kw-2">mut </span>def_stmt = <span class="prelude-val">None</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>expressions = StaticVec::&lt;ConditionalExpr&gt;::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>cases = BTreeMap::&lt;u64, CaseBlocksList&gt;::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>ranges = StaticVec::&lt;RangeCase&gt;::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>def_case = <span class="prelude-val">None</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>def_case_pos = Position::NONE;
 
         <span class="kw">loop </span>{
             <span class="kw">const </span>MISSING_RBRACE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;to end this switch block&quot;</span>;
 
-            <span class="kw">let </span>(expr, condition) = <span class="kw">match </span>input.peek().expect(NEVER_ENDS) {
+            <span class="kw">let </span>(case_expr_list, condition) = <span class="kw">match </span>input.peek().expect(NEVER_ENDS) {
                 (Token::RightBrace, ..) =&gt; {
                     eat_token(input, Token::RightBrace);
                     <span class="kw">break</span>;
@@ -4745,8 +5084,8 @@
                             .into_err(<span class="kw-2">*</span>pos),
                     )
                 }
-                (Token::Underscore, pos) <span class="kw">if </span>def_stmt.is_none() =&gt; {
-                    def_pos = <span class="kw-2">*</span>pos;
+                (Token::Underscore, pos) <span class="kw">if </span>def_case.is_none() =&gt; {
+                    def_case_pos = <span class="kw-2">*</span>pos;
                     eat_token(input, Token::Underscore);
 
                     <span class="kw">let </span>(if_clause, if_pos) = match_token(input, Token::If);
@@ -4755,17 +5094,35 @@
                         <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::WrongSwitchCaseCondition.into_err(if_pos));
                     }
 
-                    (<span class="prelude-val">None</span>, Expr::BoolConstant(<span class="bool-val">true</span>, Position::NONE))
+                    (
+                        StaticVec::default(),
+                        Expr::BoolConstant(<span class="bool-val">true</span>, Position::NONE),
+                    )
                 }
-                (Token::Underscore, pos) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::DuplicatedSwitchCase.into_err(<span class="kw-2">*</span>pos)),
-
-                <span class="kw">_ if </span>def_stmt.is_some() =&gt; {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::WrongSwitchDefaultCase.into_err(def_pos))
+                <span class="kw">_ if </span>def_case.is_some() =&gt; {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::WrongSwitchDefaultCase.into_err(def_case_pos))
                 }
 
                 <span class="kw">_ </span>=&gt; {
-                    <span class="kw">let </span>case_expr =
-                        <span class="prelude-val">Some</span>(<span class="self">self</span>.parse_expr(input, state, lib, settings.level_up())<span class="question-mark">?</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>case_expr_list = StaticVec::new();
+
+                    <span class="kw">loop </span>{
+                        <span class="kw">let </span>filter = state.expr_filter;
+                        state.expr_filter = |t| t != <span class="kw-2">&amp;</span>Token::Pipe;
+                        <span class="kw">let </span>expr = <span class="self">self</span>.parse_expr(input, state, lib, settings.level_up());
+                        state.expr_filter = filter;
+
+                        <span class="kw">match </span>expr {
+                            <span class="prelude-val">Ok</span>(expr) =&gt; case_expr_list.push(expr),
+                            <span class="prelude-val">Err</span>(err) =&gt; {
+                                <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::ExprExpected(<span class="string">&quot;literal&quot;</span>.into()).into_err(err.<span class="number">1</span>))
+                            }
+                        }
+
+                        <span class="kw">if </span>!match_token(input, Token::Pipe).<span class="number">0 </span>{
+                            <span class="kw">break</span>;
+                        }
+                    }
 
                     <span class="kw">let </span>condition = <span class="kw">if </span>match_token(input, Token::If).<span class="number">0 </span>{
                         ensure_not_statement_expr(input, <span class="string">&quot;a boolean&quot;</span>)<span class="question-mark">?</span>;
@@ -4777,35 +5134,8 @@
                     } <span class="kw">else </span>{
                         Expr::BoolConstant(<span class="bool-val">true</span>, Position::NONE)
                     };
-                    (case_expr, condition)
+                    (case_expr_list, condition)
                 }
-            };
-
-            <span class="kw">let </span>(hash, range) = <span class="kw">if let </span><span class="prelude-val">Some</span>(expr) = expr {
-                <span class="kw">let </span>value = expr.get_literal_value().ok_or_else(|| {
-                    PERR::ExprExpected(<span class="string">&quot;a literal&quot;</span>.to_string()).into_err(expr.start_position())
-                })<span class="question-mark">?</span>;
-
-                <span class="kw">let </span>guard = value.read_lock::&lt;ExclusiveRange&gt;();
-
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(range) = guard {
-                    (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>((range.start, range.end, <span class="bool-val">false</span>)))
-                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(range) = value.read_lock::&lt;InclusiveRange&gt;() {
-                    (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>((<span class="kw-2">*</span>range.start(), <span class="kw-2">*</span>range.end(), <span class="bool-val">true</span>)))
-                } <span class="kw">else if </span>value.is::&lt;INT&gt;() &amp;&amp; !ranges.is_empty() {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::WrongSwitchIntegerCase.into_err(expr.start_position()));
-                } <span class="kw">else </span>{
-                    <span class="kw">let </span>hasher = <span class="kw-2">&amp;mut </span>get_hasher();
-                    value.hash(hasher);
-                    <span class="kw">let </span>hash = hasher.finish();
-
-                    <span class="kw">if </span>!cases.is_empty() &amp;&amp; cases.contains_key(<span class="kw-2">&amp;</span>hash) {
-                        <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::DuplicatedSwitchCase.into_err(expr.start_position()));
-                    }
-                    (<span class="prelude-val">Some</span>(hash), <span class="prelude-val">None</span>)
-                }
-            } <span class="kw">else </span>{
-                (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>)
             };
 
             <span class="kw">match </span>input.next().expect(NEVER_ENDS) {
@@ -4820,49 +5150,77 @@
                 }
             };
 
-            <span class="kw">let </span>stmt = <span class="self">self</span>.parse_stmt(input, state, lib, settings.level_up())<span class="question-mark">?</span>;
+            <span class="kw">let </span>(action_expr, need_comma) = <span class="kw">if </span>settings.allow_statements {
+                <span class="kw">let </span>stmt = <span class="self">self</span>.parse_stmt(input, state, lib, settings.level_up())<span class="question-mark">?</span>;
+                <span class="kw">let </span>need_comma = !stmt.is_self_terminated();
 
-            <span class="kw">let </span>need_comma = !stmt.is_self_terminated();
+                <span class="kw">let </span>stmt_block: StmtBlock = stmt.into();
+                (Expr::Stmt(stmt_block.into()), need_comma)
+            } <span class="kw">else </span>{
+                (
+                    <span class="self">self</span>.parse_expr(input, state, lib, settings.level_up())<span class="question-mark">?</span>,
+                    <span class="bool-val">true</span>,
+                )
+            };
+            <span class="kw">let </span>has_condition = !<span class="macro">matches!</span>(condition, Expr::BoolConstant(<span class="bool-val">true</span>, ..));
 
-            def_stmt = <span class="kw">match </span>(hash, range) {
-                (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(range)) =&gt; {
-                    <span class="kw">let </span>is_empty = <span class="kw">if </span>range.<span class="number">2 </span>{
-                        (range.<span class="number">0</span>..=range.<span class="number">1</span>).is_empty()
-                    } <span class="kw">else </span>{
-                        (range.<span class="number">0</span>..range.<span class="number">1</span>).is_empty()
-                    };
+            expressions.push((condition, action_expr).into());
+            <span class="kw">let </span>index = expressions.len() - <span class="number">1</span>;
 
-                    <span class="kw">if </span>!is_empty {
-                        <span class="kw">match </span>(range.<span class="number">1</span>.checked_sub(range.<span class="number">0</span>), range.<span class="number">2</span>) {
-                            <span class="comment">// Unroll single range
-                            </span>(<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="bool-val">false</span>) | (<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="bool-val">true</span>) =&gt; {
-                                <span class="kw">let </span>value = Dynamic::from_int(range.<span class="number">0</span>);
-                                <span class="kw">let </span>hasher = <span class="kw-2">&amp;mut </span>get_hasher();
-                                value.hash(hasher);
-                                <span class="kw">let </span>hash = hasher.finish();
+            <span class="kw">if </span>case_expr_list.is_empty() {
+                def_case = <span class="prelude-val">Some</span>(index);
+            } <span class="kw">else </span>{
+                <span class="kw">for </span>expr <span class="kw">in </span>case_expr_list {
+                    <span class="kw">let </span>value = expr.get_literal_value().ok_or_else(|| {
+                        PERR::ExprExpected(<span class="string">&quot;a literal&quot;</span>.to_string()).into_err(expr.start_position())
+                    })<span class="question-mark">?</span>;
 
-                                cases.entry(hash).or_insert_with(|| {
-                                    <span class="kw">let </span>block: ConditionalStmtBlock = (condition, stmt).into();
-                                    block.into()
-                                });
-                            }
-                            <span class="comment">// Other range
-                            </span><span class="kw">_ </span>=&gt; {
-                                <span class="kw">let </span>block: ConditionalStmtBlock = (condition, stmt).into();
-                                ranges.push((range.<span class="number">0</span>, range.<span class="number">1</span>, range.<span class="number">2</span>, block.into()))
+                    <span class="kw">let </span><span class="kw-2">mut </span>range_value: <span class="prelude-ty">Option</span>&lt;RangeCase&gt; = <span class="prelude-val">None</span>;
+
+                    <span class="kw">let </span>guard = value.read_lock::&lt;ExclusiveRange&gt;();
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(range) = guard {
+                        range_value = <span class="prelude-val">Some</span>(range.clone().into());
+                    } <span class="kw">else if let </span><span class="prelude-val">Some</span>(range) = value.read_lock::&lt;InclusiveRange&gt;() {
+                        range_value = <span class="prelude-val">Some</span>(range.clone().into());
+                    }
+
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>r) = range_value {
+                        <span class="kw">if </span>!r.is_empty() {
+                            <span class="comment">// Do not unroll ranges if there are previous non-unrolled ranges
+                            </span><span class="kw">if </span>!has_condition &amp;&amp; ranges.is_empty() &amp;&amp; r.len() &lt;= SMALL_SWITCH_RANGE
+                            {
+                                <span class="comment">// Unroll small range
+                                </span><span class="kw">for </span>n <span class="kw">in </span>r {
+                                    <span class="kw">let </span>hasher = <span class="kw-2">&amp;mut </span>get_hasher();
+                                    Dynamic::from_int(n).hash(hasher);
+                                    cases
+                                        .entry(hasher.finish())
+                                        .and_modify(|cases| cases.push(index))
+                                        .or_insert_with(|| [index].into());
+                                }
+                            } <span class="kw">else </span>{
+                                <span class="comment">// Other range
+                                </span>r.set_index(index);
+                                ranges.push(r);
                             }
                         }
+                        <span class="kw">continue</span>;
                     }
-                    <span class="prelude-val">None
-                </span>}
-                (<span class="prelude-val">Some</span>(hash), <span class="prelude-val">None</span>) =&gt; {
-                    <span class="kw">let </span>block: ConditionalStmtBlock = (condition, stmt).into();
-                    cases.insert(hash, block.into());
-                    <span class="prelude-val">None
-                </span>}
-                (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; <span class="prelude-val">Some</span>(Box::new(stmt.into())),
-                <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;both hash and range in switch statement case&quot;</span>),
-            };
+
+                    <span class="kw">if </span>value.is::&lt;INT&gt;() &amp;&amp; !ranges.is_empty() {
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::WrongSwitchIntegerCase.into_err(expr.start_position()));
+                    }
+
+                    <span class="kw">let </span>hasher = <span class="kw-2">&amp;mut </span>get_hasher();
+                    value.hash(hasher);
+                    <span class="kw">let </span>hash = hasher.finish();
+
+                    cases
+                        .entry(hash)
+                        .and_modify(|cases| cases.push(index))
+                        .or_insert_with(|| [index].into());
+                }
+            }
 
             <span class="kw">match </span>input.peek().expect(NEVER_ENDS) {
                 (Token::Comma, ..) =&gt; {
@@ -4887,9 +5245,10 @@
             }
         }
 
-        <span class="kw">let </span>cases = SwitchCases {
+        <span class="kw">let </span>cases = SwitchCasesCollection {
+            expressions,
             cases,
-            def_case: def_stmt.unwrap_or_else(|| StmtBlock::NONE.into()),
+            def_case,
             ranges,
         };
 
@@ -4902,6 +5261,7 @@
         input: <span class="kw-2">&amp;mut </span>TokenStream,
         state: <span class="kw-2">&amp;mut </span>ParseState,
         lib: <span class="kw-2">&amp;mut </span>FnLib,
+        is_property: bool,
         settings: ParseSettings,
     ) -&gt; ParseResult&lt;Expr&gt; {
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
@@ -4913,6 +5273,12 @@
         settings.pos = <span class="kw-2">*</span>token_pos;
 
         <span class="kw">let </span>root_expr = <span class="kw">match </span>token {
+            <span class="kw">_ if </span>!(state.expr_filter)(token) =&gt; {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(
+                    LexError::UnexpectedInput(token.syntax().to_string()).into_err(settings.pos)
+                )
+            }
+
             Token::EOF =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::UnexpectedEOF.into_err(settings.pos)),
 
             Token::Unit =&gt; {
@@ -4928,7 +5294,7 @@
                 Token::IntegerConstant(x) =&gt; Expr::IntegerConstant(x, settings.pos),
                 Token::CharConstant(c) =&gt; Expr::CharConstant(c, settings.pos),
                 Token::StringConstant(s) =&gt; {
-                    Expr::StringConstant(state.get_interned_string(<span class="string">&quot;&quot;</span>, s), settings.pos)
+                    Expr::StringConstant(state.get_interned_string(s), settings.pos)
                 }
                 Token::True =&gt; Expr::BoolConstant(<span class="bool-val">true</span>, settings.pos),
                 Token::False =&gt; Expr::BoolConstant(<span class="bool-val">false</span>, settings.pos),
@@ -4948,7 +5314,7 @@
             }
 
             <span class="comment">// { - block statement as expression
-            </span>Token::LeftBrace <span class="kw">if </span>settings.options.allow_stmt_expr =&gt; {
+            </span>Token::LeftBrace <span class="kw">if </span>settings.options.contains(LangOptions::STMT_EXPR) =&gt; {
                 <span class="kw">match </span><span class="self">self</span>.parse_block(input, state, lib, settings.level_up())<span class="question-mark">? </span>{
                     block @ Stmt::Block(..) =&gt; Expr::Stmt(Box::new(block.into())),
                     stmt =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;Stmt::Block expected but gets {:?}&quot;</span>, stmt),
@@ -4959,56 +5325,87 @@
             </span>Token::LeftParen =&gt; <span class="self">self</span>.parse_paren_expr(input, state, lib, settings.level_up())<span class="question-mark">?</span>,
 
             <span class="comment">// If statement is allowed to act as expressions
-            </span>Token::If <span class="kw">if </span>settings.options.allow_if_expr =&gt; Expr::Stmt(Box::new(
+            </span>Token::If <span class="kw">if </span>settings.options.contains(LangOptions::IF_EXPR) =&gt; Expr::Stmt(Box::new(
                 <span class="self">self</span>.parse_if(input, state, lib, settings.level_up())<span class="question-mark">?
                     </span>.into(),
             )),
             <span class="comment">// Switch statement is allowed to act as expressions
-            </span>Token::Switch <span class="kw">if </span>settings.options.allow_switch_expr =&gt; Expr::Stmt(Box::new(
-                <span class="self">self</span>.parse_switch(input, state, lib, settings.level_up())<span class="question-mark">?
-                    </span>.into(),
-            )),
+            </span>Token::Switch <span class="kw">if </span>settings.options.contains(LangOptions::SWITCH_EXPR) =&gt; {
+                Expr::Stmt(Box::new(
+                    <span class="self">self</span>.parse_switch(input, state, lib, settings.level_up())<span class="question-mark">?
+                        </span>.into(),
+                ))
+            }
 
             <span class="comment">// | ...
             </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-            </span>Token::Pipe | Token::Or <span class="kw">if </span>settings.options.allow_anonymous_fn =&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>new_state =
-                    ParseState::new(<span class="self">self</span>, state.scope, state.tokenizer_control.clone());
+            </span>Token::Pipe | Token::Or <span class="kw">if </span>settings.options.contains(LangOptions::ANON_FN) =&gt; {
+                <span class="comment">// Build new parse state
+                </span><span class="kw">let </span>interned_strings = std::mem::take(<span class="kw-2">&amp;mut </span>state.interned_strings);
+
+                <span class="kw">let </span><span class="kw-2">mut </span>new_state = ParseState::new(
+                    <span class="self">self</span>,
+                    state.scope,
+                    interned_strings,
+                    state.tokenizer_control.clone(),
+                );
+
+                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+                </span>{
+                    <span class="comment">// Do not allow storing an index to a globally-imported module
+                    // just in case the function is separated from this `AST`.
+                    //
+                    // Keep them in `global_imports` instead so that strict variables
+                    // mode will not complain.
+                    </span>new_state.global_imports.clone_from(<span class="kw-2">&amp;</span>state.global_imports);
+                    new_state
+                        .global_imports
+                        .extend(state.imports.iter().cloned());
+                }
 
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
                 </span>{
                     new_state.max_expr_depth = <span class="self">self</span>.max_function_expr_depth();
                 }
 
+                <span class="kw">let </span><span class="kw-2">mut </span>options = <span class="self">self</span>.options;
+                options.set(
+                    LangOptions::STRICT_VAR,
+                    <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;no_closure&quot;</span>) {
+                        settings.options.contains(LangOptions::STRICT_VAR)
+                    } <span class="kw">else </span>{
+                        <span class="comment">// A capturing closure can access variables not defined locally
+                        </span><span class="bool-val">false
+                    </span>},
+                );
+
                 <span class="kw">let </span>new_settings = ParseSettings {
-                    is_global: <span class="bool-val">false</span>,
-                    is_function_scope: <span class="bool-val">true</span>,
+                    at_global_level: <span class="bool-val">false</span>,
+                    in_fn_scope: <span class="bool-val">true</span>,
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-                    </span>is_closure_scope: <span class="bool-val">true</span>,
+                    </span>in_closure: <span class="bool-val">true</span>,
                     is_breakable: <span class="bool-val">false</span>,
                     level: <span class="number">0</span>,
-                    options: LanguageOptions {
-                        strict_var: <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">&quot;no_closure&quot;</span>) {
-                            settings.options.strict_var
-                        } <span class="kw">else </span>{
-                            <span class="comment">// A capturing closure can access variables not defined locally
-                            </span><span class="bool-val">false
-                        </span>},
-                        ..<span class="self">self</span>.options
-                    },
+                    options,
                     ..settings
                 };
 
-                <span class="kw">let </span>(expr, func) = <span class="self">self</span>.parse_anon_fn(input, <span class="kw-2">&amp;mut </span>new_state, lib, new_settings)<span class="question-mark">?</span>;
+                <span class="kw">let </span>result = <span class="self">self</span>.parse_anon_fn(input, <span class="kw-2">&amp;mut </span>new_state, lib, new_settings);
+
+                <span class="comment">// Restore parse state
+                </span>state.interned_strings = new_state.interned_strings;
+
+                <span class="kw">let </span>(expr, func) = result<span class="question-mark">?</span>;
 
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
                 </span>new_state.external_vars.iter().try_for_each(
                     |<span class="kw">crate</span>::ast::Ident { name, pos }| {
-                        <span class="kw">let </span>index = state.access_var(name, <span class="kw-2">*</span>pos);
+                        <span class="kw">let </span>(index, is_func) = state.access_var(name, lib, <span class="kw-2">*</span>pos);
 
-                        <span class="kw">if </span>settings.options.strict_var
-                            &amp;&amp; !settings.is_closure_scope
+                        <span class="kw">if </span>!is_func
                             &amp;&amp; index.is_none()
+                            &amp;&amp; !settings.in_closure
+                            &amp;&amp; settings.options.contains(LangOptions::STRICT_VAR)
                             &amp;&amp; !state.scope.contains(name)
                         {
                             <span class="comment">// If the parent scope is not inside another capturing closure
@@ -5052,9 +5449,7 @@
                     }
 
                     <span class="comment">// Make sure to parse the following as text
-                    </span><span class="kw">let </span><span class="kw-2">mut </span>control = state.tokenizer_control.get();
-                    control.is_within_text = <span class="bool-val">true</span>;
-                    state.tokenizer_control.set(control);
+                    </span>state.tokenizer_control.borrow_mut().is_within_text = <span class="bool-val">true</span>;
 
                     <span class="kw">match </span>input.next().expect(NEVER_ENDS) {
                         (Token::StringConstant(s), pos) =&gt; {
@@ -5082,7 +5477,7 @@
                 }
 
                 <span class="kw">if </span>segments.is_empty() {
-                    Expr::StringConstant(state.get_interned_string(<span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>), settings.pos)
+                    Expr::StringConstant(state.get_interned_string(<span class="string">&quot;&quot;</span>), settings.pos)
                 } <span class="kw">else </span>{
                     segments.shrink_to_fit();
                     Expr::InterpolatedString(segments.into(), settings.pos)
@@ -5100,6 +5495,7 @@
             </span>Token::MapStart =&gt; <span class="self">self</span>.parse_map_literal(input, state, lib, settings.level_up())<span class="question-mark">?</span>,
 
             <span class="comment">// Custom syntax.
+            </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
             </span>Token::Custom(key) | Token::Reserved(key) | Token::Identifier(key)
                 <span class="kw">if </span>!<span class="self">self</span>.custom_syntax.is_empty() &amp;&amp; <span class="self">self</span>.custom_syntax.contains_key(<span class="kw-2">&amp;**</span>key) =&gt;
             {
@@ -5130,7 +5526,7 @@
                             </span>state.allow_capture = <span class="bool-val">true</span>;
                         }
                         Expr::Variable(
-                            (<span class="prelude-val">None</span>, ns, <span class="number">0</span>, state.get_identifier(<span class="string">&quot;&quot;</span>, s)).into(),
+                            (<span class="prelude-val">None</span>, ns, <span class="number">0</span>, state.get_interned_string(s)).into(),
                             <span class="prelude-val">None</span>,
                             settings.pos,
                         )
@@ -5143,18 +5539,17 @@
                             <span class="comment">// Once the identifier consumed we must enable next variables capturing
                             </span>state.allow_capture = <span class="bool-val">true</span>;
                         }
-                        Expr::Variable(
-                            (<span class="prelude-val">None</span>, ns, <span class="number">0</span>, state.get_identifier(<span class="string">&quot;&quot;</span>, s)).into(),
-                            <span class="prelude-val">None</span>,
-                            settings.pos,
-                        )
+                        <span class="kw">let </span>name = state.get_interned_string(s);
+                        Expr::Variable((<span class="prelude-val">None</span>, ns, <span class="number">0</span>, name).into(), <span class="prelude-val">None</span>, settings.pos)
                     }
                     <span class="comment">// Normal variable access
                     </span><span class="kw">_ </span>=&gt; {
-                        <span class="kw">let </span>index = state.access_var(<span class="kw-2">&amp;</span>s, settings.pos);
+                        <span class="kw">let </span>(index, is_func) = state.access_var(<span class="kw-2">&amp;</span>s, lib, settings.pos);
 
-                        <span class="kw">if </span>settings.options.strict_var
+                        <span class="kw">if </span>!is_property
+                            &amp;&amp; !is_func
                             &amp;&amp; index.is_none()
+                            &amp;&amp; settings.options.contains(LangOptions::STRICT_VAR)
                             &amp;&amp; !state.scope.contains(<span class="kw-2">&amp;</span>s)
                         {
                             <span class="kw">return </span><span class="prelude-val">Err</span>(
@@ -5169,11 +5564,8 @@
                                 <span class="prelude-val">None
                             </span>}
                         });
-                        Expr::Variable(
-                            (index, ns, <span class="number">0</span>, state.get_identifier(<span class="string">&quot;&quot;</span>, s)).into(),
-                            short_index,
-                            settings.pos,
-                        )
+                        <span class="kw">let </span>name = state.get_interned_string(s);
+                        Expr::Variable((index, ns, <span class="number">0</span>, name).into(), short_index, settings.pos)
                     }
                 }
             }
@@ -5194,21 +5586,21 @@
                     <span class="comment">// Function call is allowed to have reserved keyword
                     </span>Token::LeftParen | Token::Bang | Token::Unit <span class="kw">if </span>is_keyword_function(<span class="kw-2">&amp;</span>s) =&gt; {
                         Expr::Variable(
-                            (<span class="prelude-val">None</span>, ns, <span class="number">0</span>, state.get_identifier(<span class="string">&quot;&quot;</span>, s)).into(),
+                            (<span class="prelude-val">None</span>, ns, <span class="number">0</span>, state.get_interned_string(s)).into(),
                             <span class="prelude-val">None</span>,
                             settings.pos,
                         )
                     }
                     <span class="comment">// Access to `this` as a variable is OK within a function scope
                     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                    </span><span class="kw">_ if </span><span class="kw-2">&amp;*</span>s == KEYWORD_THIS &amp;&amp; settings.is_function_scope =&gt; Expr::Variable(
-                        (<span class="prelude-val">None</span>, ns, <span class="number">0</span>, state.get_identifier(<span class="string">&quot;&quot;</span>, s)).into(),
+                    </span><span class="kw">_ if </span><span class="kw-2">&amp;*</span>s == KEYWORD_THIS &amp;&amp; settings.in_fn_scope =&gt; Expr::Variable(
+                        (<span class="prelude-val">None</span>, ns, <span class="number">0</span>, state.get_interned_string(s)).into(),
                         <span class="prelude-val">None</span>,
                         settings.pos,
                     ),
                     <span class="comment">// Cannot access to `this` as a variable not in a function scope
                     </span><span class="kw">_ if </span><span class="kw-2">&amp;*</span>s == KEYWORD_THIS =&gt; {
-                        <span class="kw">let </span>msg = <span class="macro">format!</span>(<span class="string">&quot;&#39;{}&#39; can only be used in functions&quot;</span>, s);
+                        <span class="kw">let </span>msg = <span class="macro">format!</span>(<span class="string">&quot;&#39;{s}&#39; can only be used in functions&quot;</span>);
                         <span class="kw">return </span><span class="prelude-val">Err</span>(
                             LexError::ImproperSymbol(s.to_string(), msg).into_err(settings.pos)
                         );
@@ -5228,6 +5620,10 @@
                 )
             }
         };
+
+        <span class="kw">if </span>!(state.expr_filter)(<span class="kw-2">&amp;</span>input.peek().expect(NEVER_ENDS).<span class="number">0</span>) {
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(root_expr);
+        }
 
         <span class="self">self</span>.parse_postfix(input, state, lib, root_expr, settings)
     }
@@ -5325,19 +5721,24 @@
                     namespace.push(var_name_def);
 
                     Expr::Variable(
-                        (<span class="prelude-val">None</span>, namespace, <span class="number">0</span>, state.get_identifier(<span class="string">&quot;&quot;</span>, id2)).into(),
+                        (<span class="prelude-val">None</span>, namespace, <span class="number">0</span>, state.get_interned_string(id2)).into(),
                         <span class="prelude-val">None</span>,
                         pos2,
                     )
                 }
                 <span class="comment">// Indexing
                 </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-                </span>(expr, Token::LeftBracket) =&gt; {
-                    <span class="self">self</span>.parse_index_chain(input, state, lib, expr, settings.level_up())<span class="question-mark">?
+                </span>(expr, token @ (Token::LeftBracket | Token::QuestionBracket)) =&gt; {
+                    <span class="kw">let </span>opt = <span class="kw">match </span>token {
+                        Token::LeftBracket =&gt; ASTFlags::NONE,
+                        Token::QuestionBracket =&gt; ASTFlags::NEGATED,
+                        <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;`[` or `?[`&quot;</span>),
+                    };
+                    <span class="self">self</span>.parse_index_chain(input, state, lib, expr, opt, <span class="bool-val">true</span>, settings.level_up())<span class="question-mark">?
                 </span>}
                 <span class="comment">// Property access
                 </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-                </span>(expr, Token::Period) =&gt; {
+                </span>(expr, op @ (Token::Period | Token::Elvis)) =&gt; {
                     <span class="comment">// Expression after dot must start with an identifier
                     </span><span class="kw">match </span>input.peek().expect(NEVER_ENDS) {
                         (Token::Identifier(..), ..) =&gt; {
@@ -5351,8 +5752,13 @@
                         (.., pos) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::PropertyExpected.into_err(<span class="kw-2">*</span>pos)),
                     }
 
-                    <span class="kw">let </span>rhs = <span class="self">self</span>.parse_primary(input, state, lib, settings.level_up())<span class="question-mark">?</span>;
-                    <span class="self">Self</span>::make_dot_expr(state, expr, ASTFlags::NONE, rhs, tail_pos)<span class="question-mark">?
+                    <span class="kw">let </span>rhs = <span class="self">self</span>.parse_primary(input, state, lib, <span class="bool-val">true</span>, settings.level_up())<span class="question-mark">?</span>;
+                    <span class="kw">let </span>op_flags = <span class="kw">match </span>op {
+                        Token::Period =&gt; ASTFlags::NONE,
+                        Token::Elvis =&gt; ASTFlags::NEGATED,
+                        <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;`.` or `?.`&quot;</span>),
+                    };
+                    <span class="self">Self</span>::make_dot_expr(state, expr, rhs, ASTFlags::NONE, op_flags, tail_pos)<span class="question-mark">?
                 </span>}
                 <span class="comment">// Unknown postfix operator
                 </span>(expr, token) =&gt; <span class="macro">unreachable!</span>(
@@ -5366,9 +5772,9 @@
         <span class="comment">// Cache the hash key for namespace-qualified variables
         </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
         </span><span class="kw">let </span>namespaced_variable = <span class="kw">match </span>lhs {
-            Expr::Variable(<span class="kw-2">ref mut </span>x, ..) <span class="kw">if </span>!x.<span class="number">1</span>.is_empty() =&gt; <span class="prelude-val">Some</span>(x.as_mut()),
+            Expr::Variable(<span class="kw-2">ref mut </span>x, ..) <span class="kw">if </span>!x.<span class="number">1</span>.is_empty() =&gt; <span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut **</span>x),
             Expr::Index(<span class="kw-2">ref mut </span>x, ..) | Expr::Dot(<span class="kw-2">ref mut </span>x, ..) =&gt; <span class="kw">match </span>x.lhs {
-                Expr::Variable(<span class="kw-2">ref mut </span>x, ..) <span class="kw">if </span>!x.<span class="number">1</span>.is_empty() =&gt; <span class="prelude-val">Some</span>(x.as_mut()),
+                Expr::Variable(<span class="kw-2">ref mut </span>x, ..) <span class="kw">if </span>!x.<span class="number">1</span>.is_empty() =&gt; <span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut **</span>x),
                 <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
             },
             <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
@@ -5377,20 +5783,28 @@
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
         </span><span class="kw">if let </span><span class="prelude-val">Some</span>((.., namespace, hash, name)) = namespaced_variable {
             <span class="kw">if </span>!namespace.is_empty() {
-                <span class="kw-2">*</span>hash = <span class="kw">crate</span>::calc_qualified_var_hash(namespace.iter().map(|v| v.as_str()), name);
+                <span class="kw-2">*</span>hash = <span class="kw">crate</span>::calc_qualified_var_hash(namespace.iter().map(Ident::as_str), name);
 
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
                 </span>{
-                    <span class="kw">let </span>index = state.find_module(namespace.root());
+                    <span class="kw">let </span>root = namespace.root();
+                    <span class="kw">let </span>index = state.find_module(root);
 
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                    </span><span class="kw">let </span>relax = settings.is_function_scope;
-                    <span class="attribute">#[cfg(feature = <span class="string">&quot;no_function&quot;</span>)]
-                    </span><span class="kw">let </span>relax = <span class="bool-val">false</span>;
+                    #[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+                    </span><span class="kw">let </span>is_global = root == <span class="kw">crate</span>::engine::KEYWORD_GLOBAL;
+                    <span class="attribute">#[cfg(any(feature = <span class="string">&quot;no_function&quot;</span>, feature = <span class="string">&quot;no_module&quot;</span>))]
+                    </span><span class="kw">let </span>is_global = <span class="bool-val">false</span>;
 
-                    <span class="kw">if </span>!relax &amp;&amp; settings.options.strict_var &amp;&amp; index.is_none() {
-                        <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::ModuleUndefined(namespace.root().to_string())
-                            .into_err(namespace.position()));
+                    <span class="kw">if </span>settings.options.contains(LangOptions::STRICT_VAR)
+                        &amp;&amp; index.is_none()
+                        &amp;&amp; !is_global
+                        &amp;&amp; !state.global_imports.iter().any(|m| m.as_str() == root)
+                        &amp;&amp; !<span class="self">self</span>.global_sub_modules.contains_key(root)
+                    {
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(
+                            PERR::ModuleUndefined(root.to_string()).into_err(namespace.position())
+                        );
                     }
 
                     namespace.set_index(index);
@@ -5415,6 +5829,10 @@
 
         <span class="kw">let </span>(token, token_pos) = input.peek().expect(NEVER_ENDS);
 
+        <span class="kw">if </span>!(state.expr_filter)(token) {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(LexError::UnexpectedInput(token.syntax().to_string()).into_err(<span class="kw-2">*</span>token_pos));
+        }
+
         <span class="kw">let </span><span class="kw-2">mut </span>settings = settings;
         settings.pos = <span class="kw-2">*</span>token_pos;
 
@@ -5435,9 +5853,7 @@
                             <span class="attribute">#[cfg(feature = <span class="string">&quot;no_float&quot;</span>)]
                             </span><span class="kw">return </span><span class="prelude-val">None</span>;
                         })
-                        .ok_or_else(|| {
-                            LexError::MalformedNumber(<span class="macro">format!</span>(<span class="string">&quot;-{}&quot;</span>, num)).into_err(pos)
-                        }),
+                        .ok_or_else(|| LexError::MalformedNumber(<span class="macro">format!</span>(<span class="string">&quot;-{num}&quot;</span>)).into_err(pos)),
 
                     <span class="comment">// Negative float
                     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
@@ -5450,10 +5866,11 @@
                         args.shrink_to_fit();
 
                         <span class="prelude-val">Ok</span>(FnCallExpr {
-                            name: state.get_identifier(<span class="string">&quot;&quot;</span>, <span class="string">&quot;-&quot;</span>),
+                            name: state.get_interned_string(<span class="string">&quot;-&quot;</span>),
                             hashes: FnCallHashes::from_native(calc_fn_hash(<span class="string">&quot;-&quot;</span>, <span class="number">1</span>)),
                             args,
                             pos,
+                            is_native_operator: <span class="bool-val">true</span>,
                             ..Default::default()
                         }
                         .into_fn_call_expr(pos))
@@ -5477,10 +5894,11 @@
                         args.shrink_to_fit();
 
                         <span class="prelude-val">Ok</span>(FnCallExpr {
-                            name: state.get_identifier(<span class="string">&quot;&quot;</span>, <span class="string">&quot;+&quot;</span>),
+                            name: state.get_interned_string(<span class="string">&quot;+&quot;</span>),
                             hashes: FnCallHashes::from_native(calc_fn_hash(<span class="string">&quot;+&quot;</span>, <span class="number">1</span>)),
                             args,
                             pos,
+                            is_native_operator: <span class="bool-val">true</span>,
                             ..Default::default()
                         }
                         .into_fn_call_expr(pos))
@@ -5495,10 +5913,11 @@
                 args.shrink_to_fit();
 
                 <span class="prelude-val">Ok</span>(FnCallExpr {
-                    name: state.get_identifier(<span class="string">&quot;&quot;</span>, <span class="string">&quot;!&quot;</span>),
+                    name: state.get_interned_string(<span class="string">&quot;!&quot;</span>),
                     hashes: FnCallHashes::from_native(calc_fn_hash(<span class="string">&quot;!&quot;</span>, <span class="number">1</span>)),
                     args,
                     pos,
+                    is_native_operator: <span class="bool-val">true</span>,
                     ..Default::default()
                 }
                 .into_fn_call_expr(pos))
@@ -5506,7 +5925,7 @@
             <span class="comment">// &lt;EOF&gt;
             </span>Token::EOF =&gt; <span class="prelude-val">Err</span>(PERR::UnexpectedEOF.into_err(settings.pos)),
             <span class="comment">// All other tokens
-            </span><span class="kw">_ </span>=&gt; <span class="self">self</span>.parse_primary(input, state, lib, settings.level_up()),
+            </span><span class="kw">_ </span>=&gt; <span class="self">self</span>.parse_primary(input, state, lib, <span class="bool-val">false</span>, settings.level_up()),
         }
     }
 
@@ -5545,7 +5964,7 @@
             }
         }
 
-        <span class="kw">let </span>op_info = <span class="kw">if let </span><span class="prelude-val">Some</span>(op) = op {
+        <span class="kw">let </span>op_info = <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>op) = op {
             OpAssignment::new_op_assignment_from_token(op, op_pos)
         } <span class="kw">else </span>{
             OpAssignment::new_assignment(op_pos)
@@ -5562,7 +5981,7 @@
             }
             <span class="comment">// var (indexed) = rhs
             </span>Expr::Variable(<span class="kw-2">ref </span>x, i, var_pos) =&gt; {
-                <span class="kw">let </span>(index, .., name) = x.as_ref();
+                <span class="kw">let </span>(index, .., name) = <span class="kw-2">&amp;**</span>x;
                 <span class="kw">let </span>index = i.map_or_else(
                     || index.expect(<span class="string">&quot;either long or short index is `None`&quot;</span>).get(),
                     |n| n.get() <span class="kw">as </span>usize,
@@ -5597,23 +6016,23 @@
                                 <span class="prelude-val">Ok</span>(Stmt::Assignment((op_info, (lhs, rhs).into()).into()))
                             }
                             <span class="comment">// expr[???] = rhs, expr.??? = rhs
-                            </span><span class="kw-2">ref </span>expr =&gt; <span class="prelude-val">Err</span>(PERR::AssignmentToInvalidLHS(<span class="string">&quot;&quot;</span>.to_string())
+                            </span><span class="kw-2">ref </span>expr =&gt; <span class="prelude-val">Err</span>(PERR::AssignmentToInvalidLHS(String::new())
                                 .into_err(expr.position())),
                         }
                     }
                     <span class="prelude-val">Some</span>(err_pos) =&gt; {
-                        <span class="prelude-val">Err</span>(PERR::AssignmentToInvalidLHS(<span class="string">&quot;&quot;</span>.to_string()).into_err(err_pos))
+                        <span class="prelude-val">Err</span>(PERR::AssignmentToInvalidLHS(String::new()).into_err(err_pos))
                     }
                 }
             }
-            <span class="comment">// ??? &amp;&amp; ??? = rhs, ??? || ??? = rhs
-            </span>Expr::And(..) | Expr::Or(..) =&gt; <span class="prelude-val">Err</span>(LexError::ImproperSymbol(
+            <span class="comment">// ??? &amp;&amp; ??? = rhs, ??? || ??? = rhs, xxx ?? xxx = rhs
+            </span>Expr::And(..) | Expr::Or(..) | Expr::Coalesce(..) =&gt; <span class="prelude-val">Err</span>(LexError::ImproperSymbol(
                 <span class="string">&quot;=&quot;</span>.to_string(),
                 <span class="string">&quot;Possibly a typo of &#39;==&#39;?&quot;</span>.to_string(),
             )
             .into_err(op_pos)),
             <span class="comment">// expr = rhs
-            </span><span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(PERR::AssignmentToInvalidLHS(<span class="string">&quot;&quot;</span>.to_string()).into_err(lhs.position())),
+            </span><span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(PERR::AssignmentToInvalidLHS(String::new()).into_err(lhs.position())),
         }
     }
 
@@ -5653,14 +6072,22 @@
     </span><span class="kw">fn </span>make_dot_expr(
         state: <span class="kw-2">&amp;mut </span>ParseState,
         lhs: Expr,
-        parent_options: ASTFlags,
         rhs: Expr,
+        parent_options: ASTFlags,
+        op_flags: ASTFlags,
         op_pos: Position,
     ) -&gt; ParseResult&lt;Expr&gt; {
         <span class="kw">match </span>(lhs, rhs) {
             <span class="comment">// lhs[idx_expr].rhs
             </span>(Expr::Index(<span class="kw-2">mut </span>x, options, pos), rhs) =&gt; {
-                x.rhs = <span class="self">Self</span>::make_dot_expr(state, x.rhs, options | parent_options, rhs, op_pos)<span class="question-mark">?</span>;
+                x.rhs = <span class="self">Self</span>::make_dot_expr(
+                    state,
+                    x.rhs,
+                    rhs,
+                    options | parent_options,
+                    op_flags,
+                    op_pos,
+                )<span class="question-mark">?</span>;
                 <span class="prelude-val">Ok</span>(Expr::Index(x, ASTFlags::NONE, pos))
             }
             <span class="comment">// lhs.module::id - syntax error
@@ -5671,16 +6098,12 @@
             <span class="comment">// lhs.id
             </span>(lhs, var_expr @ Expr::Variable(..)) =&gt; {
                 <span class="kw">let </span>rhs = var_expr.into_property(state);
-                <span class="prelude-val">Ok</span>(Expr::Dot(
-                    BinaryExpr { lhs, rhs }.into(),
-                    ASTFlags::NONE,
-                    op_pos,
-                ))
+                <span class="prelude-val">Ok</span>(Expr::Dot(BinaryExpr { lhs, rhs }.into(), op_flags, op_pos))
             }
             <span class="comment">// lhs.prop
             </span>(lhs, prop @ Expr::Property(..)) =&gt; <span class="prelude-val">Ok</span>(Expr::Dot(
                 BinaryExpr { lhs, rhs: prop }.into(),
-                ASTFlags::NONE,
+                op_flags,
                 op_pos,
             )),
             <span class="comment">// lhs.nnn::func(...) - syntax error
@@ -5692,7 +6115,7 @@
             </span>(.., Expr::FnCall(func, func_pos))
                 <span class="kw">if </span>func.args.is_empty()
                     &amp;&amp; [<span class="kw">crate</span>::engine::KEYWORD_FN_PTR, <span class="kw">crate</span>::engine::KEYWORD_EVAL]
-                        .contains(<span class="kw-2">&amp;</span>func.name.as_ref()) =&gt;
+                        .contains(<span class="kw-2">&amp;</span>func.name.as_str()) =&gt;
             {
                 <span class="kw">let </span>err_msg = <span class="macro">format!</span>(
                     <span class="string">&quot;&#39;{}&#39; should not be called in method style. Try {}(...);&quot;</span>,
@@ -5717,17 +6140,13 @@
                 );
 
                 <span class="kw">let </span>rhs = Expr::MethodCall(func, func_pos);
-                <span class="prelude-val">Ok</span>(Expr::Dot(
-                    BinaryExpr { lhs, rhs }.into(),
-                    ASTFlags::NONE,
-                    op_pos,
-                ))
+                <span class="prelude-val">Ok</span>(Expr::Dot(BinaryExpr { lhs, rhs }.into(), op_flags, op_pos))
             }
             <span class="comment">// lhs.dot_lhs.dot_rhs or lhs.dot_lhs[idx_rhs]
             </span>(lhs, rhs @ (Expr::Dot(..) | Expr::Index(..))) =&gt; {
-                <span class="kw">let </span>(x, term, pos, is_dot) = <span class="kw">match </span>rhs {
-                    Expr::Dot(x, term, pos) =&gt; (x, term, pos, <span class="bool-val">true</span>),
-                    Expr::Index(x, term, pos) =&gt; (x, term, pos, <span class="bool-val">false</span>),
+                <span class="kw">let </span>(x, options, pos, is_dot) = <span class="kw">match </span>rhs {
+                    Expr::Dot(x, options, pos) =&gt; (x, options, pos, <span class="bool-val">true</span>),
+                    Expr::Index(x, options, pos) =&gt; (x, options, pos, <span class="bool-val">false</span>),
                     expr =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;Expr::Dot or Expr::Index expected but gets {:?}&quot;</span>, expr),
                 };
 
@@ -5744,22 +6163,18 @@
                     }
                     <span class="comment">// lhs.id.dot_rhs or lhs.id[idx_rhs]
                     </span>Expr::Variable(..) | Expr::Property(..) =&gt; {
-                        <span class="kw">let </span>new_lhs = BinaryExpr {
+                        <span class="kw">let </span>new_binary = BinaryExpr {
                             lhs: x.lhs.into_property(state),
                             rhs: x.rhs,
                         }
                         .into();
 
                         <span class="kw">let </span>rhs = <span class="kw">if </span>is_dot {
-                            Expr::Dot(new_lhs, term, pos)
+                            Expr::Dot(new_binary, options, pos)
                         } <span class="kw">else </span>{
-                            Expr::Index(new_lhs, term, pos)
+                            Expr::Index(new_binary, options, pos)
                         };
-                        <span class="prelude-val">Ok</span>(Expr::Dot(
-                            BinaryExpr { lhs, rhs }.into(),
-                            ASTFlags::NONE,
-                            op_pos,
-                        ))
+                        <span class="prelude-val">Ok</span>(Expr::Dot(BinaryExpr { lhs, rhs }.into(), op_flags, op_pos))
                     }
                     <span class="comment">// lhs.func().dot_rhs or lhs.func()[idx_rhs]
                     </span>Expr::FnCall(<span class="kw-2">mut </span>func, func_pos) =&gt; {
@@ -5777,15 +6192,11 @@
                         .into();
 
                         <span class="kw">let </span>rhs = <span class="kw">if </span>is_dot {
-                            Expr::Dot(new_lhs, term, pos)
+                            Expr::Dot(new_lhs, options, pos)
                         } <span class="kw">else </span>{
-                            Expr::Index(new_lhs, term, pos)
+                            Expr::Index(new_lhs, options, pos)
                         };
-                        <span class="prelude-val">Ok</span>(Expr::Dot(
-                            BinaryExpr { lhs, rhs }.into(),
-                            ASTFlags::NONE,
-                            op_pos,
-                        ))
+                        <span class="prelude-val">Ok</span>(Expr::Dot(BinaryExpr { lhs, rhs }.into(), op_flags, op_pos))
                     }
                     expr =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;invalid dot expression: {:?}&quot;</span>, expr),
                 }
@@ -5815,11 +6226,17 @@
 
         <span class="kw">loop </span>{
             <span class="kw">let </span>(current_op, current_pos) = input.peek().expect(NEVER_ENDS);
+
+            <span class="kw">if </span>!(state.expr_filter)(current_op) {
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(root);
+            }
+
             <span class="kw">let </span>precedence = <span class="kw">match </span>current_op {
-                Token::Custom(c) =&gt; <span class="self">self
+                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+                </span>Token::Custom(c) =&gt; <span class="self">self
                     </span>.custom_keywords
                     .get(c)
-                    .cloned()
+                    .copied()
                     .ok_or_else(|| PERR::Reserved(c.to_string()).into_err(<span class="kw-2">*</span>current_pos))<span class="question-mark">?</span>,
                 Token::Reserved(c) <span class="kw">if </span>!is_valid_identifier(c.chars()) =&gt; {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::UnknownOperator(c.to_string()).into_err(<span class="kw-2">*</span>current_pos))
@@ -5840,10 +6257,11 @@
 
             <span class="kw">let </span>(next_op, next_pos) = input.peek().expect(NEVER_ENDS);
             <span class="kw">let </span>next_precedence = <span class="kw">match </span>next_op {
-                Token::Custom(c) =&gt; <span class="self">self
+                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+                </span>Token::Custom(c) =&gt; <span class="self">self
                     </span>.custom_keywords
                     .get(c)
-                    .cloned()
+                    .copied()
                     .ok_or_else(|| PERR::Reserved(c.to_string()).into_err(<span class="kw-2">*</span>next_pos))<span class="question-mark">?</span>,
                 Token::Reserved(c) <span class="kw">if </span>!is_valid_identifier(c.chars()) =&gt; {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::UnknownOperator(c.to_string()).into_err(<span class="kw-2">*</span>next_pos))
@@ -5871,9 +6289,10 @@
             <span class="kw">let </span>hash = calc_fn_hash(<span class="kw-2">&amp;</span>op, <span class="number">2</span>);
 
             <span class="kw">let </span>op_base = FnCallExpr {
-                name: state.get_identifier(<span class="string">&quot;&quot;</span>, op),
+                name: state.get_interned_string(op.as_ref()),
                 hashes: FnCallHashes::from_native(hash),
                 pos,
+                is_native_operator: !is_valid_function_name(<span class="kw-2">&amp;</span>op),
                 ..Default::default()
             };
 
@@ -5920,6 +6339,18 @@
                         pos,
                     )
                 }
+                Token::DoubleQuestion =&gt; {
+                    <span class="kw">let </span>rhs = args.pop().unwrap();
+                    <span class="kw">let </span>current_lhs = args.pop().unwrap();
+                    Expr::Coalesce(
+                        BinaryExpr {
+                            lhs: current_lhs,
+                            rhs,
+                        }
+                        .into(),
+                        pos,
+                    )
+                }
                 Token::In =&gt; {
                     <span class="comment">// Swap the arguments
                     </span><span class="kw">let </span>current_lhs = args.remove(<span class="number">0</span>);
@@ -5931,13 +6362,14 @@
                     </span>FnCallExpr {
                         hashes: calc_fn_hash(OP_CONTAINS, <span class="number">2</span>).into(),
                         args,
-                        name: state.get_identifier(<span class="string">&quot;&quot;</span>, OP_CONTAINS),
+                        name: state.get_interned_string(OP_CONTAINS),
                         ..op_base
                     }
                     .into_fn_call_expr(pos)
                 }
 
-                Token::Custom(s)
+                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+                </span>Token::Custom(s)
                     <span class="kw">if </span><span class="self">self
                         </span>.custom_keywords
                         .get(s.as_str())
@@ -5967,6 +6399,7 @@
     }
 
     <span class="doccomment">/// Parse a custom syntax.
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
     </span><span class="kw">fn </span>parse_custom_syntax(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         input: <span class="kw-2">&amp;mut </span>TokenStream,
@@ -5974,9 +6407,11 @@
         lib: <span class="kw-2">&amp;mut </span>FnLib,
         settings: ParseSettings,
         key: <span class="kw">impl </span>Into&lt;ImmutableString&gt;,
-        syntax: <span class="kw-2">&amp;</span>CustomSyntax,
+        syntax: <span class="kw-2">&amp;</span><span class="kw">crate</span>::api::custom_syntax::CustomSyntax,
         pos: Position,
     ) -&gt; ParseResult&lt;Expr&gt; {
+        <span class="kw">use </span><span class="kw">crate</span>::api::custom_syntax::markers::<span class="kw-2">*</span>;
+
         <span class="kw">let </span><span class="kw-2">mut </span>settings = settings;
         <span class="kw">let </span><span class="kw-2">mut </span>inputs = StaticVec::&lt;Expr&gt;::new();
         <span class="kw">let </span><span class="kw-2">mut </span>segments = StaticVec::new_const();
@@ -5986,14 +6421,14 @@
         </span><span class="kw">if </span>syntax.scope_may_be_changed {
             <span class="comment">// Add a barrier variable to the stack so earlier variables will not be matched.
             // Variable searches stop at the first barrier.
-            </span><span class="kw">let </span>marker = state.get_identifier(<span class="string">&quot;&quot;</span>, SCOPE_SEARCH_BARRIER_MARKER);
+            </span><span class="kw">let </span>marker = state.get_interned_string(SCOPE_SEARCH_BARRIER_MARKER);
             state.stack.push(marker, ());
         }
 
-        <span class="kw">let </span>parse_func = syntax.parse.as_ref();
+        <span class="kw">let </span>parse_func = <span class="kw-2">&amp;*</span>syntax.parse;
         <span class="kw">let </span><span class="kw-2">mut </span>required_token: ImmutableString = key.into();
 
-        tokens.push(required_token.clone().into());
+        tokens.push(required_token.clone());
         segments.push(required_token.clone());
 
         <span class="kw">loop </span>{
@@ -6006,10 +6441,7 @@
                     <span class="kw">if </span>seg.starts_with(CUSTOM_SYNTAX_MARKER_SYNTAX_VARIANT)
                         &amp;&amp; seg.len() &gt; CUSTOM_SYNTAX_MARKER_SYNTAX_VARIANT.len() =&gt;
                 {
-                    inputs.push(Expr::StringConstant(
-                        state.get_interned_string(<span class="string">&quot;&quot;</span>, seg),
-                        pos,
-                    ));
+                    inputs.push(Expr::StringConstant(state.get_interned_string(seg), pos));
                     <span class="kw">break</span>;
                 }
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(seg)) =&gt; seg,
@@ -6020,7 +6452,7 @@
             <span class="kw">match </span>required_token.as_str() {
                 CUSTOM_SYNTAX_MARKER_IDENT =&gt; {
                     <span class="kw">let </span>(name, pos) = parse_var_name(input)<span class="question-mark">?</span>;
-                    <span class="kw">let </span>name = state.get_identifier(<span class="string">&quot;&quot;</span>, name);
+                    <span class="kw">let </span>name = state.get_interned_string(name);
 
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
                     </span><span class="kw">let </span>ns = <span class="kw">crate</span>::ast::Namespace::NONE;
@@ -6028,19 +6460,19 @@
                     </span><span class="kw">let </span>ns = ();
 
                     segments.push(name.clone().into());
-                    tokens.push(state.get_identifier(<span class="string">&quot;&quot;</span>, CUSTOM_SYNTAX_MARKER_IDENT));
+                    tokens.push(state.get_interned_string(CUSTOM_SYNTAX_MARKER_IDENT));
                     inputs.push(Expr::Variable((<span class="prelude-val">None</span>, ns, <span class="number">0</span>, name).into(), <span class="prelude-val">None</span>, pos));
                 }
                 CUSTOM_SYNTAX_MARKER_SYMBOL =&gt; {
                     <span class="kw">let </span>(symbol, pos) = parse_symbol(input)<span class="question-mark">?</span>;
-                    <span class="kw">let </span>symbol = state.get_interned_string(<span class="string">&quot;&quot;</span>, symbol);
+                    <span class="kw">let </span>symbol = state.get_interned_string(symbol);
                     segments.push(symbol.clone());
-                    tokens.push(state.get_identifier(<span class="string">&quot;&quot;</span>, CUSTOM_SYNTAX_MARKER_SYMBOL));
+                    tokens.push(state.get_interned_string(CUSTOM_SYNTAX_MARKER_SYMBOL));
                     inputs.push(Expr::StringConstant(symbol, pos));
                 }
                 CUSTOM_SYNTAX_MARKER_EXPR =&gt; {
                     inputs.push(<span class="self">self</span>.parse_expr(input, state, lib, settings)<span class="question-mark">?</span>);
-                    <span class="kw">let </span>keyword = state.get_identifier(<span class="string">&quot;&quot;</span>, CUSTOM_SYNTAX_MARKER_EXPR);
+                    <span class="kw">let </span>keyword = state.get_interned_string(CUSTOM_SYNTAX_MARKER_EXPR);
                     segments.push(keyword.clone().into());
                     tokens.push(keyword);
                 }
@@ -6048,7 +6480,7 @@
                     <span class="kw">match </span><span class="self">self</span>.parse_block(input, state, lib, settings)<span class="question-mark">? </span>{
                         block @ Stmt::Block(..) =&gt; {
                             inputs.push(Expr::Stmt(Box::new(block.into())));
-                            <span class="kw">let </span>keyword = state.get_identifier(<span class="string">&quot;&quot;</span>, CUSTOM_SYNTAX_MARKER_BLOCK);
+                            <span class="kw">let </span>keyword = state.get_interned_string(CUSTOM_SYNTAX_MARKER_BLOCK);
                             segments.push(keyword.clone().into());
                             tokens.push(keyword);
                         }
@@ -6058,8 +6490,8 @@
                 CUSTOM_SYNTAX_MARKER_BOOL =&gt; <span class="kw">match </span>input.next().expect(NEVER_ENDS) {
                     (b @ (Token::True | Token::False), pos) =&gt; {
                         inputs.push(Expr::BoolConstant(b == Token::True, pos));
-                        segments.push(state.get_interned_string(<span class="string">&quot;&quot;</span>, b.literal_syntax()));
-                        tokens.push(state.get_identifier(<span class="string">&quot;&quot;</span>, CUSTOM_SYNTAX_MARKER_BOOL));
+                        segments.push(state.get_interned_string(b.literal_syntax()));
+                        tokens.push(state.get_interned_string(CUSTOM_SYNTAX_MARKER_BOOL));
                     }
                     (.., pos) =&gt; {
                         <span class="kw">return </span><span class="prelude-val">Err</span>(
@@ -6072,7 +6504,7 @@
                     (Token::IntegerConstant(i), pos) =&gt; {
                         inputs.push(Expr::IntegerConstant(i, pos));
                         segments.push(i.to_string().into());
-                        tokens.push(state.get_identifier(<span class="string">&quot;&quot;</span>, CUSTOM_SYNTAX_MARKER_INT));
+                        tokens.push(state.get_interned_string(CUSTOM_SYNTAX_MARKER_INT));
                     }
                     (.., pos) =&gt; {
                         <span class="kw">return </span><span class="prelude-val">Err</span>(
@@ -6086,7 +6518,7 @@
                     (Token::FloatConstant(f), pos) =&gt; {
                         inputs.push(Expr::FloatConstant(f, pos));
                         segments.push(f.to_string().into());
-                        tokens.push(state.get_identifier(<span class="string">&quot;&quot;</span>, CUSTOM_SYNTAX_MARKER_FLOAT));
+                        tokens.push(state.get_interned_string(CUSTOM_SYNTAX_MARKER_FLOAT));
                     }
                     (.., pos) =&gt; {
                         <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MissingSymbol(
@@ -6097,10 +6529,10 @@
                 },
                 CUSTOM_SYNTAX_MARKER_STRING =&gt; <span class="kw">match </span>input.next().expect(NEVER_ENDS) {
                     (Token::StringConstant(s), pos) =&gt; {
-                        <span class="kw">let </span>s = state.get_interned_string(<span class="string">&quot;&quot;</span>, s);
+                        <span class="kw">let </span>s = state.get_interned_string(s);
                         inputs.push(Expr::StringConstant(s.clone(), pos));
                         segments.push(s);
-                        tokens.push(state.get_identifier(<span class="string">&quot;&quot;</span>, CUSTOM_SYNTAX_MARKER_STRING));
+                        tokens.push(state.get_interned_string(CUSTOM_SYNTAX_MARKER_STRING));
                     }
                     (.., pos) =&gt; {
                         <span class="kw">return </span><span class="prelude-val">Err</span>(
@@ -6128,19 +6560,16 @@
         inputs.shrink_to_fit();
         tokens.shrink_to_fit();
 
-        <span class="kw">const </span>KEYWORD_SEMICOLON: <span class="kw-2">&amp;</span>str = Token::SemiColon.literal_syntax();
-        <span class="kw">const </span>KEYWORD_CLOSE_BRACE: <span class="kw-2">&amp;</span>str = Token::RightBrace.literal_syntax();
-
-        <span class="kw">let </span>self_terminated = <span class="kw">match </span>required_token.as_str() {
+        <span class="kw">let </span>self_terminated = <span class="macro">matches!</span>(
+            required_token.as_str(),
             <span class="comment">// It is self-terminating if the last symbol is a block
-            </span>CUSTOM_SYNTAX_MARKER_BLOCK =&gt; <span class="bool-val">true</span>,
+            </span>CUSTOM_SYNTAX_MARKER_BLOCK |
             <span class="comment">// If the last symbol is `;` or `}`, it is self-terminating
-            </span>KEYWORD_SEMICOLON | KEYWORD_CLOSE_BRACE =&gt; <span class="bool-val">true</span>,
-            <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
-        };
+            </span>KEYWORD_SEMICOLON | KEYWORD_CLOSE_BRACE
+        );
 
         <span class="prelude-val">Ok</span>(Expr::Custom(
-            CustomExpr {
+            <span class="kw">crate</span>::ast::CustomExpr {
                 inputs,
                 tokens,
                 scope_may_be_changed: syntax.scope_may_be_changed,
@@ -6364,11 +6793,11 @@
             state.stack.push(name.clone(), ());
         }
         <span class="kw">let </span>counter_var = Ident {
-            name: state.get_identifier(<span class="string">&quot;&quot;</span>, counter_name),
+            name: state.get_interned_string(counter_name),
             pos: counter_pos,
         };
 
-        <span class="kw">let </span>loop_var = state.get_identifier(<span class="string">&quot;&quot;</span>, name);
+        <span class="kw">let </span>loop_var = state.get_interned_string(name);
         state.stack.push(loop_var.clone(), ());
         <span class="kw">let </span>loop_var = Ident {
             name: loop_var,
@@ -6406,12 +6835,12 @@
         <span class="comment">// let name ...
         </span><span class="kw">let </span>(name, pos) = parse_var_name(input)<span class="question-mark">?</span>;
 
-        <span class="kw">if </span>!<span class="self">self</span>.allow_shadowing() &amp;&amp; state.stack.iter().any(|(v, ..)| v == <span class="kw-2">&amp;</span>name) {
+        <span class="kw">if </span>!<span class="self">self</span>.allow_shadowing() &amp;&amp; state.stack.iter().any(|(v, ..)| v == name) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::VariableExists(name.to_string()).into_err(pos));
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>filter) = <span class="self">self</span>.def_var_filter {
-            <span class="kw">let </span>will_shadow = state.stack.iter().any(|(v, ..)| v == <span class="kw-2">&amp;</span>name);
+            <span class="kw">let </span>will_shadow = state.stack.iter().any(|(v, ..)| v == name);
             <span class="kw">let </span>level = settings.level;
             <span class="kw">let </span>is_const = access == AccessMode::ReadOnly;
             <span class="kw">let </span>info = VarDefInfo {
@@ -6420,27 +6849,28 @@
                 nesting_level: level,
                 will_shadow,
             };
-            <span class="kw">let </span>context = EvalContext {
-                engine: <span class="self">self</span>,
-                scope: <span class="kw-2">&amp;mut </span>state.stack,
-                global: <span class="kw-2">&amp;mut </span>state.global,
-                caches: <span class="prelude-val">None</span>,
-                lib: <span class="kw-2">&amp;</span>[],
-                this_ptr: <span class="kw-2">&amp;mut </span><span class="prelude-val">None</span>,
+            <span class="kw">let </span><span class="kw-2">mut </span>this_ptr = <span class="prelude-val">None</span>;
+            <span class="kw">let </span>context = EvalContext::new(
+                <span class="self">self</span>,
+                <span class="kw-2">&amp;mut </span>state.stack,
+                <span class="kw-2">&amp;mut </span>state.global,
+                <span class="prelude-val">None</span>,
+                <span class="kw-2">&amp;</span>[],
+                <span class="kw-2">&amp;mut </span>this_ptr,
                 level,
-            };
+            );
 
             <span class="kw">match </span>filter(<span class="bool-val">false</span>, info, context) {
                 <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>) =&gt; (),
                 <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::ForbiddenVariable(name.to_string()).into_err(pos)),
                 <span class="prelude-val">Err</span>(err) =&gt; <span class="kw">match </span><span class="kw-2">*</span>err {
-                    EvalAltResult::ErrorParsing(perr, pos) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(perr.into_err(pos)),
+                    EvalAltResult::ErrorParsing(e, pos) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(e.into_err(pos)),
                     <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::ForbiddenVariable(name.to_string()).into_err(pos)),
                 },
             }
         }
 
-        <span class="kw">let </span>name = state.get_identifier(<span class="string">&quot;&quot;</span>, name);
+        <span class="kw">let </span>name = state.get_interned_string(name);
 
         <span class="comment">// let name = ...
         </span><span class="kw">let </span>expr = <span class="kw">if </span>match_token(input, Token::Equals).<span class="number">0 </span>{
@@ -6506,14 +6936,18 @@
         <span class="comment">// import expr ...
         </span><span class="kw">let </span>expr = <span class="self">self</span>.parse_expr(input, state, lib, settings.level_up())<span class="question-mark">?</span>;
 
-        <span class="comment">// import expr as ...
+        <span class="comment">// import expr;
         </span><span class="kw">if </span>!match_token(input, Token::As).<span class="number">0 </span>{
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(Stmt::Import((expr, Ident::EMPTY).into(), settings.pos));
+            <span class="kw">let </span>empty = Ident {
+                name: state.get_interned_string(<span class="string">&quot;&quot;</span>),
+                pos: Position::NONE,
+            };
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(Stmt::Import((expr, empty).into(), settings.pos));
         }
 
         <span class="comment">// import expr as name ...
         </span><span class="kw">let </span>(name, pos) = parse_var_name(input)<span class="question-mark">?</span>;
-        <span class="kw">let </span>name = state.get_identifier(<span class="string">&quot;&quot;</span>, name);
+        <span class="kw">let </span>name = state.get_interned_string(name);
         state.imports.push(name.clone());
 
         <span class="prelude-val">Ok</span>(Stmt::Import(
@@ -6566,11 +7000,11 @@
 
         <span class="kw">let </span>export = (
             Ident {
-                name: state.get_identifier(<span class="string">&quot;&quot;</span>, id),
+                name: state.get_interned_string(id),
                 pos: id_pos,
             },
             Ident {
-                name: state.get_identifier(<span class="string">&quot;&quot;</span>, alias.as_ref().map_or(<span class="string">&quot;&quot;</span>, &lt;<span class="kw">_</span>&gt;::as_ref)),
+                name: state.get_interned_string(alias.as_ref().map_or(<span class="string">&quot;&quot;</span>, &lt;<span class="kw">_</span>&gt;::as_ref)),
                 pos: alias_pos,
             },
         );
@@ -6603,7 +7037,23 @@
             }
         };
 
-        <span class="kw">let </span><span class="kw-2">mut </span>statements = StaticVec::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>statements = StaticVec::new_const();
+
+        <span class="kw">if </span>!settings.allow_statements {
+            <span class="kw">let </span>stmt = <span class="self">self</span>.parse_expr_stmt(input, state, lib, settings.level_up())<span class="question-mark">?</span>;
+            statements.push(stmt);
+
+            <span class="comment">// Must end with }
+            </span><span class="kw">return match </span>input.next().expect(NEVER_ENDS) {
+                (Token::RightBrace, pos) =&gt; <span class="prelude-val">Ok</span>((statements, settings.pos, pos).into()),
+                (Token::LexError(err), pos) =&gt; <span class="prelude-val">Err</span>(err.into_err(pos)),
+                (.., pos) =&gt; <span class="prelude-val">Err</span>(PERR::MissingToken(
+                    Token::LeftBrace.into(),
+                    <span class="string">&quot;to start a statement block&quot;</span>.into(),
+                )
+                .into_err(pos)),
+            };
+        }
 
         <span class="kw">let </span>prev_entry_stack_len = state.block_stack_len;
         state.block_stack_len = state.stack.len();
@@ -6626,7 +7076,7 @@
             }
 
             <span class="comment">// Parse statements inside the block
-            </span>settings.is_global = <span class="bool-val">false</span>;
+            </span>settings.at_global_level = <span class="bool-val">false</span>;
 
             <span class="kw">let </span>stmt = <span class="self">self</span>.parse_stmt(input, state, lib, settings.level_up())<span class="question-mark">?</span>;
 
@@ -6722,7 +7172,7 @@
                     <span class="macro">unreachable!</span>(<span class="string">&quot;doc-comment expected but gets {:?}&quot;</span>, comment);
                 }
 
-                <span class="kw">if </span>!settings.is_global {
+                <span class="kw">if </span>!settings.at_global_level {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::WrongDocComment.into_err(comments_pos));
                 }
 
@@ -6764,7 +7214,9 @@
 
             <span class="comment">// fn ...
             </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-            </span>Token::Fn <span class="kw">if </span>!settings.is_global =&gt; <span class="prelude-val">Err</span>(PERR::WrongFnDefinition.into_err(token_pos)),
+            </span>Token::Fn <span class="kw">if </span>!settings.at_global_level =&gt; {
+                <span class="prelude-val">Err</span>(PERR::WrongFnDefinition.into_err(token_pos))
+            }
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             </span>Token::Fn | Token::Private =&gt; {
@@ -6777,27 +7229,50 @@
 
                 <span class="kw">match </span>input.next().expect(NEVER_ENDS) {
                     (Token::Fn, pos) =&gt; {
-                        <span class="kw">let </span><span class="kw-2">mut </span>new_state =
-                            ParseState::new(<span class="self">self</span>, state.scope, state.tokenizer_control.clone());
+                        <span class="comment">// Build new parse state
+                        </span><span class="kw">let </span>interned_strings = std::mem::take(<span class="kw-2">&amp;mut </span>state.interned_strings);
+
+                        <span class="kw">let </span><span class="kw-2">mut </span>new_state = ParseState::new(
+                            <span class="self">self</span>,
+                            state.scope,
+                            interned_strings,
+                            state.tokenizer_control.clone(),
+                        );
+
+                        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+                        </span>{
+                            <span class="comment">// Do not allow storing an index to a globally-imported module
+                            // just in case the function is separated from this `AST`.
+                            //
+                            // Keep them in `global_imports` instead so that strict variables
+                            // mode will not complain.
+                            </span>new_state.global_imports.clone_from(<span class="kw-2">&amp;</span>state.global_imports);
+                            new_state
+                                .global_imports
+                                .extend(state.imports.iter().cloned());
+                        }
 
                         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
                         </span>{
                             new_state.max_expr_depth = <span class="self">self</span>.max_function_expr_depth();
                         }
 
+                        <span class="kw">let </span><span class="kw-2">mut </span>options = <span class="self">self</span>.options;
+                        options.set(
+                            LangOptions::STRICT_VAR,
+                            settings.options.contains(LangOptions::STRICT_VAR),
+                        );
+
                         <span class="kw">let </span>new_settings = ParseSettings {
-                            is_global: <span class="bool-val">false</span>,
-                            is_function_scope: <span class="bool-val">true</span>,
+                            at_global_level: <span class="bool-val">false</span>,
+                            in_fn_scope: <span class="bool-val">true</span>,
                             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-                            </span>is_closure_scope: <span class="bool-val">false</span>,
+                            </span>in_closure: <span class="bool-val">false</span>,
                             is_breakable: <span class="bool-val">false</span>,
+                            allow_statements: <span class="bool-val">true</span>,
                             level: <span class="number">0</span>,
-                            options: LanguageOptions {
-                                strict_var: settings.options.strict_var,
-                                ..<span class="self">self</span>.options
-                            },
+                            options,
                             pos,
-                            ..settings
                         };
 
                         <span class="kw">let </span>func = <span class="self">self</span>.parse_fn(
@@ -6809,7 +7284,12 @@
                             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
                             #[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
                             </span>comments,
-                        )<span class="question-mark">?</span>;
+                        );
+
+                        <span class="comment">// Restore parse state
+                        </span>state.interned_strings = new_state.interned_strings;
+
+                        <span class="kw">let </span>func = func<span class="question-mark">?</span>;
 
                         <span class="kw">let </span>hash = calc_fn_hash(<span class="kw-2">&amp;</span>func.name, func.params.len());
 
@@ -6878,7 +7358,7 @@
                     <span class="comment">// `return`/`throw` at &lt;EOF&gt;
                     </span>(Token::EOF, ..) =&gt; <span class="prelude-val">Ok</span>(Stmt::Return(<span class="prelude-val">None</span>, return_type, token_pos)),
                     <span class="comment">// `return`/`throw` at end of block
-                    </span>(Token::RightBrace, ..) <span class="kw">if </span>!settings.is_global =&gt; {
+                    </span>(Token::RightBrace, ..) <span class="kw">if </span>!settings.at_global_level =&gt; {
                         <span class="prelude-val">Ok</span>(Stmt::Return(<span class="prelude-val">None</span>, return_type, token_pos))
                     }
                     <span class="comment">// `return;` or `throw;`
@@ -6900,7 +7380,9 @@
             </span>Token::Import =&gt; <span class="self">self</span>.parse_import(input, state, lib, settings.level_up()),
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-            </span>Token::Export <span class="kw">if </span>!settings.is_global =&gt; <span class="prelude-val">Err</span>(PERR::WrongExport.into_err(token_pos)),
+            </span>Token::Export <span class="kw">if </span>!settings.at_global_level =&gt; {
+                <span class="prelude-val">Err</span>(PERR::WrongExport.into_err(token_pos))
+            }
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
             </span>Token::Export =&gt; <span class="self">self</span>.parse_export(input, state, lib, settings.level_up()),
@@ -6950,11 +7432,14 @@
                 .into_err(err_pos));
             }
 
-            <span class="kw">let </span>name = state.get_identifier(<span class="string">&quot;&quot;</span>, name);
+            <span class="kw">let </span>name = state.get_interned_string(name);
             state.stack.push(name.clone(), ());
             Ident { name, pos }
         } <span class="kw">else </span>{
-            Ident::EMPTY
+            Ident {
+                name: state.get_interned_string(<span class="string">&quot;&quot;</span>),
+                pos: Position::NONE,
+            }
         };
 
         <span class="comment">// try { try_block } catch ( var ) { catch_block }
@@ -7014,28 +7499,28 @@
             (.., pos) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::FnMissingParams(name.to_string()).into_err(<span class="kw-2">*</span>pos)),
         };
 
-        <span class="kw">let </span><span class="kw-2">mut </span>params = StaticVec::new_const();
+        <span class="kw">let </span><span class="kw-2">mut </span>params = StaticVec::&lt;(ImmutableString, <span class="kw">_</span>)&gt;::new_const();
 
         <span class="kw">if </span>!no_params {
-            <span class="kw">let </span>sep_err = <span class="macro">format!</span>(<span class="string">&quot;to separate the parameters of function &#39;{}&#39;&quot;</span>, name);
+            <span class="kw">let </span>sep_err = <span class="macro">format!</span>(<span class="string">&quot;to separate the parameters of function &#39;{name}&#39;&quot;</span>);
 
             <span class="kw">loop </span>{
                 <span class="kw">match </span>input.next().expect(NEVER_ENDS) {
                     (Token::RightParen, ..) =&gt; <span class="kw">break</span>,
                     (Token::Identifier(s), pos) =&gt; {
-                        <span class="kw">if </span>params.iter().any(|(p, <span class="kw">_</span>)| p == <span class="kw-2">&amp;*</span>s) {
+                        <span class="kw">if </span>params.iter().any(|(p, <span class="kw">_</span>)| p.as_str() == <span class="kw-2">&amp;*</span>s) {
                             <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::FnDuplicatedParam(name.to_string(), s.to_string())
                                 .into_err(pos));
                         }
-                        <span class="kw">let </span>s = state.get_identifier(<span class="string">&quot;&quot;</span>, s);
+                        <span class="kw">let </span>s = state.get_interned_string(s);
                         state.stack.push(s.clone(), ());
-                        params.push((s, pos))
+                        params.push((s, pos));
                     }
                     (Token::LexError(err), pos) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(err.into_err(pos)),
                     (.., pos) =&gt; {
                         <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MissingToken(
                             Token::RightParen.into(),
-                            <span class="macro">format!</span>(<span class="string">&quot;to close the parameters list of function &#39;{}&#39;&quot;</span>, name),
+                            <span class="macro">format!</span>(<span class="string">&quot;to close the parameters list of function &#39;{name}&#39;&quot;</span>),
                         )
                         .into_err(pos))
                     }
@@ -7066,7 +7551,7 @@
         params.shrink_to_fit();
 
         <span class="prelude-val">Ok</span>(ScriptFnDef {
-            name: state.get_identifier(<span class="string">&quot;&quot;</span>, name),
+            name: state.get_interned_string(name),
             access,
             params,
             body,
@@ -7116,7 +7601,7 @@
         );
 
         <span class="kw">let </span>expr = FnCallExpr {
-            name: state.get_identifier(<span class="string">&quot;&quot;</span>, <span class="kw">crate</span>::engine::KEYWORD_FN_PTR_CURRY),
+            name: state.get_interned_string(<span class="kw">crate</span>::engine::KEYWORD_FN_PTR_CURRY),
             hashes: FnCallHashes::from_native(calc_fn_hash(
                 <span class="kw">crate</span>::engine::KEYWORD_FN_PTR_CURRY,
                 num_externals + <span class="number">1</span>,
@@ -7133,7 +7618,7 @@
         statements.extend(
             externals
                 .into_iter()
-                .map(|<span class="kw">crate</span>::ast::Ident { name, pos }| Stmt::Share(name.into(), pos)),
+                .map(|<span class="kw">crate</span>::ast::Ident { name, pos }| Stmt::Share(name, pos)),
         );
         statements.push(Stmt::Expr(expr.into()));
         Expr::Stmt(<span class="kw">crate</span>::ast::StmtBlock::new(statements, pos, Position::NONE).into())
@@ -7152,20 +7637,21 @@
         </span>settings.ensure_level_within_max_limit(state.max_expr_depth)<span class="question-mark">?</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>settings = settings;
-        <span class="kw">let </span><span class="kw-2">mut </span>params_list = StaticVec::new_const();
+        <span class="kw">let </span><span class="kw-2">mut </span>params_list = StaticVec::&lt;ImmutableString&gt;::new_const();
 
         <span class="kw">if </span>input.next().expect(NEVER_ENDS).<span class="number">0 </span>!= Token::Or &amp;&amp; !match_token(input, Token::Pipe).<span class="number">0 </span>{
             <span class="kw">loop </span>{
                 <span class="kw">match </span>input.next().expect(NEVER_ENDS) {
                     (Token::Pipe, ..) =&gt; <span class="kw">break</span>,
                     (Token::Identifier(s), pos) =&gt; {
-                        <span class="kw">if </span>params_list.iter().any(|p| p == <span class="kw-2">&amp;*</span>s) {
-                            <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::FnDuplicatedParam(<span class="string">&quot;&quot;</span>.to_string(), s.to_string())
-                                .into_err(pos));
+                        <span class="kw">if </span>params_list.iter().any(|p| p.as_str() == <span class="kw-2">&amp;*</span>s) {
+                            <span class="kw">return </span><span class="prelude-val">Err</span>(
+                                PERR::FnDuplicatedParam(String::new(), s.to_string()).into_err(pos)
+                            );
                         }
-                        <span class="kw">let </span>s = state.get_identifier(<span class="string">&quot;&quot;</span>, s);
+                        <span class="kw">let </span>s = state.get_interned_string(s);
                         state.stack.push(s.clone(), ());
-                        params_list.push(s)
+                        params_list.push(s);
                     }
                     (Token::LexError(err), pos) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(err.into_err(pos)),
                     (.., pos) =&gt; {
@@ -7221,7 +7707,7 @@
         params.iter().for_each(|p| p.hash(hasher));
         body.hash(hasher);
         <span class="kw">let </span>hash = hasher.finish();
-        <span class="kw">let </span>fn_name = state.get_identifier(<span class="string">&quot;&quot;</span>, make_anonymous_fn(hash));
+        <span class="kw">let </span>fn_name = state.get_interned_string(make_anonymous_fn(hash));
 
         <span class="comment">// Define the function
         </span><span class="kw">let </span>script = ScriptFnDef {
@@ -7252,25 +7738,24 @@
         state: <span class="kw-2">&amp;mut </span>ParseState,
         _optimization_level: OptimizationLevel,
     ) -&gt; ParseResult&lt;AST&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>functions = BTreeMap::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>functions = StraightHashMap::default();
+
+        <span class="kw">let </span><span class="kw-2">mut </span>options = <span class="self">self</span>.options;
+        options.remove(LangOptions::STMT_EXPR);
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+        </span>options.remove(LangOptions::ANON_FN);
 
         <span class="kw">let </span>settings = ParseSettings {
-            is_global: <span class="bool-val">true</span>,
+            at_global_level: <span class="bool-val">true</span>,
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-            </span>is_function_scope: <span class="bool-val">false</span>,
+            </span>in_fn_scope: <span class="bool-val">false</span>,
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             #[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            </span>is_closure_scope: <span class="bool-val">false</span>,
+            </span>in_closure: <span class="bool-val">false</span>,
             is_breakable: <span class="bool-val">false</span>,
+            allow_statements: <span class="bool-val">false</span>,
             level: <span class="number">0</span>,
-            options: LanguageOptions {
-                allow_if_expr: <span class="bool-val">false</span>,
-                allow_switch_expr: <span class="bool-val">false</span>,
-                allow_stmt_expr: <span class="bool-val">false</span>,
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                </span>allow_anonymous_fn: <span class="bool-val">false</span>,
-                ..<span class="self">self</span>.options
-            },
+            options,
             pos: Position::NONE,
         };
         <span class="kw">let </span>expr = <span class="self">self</span>.parse_expr(input, state, <span class="kw-2">&amp;mut </span>functions, settings)<span class="question-mark">?</span>;
@@ -7313,17 +7798,18 @@
         state: <span class="kw-2">&amp;mut </span>ParseState,
     ) -&gt; ParseResult&lt;(StmtBlockContainer, StaticVec&lt;Shared&lt;ScriptFnDef&gt;&gt;)&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>statements = StmtBlockContainer::new_const();
-        <span class="kw">let </span><span class="kw-2">mut </span>functions = BTreeMap::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>functions = StraightHashMap::default();
 
         <span class="kw">while </span>!input.peek().expect(NEVER_ENDS).<span class="number">0</span>.is_eof() {
             <span class="kw">let </span>settings = ParseSettings {
-                is_global: <span class="bool-val">true</span>,
+                at_global_level: <span class="bool-val">true</span>,
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                </span>is_function_scope: <span class="bool-val">false</span>,
+                </span>in_fn_scope: <span class="bool-val">false</span>,
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
                 #[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-                </span>is_closure_scope: <span class="bool-val">false</span>,
+                </span>in_closure: <span class="bool-val">false</span>,
                 is_breakable: <span class="bool-val">false</span>,
+                allow_statements: <span class="bool-val">true</span>,
                 options: <span class="self">self</span>.options,
                 level: <span class="number">0</span>,
                 pos: Position::NONE,
@@ -7409,4 +7895,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

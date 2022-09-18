@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/types/scope.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>scope.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/types/scope.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>scope.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -731,6 +731,79 @@
 <span id="731">731</span>
 <span id="732">732</span>
 <span id="733">733</span>
+<span id="734">734</span>
+<span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
+<span id="740">740</span>
+<span id="741">741</span>
+<span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
+<span id="746">746</span>
+<span id="747">747</span>
+<span id="748">748</span>
+<span id="749">749</span>
+<span id="750">750</span>
+<span id="751">751</span>
+<span id="752">752</span>
+<span id="753">753</span>
+<span id="754">754</span>
+<span id="755">755</span>
+<span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
+<span id="766">766</span>
+<span id="767">767</span>
+<span id="768">768</span>
+<span id="769">769</span>
+<span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
+<span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Module that defines the [`Scope`] type representing a function call-stack scope.
 
 </span><span class="kw">use </span><span class="kw">super</span>::dynamic::{AccessMode, Variant};
@@ -802,7 +875,7 @@
     <span class="doccomment">/// Aliases of the entry.
     </span>aliases: SmallVec&lt;[Vec&lt;Identifier&gt;; SCOPE_ENTRIES_INLINED]&gt;,
     <span class="doccomment">/// Phantom to keep the lifetime parameter in order not to break existing code.
-    </span>phantom: PhantomData&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>()&gt;,
+    </span>dummy: PhantomData&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>()&gt;,
 }
 
 <span class="kw">impl </span>fmt::Display <span class="kw">for </span>Scope&lt;<span class="lifetime">&#39;_</span>&gt; {
@@ -814,9 +887,9 @@
             <span class="attribute">#[cfg(feature = <span class="string">&quot;no_closure&quot;</span>)]
             </span><span class="kw">let </span>value_is_shared = <span class="string">&quot;&quot;</span>;
 
-            <span class="macro">write!</span>(
+            <span class="macro">writeln!</span>(
                 f,
-                <span class="string">&quot;[{}] {}{}{} = {:?}\n&quot;</span>,
+                <span class="string">&quot;[{}] {}{}{} = {:?}&quot;</span>,
                 i + <span class="number">1</span>,
                 <span class="kw">if </span>constant { <span class="string">&quot;const &quot; </span>} <span class="kw">else </span>{ <span class="string">&quot;&quot; </span>},
                 name,
@@ -845,7 +918,7 @@
                 .collect(),
             names: <span class="self">self</span>.names.clone(),
             aliases: <span class="self">self</span>.aliases.clone(),
-            phantom: <span class="self">self</span>.phantom.clone(),
+            dummy: <span class="self">self</span>.dummy,
         }
     }
 }
@@ -861,6 +934,21 @@
                 .into_iter()
                 .zip(<span class="self">self</span>.names.into_iter().zip(<span class="self">self</span>.aliases.into_iter()))
                 .map(|(value, (name, alias))| (name.into(), value, alias)),
+        )
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; IntoIterator <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Scope&lt;<span class="lifetime">&#39;_</span>&gt; {
+    <span class="kw">type </span>Item = (<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Identifier, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Dynamic, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Vec&lt;Identifier&gt;);
+    <span class="kw">type </span>IntoIter = Box&lt;<span class="kw">dyn </span>Iterator&lt;Item = <span class="self">Self</span>::Item&gt; + <span class="lifetime">&#39;a</span>&gt;;
+
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
+        Box::new(
+            <span class="self">self</span>.values
+                .iter()
+                .zip(<span class="self">self</span>.names.iter().zip(<span class="self">self</span>.aliases.iter()))
+                .map(|(value, (name, alias))| (name, value, alias)),
         )
     }
 }
@@ -885,7 +973,7 @@
             values: SmallVec::new_const(),
             names: SmallVec::new_const(),
             aliases: SmallVec::new_const(),
-            phantom: PhantomData,
+            dummy: PhantomData,
         }
     }
     <span class="doccomment">/// Empty the [`Scope`].
@@ -932,7 +1020,7 @@
     </span><span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="self">self</span>.values.len()
     }
-    <span class="doccomment">/// Is the [`Scope`] empty?
+    <span class="doccomment">/// Returns `true` if this [`Scope`] contains no variables.
     ///
     /// # Example
     ///
@@ -1154,12 +1242,11 @@
     /// assert_eq!(my_scope.is_constant(&quot;y&quot;), None);
     /// ```
     </span><span class="attribute">#[inline]
+    #[must_use]
     </span><span class="kw">pub fn </span>is_constant(<span class="kw-2">&amp;</span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;bool&gt; {
-        <span class="self">self</span>.get_index(name).and_then(|(.., access)| {
-            <span class="prelude-val">Some</span>(<span class="kw">match </span>access {
-                AccessMode::ReadWrite =&gt; <span class="bool-val">false</span>,
-                AccessMode::ReadOnly =&gt; <span class="bool-val">true</span>,
-            })
+        <span class="self">self</span>.get_index(name).map(|(.., access)| <span class="kw">match </span>access {
+            AccessMode::ReadWrite =&gt; <span class="bool-val">false</span>,
+            AccessMode::ReadOnly =&gt; <span class="bool-val">true</span>,
         })
     }
     <span class="doccomment">/// Update the value of the named entry in the [`Scope`] if it already exists and is not constant.
@@ -1244,9 +1331,68 @@
         }
         <span class="self">self
     </span>}
+    <span class="doccomment">/// Get a reference to an entry in the [`Scope`].
+    ///
+    /// If the entry by the specified name is not found, [`None`] is returned.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use rhai::Scope;
+    ///
+    /// let mut my_scope = Scope::new();
+    ///
+    /// my_scope.push(&quot;x&quot;, 42_i64);
+    ///
+    /// let value = my_scope.get(&quot;x&quot;).expect(&quot;x should exist&quot;);
+    ///
+    /// assert_eq!(value.as_int().unwrap(), 42);
+    ///
+    /// assert!(my_scope.get(&quot;z&quot;).is_none());
+    /// ```
+    </span><span class="attribute">#[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Dynamic&gt; {
+        <span class="self">self</span>.get_index(name).map(|(index, <span class="kw">_</span>)| <span class="kw-2">&amp;</span><span class="self">self</span>.values[index])
+    }
+    <span class="doccomment">/// Remove the last entry in the [`Scope`] by the specified name and return its value.
+    ///
+    /// If the entry by the specified name is not found, [`None`] is returned.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use rhai::Scope;
+    ///
+    /// let mut my_scope = Scope::new();
+    ///
+    /// my_scope.push(&quot;x&quot;, 123_i64);        // first &#39;x&#39;
+    /// my_scope.push(&quot;x&quot;, 42_i64);         // second &#39;x&#39;, shadows first
+    ///
+    /// assert_eq!(my_scope.len(), 2);
+    ///
+    /// let value = my_scope.remove::&lt;i64&gt;(&quot;x&quot;).expect(&quot;x should exist&quot;);
+    ///
+    /// assert_eq!(value, 42);
+    ///
+    /// assert_eq!(my_scope.len(), 1);
+    ///
+    /// let value = my_scope.get_value::&lt;i64&gt;(&quot;x&quot;).expect(&quot;x should still exist&quot;);
+    ///
+    /// assert_eq!(value, 123);
+    /// ```
+    </span><span class="attribute">#[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub fn </span>remove&lt;T: Variant + Clone&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;T&gt; {
+        <span class="self">self</span>.get_index(name).and_then(|(index, <span class="kw">_</span>)| {
+            <span class="self">self</span>.names.remove(index);
+            <span class="self">self</span>.aliases.remove(index);
+            <span class="self">self</span>.values.remove(index).try_cast()
+        })
+    }
     <span class="doccomment">/// Get a mutable reference to an entry in the [`Scope`].
     ///
-    /// If the entry by the specified name is not found, of if it is read-only,
+    /// If the entry by the specified name is not found, or if it is read-only,
     /// [`None`] is returned.
     ///
     /// # Example
@@ -1264,8 +1410,8 @@
     ///
     /// assert_eq!(my_scope.get_value::&lt;i64&gt;(&quot;x&quot;).expect(&quot;x should exist&quot;), 123);
     ///
-    /// my_scope.push_constant(&quot;Z&quot;, 1_i64);
-    /// assert!(my_scope.get_mut(&quot;Z&quot;).is_none());
+    /// my_scope.push_constant(&quot;z&quot;, 1_i64);
+    /// assert!(my_scope.get_mut(&quot;z&quot;).is_none());
     /// ```
     </span><span class="attribute">#[inline]
     #[must_use]
@@ -1395,7 +1541,7 @@
         <span class="self">self</span>.names
             .iter()
             .zip(<span class="self">self</span>.values.iter())
-            .map(|(name, value)| (name.as_ref(), value.is_read_only(), value))
+            .map(|(name, value)| (name.as_str(), value.is_read_only(), value))
     }
     <span class="doccomment">/// Get a reverse iterator to entries in the [`Scope`].
     /// Shared values are not expanded.
@@ -1405,7 +1551,7 @@
             .iter()
             .rev()
             .zip(<span class="self">self</span>.values.iter().rev())
-            .map(|(name, value)| (name.as_ref(), value.is_read_only(), value))
+            .map(|(name, value)| (name.as_str(), value.is_read_only(), value))
     }
     <span class="doccomment">/// Remove a range of entries within the [`Scope`].
     ///
@@ -1465,4 +1611,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

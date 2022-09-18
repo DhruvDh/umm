@@ -693,24 +693,6 @@
 <span id="693">693</span>
 <span id="694">694</span>
 <span id="695">695</span>
-<span id="696">696</span>
-<span id="697">697</span>
-<span id="698">698</span>
-<span id="699">699</span>
-<span id="700">700</span>
-<span id="701">701</span>
-<span id="702">702</span>
-<span id="703">703</span>
-<span id="704">704</span>
-<span id="705">705</span>
-<span id="706">706</span>
-<span id="707">707</span>
-<span id="708">708</span>
-<span id="709">709</span>
-<span id="710">710</span>
-<span id="711">711</span>
-<span id="712">712</span>
-<span id="713">713</span>
 </pre><pre class="rust"><code><span class="attribute">#![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
@@ -719,7 +701,6 @@
     io::{
         BufRead,
         BufReader,
-        Read,
         Write,
     },
     process::Command,
@@ -1342,28 +1323,11 @@
     out_of: f64,
     req_name: <span class="kw-2">&amp;</span>str,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;GradeResult&gt; {
-    <span class="kw">let </span>test_source = {
-        <span class="kw">let </span>resp = ureq::get(url)
-            .call()
-            .context(<span class="macro">format!</span>(<span class="string">&quot;Failed to download {}&quot;</span>, url))<span class="question-mark">?</span>;
+    <span class="kw">let </span>test_source = reqwest::blocking::get(<span class="string">&quot;https://httpbin.org/ip&quot;</span>)
+        .context(<span class="macro">format!</span>(<span class="string">&quot;Failed to download {}&quot;</span>, url))<span class="question-mark">?
+        </span>.bytes()
+        .context(<span class="macro">format!</span>(<span class="string">&quot;Failed to get resobse as bytes: {}&quot;</span>, url))<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>len = resp
-            .header(<span class="string">&quot;Content-Length&quot;</span>)
-            .and_then(|s| s.parse::&lt;usize&gt;().ok())
-            .unwrap_or(<span class="number">1024</span>);
-
-        <span class="kw">let </span><span class="kw-2">mut </span>bytes: Vec&lt;u8&gt; = Vec::with_capacity(len);
-
-        resp.into_reader()
-            .take(<span class="number">10_000_000</span>)
-            .read_to_end(<span class="kw-2">&amp;mut </span>bytes)
-            .context(<span class="macro">format!</span>(
-                <span class="string">&quot;Failed to read response till the end while downloading file at {}&quot;</span>,
-                url,
-            ))<span class="question-mark">?</span>;
-
-        bytes
-    };
     <span class="kw">let </span>path = ROOT_DIR.join(<span class="macro">format!</span>(<span class="string">&quot;{}.java&quot;</span>, test_class_name));
     <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(<span class="kw-2">&amp;</span>path)<span class="question-mark">?</span>;
     file.write_all(<span class="kw-2">&amp;</span>test_source)<span class="question-mark">?</span>;
@@ -1425,4 +1389,4 @@
     <span class="macro">println!</span>(<span class="string">&quot;p;{}&quot;</span>, grade <span class="kw">as </span>isize);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="umm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="umm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/socket2-0.4.4/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../socket2/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../socket2/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../socket2/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/socket2-0.4.7/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../socket2/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../socket2/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../socket2/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -440,11 +440,32 @@
 <span id="440">440</span>
 <span id="441">441</span>
 <span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2015 The Rust Project Developers.
 //
 // Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or
-// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license
-// &lt;LICENSE-MIT or http://opensource.org/licenses/MIT&gt;, at your
+// https://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license
+// &lt;LICENSE-MIT or https://opensource.org/licenses/MIT&gt;, at your
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
@@ -492,7 +513,7 @@
 //! This crate has a single feature `all`, which enables all functions even ones
 //! that are not available on all OSs.
 
-</span><span class="attribute">#![doc(html_root_url = <span class="string">&quot;https://docs.rs/socket2/0.3&quot;</span>)]
+</span><span class="attribute">#![doc(html_root_url = <span class="string">&quot;https://docs.rs/socket2/0.4&quot;</span>)]
 #![deny(missing_docs, missing_debug_implementations, rust_2018_idioms)]
 </span><span class="comment">// Show required OS/features on docs.rs.
 </span><span class="attribute">#![cfg_attr(docsrs, feature(doc_cfg))]
@@ -769,10 +790,16 @@
 /// See [`Socket::set_tcp_keepalive`].
 </span><span class="attribute">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>TcpKeepalive {
-    time: <span class="prelude-ty">Option</span>&lt;Duration&gt;,
-    <span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;redox&quot;</span>, target_os = <span class="string">&quot;solaris&quot;</span>)))]
+    <span class="attribute">#[cfg_attr(target_os = <span class="string">&quot;openbsd&quot;</span>, allow(dead_code))]
+    </span>time: <span class="prelude-ty">Option</span>&lt;Duration&gt;,
+    <span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;openbsd&quot;</span>, target_os = <span class="string">&quot;redox&quot;</span>, target_os = <span class="string">&quot;solaris&quot;</span>)))]
     </span>interval: <span class="prelude-ty">Option</span>&lt;Duration&gt;,
-    <span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;redox&quot;</span>, target_os = <span class="string">&quot;solaris&quot;</span>, target_os = <span class="string">&quot;windows&quot;</span>)))]
+    <span class="attribute">#[cfg(not(any(
+        target_os = <span class="string">&quot;openbsd&quot;</span>,
+        target_os = <span class="string">&quot;redox&quot;</span>,
+        target_os = <span class="string">&quot;solaris&quot;</span>,
+        target_os = <span class="string">&quot;windows&quot;
+    </span>)))]
     </span>retries: <span class="prelude-ty">Option</span>&lt;u32&gt;,
 }
 
@@ -781,9 +808,14 @@
     </span><span class="kw">pub const fn </span>new() -&gt; TcpKeepalive {
         TcpKeepalive {
             time: <span class="prelude-val">None</span>,
-            <span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;redox&quot;</span>, target_os = <span class="string">&quot;solaris&quot;</span>)))]
+            <span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;openbsd&quot;</span>, target_os = <span class="string">&quot;redox&quot;</span>, target_os = <span class="string">&quot;solaris&quot;</span>)))]
             </span>interval: <span class="prelude-val">None</span>,
-            <span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;redox&quot;</span>, target_os = <span class="string">&quot;solaris&quot;</span>, target_os = <span class="string">&quot;windows&quot;</span>)))]
+            <span class="attribute">#[cfg(not(any(
+                target_os = <span class="string">&quot;openbsd&quot;</span>,
+                target_os = <span class="string">&quot;redox&quot;</span>,
+                target_os = <span class="string">&quot;solaris&quot;</span>,
+                target_os = <span class="string">&quot;windows&quot;
+            </span>)))]
             </span>retries: <span class="prelude-val">None</span>,
         }
     }
@@ -816,9 +848,11 @@
     </span><span class="attribute">#[cfg(all(
         feature = <span class="string">&quot;all&quot;</span>,
         any(
+            target_os = <span class="string">&quot;android&quot;</span>,
             target_os = <span class="string">&quot;dragonfly&quot;</span>,
             target_os = <span class="string">&quot;freebsd&quot;</span>,
             target_os = <span class="string">&quot;fuchsia&quot;</span>,
+            target_os = <span class="string">&quot;illumos&quot;</span>,
             target_os = <span class="string">&quot;linux&quot;</span>,
             target_os = <span class="string">&quot;netbsd&quot;</span>,
             target_vendor = <span class="string">&quot;apple&quot;</span>,
@@ -830,8 +864,11 @@
         doc(cfg(all(
             feature = <span class="string">&quot;all&quot;</span>,
             any(
+                target_os = <span class="string">&quot;android&quot;</span>,
+                target_os = <span class="string">&quot;dragonfly&quot;</span>,
                 target_os = <span class="string">&quot;freebsd&quot;</span>,
                 target_os = <span class="string">&quot;fuchsia&quot;</span>,
+                target_os = <span class="string">&quot;illumos&quot;</span>,
                 target_os = <span class="string">&quot;linux&quot;</span>,
                 target_os = <span class="string">&quot;netbsd&quot;</span>,
                 target_vendor = <span class="string">&quot;apple&quot;</span>,
@@ -854,9 +891,11 @@
         feature = <span class="string">&quot;all&quot;</span>,
         any(
             doc,
+            target_os = <span class="string">&quot;android&quot;</span>,
             target_os = <span class="string">&quot;dragonfly&quot;</span>,
             target_os = <span class="string">&quot;freebsd&quot;</span>,
             target_os = <span class="string">&quot;fuchsia&quot;</span>,
+            target_os = <span class="string">&quot;illumos&quot;</span>,
             target_os = <span class="string">&quot;linux&quot;</span>,
             target_os = <span class="string">&quot;netbsd&quot;</span>,
             target_vendor = <span class="string">&quot;apple&quot;</span>,
@@ -867,8 +906,11 @@
         doc(cfg(all(
             feature = <span class="string">&quot;all&quot;</span>,
             any(
+                target_os = <span class="string">&quot;android&quot;</span>,
+                target_os = <span class="string">&quot;dragonfly&quot;</span>,
                 target_os = <span class="string">&quot;freebsd&quot;</span>,
                 target_os = <span class="string">&quot;fuchsia&quot;</span>,
+                target_os = <span class="string">&quot;illumos&quot;</span>,
                 target_os = <span class="string">&quot;linux&quot;</span>,
                 target_os = <span class="string">&quot;netbsd&quot;</span>,
                 target_vendor = <span class="string">&quot;apple&quot;</span>,
@@ -883,4 +925,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="socket2" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="socket2" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

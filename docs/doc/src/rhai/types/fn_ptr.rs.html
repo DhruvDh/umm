@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/types/fn_ptr.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>fn_ptr.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/types/fn_ptr.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>fn_ptr.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -296,6 +296,9 @@
 <span id="296">296</span>
 <span id="297">297</span>
 <span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The `FnPtr` type.
 
 </span><span class="kw">use </span><span class="kw">crate</span>::tokenizer::is_valid_identifier;
@@ -315,19 +318,22 @@
 <span class="doccomment">/// A general function pointer, which may carry additional (i.e. curried) argument values
 /// to be passed onto a function during a call.
 </span><span class="attribute">#[derive(Clone, Hash)]
-</span><span class="kw">pub struct </span>FnPtr(Identifier, StaticVec&lt;Dynamic&gt;);
+</span><span class="kw">pub struct </span>FnPtr {
+    name: Identifier,
+    curry: StaticVec&lt;Dynamic&gt;,
+}
 
 <span class="kw">impl </span>fmt::Debug <span class="kw">for </span>FnPtr {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-        <span class="kw">if </span>!<span class="self">self</span>.is_curried() {
-            <span class="macro">write!</span>(f, <span class="string">&quot;Fn({})&quot;</span>, <span class="self">self</span>.fn_name())
-        } <span class="kw">else </span>{
-            <span class="self">self</span>.<span class="number">1
-                </span>.iter()
-                .fold(f.debug_tuple(<span class="string">&quot;Fn&quot;</span>).field(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>), |f, curry| {
+        <span class="kw">if </span><span class="self">self</span>.is_curried() {
+            <span class="self">self</span>.curry
+                .iter()
+                .fold(f.debug_tuple(<span class="string">&quot;Fn&quot;</span>).field(<span class="kw-2">&amp;</span><span class="self">self</span>.name), |f, curry| {
                     f.field(curry)
                 })
                 .finish()
+        } <span class="kw">else </span>{
+            <span class="macro">write!</span>(f, <span class="string">&quot;Fn({})&quot;</span>, <span class="self">self</span>.fn_name())
         }
     }
 }
@@ -342,55 +348,52 @@
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new_unchecked(name: <span class="kw">impl </span>Into&lt;Identifier&gt;, curry: StaticVec&lt;Dynamic&gt;) -&gt; <span class="self">Self </span>{
-        <span class="self">Self</span>(name.into(), curry)
+        <span class="self">Self </span>{
+            name: name.into(),
+            curry,
+        }
     }
     <span class="doccomment">/// Get the name of the function.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub fn </span>fn_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
-        <span class="self">self</span>.fn_name_raw().as_ref()
+        <span class="self">self</span>.fn_name_raw().as_str()
     }
     <span class="doccomment">/// Get the name of the function.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>fn_name_raw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Identifier {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
-    </span>}
+        <span class="kw-2">&amp;</span><span class="self">self</span>.name
+    }
     <span class="doccomment">/// Get the underlying data of the function pointer.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>take_data(<span class="self">self</span>) -&gt; (Identifier, StaticVec&lt;Dynamic&gt;) {
-        (<span class="self">self</span>.<span class="number">0</span>, <span class="self">self</span>.<span class="number">1</span>)
+        (<span class="self">self</span>.name, <span class="self">self</span>.curry)
     }
     <span class="doccomment">/// Get the curried arguments.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub fn </span>curry(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[Dynamic] {
-        <span class="self">self</span>.<span class="number">1</span>.as_ref()
+        <span class="self">self</span>.curry.as_ref()
     }
     <span class="doccomment">/// Add a new curried argument.
     </span><span class="attribute">#[inline(always)]
     </span><span class="kw">pub fn </span>add_curry(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: Dynamic) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.<span class="number">1</span>.push(value);
+        <span class="self">self</span>.curry.push(value);
         <span class="self">self
     </span>}
     <span class="doccomment">/// Set curried arguments to the function pointer.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>set_curry(<span class="kw-2">&amp;mut </span><span class="self">self</span>, values: <span class="kw">impl </span>IntoIterator&lt;Item = Dynamic&gt;) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.<span class="number">1 </span>= values.into_iter().collect();
+        <span class="self">self</span>.curry = values.into_iter().collect();
         <span class="self">self
     </span>}
     <span class="doccomment">/// Is the function pointer curried?
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub fn </span>is_curried(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        !<span class="self">self</span>.<span class="number">1</span>.is_empty()
-    }
-    <span class="doccomment">/// Get the number of curried arguments.
-    </span><span class="attribute">#[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>num_curried(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="self">self</span>.<span class="number">1</span>.len()
+        !<span class="self">self</span>.curry.is_empty()
     }
     <span class="doccomment">/// Does the function pointer refer to an anonymous function?
     ///
@@ -399,7 +402,7 @@
     #[inline(always)]
     #[must_use]
     </span><span class="kw">pub fn </span>is_anonymous(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.<span class="number">0</span>.starts_with(<span class="kw">crate</span>::engine::FN_ANONYMOUS)
+        <span class="self">self</span>.name.starts_with(<span class="kw">crate</span>::engine::FN_ANONYMOUS)
     }
     <span class="doccomment">/// Call the function pointer with curried arguments (if any).
     /// The function may be script-defined (not available under `no_function`) or native Rust.
@@ -447,7 +450,7 @@
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             </span>_ast.as_ref(),
         ];
-        <span class="kw">let </span>lib = <span class="kw">if </span>lib.first().map(|m: &amp;&amp;Module| m.is_empty()).unwrap_or(<span class="bool-val">true</span>) {
+        <span class="kw">let </span>lib = <span class="kw">if </span>lib.first().map_or(<span class="bool-val">true</span>, |m: &amp;&amp;Module| m.is_empty()) {
             <span class="kw-2">&amp;</span>lib[<span class="number">0</span>..<span class="number">0</span>]
         } <span class="kw">else </span>{
             <span class="kw-2">&amp;</span>lib
@@ -479,7 +482,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>arg_values = <span class="kw">crate</span>::StaticVec::new_const();
         args.parse(<span class="kw-2">&amp;mut </span>arg_values);
 
-        <span class="kw">let </span>result = <span class="self">self</span>.call_raw(<span class="kw-2">&amp;</span>context, <span class="prelude-val">None</span>, arg_values)<span class="question-mark">?</span>;
+        <span class="kw">let </span>result = <span class="self">self</span>.call_raw(context, <span class="prelude-val">None</span>, arg_values)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>typ = context.engine().map_type_name(result.type_name());
 
@@ -517,11 +520,11 @@
         <span class="kw">let </span><span class="kw-2">mut </span>arg_values = arg_values.as_mut();
         <span class="kw">let </span><span class="kw-2">mut </span>args_data;
 
-        <span class="kw">if </span><span class="self">self</span>.num_curried() &gt; <span class="number">0 </span>{
-            args_data = StaticVec::with_capacity(<span class="self">self</span>.num_curried() + arg_values.len());
+        <span class="kw">if </span><span class="self">self</span>.is_curried() {
+            args_data = StaticVec::with_capacity(<span class="self">self</span>.curry().len() + arg_values.len());
             args_data.extend(<span class="self">self</span>.curry().iter().cloned());
             args_data.extend(arg_values.iter_mut().map(mem::take));
-            arg_values = args_data.as_mut();
+            arg_values = <span class="kw-2">&amp;mut *</span>args_data;
         };
 
         <span class="kw">let </span>is_method = this_ptr.is_some();
@@ -538,7 +541,7 @@
 
 <span class="kw">impl </span>fmt::Display <span class="kw">for </span>FnPtr {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;Fn({})&quot;</span>, <span class="self">self</span>.<span class="number">0</span>)
+        <span class="macro">write!</span>(f, <span class="string">&quot;Fn({})&quot;</span>, <span class="self">self</span>.fn_name())
     }
 }
 
@@ -548,7 +551,10 @@
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>try_from(value: Identifier) -&gt; RhaiResultOf&lt;<span class="self">Self</span>&gt; {
         <span class="kw">if </span>is_valid_identifier(value.chars()) {
-            <span class="prelude-val">Ok</span>(<span class="self">Self</span>(value, StaticVec::new_const()))
+            <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+                name: value,
+                curry: StaticVec::new_const(),
+            })
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(ERR::ErrorFunctionNotFound(value.to_string(), Position::NONE).into())
         }
@@ -595,4 +601,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

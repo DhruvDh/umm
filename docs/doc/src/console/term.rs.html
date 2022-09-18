@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/console-0.15.0/src/term.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>term.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../console/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../console/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../console/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/console-0.15.1/src/term.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>term.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../console/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../console/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../console/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -618,6 +618,24 @@
 <span id="618">618</span>
 <span id="619">619</span>
 <span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
 </pre><pre class="rust"><code><span class="kw">use </span>std::fmt::{Debug, Display};
 <span class="kw">use </span>std::io::{<span class="self">self</span>, Read, Write};
 <span class="kw">use </span>std::sync::{Arc, Mutex};
@@ -642,7 +660,8 @@
 <span class="attribute">#[cfg(unix)]
 #[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>ReadWritePair {
-    read: Arc&lt;Mutex&lt;<span class="kw">dyn </span>TermRead&gt;&gt;,
+    <span class="attribute">#[allow(unused)]
+    </span>read: Arc&lt;Mutex&lt;<span class="kw">dyn </span>TermRead&gt;&gt;,
     write: Arc&lt;Mutex&lt;<span class="kw">dyn </span>TermWrite&gt;&gt;,
     style: Style,
 }
@@ -680,13 +699,13 @@
 </span><span class="kw">pub struct </span>TermFeatures&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Term);
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; TermFeatures&lt;<span class="lifetime">&#39;a</span>&gt; {
-    <span class="doccomment">/// Checks if this is a real user attended terminal (`isatty`)
+    <span class="doccomment">/// Check if this is a real user attended terminal (`isatty`)
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>is_attended(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         is_a_terminal(<span class="self">self</span>.<span class="number">0</span>)
     }
 
-    <span class="doccomment">/// Checks if colors are supported by this terminal.
+    <span class="doccomment">/// Check if colors are supported by this terminal.
     ///
     /// This does not check if colors are enabled.  Currently all terminals
     /// are considered to support colors
@@ -695,7 +714,7 @@
         is_a_color_terminal(<span class="self">self</span>.<span class="number">0</span>)
     }
 
-    <span class="doccomment">/// Checks if this terminal is an msys terminal.
+    <span class="doccomment">/// Check if this terminal is an msys terminal.
     ///
     /// This is sometimes useful to disable features that are known to not
     /// work on msys terminals or require special handling.
@@ -711,13 +730,13 @@
         </span>}
     }
 
-    <span class="doccomment">/// Checks if this terminal wants emojis.
+    <span class="doccomment">/// Check if this terminal wants emojis.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>wants_emoji(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="self">self</span>.is_attended() &amp;&amp; wants_emoji()
     }
 
-    <span class="doccomment">/// Returns the family of the terminal.
+    <span class="doccomment">/// Return the family of the terminal.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>family(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; TermFamily {
         <span class="kw">if </span>!<span class="self">self</span>.is_attended() {
@@ -762,7 +781,7 @@
         term
     }
 
-    <span class="doccomment">/// Return a new unbuffered terminal
+    <span class="doccomment">/// Return a new unbuffered terminal.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>stdout() -&gt; Term {
         Term::with_inner(TermInner {
@@ -771,7 +790,7 @@
         })
     }
 
-    <span class="doccomment">/// Return a new unbuffered terminal to stderr
+    <span class="doccomment">/// Return a new unbuffered terminal to stderr.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>stderr() -&gt; Term {
         Term::with_inner(TermInner {
@@ -780,7 +799,7 @@
         })
     }
 
-    <span class="doccomment">/// Return a new buffered terminal
+    <span class="doccomment">/// Return a new buffered terminal.
     </span><span class="kw">pub fn </span>buffered_stdout() -&gt; Term {
         Term::with_inner(TermInner {
             target: TermTarget::Stdout,
@@ -788,7 +807,7 @@
         })
     }
 
-    <span class="doccomment">/// Return a new buffered terminal to stderr
+    <span class="doccomment">/// Return a new buffered terminal to stderr.
     </span><span class="kw">pub fn </span>buffered_stderr() -&gt; Term {
         Term::with_inner(TermInner {
             target: TermTarget::Stderr,
@@ -796,7 +815,7 @@
         })
     }
 
-    <span class="doccomment">/// Return a terminal for the given Read/Write pair styled-like Stderr.
+    <span class="doccomment">/// Return a terminal for the given Read/Write pair styled like stderr.
     </span><span class="attribute">#[cfg(unix)]
     </span><span class="kw">pub fn </span>read_write_pair&lt;R, W&gt;(read: R, write: W) -&gt; Term
     <span class="kw">where
@@ -823,7 +842,7 @@
         })
     }
 
-    <span class="doccomment">/// Returns the style for the term
+    <span class="doccomment">/// Return the style for this terminal.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>style(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Style {
         <span class="kw">match </span><span class="self">self</span>.inner.target {
@@ -834,7 +853,7 @@
         }
     }
 
-    <span class="doccomment">/// Returns the target
+    <span class="doccomment">/// Return the target of this terminal.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>target(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; TermTarget {
         <span class="self">self</span>.inner.target.clone()
@@ -848,7 +867,7 @@
         }
     }
 
-    <span class="doccomment">/// Writes a string to the terminal and adds a newline.
+    <span class="doccomment">/// Write a string to the terminal and add a newline.
     </span><span class="kw">pub fn </span>write_line(<span class="kw-2">&amp;</span><span class="self">self</span>, s: <span class="kw-2">&amp;</span>str) -&gt; io::Result&lt;()&gt; {
         <span class="kw">match </span><span class="self">self</span>.inner.buffer {
             <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>mutex) =&gt; {
@@ -861,7 +880,7 @@
         }
     }
 
-    <span class="doccomment">/// Read a single character from the terminal
+    <span class="doccomment">/// Read a single character from the terminal.
     ///
     /// This does not echo the character and blocks until a single character
     /// is entered.
@@ -939,7 +958,10 @@
                     <span class="self">self</span>.write_str(chr.encode_utf8(<span class="kw-2">&amp;mut </span>bytes_char))<span class="question-mark">?</span>;
                     <span class="self">self</span>.flush()<span class="question-mark">?</span>;
                 }
-                Key::Enter =&gt; <span class="kw">break</span>,
+                Key::Enter =&gt; {
+                    <span class="self">self</span>.write_line(<span class="string">&quot;&quot;</span>)<span class="question-mark">?</span>;
+                    <span class="kw">break</span>;
+                }
                 Key::Unknown =&gt; {
                     <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
                         io::ErrorKind::NotConnected,
@@ -952,7 +974,7 @@
         <span class="prelude-val">Ok</span>(chars.iter().collect::&lt;String&gt;())
     }
 
-    <span class="doccomment">/// Read securely a line of input.
+    <span class="doccomment">/// Read a line of input securely.
     ///
     /// This is similar to `read_line` but will not echo the output.  This
     /// also switches the terminal into a different mode where not all
@@ -970,7 +992,7 @@
         }
     }
 
-    <span class="doccomment">/// Flushes internal buffers.
+    <span class="doccomment">/// Flush internal buffers.
     ///
     /// This forces the contents of the internal buffer to be written to
     /// the terminal.  This is unnecessary for unbuffered terminals which
@@ -986,74 +1008,85 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// Checks if the terminal is indeed a terminal.
+    <span class="doccomment">/// Check if the terminal is indeed a terminal.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>is_term(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="self">self</span>.is_tty
     }
 
-    <span class="doccomment">/// Checks for common terminal features.
+    <span class="doccomment">/// Check for common terminal features.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>features(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; TermFeatures&lt;<span class="lifetime">&#39;_</span>&gt; {
         TermFeatures(<span class="self">self</span>)
     }
 
-    <span class="doccomment">/// Returns the terminal size in rows and columns or gets sensible defaults.
+    <span class="doccomment">/// Return the terminal size in rows and columns or gets sensible defaults.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>size(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (u16, u16) {
         <span class="self">self</span>.size_checked().unwrap_or((<span class="number">24</span>, DEFAULT_WIDTH))
     }
 
-    <span class="doccomment">/// Returns the terminal size in rows and columns.
+    <span class="doccomment">/// Return the terminal size in rows and columns.
     ///
-    /// If the size cannot be reliably determined None is returned.
+    /// If the size cannot be reliably determined `None` is returned.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>size_checked(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(u16, u16)&gt; {
         terminal_size(<span class="self">self</span>)
     }
 
-    <span class="doccomment">/// Moves the cursor to `x` and `y`
+    <span class="doccomment">/// Move the cursor to row `x` and column `y`. Values are 0-based.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>move_cursor_to(<span class="kw-2">&amp;</span><span class="self">self</span>, x: usize, y: usize) -&gt; io::Result&lt;()&gt; {
         move_cursor_to(<span class="self">self</span>, x, y)
     }
 
-    <span class="doccomment">/// Moves the cursor up `n` lines
+    <span class="doccomment">/// Move the cursor up by `n` lines, if possible.
+    ///
+    /// If there are less than `n` lines above the current cursor position,
+    /// the cursor is moved to the top line of the terminal (i.e., as far up as possible).
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>move_cursor_up(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; io::Result&lt;()&gt; {
         move_cursor_up(<span class="self">self</span>, n)
     }
 
-    <span class="doccomment">/// Moves the cursor down `n` lines
+    <span class="doccomment">/// Move the cursor down by `n` lines, if possible.
+    ///
+    /// If there are less than `n` lines below the current cursor position,
+    /// the cursor is moved to the bottom line of the terminal (i.e., as far down as possible).
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>move_cursor_down(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; io::Result&lt;()&gt; {
         move_cursor_down(<span class="self">self</span>, n)
     }
 
-    <span class="doccomment">/// Moves the cursor left `n` lines
+    <span class="doccomment">/// Move the cursor `n` characters to the left, if possible.
+    ///
+    /// If there are fewer than `n` characters to the left of the current cursor position,
+    /// the cursor is moved to the beginning of the line (i.e., as far to the left as possible).
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>move_cursor_left(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; io::Result&lt;()&gt; {
         move_cursor_left(<span class="self">self</span>, n)
     }
 
-    <span class="doccomment">/// Moves the cursor down `n` lines
+    <span class="doccomment">/// Move the cursor `n` characters to the right.
+    ///
+    /// If there are fewer than `n` characters to the right of the current cursor position,
+    /// the cursor is moved to the end of the current line (i.e., as far to the right as possible).
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>move_cursor_right(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; io::Result&lt;()&gt; {
         move_cursor_right(<span class="self">self</span>, n)
     }
 
-    <span class="doccomment">/// Clears the current line.
+    <span class="doccomment">/// Clear the current line.
     ///
-    /// The positions the cursor at the beginning of the line again.
+    /// Position the cursor at the beginning of the current line.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>clear_line(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;()&gt; {
         clear_line(<span class="self">self</span>)
     }
 
-    <span class="doccomment">/// Clear the last `n` lines.
+    <span class="doccomment">/// Clear the last `n` lines before the current line.
     ///
-    /// This positions the cursor at the beginning of the first line
-    /// that was cleared.
+    /// Position the cursor at the beginning of the first line that was cleared.
     </span><span class="kw">pub fn </span>clear_last_lines(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; io::Result&lt;()&gt; {
         <span class="self">self</span>.move_cursor_up(n)<span class="question-mark">?</span>;
         <span class="kw">for _ in </span><span class="number">0</span>..n {
@@ -1064,25 +1097,28 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// Clears the entire screen.
+    <span class="doccomment">/// Clear the entire screen.
+    ///
+    /// Move the cursor to the upper left corner of the screen.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>clear_screen(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;()&gt; {
         clear_screen(<span class="self">self</span>)
     }
 
-    <span class="doccomment">/// Clears the entire screen.
+    <span class="doccomment">/// Clear everything from the current cursor position to the end of the screen.
+    /// The cursor stays in its position.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>clear_to_end_of_screen(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;()&gt; {
         clear_to_end_of_screen(<span class="self">self</span>)
     }
 
-    <span class="doccomment">/// Clears the last char in the the current line.
+    <span class="doccomment">/// Clear the last `n` characters of the current line.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>clear_chars(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; io::Result&lt;()&gt; {
         clear_chars(<span class="self">self</span>, n)
     }
 
-    <span class="doccomment">/// Set the terminal title
+    <span class="doccomment">/// Set the terminal title.
     </span><span class="kw">pub fn </span>set_title&lt;T: Display&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, title: T) {
         <span class="kw">if </span>!<span class="self">self</span>.is_tty {
             <span class="kw">return</span>;
@@ -1090,13 +1126,13 @@
         set_title(title);
     }
 
-    <span class="doccomment">/// Makes cursor visible again
+    <span class="doccomment">/// Make the cursor visible again.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>show_cursor(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;()&gt; {
         show_cursor(<span class="self">self</span>)
     }
 
-    <span class="doccomment">/// Hides cursor
+    <span class="doccomment">/// Hide the cursor.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub fn </span>hide_cursor(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;()&gt; {
         hide_cursor(<span class="self">self</span>)
@@ -1239,4 +1275,4 @@
 <span class="attribute">#[cfg(windows)]
 </span><span class="kw">pub use </span><span class="kw">crate</span>::windows_term::<span class="kw-2">*</span>;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="console" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="console" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

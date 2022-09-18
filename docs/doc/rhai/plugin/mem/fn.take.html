@@ -16,7 +16,7 @@
 <p><code>take</code> allows taking ownership of a struct field by replacing it with an “empty” value.
 Without <code>take</code> you can run into issues like these:</p>
 
-<div class='information'><div class='tooltip compile_fail'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered compile_fail"><code><span class="kw">struct </span>Buffer&lt;T&gt; { buf: Vec&lt;T&gt; }
+<div class="example-wrap compile_fail"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>Buffer&lt;T&gt; { buf: Vec&lt;T&gt; }
 
 <span class="kw">impl</span>&lt;T&gt; Buffer&lt;T&gt; {
     <span class="kw">fn </span>get_and_reset(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; Vec&lt;T&gt; {
@@ -43,4 +43,4 @@ Without <code>take</code> you can run into issues like these:</p>
 
 <span class="macro">assert_eq!</span>(buffer.get_and_reset(), <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>]);
 <span class="macro">assert_eq!</span>(buffer.buf.len(), <span class="number">0</span>);</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

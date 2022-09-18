@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/regex-syntax-0.6.26/src/hir/translate.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>translate.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../regex_syntax/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../regex_syntax/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../regex_syntax/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/regex-syntax-0.6.27/src/hir/translate.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>translate.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../regex_syntax/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../regex_syntax/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../regex_syntax/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -3205,10 +3205,6 @@
 <span id="3205">3205</span>
 <span id="3206">3206</span>
 <span id="3207">3207</span>
-<span id="3208">3208</span>
-<span id="3209">3209</span>
-<span id="3210">3210</span>
-<span id="3211">3211</span>
 </pre><pre class="rust"><code><span class="doccomment">/*!
 Defines a translator that converts an `Ast` to an `Hir`.
 */
@@ -3800,7 +3796,7 @@ Defines a translator that converts an `Ast` to an `Hir`.
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;t</span>, <span class="lifetime">&#39;p</span>&gt; TranslatorI&lt;<span class="lifetime">&#39;t</span>, <span class="lifetime">&#39;p</span>&gt; {
     <span class="doccomment">/// Build a new internal translator.
     </span><span class="kw">fn </span>new(trans: <span class="kw-2">&amp;</span><span class="lifetime">&#39;t </span>Translator, pattern: <span class="kw-2">&amp;</span><span class="lifetime">&#39;p </span>str) -&gt; TranslatorI&lt;<span class="lifetime">&#39;t</span>, <span class="lifetime">&#39;p</span>&gt; {
-        TranslatorI { trans: trans, pattern: pattern }
+        TranslatorI { trans, pattern }
     }
 
     <span class="doccomment">/// Return a reference to the underlying translator.
@@ -3820,7 +3816,7 @@ Defines a translator that converts an `Ast` to an `Hir`.
 
     <span class="doccomment">/// Create a new error with the given span and error type.
     </span><span class="kw">fn </span>error(<span class="kw-2">&amp;</span><span class="self">self</span>, span: Span, kind: ErrorKind) -&gt; Error {
-        Error { kind: kind, pattern: <span class="self">self</span>.pattern.to_string(), span: span }
+        Error { kind, pattern: <span class="self">self</span>.pattern.to_string(), span }
     }
 
     <span class="doccomment">/// Return a copy of the active flags.
@@ -3990,7 +3986,7 @@ Defines a translator that converts an `Ast` to an `Hir`.
             }
             ast::GroupKind::NonCapturing(<span class="kw">_</span>) =&gt; hir::GroupKind::NonCapturing,
         };
-        Hir::group(hir::Group { kind: kind, hir: Box::new(expr) })
+        Hir::group(hir::Group { kind, hir: Box::new(expr) })
     }
 
     <span class="kw">fn </span>hir_repetition(<span class="kw-2">&amp;</span><span class="self">self</span>, rep: <span class="kw-2">&amp;</span>ast::Repetition, expr: Hir) -&gt; Hir {
@@ -4013,11 +4009,7 @@ Defines a translator that converts an `Ast` to an `Hir`.
         };
         <span class="kw">let </span>greedy =
             <span class="kw">if </span><span class="self">self</span>.flags().swap_greed() { !rep.greedy } <span class="kw">else </span>{ rep.greedy };
-        Hir::repetition(hir::Repetition {
-            kind: kind,
-            greedy: greedy,
-            hir: Box::new(expr),
-        })
+        Hir::repetition(hir::Repetition { kind, greedy, hir: Box::new(expr) })
     }
 
     <span class="kw">fn </span>hir_unicode_class(
@@ -4449,7 +4441,7 @@ Defines a translator that converts an `Ast` to an `Hir`.
     <span class="kw">fn </span>hir_quest(greedy: bool, expr: Hir) -&gt; Hir {
         Hir::repetition(hir::Repetition {
             kind: hir::RepetitionKind::ZeroOrOne,
-            greedy: greedy,
+            greedy,
             hir: Box::new(expr),
         })
     }
@@ -4457,7 +4449,7 @@ Defines a translator that converts an `Ast` to an `Hir`.
     <span class="kw">fn </span>hir_star(greedy: bool, expr: Hir) -&gt; Hir {
         Hir::repetition(hir::Repetition {
             kind: hir::RepetitionKind::ZeroOrMore,
-            greedy: greedy,
+            greedy,
             hir: Box::new(expr),
         })
     }
@@ -4465,7 +4457,7 @@ Defines a translator that converts an `Ast` to an `Hir`.
     <span class="kw">fn </span>hir_plus(greedy: bool, expr: Hir) -&gt; Hir {
         Hir::repetition(hir::Repetition {
             kind: hir::RepetitionKind::OneOrMore,
-            greedy: greedy,
+            greedy,
             hir: Box::new(expr),
         })
     }
@@ -4473,7 +4465,7 @@ Defines a translator that converts an `Ast` to an `Hir`.
     <span class="kw">fn </span>hir_range(greedy: bool, range: hir::RepetitionRange, expr: Hir) -&gt; Hir {
         Hir::repetition(hir::Repetition {
             kind: hir::RepetitionKind::Range(range),
-            greedy: greedy,
+            greedy,
             hir: Box::new(expr),
         })
     }
@@ -6421,4 +6413,4 @@ Defines a translator that converts an `Ast` to an `Hir`.
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="regex_syntax" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="regex_syntax" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

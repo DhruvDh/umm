@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/serde/de.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>de.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/serde/de.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>de.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -608,15 +608,6 @@
 <span id="608">608</span>
 <span id="609">609</span>
 <span id="610">610</span>
-<span id="611">611</span>
-<span id="612">612</span>
-<span id="613">613</span>
-<span id="614">614</span>
-<span id="615">615</span>
-<span id="616">616</span>
-<span id="617">617</span>
-<span id="618">618</span>
-<span id="619">619</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Implement deserialization support of [`Dynamic`][crate::Dynamic] for [`serde`].
 
 </span><span class="kw">use </span><span class="kw">crate</span>::types::dynamic::Union;
@@ -641,7 +632,7 @@
     /// The reference is necessary because the deserialized type may hold references
     /// (especially `&amp;str`) to the source [`Dynamic`][crate::Dynamic].
     </span><span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>from_dynamic(value: <span class="kw-2">&amp;</span><span class="lifetime">&#39;de </span>Dynamic) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>from_dynamic(value: <span class="kw-2">&amp;</span><span class="lifetime">&#39;de </span>Dynamic) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{ value }
     }
     <span class="doccomment">/// Shortcut for a type conversion error.
@@ -1039,7 +1030,7 @@
             || <span class="self">self</span>.type_error(),
             |map| {
                 _visitor.visit_map(IterateMap::new(
-                    map.keys().map(|key| key.as_str()),
+                    map.keys().map(<span class="kw">crate</span>::SmartString::as_str),
                     map.values(),
                 ))
             },
@@ -1068,21 +1059,22 @@
             visitor.visit_enum(s.as_str().into_deserializer())
         } <span class="kw">else </span>{
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(map) = <span class="self">self</span>.value.downcast_ref::&lt;<span class="kw">crate</span>::Map&gt;() {
-                <span class="kw">let </span><span class="kw-2">mut </span>iter = map.iter();
-                <span class="kw">let </span>first = iter.next();
-                <span class="kw">let </span>second = iter.next();
-                <span class="kw">if let </span>(<span class="prelude-val">Some</span>((key, value)), <span class="prelude-val">None</span>) = (first, second) {
-                    visitor.visit_enum(EnumDeserializer {
-                        tag: <span class="kw-2">&amp;</span>key,
-                        content: DynamicDeserializer::from_dynamic(value),
-                    })
-                } <span class="kw">else </span>{
-                    <span class="self">self</span>.type_error()
-                }
-            } <span class="kw">else </span>{
-                <span class="self">self</span>.type_error()
-            }
+            </span><span class="kw">return </span><span class="self">self</span>.value.downcast_ref::&lt;<span class="kw">crate</span>::Map&gt;().map_or_else(
+                || <span class="self">self</span>.type_error(),
+                |map| {
+                    <span class="kw">let </span><span class="kw-2">mut </span>iter = map.iter();
+                    <span class="kw">let </span>first = iter.next();
+                    <span class="kw">let </span>second = iter.next();
+                    <span class="kw">if let </span>(<span class="prelude-val">Some</span>((key, value)), <span class="prelude-val">None</span>) = (first, second) {
+                        visitor.visit_enum(EnumDeserializer {
+                            tag: key,
+                            content: DynamicDeserializer::from_dynamic(value),
+                        })
+                    } <span class="kw">else </span>{
+                        <span class="self">self</span>.type_error()
+                    }
+                },
+            );
             <span class="attribute">#[cfg(feature = <span class="string">&quot;no_object&quot;</span>)]
             </span><span class="kw">return </span><span class="self">self</span>.type_error();
         }
@@ -1107,7 +1099,7 @@
 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
 </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, ITER: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Dynamic&gt;&gt; IterateDynamicArray&lt;<span class="lifetime">&#39;a</span>, ITER&gt; {
     <span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>new(iter: ITER) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>new(iter: ITER) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{ iter }
     }
 }
@@ -1134,41 +1126,31 @@
 
 <span class="doccomment">/// `MapAccess` implementation for maps.
 </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-</span><span class="kw">struct </span>IterateMap&lt;<span class="lifetime">&#39;a</span>, KEYS, VALUES&gt;
-<span class="kw">where
-    </span>KEYS: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
-    VALUES: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Dynamic&gt;,
-{
+</span><span class="kw">struct </span>IterateMap&lt;<span class="lifetime">&#39;a</span>, K: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;, V: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Dynamic&gt;&gt; {
     <span class="comment">// Iterator for a stream of [`Dynamic`][crate::Dynamic] keys.
-    </span>keys: KEYS,
+    </span>keys: K,
     <span class="comment">// Iterator for a stream of [`Dynamic`][crate::Dynamic] values.
-    </span>values: VALUES,
+    </span>values: V,
 }
 
 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, KEYS, VALUES&gt; IterateMap&lt;<span class="lifetime">&#39;a</span>, KEYS, VALUES&gt;
-<span class="kw">where
-    </span>KEYS: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
-    VALUES: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Dynamic&gt;,
-{
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, K: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;, V: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Dynamic&gt;&gt; IterateMap&lt;<span class="lifetime">&#39;a</span>, K, V&gt; {
     <span class="attribute">#[must_use]
-    </span><span class="kw">pub fn </span>new(keys: KEYS, values: VALUES) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>new(keys: K, values: V) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{ keys, values }
     }
 }
 
 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>: <span class="lifetime">&#39;de</span>, <span class="lifetime">&#39;de</span>, KEYS, VALUES&gt; serde::de::MapAccess&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>IterateMap&lt;<span class="lifetime">&#39;a</span>, KEYS, VALUES&gt;
-<span class="kw">where
-    </span>KEYS: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
-    VALUES: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Dynamic&gt;,
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>: <span class="lifetime">&#39;de</span>, <span class="lifetime">&#39;de</span>, K: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;, V: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Dynamic&gt;&gt;
+    serde::de::MapAccess&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>IterateMap&lt;<span class="lifetime">&#39;a</span>, K, V&gt;
 {
     <span class="kw">type </span>Error = RhaiError;
 
-    <span class="kw">fn </span>next_key_seed&lt;K: serde::de::DeserializeSeed&lt;<span class="lifetime">&#39;de</span>&gt;&gt;(
+    <span class="kw">fn </span>next_key_seed&lt;S: serde::de::DeserializeSeed&lt;<span class="lifetime">&#39;de</span>&gt;&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        seed: K,
-    ) -&gt; RhaiResultOf&lt;<span class="prelude-ty">Option</span>&lt;K::Value&gt;&gt; {
+        seed: S,
+    ) -&gt; RhaiResultOf&lt;<span class="prelude-ty">Option</span>&lt;S::Value&gt;&gt; {
         <span class="comment">// Deserialize each `Identifier` key coming out of the keys iterator.
         </span><span class="kw">match </span><span class="self">self</span>.keys.next() {
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
@@ -1178,10 +1160,10 @@
         }
     }
 
-    <span class="kw">fn </span>next_value_seed&lt;V: serde::de::DeserializeSeed&lt;<span class="lifetime">&#39;de</span>&gt;&gt;(
+    <span class="kw">fn </span>next_value_seed&lt;S: serde::de::DeserializeSeed&lt;<span class="lifetime">&#39;de</span>&gt;&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        seed: V,
-    ) -&gt; RhaiResultOf&lt;V::Value&gt; {
+        seed: S,
+    ) -&gt; RhaiResultOf&lt;S::Value&gt; {
         <span class="comment">// Deserialize each value item coming out of the iterator.
         </span>seed.deserialize(<span class="kw-2">&amp;mut </span>DynamicDeserializer::from_dynamic(
             <span class="self">self</span>.values.next().unwrap(),
@@ -1237,4 +1219,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

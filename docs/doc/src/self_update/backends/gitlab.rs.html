@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/self_update-0.30.0/src/backends/gitlab.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>gitlab.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../self_update/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../self_update/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../self_update/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/self_update-0.32.0/src/backends/gitlab.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>gitlab.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../self_update/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../self_update/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../self_update/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -564,13 +564,45 @@
 <span id="564">564</span>
 <span id="565">565</span>
 <span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
 </pre><pre class="rust"><code><span class="doccomment">/*!
 Gitlab releases
 */
 </span><span class="kw">use </span>std::env::{<span class="self">self</span>, consts::EXE_SUFFIX};
 <span class="kw">use </span>std::path::{Path, PathBuf};
 
-<span class="kw">use </span>indicatif::ProgressStyle;
 <span class="kw">use </span>reqwest::{<span class="self">self</span>, header};
 
 <span class="kw">use </span><span class="kw">crate</span>::backends::find_rel_next_link;
@@ -578,6 +610,7 @@ Gitlab releases
     errors::<span class="kw-2">*</span>,
     get_target,
     update::{Release, ReleaseAsset, ReleaseUpdate},
+    DEFAULT_PROGRESS_CHARS, DEFAULT_PROGRESS_TEMPLATE,
 };
 
 <span class="kw">impl </span>ReleaseAsset {
@@ -629,12 +662,19 @@ Gitlab releases
 <span class="doccomment">/// `ReleaseList` Builder
 </span><span class="attribute">#[derive(Clone, Debug)]
 </span><span class="kw">pub struct </span>ReleaseListBuilder {
+    host: String,
     repo_owner: <span class="prelude-ty">Option</span>&lt;String&gt;,
     repo_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
     target: <span class="prelude-ty">Option</span>&lt;String&gt;,
     auth_token: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
 <span class="kw">impl </span>ReleaseListBuilder {
+    <span class="doccomment">/// Set the gitlab `host` url
+    </span><span class="kw">pub fn </span>with_host(<span class="kw-2">&amp;mut </span><span class="self">self</span>, host: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.host = host.to_owned();
+        <span class="self">self
+    </span>}
+
     <span class="doccomment">/// Set the repo owner, used to build a gitlab api url
     </span><span class="kw">pub fn </span>repo_owner(<span class="kw-2">&amp;mut </span><span class="self">self</span>, owner: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.repo_owner = <span class="prelude-val">Some</span>(owner.to_owned());
@@ -655,7 +695,7 @@ Gitlab releases
 
     <span class="doccomment">/// Set the authorization token, used in requests to the gitlab api url
     ///
-    /// This is to support private repos where you need a GitHub auth token.
+    /// This is to support private repos where you need a Gitlab auth token.
     /// **Make sure not to bake the token into your app**; it is recommended
     /// you obtain it via another mechanism, such as environment variables
     /// or prompting the user for input
@@ -667,6 +707,7 @@ Gitlab releases
     <span class="doccomment">/// Verify builder args, returning a `ReleaseList`
     </span><span class="kw">pub fn </span>build(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ReleaseList&gt; {
         <span class="prelude-val">Ok</span>(ReleaseList {
+            host: <span class="self">self</span>.host.clone(),
             repo_owner: <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>owner) = <span class="self">self</span>.repo_owner {
                 owner.to_owned()
             } <span class="kw">else </span>{
@@ -683,10 +724,11 @@ Gitlab releases
     }
 }
 
-<span class="doccomment">/// `ReleaseList` provides a builder api for querying a GitHub repo,
+<span class="doccomment">/// `ReleaseList` provides a builder api for querying a Gitlab repo,
 /// returning a `Vec` of available `Release`s
 </span><span class="attribute">#[derive(Clone, Debug)]
 </span><span class="kw">pub struct </span>ReleaseList {
+    host: String,
     repo_owner: String,
     repo_name: String,
     target: <span class="prelude-ty">Option</span>&lt;String&gt;,
@@ -696,6 +738,7 @@ Gitlab releases
     <span class="doccomment">/// Initialize a ReleaseListBuilder
     </span><span class="kw">pub fn </span>configure() -&gt; ReleaseListBuilder {
         ReleaseListBuilder {
+            host: String::from(<span class="string">&quot;https://gitlab.com&quot;</span>),
             repo_owner: <span class="prelude-val">None</span>,
             repo_name: <span class="prelude-val">None</span>,
             target: <span class="prelude-val">None</span>,
@@ -708,8 +751,8 @@ Gitlab releases
     </span><span class="kw">pub fn </span>fetch(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Release&gt;&gt; {
         <span class="macro">set_ssl_vars!</span>();
         <span class="kw">let </span>api_url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://gitlab.com/api/v4/projects/{}%2F{}/releases&quot;</span>,
-            <span class="self">self</span>.repo_owner, <span class="self">self</span>.repo_name
+            <span class="string">&quot;{}/api/v4/projects/{}%2F{}/releases&quot;</span>,
+            <span class="self">self</span>.host, <span class="self">self</span>.repo_owner, <span class="self">self</span>.repo_name
         );
         <span class="kw">let </span>releases = <span class="self">self</span>.fetch_releases(<span class="kw-2">&amp;</span>api_url)<span class="question-mark">?</span>;
         <span class="kw">let </span>releases = <span class="kw">match </span><span class="self">self</span>.target {
@@ -777,6 +820,7 @@ Gitlab releases
 /// `https://gitlab.com/api/v4/projects/&lt;repo_owner&gt;%2F&lt;repo_name&gt;/releases`
 </span><span class="attribute">#[derive(Debug)]
 </span><span class="kw">pub struct </span>UpdateBuilder {
+    host: String,
     repo_owner: <span class="prelude-ty">Option</span>&lt;String&gt;,
     repo_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
     target: <span class="prelude-ty">Option</span>&lt;String&gt;,
@@ -788,7 +832,8 @@ Gitlab releases
     no_confirm: bool,
     current_version: <span class="prelude-ty">Option</span>&lt;String&gt;,
     target_version: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    progress_style: <span class="prelude-ty">Option</span>&lt;ProgressStyle&gt;,
+    progress_template: String,
+    progress_chars: String,
     auth_token: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
 
@@ -797,6 +842,12 @@ Gitlab releases
     </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         Default::default()
     }
+
+    <span class="doccomment">/// Set the gitlab `host` url
+    </span><span class="kw">pub fn </span>with_host(<span class="kw-2">&amp;mut </span><span class="self">self</span>, host: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.host = host.to_owned();
+        <span class="self">self
+    </span>}
 
     <span class="doccomment">/// Set the repo owner, used to build a gitlab api url
     </span><span class="kw">pub fn </span>repo_owner(<span class="kw-2">&amp;mut </span><span class="self">self</span>, owner: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
@@ -894,9 +945,14 @@ Gitlab releases
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// Toggle download progress bar, defaults to `off`.
-    </span><span class="kw">pub fn </span>set_progress_style(<span class="kw-2">&amp;mut </span><span class="self">self</span>, progress_style: ProgressStyle) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.progress_style = <span class="prelude-val">Some</span>(progress_style);
+    <span class="doccomment">/// Set download progress style.
+    </span><span class="kw">pub fn </span>set_progress_style(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        progress_template: String,
+        progress_chars: String,
+    ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.progress_template = progress_template;
+        <span class="self">self</span>.progress_chars = progress_chars;
         <span class="self">self
     </span>}
 
@@ -914,7 +970,7 @@ Gitlab releases
 
     <span class="doccomment">/// Set the authorization token, used in requests to the gitlab api url
     ///
-    /// This is to support private repos where you need a GitHub auth token.
+    /// This is to support private repos where you need a Gitlab auth token.
     /// **Make sure not to bake the token into your app**; it is recommended
     /// you obtain it via another mechanism, such as environment variables
     /// or prompting the user for input
@@ -935,6 +991,7 @@ Gitlab releases
         </span>};
 
         <span class="prelude-val">Ok</span>(Box::new(Update {
+            host: <span class="self">self</span>.host.to_owned(),
             repo_owner: <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>owner) = <span class="self">self</span>.repo_owner {
                 owner.to_owned()
             } <span class="kw">else </span>{
@@ -968,7 +1025,8 @@ Gitlab releases
             },
             target_version: <span class="self">self</span>.target_version.as_ref().map(|v| v.to_owned()),
             show_download_progress: <span class="self">self</span>.show_download_progress,
-            progress_style: <span class="self">self</span>.progress_style.clone(),
+            progress_template: <span class="self">self</span>.progress_template.clone(),
+            progress_chars: <span class="self">self</span>.progress_chars.clone(),
             show_output: <span class="self">self</span>.show_output,
             no_confirm: <span class="self">self</span>.no_confirm,
             auth_token: <span class="self">self</span>.auth_token.clone(),
@@ -976,9 +1034,10 @@ Gitlab releases
     }
 }
 
-<span class="doccomment">/// Updates to a specified or latest release distributed via GitHub
+<span class="doccomment">/// Updates to a specified or latest release distributed via Gitlab
 </span><span class="attribute">#[derive(Debug)]
 </span><span class="kw">pub struct </span>Update {
+    host: String,
     repo_owner: String,
     repo_name: String,
     target: String,
@@ -990,7 +1049,8 @@ Gitlab releases
     show_download_progress: bool,
     show_output: bool,
     no_confirm: bool,
-    progress_style: <span class="prelude-ty">Option</span>&lt;ProgressStyle&gt;,
+    progress_template: String,
+    progress_chars: String,
     auth_token: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
 <span class="kw">impl </span>Update {
@@ -1004,8 +1064,8 @@ Gitlab releases
     <span class="kw">fn </span>get_latest_release(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Release&gt; {
         <span class="macro">set_ssl_vars!</span>();
         <span class="kw">let </span>api_url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://gitlab.com/api/v4/projects/{}%2F{}/releases&quot;</span>,
-            <span class="self">self</span>.repo_owner, <span class="self">self</span>.repo_name
+            <span class="string">&quot;{}/api/v4/projects/{}%2F{}/releases&quot;</span>,
+            <span class="self">self</span>.host, <span class="self">self</span>.repo_owner, <span class="self">self</span>.repo_name
         );
         <span class="kw">let </span>resp = reqwest::blocking::Client::new()
             .get(<span class="kw-2">&amp;</span>api_url)
@@ -1026,8 +1086,8 @@ Gitlab releases
     <span class="kw">fn </span>get_release_version(<span class="kw-2">&amp;</span><span class="self">self</span>, ver: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Release&gt; {
         <span class="macro">set_ssl_vars!</span>();
         <span class="kw">let </span>api_url = <span class="macro">format!</span>(
-            <span class="string">&quot;https://gitlab.com/api/v4/projects/{}%2F{}/releases/{}&quot;</span>,
-            <span class="self">self</span>.repo_owner, <span class="self">self</span>.repo_name, ver
+            <span class="string">&quot;{}/api/v4/projects/{}%2F{}/releases/{}&quot;</span>,
+            <span class="self">self</span>.host, <span class="self">self</span>.repo_owner, <span class="self">self</span>.repo_name, ver
         );
         <span class="kw">let </span>resp = reqwest::blocking::Client::new()
             .get(<span class="kw-2">&amp;</span>api_url)
@@ -1081,8 +1141,12 @@ Gitlab releases
         <span class="self">self</span>.no_confirm
     }
 
-    <span class="kw">fn </span>progress_style(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ProgressStyle&gt; {
-        <span class="self">self</span>.progress_style.clone()
+    <span class="kw">fn </span>progress_template(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="self">self</span>.progress_template.to_owned()
+    }
+
+    <span class="kw">fn </span>progress_chars(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="self">self</span>.progress_chars.to_owned()
     }
 
     <span class="kw">fn </span>auth_token(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
@@ -1093,6 +1157,7 @@ Gitlab releases
 <span class="kw">impl </span>Default <span class="kw">for </span>UpdateBuilder {
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
+            host: String::from(<span class="string">&quot;https://gitlab.com&quot;</span>),
             repo_owner: <span class="prelude-val">None</span>,
             repo_name: <span class="prelude-val">None</span>,
             target: <span class="prelude-val">None</span>,
@@ -1104,7 +1169,8 @@ Gitlab releases
             no_confirm: <span class="bool-val">false</span>,
             current_version: <span class="prelude-val">None</span>,
             target_version: <span class="prelude-val">None</span>,
-            progress_style: <span class="prelude-val">None</span>,
+            progress_template: DEFAULT_PROGRESS_TEMPLATE.to_string(),
+            progress_chars: DEFAULT_PROGRESS_CHARS.to_string(),
             auth_token: <span class="prelude-val">None</span>,
         }
     }
@@ -1131,4 +1197,4 @@ Gitlab releases
     <span class="prelude-val">Ok</span>(headers)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="self_update" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="self_update" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

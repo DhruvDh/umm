@@ -15,7 +15,7 @@ and ensuring the underlying values are the same size.</p>
 <p>The following example fails to compile because byte arrays of different
 lengths have different sizes:</p>
 
-<div class='information'><div class='tooltip compile_fail'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered compile_fail"><code><span class="kw">static </span>BYTES: <span class="kw-2">&amp;</span>[u8; <span class="number">4</span>] = <span class="kw-2">&amp;</span>[
+<div class="example-wrap compile_fail"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">static </span>BYTES: <span class="kw-2">&amp;</span>[u8; <span class="number">4</span>] = <span class="kw-2">&amp;</span>[
     <span class="comment">/* ... */
 </span>];
 
@@ -24,4 +24,4 @@ lengths have different sizes:</p>
 </span>];
 
 <span class="macro">assert_eq_size_ptr!</span>(BYTES, TABLE);</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="static_assertions" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="static_assertions" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/indexmap-1.8.2/src/map.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>map.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../indexmap/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../indexmap/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../indexmap/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/indexmap-1.9.1/src/map.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>map.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../indexmap/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../indexmap/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../indexmap/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1916,6 +1916,35 @@
 <span id="1916">1916</span>
 <span id="1917">1917</span>
 <span id="1918">1918</span>
+<span id="1919">1919</span>
+<span id="1920">1920</span>
+<span id="1921">1921</span>
+<span id="1922">1922</span>
+<span id="1923">1923</span>
+<span id="1924">1924</span>
+<span id="1925">1925</span>
+<span id="1926">1926</span>
+<span id="1927">1927</span>
+<span id="1928">1928</span>
+<span id="1929">1929</span>
+<span id="1930">1930</span>
+<span id="1931">1931</span>
+<span id="1932">1932</span>
+<span id="1933">1933</span>
+<span id="1934">1934</span>
+<span id="1935">1935</span>
+<span id="1936">1936</span>
+<span id="1937">1937</span>
+<span id="1938">1938</span>
+<span id="1939">1939</span>
+<span id="1940">1940</span>
+<span id="1941">1941</span>
+<span id="1942">1942</span>
+<span id="1943">1943</span>
+<span id="1944">1944</span>
+<span id="1945">1945</span>
+<span id="1946">1946</span>
+<span id="1947">1947</span>
 </pre><pre class="rust"><code><span class="doccomment">//! `IndexMap` is a hash table where the iteration order of the key-value
 //! pairs is independent of the hash values of the keys.
 
@@ -1930,7 +1959,7 @@
 <span class="kw">use </span>::core::cmp::Ordering;
 <span class="kw">use </span>::core::fmt;
 <span class="kw">use </span>::core::hash::{BuildHasher, Hash, Hasher};
-<span class="kw">use </span>::core::iter::{FromIterator, FusedIterator};
+<span class="kw">use </span>::core::iter::FusedIterator;
 <span class="kw">use </span>::core::ops::{Index, IndexMut, RangeBounds};
 <span class="kw">use </span>::core::slice::{Iter <span class="kw">as </span>SliceIter, IterMut <span class="kw">as </span>SliceIterMut};
 
@@ -2250,7 +2279,14 @@
     ///
     /// Computes in **O(n)** time.
     </span><span class="kw">pub fn </span>shrink_to_fit(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="self">self</span>.core.shrink_to_fit();
+        <span class="self">self</span>.core.shrink_to(<span class="number">0</span>);
+    }
+
+    <span class="doccomment">/// Shrink the capacity of the map with a lower limit.
+    ///
+    /// Computes in **O(n)** time.
+    </span><span class="kw">pub fn </span>shrink_to(<span class="kw-2">&amp;mut </span><span class="self">self</span>, min_capacity: usize) {
+        <span class="self">self</span>.core.shrink_to(min_capacity);
     }
 
     <span class="kw">fn </span>hash&lt;Q: <span class="question-mark">?</span>Sized + Hash&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; HashValue {
@@ -2756,6 +2792,19 @@
         <span class="self">self</span>.core.shift_remove_index(index)
     }
 
+    <span class="doccomment">/// Moves the position of a key-value pair from one index to another
+    /// by shifting all other pairs in-between.
+    ///
+    /// * If `from &lt; to`, the other pairs will shift down while the targeted pair moves up.
+    /// * If `from &gt; to`, the other pairs will shift up while the targeted pair moves down.
+    ///
+    /// ***Panics*** if `from` or `to` are out of bounds.
+    ///
+    /// Computes in **O(n)** time (average).
+    </span><span class="kw">pub fn </span>move_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>, from: usize, to: usize) {
+        <span class="self">self</span>.core.move_index(from, to)
+    }
+
     <span class="doccomment">/// Swaps the position of two key-value pairs in the map.
     ///
     /// ***Panics*** if `a` or `b` are out of bounds.
@@ -2772,7 +2821,7 @@
 /// [`keys`]: struct.IndexMap.html#method.keys
 /// [`IndexMap`]: struct.IndexMap.html
 </span><span class="kw">pub struct </span>Keys&lt;<span class="lifetime">&#39;a</span>, K, V&gt; {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) iter: SliceIter&lt;<span class="lifetime">&#39;a</span>, Bucket&lt;K, V&gt;&gt;,
+    iter: SliceIter&lt;<span class="lifetime">&#39;a</span>, Bucket&lt;K, V&gt;&gt;,
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, K, V&gt; Iterator <span class="kw">for </span>Keys&lt;<span class="lifetime">&#39;a</span>, K, V&gt; {
@@ -2917,9 +2966,14 @@
 
 <span class="kw">impl</span>&lt;K, V&gt; FusedIterator <span class="kw">for </span>ValuesMut&lt;<span class="lifetime">&#39;_</span>, K, V&gt; {}
 
-<span class="comment">// TODO: `impl Debug for ValuesMut` once we have MSRV 1.53 for `slice::IterMut::as_slice`
+<span class="kw">impl</span>&lt;K, V: fmt::Debug&gt; fmt::Debug <span class="kw">for </span>ValuesMut&lt;<span class="lifetime">&#39;_</span>, K, V&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="kw">let </span>iter = <span class="self">self</span>.iter.as_slice().iter().map(Bucket::value_ref);
+        f.debug_list().entries(iter).finish()
+    }
+}
 
-</span><span class="doccomment">/// An owning iterator over the values of a `IndexMap`.
+<span class="doccomment">/// An owning iterator over the values of a `IndexMap`.
 ///
 /// This `struct` is created by the [`into_values`] method on [`IndexMap`].
 /// See its documentation for more.
@@ -3028,9 +3082,14 @@
 
 <span class="kw">impl</span>&lt;K, V&gt; FusedIterator <span class="kw">for </span>IterMut&lt;<span class="lifetime">&#39;_</span>, K, V&gt; {}
 
-<span class="comment">// TODO: `impl Debug for IterMut` once we have MSRV 1.53 for `slice::IterMut::as_slice`
+<span class="kw">impl</span>&lt;K: fmt::Debug, V: fmt::Debug&gt; fmt::Debug <span class="kw">for </span>IterMut&lt;<span class="lifetime">&#39;_</span>, K, V&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="kw">let </span>iter = <span class="self">self</span>.iter.as_slice().iter().map(Bucket::refs);
+        f.debug_list().entries(iter).finish()
+    }
+}
 
-</span><span class="doccomment">/// An owning iterator over the entries of a `IndexMap`.
+<span class="doccomment">/// An owning iterator over the entries of a `IndexMap`.
 ///
 /// This `struct` is created by the [`into_iter`] method on [`IndexMap`]
 /// (provided by the `IntoIterator` trait). See its documentation for more.
@@ -3038,7 +3097,7 @@
 /// [`into_iter`]: struct.IndexMap.html#method.into_iter
 /// [`IndexMap`]: struct.IndexMap.html
 </span><span class="kw">pub struct </span>IntoIter&lt;K, V&gt; {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) iter: vec::IntoIter&lt;Bucket&lt;K, V&gt;&gt;,
+    iter: vec::IntoIter&lt;Bucket&lt;K, V&gt;&gt;,
 }
 
 <span class="kw">impl</span>&lt;K, V&gt; Iterator <span class="kw">for </span>IntoIter&lt;K, V&gt; {
@@ -3309,7 +3368,7 @@
     }
 }
 
-<span class="attribute">#[cfg(all(has_std, rustc_1_51))]
+<span class="attribute">#[cfg(has_std)]
 </span><span class="kw">impl</span>&lt;K, V, <span class="kw">const </span>N: usize&gt; From&lt;[(K, V); N]&gt; <span class="kw">for </span>IndexMap&lt;K, V, RandomState&gt;
 <span class="kw">where
     </span>K: Hash + Eq,
@@ -3324,7 +3383,7 @@
     /// assert_eq!(map1, map2);
     /// ```
     </span><span class="kw">fn </span>from(arr: [(K, V); N]) -&gt; <span class="self">Self </span>{
-        std::array::IntoIter::new(arr).collect()
+        <span class="self">Self</span>::from_iter(arr)
     }
 }
 
@@ -3413,7 +3472,6 @@
 <span class="attribute">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use </span><span class="kw">crate</span>::util::enumerate;
     <span class="kw">use </span>std::string::String;
 
     <span class="attribute">#[test]
@@ -3442,7 +3500,7 @@
         <span class="kw">let </span>not_present = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">6</span>, <span class="number">9</span>, <span class="number">10</span>];
         <span class="kw">let </span><span class="kw-2">mut </span>map = IndexMap::with_capacity(insert.len());
 
-        <span class="kw">for </span>(i, <span class="kw-2">&amp;</span>elt) <span class="kw">in </span>enumerate(<span class="kw-2">&amp;</span>insert) {
+        <span class="kw">for </span>(i, <span class="kw-2">&amp;</span>elt) <span class="kw">in </span>insert.iter().enumerate() {
             <span class="macro">assert_eq!</span>(map.len(), i);
             map.insert(elt, elt);
             <span class="macro">assert_eq!</span>(map.len(), i + <span class="number">1</span>);
@@ -3462,7 +3520,7 @@
         <span class="kw">let </span>present = <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">6</span>, <span class="number">2</span>];
         <span class="kw">let </span><span class="kw-2">mut </span>map = IndexMap::with_capacity(insert.len());
 
-        <span class="kw">for </span>(i, <span class="kw-2">&amp;</span>elt) <span class="kw">in </span>enumerate(<span class="kw-2">&amp;</span>insert) {
+        <span class="kw">for </span>(i, <span class="kw-2">&amp;</span>elt) <span class="kw">in </span>insert.iter().enumerate() {
             <span class="macro">assert_eq!</span>(map.len(), i);
             <span class="kw">let </span>(index, existing) = map.insert_full(elt, elt);
             <span class="macro">assert_eq!</span>(existing, <span class="prelude-val">None</span>);
@@ -3529,7 +3587,7 @@
         <span class="kw">let </span>not_present = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">6</span>, <span class="number">9</span>, <span class="number">10</span>];
         <span class="kw">let </span><span class="kw-2">mut </span>map = IndexMap::with_capacity(insert.len());
 
-        <span class="kw">for </span>(i, <span class="kw-2">&amp;</span>elt) <span class="kw">in </span>enumerate(<span class="kw-2">&amp;</span>insert) {
+        <span class="kw">for </span>(i, <span class="kw-2">&amp;</span>elt) <span class="kw">in </span>insert.iter().enumerate() {
             <span class="macro">assert_eq!</span>(map.len(), i);
             map.insert(elt, elt);
             <span class="macro">assert_eq!</span>(map.len(), i + <span class="number">1</span>);
@@ -3824,7 +3882,7 @@
     }
 
     <span class="attribute">#[test]
-    #[cfg(all(has_std, rustc_1_51))]
+    #[cfg(has_std)]
     </span><span class="kw">fn </span>from_array() {
         <span class="kw">let </span>map = IndexMap::from([(<span class="number">1</span>, <span class="number">2</span>), (<span class="number">3</span>, <span class="number">4</span>)]);
         <span class="kw">let </span><span class="kw-2">mut </span>expected = IndexMap::new();
@@ -3835,4 +3893,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="indexmap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="indexmap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

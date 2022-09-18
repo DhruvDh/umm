@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-1.19.2/src/runtime/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../tokio/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tokio-1.21.1/src/runtime/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../tokio/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../tokio/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -626,6 +626,16 @@
 <span id="626">626</span>
 <span id="627">627</span>
 <span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The Tokio runtime.
 //!
 //! Unlike other Rust programs, asynchronous applications require runtime
@@ -765,7 +775,7 @@
 //! use tokio::runtime;
 //!
 //! # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
-//! let basic_rt = runtime::Builder::new_current_thread()
+//! let rt = runtime::Builder::new_current_thread()
 //!     .build()?;
 //! # Ok(()) }
 //! ```
@@ -794,7 +804,6 @@
 //! [`tokio::main`]: ../attr.main.html
 //! [runtime builder]: crate::runtime::Builder
 //! [`Runtime::new`]: crate::runtime::Runtime::new
-//! [`Builder::basic_scheduler`]: crate::runtime::Builder::basic_scheduler
 //! [`Builder::threaded_scheduler`]: crate::runtime::Builder::threaded_scheduler
 //! [`Builder::enable_io`]: crate::runtime::Builder::enable_io
 //! [`Builder::enable_time`]: crate::runtime::Builder::enable_time
@@ -802,37 +811,29 @@
 
 </span><span class="comment">// At the top due to macros
 </span><span class="attribute">#[cfg(test)]
-#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]
+#[cfg(not(tokio_wasm))]
 #[macro_use]
 </span><span class="kw">mod </span>tests;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>enter;
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>task;
-
-<span class="macro">cfg_metrics! </span>{
-    <span class="kw">mod </span>metrics;
-    <span class="kw">pub use </span>metrics::RuntimeMetrics;
-
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>metrics::{MetricsBatch, SchedulerMetrics, WorkerMetrics};
-
-    <span class="macro">cfg_net! </span>{
-       <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>metrics::IoDriverMetrics;
-    }
-}
-
-<span class="macro">cfg_not_metrics! </span>{
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>metrics;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>metrics::{SchedulerMetrics, WorkerMetrics, MetricsBatch};
+<span class="macro">cfg_io_driver_impl! </span>{
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>io;
 }
 
 <span class="macro">cfg_rt! </span>{
-    <span class="kw">mod </span>basic_scheduler;
-    <span class="kw">use </span>basic_scheduler::BasicScheduler;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>enter;
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>task;
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>scheduler;
+    <span class="kw">use </span>scheduler::CurrentThread;
+
+    <span class="kw">mod </span>config;
+    <span class="kw">use </span>config::Config;
 
     <span class="kw">mod </span>blocking;
     <span class="kw">use </span>blocking::BlockingPool;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>blocking::spawn_blocking;
+    <span class="attribute">#[cfg_attr(tokio_wasi, allow(unused_imports))]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>blocking::spawn_blocking;
 
     <span class="macro">cfg_trace! </span>{
         <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>blocking::Mandatory;
@@ -844,6 +845,9 @@
 
     <span class="kw">mod </span>builder;
     <span class="kw">pub use </span><span class="self">self</span>::builder::Builder;
+    <span class="macro">cfg_unstable! </span>{
+        <span class="kw">pub use </span><span class="self">self</span>::builder::UnhandledPanic;
+    }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>context;
     <span class="kw">mod </span>driver;
@@ -856,13 +860,28 @@
 
     <span class="kw">mod </span>spawner;
     <span class="kw">use </span><span class="self">self</span>::spawner::Spawner;
+
+    <span class="macro">cfg_metrics! </span>{
+        <span class="kw">mod </span>metrics;
+        <span class="kw">pub use </span>metrics::RuntimeMetrics;
+
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>metrics::{MetricsBatch, SchedulerMetrics, WorkerMetrics};
+
+        <span class="macro">cfg_net! </span>{
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>metrics::IoDriverMetrics;
+        }
+    }
+
+    <span class="macro">cfg_not_metrics! </span>{
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>metrics;
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>metrics::{SchedulerMetrics, WorkerMetrics, MetricsBatch};
+    }
 }
 
 <span class="macro">cfg_rt_multi_thread! </span>{
     <span class="kw">use </span>driver::Driver;
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>thread_pool;
-    <span class="kw">use </span><span class="self">self</span>::thread_pool::ThreadPool;
+    <span class="kw">use </span>scheduler::MultiThread;
 }
 
 <span class="macro">cfg_rt! </span>{
@@ -921,54 +940,55 @@
         </span>blocking_pool: BlockingPool,
     }
 
-    <span class="doccomment">/// The runtime executor is either a thread-pool or a current-thread executor.
+    <span class="doccomment">/// The runtime executor is either a multi-thread or a current-thread executor.
     </span><span class="attribute">#[derive(Debug)]
     </span><span class="kw">enum </span>Kind {
         <span class="doccomment">/// Execute all tasks on the current-thread.
-        </span>CurrentThread(BasicScheduler),
+        </span>CurrentThread(CurrentThread),
 
         <span class="doccomment">/// Execute tasks across multiple threads.
-        </span><span class="attribute">#[cfg(feature = <span class="string">&quot;rt-multi-thread&quot;</span>)]
-        </span>ThreadPool(ThreadPool),
+        </span><span class="attribute">#[cfg(all(feature = <span class="string">&quot;rt-multi-thread&quot;</span>, not(tokio_wasi)))]
+        </span>MultiThread(MultiThread),
     }
 
     <span class="doccomment">/// After thread starts / before thread stops
     </span><span class="kw">type </span>Callback = std::sync::Arc&lt;<span class="kw">dyn </span>Fn() + Send + Sync&gt;;
 
     <span class="kw">impl </span>Runtime {
-        <span class="doccomment">/// Creates a new runtime instance with default configuration values.
-        ///
-        /// This results in the multi threaded scheduler, I/O driver, and time driver being
-        /// initialized.
-        ///
-        /// Most applications will not need to call this function directly. Instead,
-        /// they will use the  [`#[tokio::main]` attribute][main]. When a more complex
-        /// configuration is necessary, the [runtime builder] may be used.
-        ///
-        /// See [module level][mod] documentation for more details.
-        ///
-        /// # Examples
-        ///
-        /// Creating a new `Runtime` with default configuration values.
-        ///
-        /// ```
-        /// use tokio::runtime::Runtime;
-        ///
-        /// let rt = Runtime::new()
-        ///     .unwrap();
-        ///
-        /// // Use the runtime...
-        /// ```
-        ///
-        /// [mod]: index.html
-        /// [main]: ../attr.main.html
-        /// [threaded scheduler]: index.html#threaded-scheduler
-        /// [basic scheduler]: index.html#basic-scheduler
-        /// [runtime builder]: crate::runtime::Builder
-        </span><span class="attribute">#[cfg(feature = <span class="string">&quot;rt-multi-thread&quot;</span>)]
-        #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">&quot;rt-multi-thread&quot;</span>)))]
-        </span><span class="kw">pub fn </span>new() -&gt; std::io::Result&lt;Runtime&gt; {
-            Builder::new_multi_thread().enable_all().build()
+        <span class="macro">cfg_not_wasi! </span>{
+            <span class="doccomment">/// Creates a new runtime instance with default configuration values.
+            ///
+            /// This results in the multi threaded scheduler, I/O driver, and time driver being
+            /// initialized.
+            ///
+            /// Most applications will not need to call this function directly. Instead,
+            /// they will use the  [`#[tokio::main]` attribute][main]. When a more complex
+            /// configuration is necessary, the [runtime builder] may be used.
+            ///
+            /// See [module level][mod] documentation for more details.
+            ///
+            /// # Examples
+            ///
+            /// Creating a new `Runtime` with default configuration values.
+            ///
+            /// ```
+            /// use tokio::runtime::Runtime;
+            ///
+            /// let rt = Runtime::new()
+            ///     .unwrap();
+            ///
+            /// // Use the runtime...
+            /// ```
+            ///
+            /// [mod]: index.html
+            /// [main]: ../attr.main.html
+            /// [threaded scheduler]: index.html#threaded-scheduler
+            /// [runtime builder]: crate::runtime::Builder
+            </span><span class="attribute">#[cfg(feature = <span class="string">&quot;rt-multi-thread&quot;</span>)]
+            #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">&quot;rt-multi-thread&quot;</span>)))]
+            </span><span class="kw">pub fn </span>new() -&gt; std::io::Result&lt;Runtime&gt; {
+                Builder::new_multi_thread().enable_all().build()
+            }
         }
 
         <span class="doccomment">/// Returns a handle to the runtime&#39;s spawner.
@@ -1106,8 +1126,8 @@
 
             <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.kind {
                 Kind::CurrentThread(exec) =&gt; exec.block_on(future),
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;rt-multi-thread&quot;</span>)]
-                </span>Kind::ThreadPool(exec) =&gt; exec.block_on(future),
+                <span class="attribute">#[cfg(all(feature = <span class="string">&quot;rt-multi-thread&quot;</span>, not(tokio_wasi)))]
+                </span>Kind::MultiThread(exec) =&gt; exec.block_on(future),
             }
         }
 
@@ -1199,7 +1219,7 @@
         /// may result in a resource leak (in that any blocking tasks are still running until they
         /// return.
         ///
-        /// This function is equivalent to calling `shutdown_timeout(Duration::of_nanos(0))`.
+        /// This function is equivalent to calling `shutdown_timeout(Duration::from_nanos(0))`.
         ///
         /// ```
         /// use tokio::runtime::Runtime;
@@ -1223,11 +1243,11 @@
     </span><span class="kw">impl </span>Drop <span class="kw">for </span>Runtime {
         <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
             <span class="kw">match </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.kind {
-                Kind::CurrentThread(basic) =&gt; {
-                    <span class="comment">// This ensures that tasks spawned on the basic runtime are dropped inside the
-                    // runtime&#39;s context.
+                Kind::CurrentThread(current_thread) =&gt; {
+                    <span class="comment">// This ensures that tasks spawned on the current-thread
+                    // runtime are dropped inside the runtime&#39;s context.
                     </span><span class="kw">match </span><span class="self">self</span>::context::try_enter(<span class="self">self</span>.handle.clone()) {
-                        <span class="prelude-val">Some</span>(guard) =&gt; basic.set_context_guard(guard),
+                        <span class="prelude-val">Some</span>(guard) =&gt; current_thread.set_context_guard(guard),
                         <span class="prelude-val">None </span>=&gt; {
                             <span class="comment">// The context thread-local has already been destroyed.
                             //
@@ -1236,8 +1256,8 @@
                         </span>},
                     }
                 },
-                <span class="attribute">#[cfg(feature = <span class="string">&quot;rt-multi-thread&quot;</span>)]
-                </span>Kind::ThreadPool(<span class="kw">_</span>) =&gt; {
+                <span class="attribute">#[cfg(all(feature = <span class="string">&quot;rt-multi-thread&quot;</span>, not(tokio_wasi)))]
+                </span>Kind::MultiThread(<span class="kw">_</span>) =&gt; {
                     <span class="comment">// The threaded scheduler drops its tasks on its worker threads, which is
                     // already in the runtime&#39;s context.
                 </span>},
@@ -1255,4 +1275,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

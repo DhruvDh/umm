@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/api/register.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>register.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/api/register.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>register.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -750,310 +750,6 @@
 <span id="750">750</span>
 <span id="751">751</span>
 <span id="752">752</span>
-<span id="753">753</span>
-<span id="754">754</span>
-<span id="755">755</span>
-<span id="756">756</span>
-<span id="757">757</span>
-<span id="758">758</span>
-<span id="759">759</span>
-<span id="760">760</span>
-<span id="761">761</span>
-<span id="762">762</span>
-<span id="763">763</span>
-<span id="764">764</span>
-<span id="765">765</span>
-<span id="766">766</span>
-<span id="767">767</span>
-<span id="768">768</span>
-<span id="769">769</span>
-<span id="770">770</span>
-<span id="771">771</span>
-<span id="772">772</span>
-<span id="773">773</span>
-<span id="774">774</span>
-<span id="775">775</span>
-<span id="776">776</span>
-<span id="777">777</span>
-<span id="778">778</span>
-<span id="779">779</span>
-<span id="780">780</span>
-<span id="781">781</span>
-<span id="782">782</span>
-<span id="783">783</span>
-<span id="784">784</span>
-<span id="785">785</span>
-<span id="786">786</span>
-<span id="787">787</span>
-<span id="788">788</span>
-<span id="789">789</span>
-<span id="790">790</span>
-<span id="791">791</span>
-<span id="792">792</span>
-<span id="793">793</span>
-<span id="794">794</span>
-<span id="795">795</span>
-<span id="796">796</span>
-<span id="797">797</span>
-<span id="798">798</span>
-<span id="799">799</span>
-<span id="800">800</span>
-<span id="801">801</span>
-<span id="802">802</span>
-<span id="803">803</span>
-<span id="804">804</span>
-<span id="805">805</span>
-<span id="806">806</span>
-<span id="807">807</span>
-<span id="808">808</span>
-<span id="809">809</span>
-<span id="810">810</span>
-<span id="811">811</span>
-<span id="812">812</span>
-<span id="813">813</span>
-<span id="814">814</span>
-<span id="815">815</span>
-<span id="816">816</span>
-<span id="817">817</span>
-<span id="818">818</span>
-<span id="819">819</span>
-<span id="820">820</span>
-<span id="821">821</span>
-<span id="822">822</span>
-<span id="823">823</span>
-<span id="824">824</span>
-<span id="825">825</span>
-<span id="826">826</span>
-<span id="827">827</span>
-<span id="828">828</span>
-<span id="829">829</span>
-<span id="830">830</span>
-<span id="831">831</span>
-<span id="832">832</span>
-<span id="833">833</span>
-<span id="834">834</span>
-<span id="835">835</span>
-<span id="836">836</span>
-<span id="837">837</span>
-<span id="838">838</span>
-<span id="839">839</span>
-<span id="840">840</span>
-<span id="841">841</span>
-<span id="842">842</span>
-<span id="843">843</span>
-<span id="844">844</span>
-<span id="845">845</span>
-<span id="846">846</span>
-<span id="847">847</span>
-<span id="848">848</span>
-<span id="849">849</span>
-<span id="850">850</span>
-<span id="851">851</span>
-<span id="852">852</span>
-<span id="853">853</span>
-<span id="854">854</span>
-<span id="855">855</span>
-<span id="856">856</span>
-<span id="857">857</span>
-<span id="858">858</span>
-<span id="859">859</span>
-<span id="860">860</span>
-<span id="861">861</span>
-<span id="862">862</span>
-<span id="863">863</span>
-<span id="864">864</span>
-<span id="865">865</span>
-<span id="866">866</span>
-<span id="867">867</span>
-<span id="868">868</span>
-<span id="869">869</span>
-<span id="870">870</span>
-<span id="871">871</span>
-<span id="872">872</span>
-<span id="873">873</span>
-<span id="874">874</span>
-<span id="875">875</span>
-<span id="876">876</span>
-<span id="877">877</span>
-<span id="878">878</span>
-<span id="879">879</span>
-<span id="880">880</span>
-<span id="881">881</span>
-<span id="882">882</span>
-<span id="883">883</span>
-<span id="884">884</span>
-<span id="885">885</span>
-<span id="886">886</span>
-<span id="887">887</span>
-<span id="888">888</span>
-<span id="889">889</span>
-<span id="890">890</span>
-<span id="891">891</span>
-<span id="892">892</span>
-<span id="893">893</span>
-<span id="894">894</span>
-<span id="895">895</span>
-<span id="896">896</span>
-<span id="897">897</span>
-<span id="898">898</span>
-<span id="899">899</span>
-<span id="900">900</span>
-<span id="901">901</span>
-<span id="902">902</span>
-<span id="903">903</span>
-<span id="904">904</span>
-<span id="905">905</span>
-<span id="906">906</span>
-<span id="907">907</span>
-<span id="908">908</span>
-<span id="909">909</span>
-<span id="910">910</span>
-<span id="911">911</span>
-<span id="912">912</span>
-<span id="913">913</span>
-<span id="914">914</span>
-<span id="915">915</span>
-<span id="916">916</span>
-<span id="917">917</span>
-<span id="918">918</span>
-<span id="919">919</span>
-<span id="920">920</span>
-<span id="921">921</span>
-<span id="922">922</span>
-<span id="923">923</span>
-<span id="924">924</span>
-<span id="925">925</span>
-<span id="926">926</span>
-<span id="927">927</span>
-<span id="928">928</span>
-<span id="929">929</span>
-<span id="930">930</span>
-<span id="931">931</span>
-<span id="932">932</span>
-<span id="933">933</span>
-<span id="934">934</span>
-<span id="935">935</span>
-<span id="936">936</span>
-<span id="937">937</span>
-<span id="938">938</span>
-<span id="939">939</span>
-<span id="940">940</span>
-<span id="941">941</span>
-<span id="942">942</span>
-<span id="943">943</span>
-<span id="944">944</span>
-<span id="945">945</span>
-<span id="946">946</span>
-<span id="947">947</span>
-<span id="948">948</span>
-<span id="949">949</span>
-<span id="950">950</span>
-<span id="951">951</span>
-<span id="952">952</span>
-<span id="953">953</span>
-<span id="954">954</span>
-<span id="955">955</span>
-<span id="956">956</span>
-<span id="957">957</span>
-<span id="958">958</span>
-<span id="959">959</span>
-<span id="960">960</span>
-<span id="961">961</span>
-<span id="962">962</span>
-<span id="963">963</span>
-<span id="964">964</span>
-<span id="965">965</span>
-<span id="966">966</span>
-<span id="967">967</span>
-<span id="968">968</span>
-<span id="969">969</span>
-<span id="970">970</span>
-<span id="971">971</span>
-<span id="972">972</span>
-<span id="973">973</span>
-<span id="974">974</span>
-<span id="975">975</span>
-<span id="976">976</span>
-<span id="977">977</span>
-<span id="978">978</span>
-<span id="979">979</span>
-<span id="980">980</span>
-<span id="981">981</span>
-<span id="982">982</span>
-<span id="983">983</span>
-<span id="984">984</span>
-<span id="985">985</span>
-<span id="986">986</span>
-<span id="987">987</span>
-<span id="988">988</span>
-<span id="989">989</span>
-<span id="990">990</span>
-<span id="991">991</span>
-<span id="992">992</span>
-<span id="993">993</span>
-<span id="994">994</span>
-<span id="995">995</span>
-<span id="996">996</span>
-<span id="997">997</span>
-<span id="998">998</span>
-<span id="999">999</span>
-<span id="1000">1000</span>
-<span id="1001">1001</span>
-<span id="1002">1002</span>
-<span id="1003">1003</span>
-<span id="1004">1004</span>
-<span id="1005">1005</span>
-<span id="1006">1006</span>
-<span id="1007">1007</span>
-<span id="1008">1008</span>
-<span id="1009">1009</span>
-<span id="1010">1010</span>
-<span id="1011">1011</span>
-<span id="1012">1012</span>
-<span id="1013">1013</span>
-<span id="1014">1014</span>
-<span id="1015">1015</span>
-<span id="1016">1016</span>
-<span id="1017">1017</span>
-<span id="1018">1018</span>
-<span id="1019">1019</span>
-<span id="1020">1020</span>
-<span id="1021">1021</span>
-<span id="1022">1022</span>
-<span id="1023">1023</span>
-<span id="1024">1024</span>
-<span id="1025">1025</span>
-<span id="1026">1026</span>
-<span id="1027">1027</span>
-<span id="1028">1028</span>
-<span id="1029">1029</span>
-<span id="1030">1030</span>
-<span id="1031">1031</span>
-<span id="1032">1032</span>
-<span id="1033">1033</span>
-<span id="1034">1034</span>
-<span id="1035">1035</span>
-<span id="1036">1036</span>
-<span id="1037">1037</span>
-<span id="1038">1038</span>
-<span id="1039">1039</span>
-<span id="1040">1040</span>
-<span id="1041">1041</span>
-<span id="1042">1042</span>
-<span id="1043">1043</span>
-<span id="1044">1044</span>
-<span id="1045">1045</span>
-<span id="1046">1046</span>
-<span id="1047">1047</span>
-<span id="1048">1048</span>
-<span id="1049">1049</span>
-<span id="1050">1050</span>
-<span id="1051">1051</span>
-<span id="1052">1052</span>
-<span id="1053">1053</span>
-<span id="1054">1054</span>
-<span id="1055">1055</span>
-<span id="1056">1056</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Module that defines the public function/module registration API of [`Engine`].
 
 </span><span class="kw">use </span><span class="kw">crate</span>::func::{FnCallArgs, RegisterNativeFunction, SendSync};
@@ -1064,6 +760,9 @@
 <span class="kw">use </span>std::any::{type_name, TypeId};
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
+
+<span class="attribute">#[cfg(any(not(feature = <span class="string">&quot;no_index&quot;</span>), not(feature = <span class="string">&quot;no_object&quot;</span>)))]
+</span><span class="kw">use </span><span class="kw">crate</span>::func::register::Mut;
 
 <span class="kw">impl </span>Engine {
     <span class="doccomment">/// Get the global namespace module (which is the fist module in `global_modules`).
@@ -1106,11 +805,11 @@
     /// # }
     /// ```
     </span><span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>register_fn&lt;N, A, F&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: N, func: F) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self
-    </span><span class="kw">where
-        </span>N: AsRef&lt;str&gt; + Into&lt;Identifier&gt;,
-        F: RegisterNativeFunction&lt;A, ()&gt;,
-    {
+    </span><span class="kw">pub fn </span>register_fn&lt;A, R, S, F: RegisterNativeFunction&lt;A, R, S&gt;&gt;(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        name: <span class="kw">impl </span>AsRef&lt;str&gt; + Into&lt;Identifier&gt;,
+        func: F,
+    ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">let </span>param_types = F::param_types();
 
         <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
@@ -1126,67 +825,7 @@
 
         <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
         </span><span class="kw">let </span>param_type_names: <span class="kw">crate</span>::StaticVec&lt;<span class="kw">_</span>&gt; =
-            param_type_names.iter().map(|ty| ty.as_str()).collect();
-        <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
-        </span><span class="kw">let </span>param_type_names = <span class="prelude-val">Some</span>(param_type_names.as_ref());
-
-        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;metadata&quot;</span>))]
-        </span><span class="kw">let </span>param_type_names: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>str]&gt; = <span class="prelude-val">None</span>;
-
-        <span class="self">self</span>.global_namespace_mut().set_fn(
-            name,
-            FnNamespace::Global,
-            FnAccess::Public,
-            param_type_names,
-            param_types,
-            func.into_callable_function(),
-        );
-        <span class="self">self
-    </span>}
-    <span class="doccomment">/// Register a custom fallible function with the [`Engine`].
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use rhai::{Engine, EvalAltResult};
-    ///
-    /// // Normal function
-    /// fn div(x: i64, y: i64) -&gt; Result&lt;i64, Box&lt;EvalAltResult&gt;&gt; {
-    ///     if y == 0 {
-    ///         // &#39;.into()&#39; automatically converts to &#39;Box&lt;EvalAltResult::ErrorRuntime&gt;&#39;
-    ///         Err(&quot;division by zero!&quot;.into())
-    ///     } else {
-    ///         Ok(x / y)
-    ///     }
-    /// }
-    ///
-    /// let mut engine = Engine::new();
-    ///
-    /// engine.register_result_fn(&quot;div&quot;, div);
-    ///
-    /// engine.eval::&lt;i64&gt;(&quot;div(42, 0)&quot;)
-    ///       .expect_err(&quot;expecting division by zero error!&quot;);
-    /// ```
-    </span><span class="attribute">#[inline]
-    </span><span class="kw">pub fn </span>register_result_fn&lt;N, A, F, R&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: N, func: F) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self
-    </span><span class="kw">where
-        </span>N: AsRef&lt;str&gt; + Into&lt;Identifier&gt;,
-        F: RegisterNativeFunction&lt;A, RhaiResultOf&lt;R&gt;&gt;,
-    {
-        <span class="kw">let </span>param_types = F::param_types();
-
-        <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
-        </span><span class="kw">let </span>param_type_names: <span class="kw">crate</span>::StaticVec&lt;<span class="kw">_</span>&gt; = F::param_names()
-            .iter()
-            .map(|ty| <span class="macro">format!</span>(<span class="string">&quot;_: {}&quot;</span>, <span class="self">self</span>.format_type_name(ty)))
-            .chain(std::iter::once(
-                <span class="self">self</span>.format_type_name(F::return_type_name()).into(),
-            ))
-            .collect();
-
-        <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
-        </span><span class="kw">let </span>param_type_names: <span class="kw">crate</span>::StaticVec&lt;<span class="kw">_</span>&gt; =
-            param_type_names.iter().map(|ty| ty.as_str()).collect();
+            param_type_names.iter().map(String::as_str).collect();
         <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
         </span><span class="kw">let </span>param_type_names = <span class="prelude-val">Some</span>(param_type_names.as_ref());
 
@@ -1222,16 +861,12 @@
     ///
     /// To access the first mutable parameter, use `args.get_mut(0).unwrap()`
     </span><span class="attribute">#[inline(always)]
-    </span><span class="kw">pub fn </span>register_raw_fn&lt;N, T&gt;(
+    </span><span class="kw">pub fn </span>register_raw_fn&lt;T: Variant + Clone&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        name: N,
+        name: <span class="kw">impl </span>AsRef&lt;str&gt; + Into&lt;Identifier&gt;,
         arg_types: <span class="kw">impl </span>AsRef&lt;[TypeId]&gt;,
         func: <span class="kw">impl </span>Fn(NativeCallContext, <span class="kw-2">&amp;mut </span>FnCallArgs) -&gt; RhaiResultOf&lt;T&gt; + SendSync + <span class="lifetime">&#39;static</span>,
-    ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self
-    </span><span class="kw">where
-        </span>N: AsRef&lt;str&gt; + Into&lt;Identifier&gt;,
-        T: Variant + Clone,
-    {
+    ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.global_namespace_mut().set_raw_fn(
             name,
             FnNamespace::Global,
@@ -1349,7 +984,7 @@
             .set_custom_type_raw(fully_qualified_type_path, name);
         <span class="self">self
     </span>}
-    <span class="doccomment">/// Register an type iterator for an iterable type with the [`Engine`].
+    <span class="doccomment">/// Register a type iterator for an iterable type with the [`Engine`].
     /// This is an advanced API.
     </span><span class="attribute">#[inline(always)]
     </span><span class="kw">pub fn </span>register_iterator&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self
@@ -1358,6 +993,17 @@
         &lt;T <span class="kw">as </span>IntoIterator&gt;::Item: Variant + Clone,
     {
         <span class="self">self</span>.global_namespace_mut().set_iterable::&lt;T&gt;();
+        <span class="self">self
+    </span>}
+    <span class="doccomment">/// Register a fallible type iterator for an iterable type with the [`Engine`].
+    /// This is an advanced API.
+    </span><span class="attribute">#[inline(always)]
+    </span><span class="kw">pub fn </span>register_iterator_result&lt;T, X&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self
+    </span><span class="kw">where
+        </span>T: Variant + Clone + IntoIterator&lt;Item = RhaiResultOf&lt;X&gt;&gt;,
+        X: Variant + Clone,
+    {
+        <span class="self">self</span>.global_namespace_mut().set_iterable_result::&lt;T, X&gt;();
         <span class="self">self
     </span>}
     <span class="doccomment">/// Register a getter function for a member of a registered type with the [`Engine`].
@@ -1402,61 +1048,12 @@
     /// ```
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
     #[inline(always)]
-    </span><span class="kw">pub fn </span>register_get&lt;T: Variant + Clone, V: Variant + Clone&gt;(
+    </span><span class="kw">pub fn </span>register_get&lt;T: Variant + Clone, V: Variant + Clone, S&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         name: <span class="kw">impl </span>AsRef&lt;str&gt;,
-        get_fn: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;mut </span>T) -&gt; V + SendSync + <span class="lifetime">&#39;static</span>,
+        get_fn: <span class="kw">impl </span>RegisterNativeFunction&lt;(Mut&lt;T&gt;,), V, S&gt; + SendSync + <span class="lifetime">&#39;static</span>,
     ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.register_fn(<span class="kw">crate</span>::engine::make_getter(name.as_ref()).as_str(), get_fn)
-    }
-    <span class="doccomment">/// Register a getter function for a member of a registered type with the [`Engine`].
-    ///
-    /// The function signature must start with `&amp;mut self` and not `&amp;self`.
-    ///
-    /// Not available under `no_object`.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use rhai::{Engine, Dynamic, EvalAltResult};
-    ///
-    /// #[derive(Clone)]
-    /// struct TestStruct {
-    ///     field: i64
-    /// }
-    ///
-    /// impl TestStruct {
-    ///     fn new() -&gt; Self {
-    ///         Self { field: 1 }
-    ///     }
-    ///     // Even a getter must start with `&amp;mut self` and not `&amp;self`.
-    ///     fn get_field(&amp;mut self) -&gt; Result&lt;i64, Box&lt;EvalAltResult&gt;&gt; {
-    ///         Ok(self.field)
-    ///     }
-    /// }
-    ///
-    /// # fn main() -&gt; Result&lt;(), Box&lt;rhai::EvalAltResult&gt;&gt; {
-    /// let mut engine = Engine::new();
-    ///
-    /// // Register API for the custom type.
-    /// engine
-    ///     .register_type::&lt;TestStruct&gt;()
-    ///     .register_fn(&quot;new_ts&quot;, TestStruct::new)
-    ///     // Register a getter on a property (notice it doesn&#39;t have to be the same name).
-    ///     .register_get_result(&quot;xyz&quot;, TestStruct::get_field);
-    ///
-    /// assert_eq!(engine.eval::&lt;i64&gt;(&quot;let a = new_ts(); a.xyz&quot;)?, 1);
-    /// # Ok(())
-    /// # }
-    /// ```
-    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-    #[inline(always)]
-    </span><span class="kw">pub fn </span>register_get_result&lt;T: Variant + Clone, V: Variant + Clone&gt;(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        name: <span class="kw">impl </span>AsRef&lt;str&gt;,
-        get_fn: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;mut </span>T) -&gt; RhaiResultOf&lt;V&gt; + SendSync + <span class="lifetime">&#39;static</span>,
-    ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.register_result_fn(<span class="kw">crate</span>::engine::make_getter(name.as_ref()).as_str(), get_fn)
     }
     <span class="doccomment">/// Register a setter function for a member of a registered type with the [`Engine`].
     ///
@@ -1501,63 +1098,12 @@
     /// ```
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
     #[inline(always)]
-    </span><span class="kw">pub fn </span>register_set&lt;T: Variant + Clone, V: Variant + Clone&gt;(
+    </span><span class="kw">pub fn </span>register_set&lt;T: Variant + Clone, V: Variant + Clone, S&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         name: <span class="kw">impl </span>AsRef&lt;str&gt;,
-        set_fn: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;mut </span>T, V) + SendSync + <span class="lifetime">&#39;static</span>,
+        set_fn: <span class="kw">impl </span>RegisterNativeFunction&lt;(Mut&lt;T&gt;, V), (), S&gt; + SendSync + <span class="lifetime">&#39;static</span>,
     ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.register_fn(<span class="kw">crate</span>::engine::make_setter(name.as_ref()).as_str(), set_fn)
-    }
-    <span class="doccomment">/// Register a setter function for a member of a registered type with the [`Engine`].
-    ///
-    /// Not available under `no_object`.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use rhai::{Engine, Dynamic, EvalAltResult};
-    ///
-    /// #[derive(Debug, Clone, Eq, PartialEq)]
-    /// struct TestStruct {
-    ///     field: i64
-    /// }
-    ///
-    /// impl TestStruct {
-    ///     fn new() -&gt; Self {
-    ///         Self { field: 1 }
-    ///     }
-    ///     fn set_field(&amp;mut self, new_val: i64) -&gt; Result&lt;(), Box&lt;rhai::EvalAltResult&gt;&gt; {
-    ///         self.field = new_val;
-    ///         Ok(())
-    ///     }
-    /// }
-    ///
-    /// # fn main() -&gt; Result&lt;(), Box&lt;rhai::EvalAltResult&gt;&gt; {
-    /// let mut engine = Engine::new();
-    ///
-    /// // Register API for the custom type.
-    /// engine
-    ///     .register_type::&lt;TestStruct&gt;()
-    ///     .register_fn(&quot;new_ts&quot;, TestStruct::new)
-    ///     // Register a setter on a property (notice it doesn&#39;t have to be the same name)
-    ///     .register_set_result(&quot;xyz&quot;, TestStruct::set_field);
-    ///
-    /// // Notice that, with a getter, there is no way to get the property value
-    /// assert_eq!(
-    ///     engine.eval::&lt;TestStruct&gt;(&quot;let a = new_ts(); a.xyz = 42; a&quot;)?,
-    ///     TestStruct { field: 42 }
-    /// );
-    /// # Ok(())
-    /// # }
-    /// ```
-    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-    #[inline(always)]
-    </span><span class="kw">pub fn </span>register_set_result&lt;T: Variant + Clone, V: Variant + Clone&gt;(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        name: <span class="kw">impl </span>AsRef&lt;str&gt;,
-        set_fn: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;mut </span>T, V) -&gt; RhaiResultOf&lt;()&gt; + SendSync + <span class="lifetime">&#39;static</span>,
-    ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.register_result_fn(<span class="kw">crate</span>::engine::make_setter(name.as_ref()).as_str(), set_fn)
     }
     <span class="doccomment">/// Short-hand for registering both getter and setter functions
     /// of a registered type with the [`Engine`].
@@ -1606,11 +1152,11 @@
     /// ```
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
     #[inline(always)]
-    </span><span class="kw">pub fn </span>register_get_set&lt;T: Variant + Clone, V: Variant + Clone&gt;(
+    </span><span class="kw">pub fn </span>register_get_set&lt;T: Variant + Clone, V: Variant + Clone, S1, S2&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         name: <span class="kw">impl </span>AsRef&lt;str&gt;,
-        get_fn: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;mut </span>T) -&gt; V + SendSync + <span class="lifetime">&#39;static</span>,
-        set_fn: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;mut </span>T, V) + SendSync + <span class="lifetime">&#39;static</span>,
+        get_fn: <span class="kw">impl </span>RegisterNativeFunction&lt;(Mut&lt;T&gt;,), V, S1&gt; + SendSync + <span class="lifetime">&#39;static</span>,
+        set_fn: <span class="kw">impl </span>RegisterNativeFunction&lt;(Mut&lt;T&gt;, V), (), S2&gt; + SendSync + <span class="lifetime">&#39;static</span>,
     ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.register_get(<span class="kw-2">&amp;</span>name, get_fn).register_set(<span class="kw-2">&amp;</span>name, set_fn)
     }
@@ -1665,9 +1211,9 @@
     /// ```
     </span><span class="attribute">#[cfg(any(not(feature = <span class="string">&quot;no_index&quot;</span>), not(feature = <span class="string">&quot;no_object&quot;</span>)))]
     #[inline]
-    </span><span class="kw">pub fn </span>register_indexer_get&lt;T: Variant + Clone, X: Variant + Clone, V: Variant + Clone&gt;(
+    </span><span class="kw">pub fn </span>register_indexer_get&lt;T: Variant + Clone, X: Variant + Clone, V: Variant + Clone, S&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        get_fn: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;mut </span>T, X) -&gt; V + SendSync + <span class="lifetime">&#39;static</span>,
+        get_fn: <span class="kw">impl </span>RegisterNativeFunction&lt;(Mut&lt;T&gt;, X), V, S&gt; + SendSync + <span class="lifetime">&#39;static</span>,
     ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
         </span><span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::Array&gt;() {
@@ -1688,85 +1234,6 @@
         }
 
         <span class="self">self</span>.register_fn(<span class="kw">crate</span>::engine::FN_IDX_GET, get_fn)
-    }
-    <span class="doccomment">/// Register an index getter for a custom type with the [`Engine`].
-    ///
-    /// The function signature must start with `&amp;mut self` and not `&amp;self`.
-    ///
-    /// Not available under both `no_index` and `no_object`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if the type is [`Array`][crate::Array], [`Map`][crate::Map], [`String`],
-    /// [`ImmutableString`][crate::ImmutableString], `&amp;str` or [`INT`][crate::INT].
-    /// Indexers for arrays, object maps, strings and integers cannot be registered.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use rhai::{Engine, Dynamic, EvalAltResult};
-    ///
-    /// #[derive(Clone)]
-    /// struct TestStruct {
-    ///     fields: Vec&lt;i64&gt;
-    /// }
-    ///
-    /// impl TestStruct {
-    ///     fn new() -&gt; Self {
-    ///         Self { fields: vec![1, 2, 3, 4, 5] }
-    ///     }
-    ///     // Even a getter must start with `&amp;mut self` and not `&amp;self`.
-    ///     fn get_field(&amp;mut self, index: i64) -&gt; Result&lt;i64, Box&lt;EvalAltResult&gt;&gt; {
-    ///         Ok(self.fields[index as usize])
-    ///     }
-    /// }
-    ///
-    /// # fn main() -&gt; Result&lt;(), Box&lt;rhai::EvalAltResult&gt;&gt; {
-    /// let mut engine = Engine::new();
-    ///
-    /// // Register API for the custom type.
-    /// # #[cfg(not(feature = &quot;no_object&quot;))]
-    /// engine.register_type::&lt;TestStruct&gt;();
-    ///
-    /// engine
-    ///     .register_fn(&quot;new_ts&quot;, TestStruct::new)
-    ///     // Register an indexer.
-    ///     .register_indexer_get_result(TestStruct::get_field);
-    ///
-    /// # #[cfg(not(feature = &quot;no_index&quot;))]
-    /// assert_eq!(engine.eval::&lt;i64&gt;(&quot;let a = new_ts(); a[2]&quot;)?, 3);
-    /// # Ok(())
-    /// # }
-    /// ```
-    </span><span class="attribute">#[cfg(any(not(feature = <span class="string">&quot;no_index&quot;</span>), not(feature = <span class="string">&quot;no_object&quot;</span>)))]
-    #[inline]
-    </span><span class="kw">pub fn </span>register_indexer_get_result&lt;
-        T: Variant + Clone,
-        X: Variant + Clone,
-        V: Variant + Clone,
-    &gt;(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        get_fn: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;mut </span>T, X) -&gt; RhaiResultOf&lt;V&gt; + SendSync + <span class="lifetime">&#39;static</span>,
-    ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-        </span><span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::Array&gt;() {
-            <span class="macro">panic!</span>(<span class="string">&quot;Cannot register indexer for arrays.&quot;</span>);
-        }
-        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-        </span><span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::Map&gt;() {
-            <span class="macro">panic!</span>(<span class="string">&quot;Cannot register indexer for object maps.&quot;</span>);
-        }
-        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;String&gt;()
-            || TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw-2">&amp;</span>str&gt;()
-            || TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::ImmutableString&gt;()
-        {
-            <span class="macro">panic!</span>(<span class="string">&quot;Cannot register indexer for strings.&quot;</span>);
-        }
-        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::INT&gt;() {
-            <span class="macro">panic!</span>(<span class="string">&quot;Cannot register indexer for integers.&quot;</span>);
-        }
-
-        <span class="self">self</span>.register_result_fn(<span class="kw">crate</span>::engine::FN_IDX_GET, get_fn)
     }
     <span class="doccomment">/// Register an index setter for a custom type with the [`Engine`].
     ///
@@ -1819,9 +1286,9 @@
     /// ```
     </span><span class="attribute">#[cfg(any(not(feature = <span class="string">&quot;no_index&quot;</span>), not(feature = <span class="string">&quot;no_object&quot;</span>)))]
     #[inline]
-    </span><span class="kw">pub fn </span>register_indexer_set&lt;T: Variant + Clone, X: Variant + Clone, V: Variant + Clone&gt;(
+    </span><span class="kw">pub fn </span>register_indexer_set&lt;T: Variant + Clone, X: Variant + Clone, V: Variant + Clone, S&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        set_fn: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;mut </span>T, X, V) + SendSync + <span class="lifetime">&#39;static</span>,
+        set_fn: <span class="kw">impl </span>RegisterNativeFunction&lt;(Mut&lt;T&gt;, X, V), (), S&gt; + SendSync + <span class="lifetime">&#39;static</span>,
     ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
         </span><span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::Array&gt;() {
@@ -1842,86 +1309,6 @@
         }
 
         <span class="self">self</span>.register_fn(<span class="kw">crate</span>::engine::FN_IDX_SET, set_fn)
-    }
-    <span class="doccomment">/// Register an index setter for a custom type with the [`Engine`].
-    ///
-    /// Not available under both `no_index` and `no_object`.
-    ///
-    /// # Panics
-    ///
-    /// Panics if the type is [`Array`][crate::Array], [`Map`][crate::Map], [`String`],
-    /// [`ImmutableString`][crate::ImmutableString], `&amp;str` or [`INT`][crate::INT].
-    /// Indexers for arrays, object maps, strings and integers cannot be registered.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use rhai::{Engine, Dynamic, EvalAltResult};
-    ///
-    /// #[derive(Clone)]
-    /// struct TestStruct {
-    ///     fields: Vec&lt;i64&gt;
-    /// }
-    ///
-    /// impl TestStruct {
-    ///     fn new() -&gt; Self {
-    ///         Self { fields: vec![1, 2, 3, 4, 5] }
-    ///     }
-    ///     fn set_field(&amp;mut self, index: i64, value: i64) -&gt; Result&lt;(), Box&lt;rhai::EvalAltResult&gt;&gt; {
-    ///         self.fields[index as usize] = value;
-    ///         Ok(())
-    ///     }
-    /// }
-    ///
-    /// # fn main() -&gt; Result&lt;(), Box&lt;rhai::EvalAltResult&gt;&gt; {
-    /// let mut engine = Engine::new();
-    ///
-    /// // Register API for the custom type.
-    /// # #[cfg(not(feature = &quot;no_object&quot;))]
-    /// engine.register_type::&lt;TestStruct&gt;();
-    ///
-    /// engine
-    ///     .register_fn(&quot;new_ts&quot;, TestStruct::new)
-    ///     // Register an indexer.
-    ///     .register_indexer_set_result(TestStruct::set_field);
-    ///
-    /// # #[cfg(not(feature = &quot;no_index&quot;))]
-    /// let result = engine.eval::&lt;TestStruct&gt;(&quot;let a = new_ts(); a[2] = 42; a&quot;)?;
-    ///
-    /// # #[cfg(not(feature = &quot;no_index&quot;))]
-    /// assert_eq!(result.fields[2], 42);
-    /// # Ok(())
-    /// # }
-    /// ```
-    </span><span class="attribute">#[cfg(any(not(feature = <span class="string">&quot;no_index&quot;</span>), not(feature = <span class="string">&quot;no_object&quot;</span>)))]
-    #[inline]
-    </span><span class="kw">pub fn </span>register_indexer_set_result&lt;
-        T: Variant + Clone,
-        X: Variant + Clone,
-        V: Variant + Clone,
-    &gt;(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        set_fn: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;mut </span>T, X, V) -&gt; RhaiResultOf&lt;()&gt; + SendSync + <span class="lifetime">&#39;static</span>,
-    ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-        </span><span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::Array&gt;() {
-            <span class="macro">panic!</span>(<span class="string">&quot;Cannot register indexer for arrays.&quot;</span>);
-        }
-        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-        </span><span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::Map&gt;() {
-            <span class="macro">panic!</span>(<span class="string">&quot;Cannot register indexer for object maps.&quot;</span>);
-        }
-        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;String&gt;()
-            || TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw-2">&amp;</span>str&gt;()
-            || TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::ImmutableString&gt;()
-        {
-            <span class="macro">panic!</span>(<span class="string">&quot;Cannot register indexer for strings.&quot;</span>);
-        }
-        <span class="kw">if </span>TypeId::of::&lt;T&gt;() == TypeId::of::&lt;<span class="kw">crate</span>::INT&gt;() {
-            <span class="macro">panic!</span>(<span class="string">&quot;Cannot register indexer for integers.&quot;</span>);
-        }
-
-        <span class="self">self</span>.register_result_fn(<span class="kw">crate</span>::engine::FN_IDX_SET, set_fn)
     }
     <span class="doccomment">/// Short-hand for registering both index getter and setter functions for a custom type with the [`Engine`].
     ///
@@ -1975,10 +1362,16 @@
     /// ```
     </span><span class="attribute">#[cfg(any(not(feature = <span class="string">&quot;no_index&quot;</span>), not(feature = <span class="string">&quot;no_object&quot;</span>)))]
     #[inline(always)]
-    </span><span class="kw">pub fn </span>register_indexer_get_set&lt;T: Variant + Clone, X: Variant + Clone, V: Variant + Clone&gt;(
+    </span><span class="kw">pub fn </span>register_indexer_get_set&lt;
+        T: Variant + Clone,
+        X: Variant + Clone,
+        V: Variant + Clone,
+        S1,
+        S2,
+    &gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        get_fn: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;mut </span>T, X) -&gt; V + SendSync + <span class="lifetime">&#39;static</span>,
-        set_fn: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;mut </span>T, X, V) + SendSync + <span class="lifetime">&#39;static</span>,
+        get_fn: <span class="kw">impl </span>RegisterNativeFunction&lt;(Mut&lt;T&gt;, X), V, S1&gt; + SendSync + <span class="lifetime">&#39;static</span>,
+        set_fn: <span class="kw">impl </span>RegisterNativeFunction&lt;(Mut&lt;T&gt;, X, V), (), S2&gt; + SendSync + <span class="lifetime">&#39;static</span>,
     ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.register_indexer_get(get_fn)
             .register_indexer_set(set_fn)
@@ -2045,18 +1438,10 @@
             module: Shared&lt;Module&gt;,
         ) {
             <span class="kw">let </span>separator = <span class="kw">crate</span>::tokenizer::Token::DoubleColon.syntax();
+            <span class="kw">let </span>separator = separator.as_ref();
 
-            <span class="kw">if </span>!name.contains(separator.as_ref()) {
-                <span class="kw">if </span>!module.is_indexed() {
-                    <span class="comment">// Index the module (making a clone copy if necessary) if it is not indexed
-                    </span><span class="kw">let </span><span class="kw-2">mut </span>module = <span class="kw">crate</span>::func::native::shared_take_or_clone(module);
-                    module.build_index();
-                    root.insert(name.into(), module.into());
-                } <span class="kw">else </span>{
-                    root.insert(name.into(), module);
-                }
-            } <span class="kw">else </span>{
-                <span class="kw">let </span><span class="kw-2">mut </span>iter = name.splitn(<span class="number">2</span>, separator.as_ref());
+            <span class="kw">if </span>name.contains(separator) {
+                <span class="kw">let </span><span class="kw-2">mut </span>iter = name.splitn(<span class="number">2</span>, separator);
                 <span class="kw">let </span>sub_module = iter.next().expect(<span class="string">&quot;contains separator&quot;</span>).trim();
                 <span class="kw">let </span>remainder = iter.next().expect(<span class="string">&quot;contains separator&quot;</span>).trim();
 
@@ -2067,11 +1452,18 @@
                     root.insert(sub_module.into(), m.into());
                 } <span class="kw">else </span>{
                     <span class="kw">let </span>m = root.remove(sub_module).expect(<span class="string">&quot;contains sub-module&quot;</span>);
-                    <span class="kw">let </span><span class="kw-2">mut </span>m = <span class="kw">crate</span>::func::native::shared_take_or_clone(m);
+                    <span class="kw">let </span><span class="kw-2">mut </span>m = <span class="kw">crate</span>::func::shared_take_or_clone(m);
                     register_static_module_raw(m.sub_modules_mut(), remainder, module);
                     m.build_index();
                     root.insert(sub_module.into(), m.into());
                 }
+            } <span class="kw">else if </span>module.is_indexed() {
+                root.insert(name.into(), module);
+            } <span class="kw">else </span>{
+                <span class="comment">// Index the module (making a clone copy if necessary) if it is not indexed
+                </span><span class="kw">let </span><span class="kw-2">mut </span>module = <span class="kw">crate</span>::func::shared_take_or_clone(module);
+                module.build_index();
+                root.insert(name.into(), module.into());
             }
         }
 
@@ -2096,7 +1488,7 @@
 
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
         </span><span class="kw">for </span>(name, m) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.global_sub_modules {
-            signatures.extend(m.gen_fn_signatures().map(|f| <span class="macro">format!</span>(<span class="string">&quot;{}::{}&quot;</span>, name, f)))
+            signatures.extend(m.gen_fn_signatures().map(|f| <span class="macro">format!</span>(<span class="string">&quot;{name}::{f}&quot;</span>)));
         }
 
         signatures.extend(
@@ -2111,4 +1503,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

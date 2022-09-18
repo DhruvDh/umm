@@ -147,32 +147,12 @@
 <span id="147">147</span>
 <span id="148">148</span>
 <span id="149">149</span>
-<span id="150">150</span>
-<span id="151">151</span>
-<span id="152">152</span>
-<span id="153">153</span>
-<span id="154">154</span>
-<span id="155">155</span>
-<span id="156">156</span>
-<span id="157">157</span>
-<span id="158">158</span>
-<span id="159">159</span>
-<span id="160">160</span>
-<span id="161">161</span>
-<span id="162">162</span>
-<span id="163">163</span>
-<span id="164">164</span>
-<span id="165">165</span>
 </pre><pre class="rust"><code><span class="attribute">#![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
 </span><span class="kw">use </span>std::{
+    collections::HashMap,
     ffi::OsString,
-    fs::File,
-    io::{
-        Read,
-        Write,
-    },
     path::{
         Path,
         PathBuf,
@@ -184,6 +164,7 @@
     <span class="prelude-ty">Result</span>,
 };
 <span class="kw">use </span>glob::glob;
+<span class="kw">use </span>tokio::io::AsyncWriteExt;
 <span class="kw">use </span>which::which;
 
 <span class="kw">use </span><span class="kw">crate</span>::constants::<span class="kw-2">*</span>;
@@ -273,60 +254,47 @@
 }
 
 <span class="doccomment">/// TODO: Add docs
-</span><span class="kw">pub fn </span>download(url: <span class="kw-2">&amp;</span>str, path: <span class="kw-2">&amp;</span>PathBuf, replace: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+</span><span class="kw">pub async fn </span>download(url: <span class="kw-2">&amp;</span>str, path: <span class="kw-2">&amp;</span>PathBuf, replace: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
     <span class="kw">if </span>!replace &amp;&amp; path.exists() {
         <span class="prelude-val">Ok</span>(())
     } <span class="kw">else </span>{
-        <span class="kw">let </span>resp = ureq::get(url)
-            .call()
-            .context(<span class="macro">format!</span>(<span class="string">&quot;Failed to download {}&quot;</span>, url))<span class="question-mark">?</span>;
-
-        <span class="kw">let </span>len = resp
-            .header(<span class="string">&quot;Content-Length&quot;</span>)
-            .and_then(|s| s.parse::&lt;usize&gt;().ok())
-            .unwrap();
-
-        <span class="kw">let </span><span class="kw-2">mut </span>bytes: Vec&lt;u8&gt; = Vec::with_capacity(len);
-
-        resp.into_reader()
-            .take(<span class="number">10_000_000</span>)
-            .read_to_end(<span class="kw-2">&amp;mut </span>bytes)
-            .context(<span class="macro">format!</span>(
-                <span class="string">&quot;Failed to read response till the end while downloading file at {}&quot;</span>,
-                url,
-            ))<span class="question-mark">?</span>;
+        <span class="kw">let </span>bytes = reqwest::get(url)
+            .<span class="kw">await
+            </span>.context(<span class="macro">format!</span>(<span class="string">&quot;Failed to download url: {url}&quot;</span>))<span class="question-mark">?
+            </span>.bytes()
+            .<span class="kw">await
+            </span>.context(<span class="macro">format!</span>(<span class="string">&quot;Failed to read response as bytes: {url}&quot;</span>))<span class="question-mark">?</span>;
 
         <span class="kw">let </span>name = path.file_name().unwrap().to_str().unwrap();
 
-        <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(path).context(<span class="macro">format!</span>(<span class="string">&quot;Failed to create file at {}&quot;</span>, name))<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>file = tokio::fs::File::create(path)
+            .<span class="kw">await
+            </span>.context(<span class="macro">format!</span>(<span class="string">&quot;Failed to create file at {}&quot;</span>, name))<span class="question-mark">?</span>;
 
         file.write_all(<span class="kw-2">&amp;</span>bytes)
-            .context(<span class="macro">format!</span>(<span class="string">&quot;Failed to write to file at {}&quot;</span>, name))
+            .<span class="kw">await
+            </span>.context(<span class="macro">format!</span>(<span class="string">&quot;Failed to write to file at {}&quot;</span>, name))
     }
 }
 
 <span class="doccomment">/// Download a URL and return response as string
-</span><span class="kw">pub fn </span>download_to_string(url: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-    <span class="kw">let </span>resp = ureq::get(url)
-        .call()
-        .context(<span class="macro">format!</span>(<span class="string">&quot;Failed to download {}&quot;</span>, url))<span class="question-mark">?</span>;
+</span><span class="kw">pub async fn </span>download_to_string(url: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
+    reqwest::get(url)
+        .<span class="kw">await
+        </span>.context(<span class="macro">format!</span>(<span class="string">&quot;Failed to download url: {url}&quot;</span>))<span class="question-mark">?
+        </span>.text()
+        .<span class="kw">await
+        </span>.context(<span class="macro">format!</span>(<span class="string">&quot;Failed to read response as text: {url}&quot;</span>))
+}
 
-    <span class="kw">let </span>len = resp
-        .header(<span class="string">&quot;Content-Length&quot;</span>)
-        .and_then(|s| s.parse::&lt;usize&gt;().ok())
-        .unwrap_or(<span class="number">4096</span>);
-
-    <span class="kw">let </span><span class="kw-2">mut </span>bytes: Vec&lt;u8&gt; = Vec::with_capacity(len);
-
-    resp.into_reader()
-        .take(<span class="number">10_000_000</span>)
-        .read_to_end(<span class="kw-2">&amp;mut </span>bytes)
-        .context(<span class="macro">format!</span>(
-            <span class="string">&quot;Failed to read response till the end while downloading file at {}&quot;</span>,
-            url,
-        ))<span class="question-mark">?</span>;
-
-    <span class="prelude-val">Ok</span>(String::from_utf8(bytes)<span class="question-mark">?</span>)
+<span class="doccomment">/// Download a URL and return response as JSON
+</span><span class="kw">pub async fn </span>download_to_json(url: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;HashMap&lt;String, String&gt;&gt; {
+    reqwest::get(url)
+        .<span class="kw">await
+        </span>.context(<span class="macro">format!</span>(<span class="string">&quot;Failed to download url: {url}&quot;</span>))<span class="question-mark">?
+        </span>.json()
+        .<span class="kw">await
+        </span>.context(<span class="macro">format!</span>(<span class="string">&quot;Failed to read response as json: {url}&quot;</span>))
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="umm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="umm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/engine.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>engine.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/engine.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>engine.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -317,26 +317,61 @@
 <span id="317">317</span>
 <span id="318">318</span>
 <span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Main module defining the script evaluation [`Engine`].
 
-</span><span class="kw">use </span><span class="kw">crate</span>::api::custom_syntax::CustomSyntax;
-<span class="kw">use </span><span class="kw">crate</span>::api::options::LanguageOptions;
+</span><span class="kw">use </span><span class="kw">crate</span>::api::options::LangOptions;
 <span class="kw">use </span><span class="kw">crate</span>::func::native::{
-    OnDebugCallback, OnDefVarCallback, OnParseTokenCallback, OnPrintCallback, OnVarCallback,
+    locked_write, OnDebugCallback, OnDefVarCallback, OnParseTokenCallback, OnPrintCallback,
+    OnVarCallback,
 };
 <span class="kw">use </span><span class="kw">crate</span>::packages::{Package, StandardPackage};
 <span class="kw">use </span><span class="kw">crate</span>::tokenizer::Token;
-<span class="kw">use </span><span class="kw">crate</span>::types::dynamic::Union;
+<span class="kw">use </span><span class="kw">crate</span>::types::StringsInterner;
 <span class="kw">use crate</span>::{
-    Dynamic, Identifier, ImmutableString, Module, Position, RhaiResult, Shared, StaticVec,
+    Dynamic, Identifier, ImmutableString, Locked, Module, OptimizationLevel, Position, RhaiResult,
+    Shared, StaticVec,
 };
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
-<span class="kw">use </span>std::{
-    collections::{BTreeMap, BTreeSet},
-    fmt,
-    num::NonZeroU8,
-};
+<span class="kw">use </span>std::{collections::BTreeSet, fmt, num::NonZeroU8};
 
 <span class="kw">pub type </span>Precedence = NonZeroU8;
 
@@ -417,21 +452,24 @@
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) global_modules: StaticVec&lt;Shared&lt;Module&gt;&gt;,
     <span class="doccomment">/// A collection of all sub-modules directly loaded into the Engine.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) global_sub_modules: BTreeMap&lt;Identifier, Shared&lt;Module&gt;&gt;,
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) global_sub_modules: std::collections::BTreeMap&lt;Identifier, Shared&lt;Module&gt;&gt;,
 
     <span class="doccomment">/// A module resolution service.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) module_resolver: Box&lt;<span class="kw">dyn </span><span class="kw">crate</span>::ModuleResolver&gt;,
 
     <span class="doccomment">/// An empty [`ImmutableString`] for cloning purposes.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) empty_string: ImmutableString,
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) interned_strings: Locked&lt;StringsInterner&lt;<span class="lifetime">&#39;static</span>&gt;&gt;,
 
     <span class="doccomment">/// A set of symbols to disable.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) disabled_symbols: BTreeSet&lt;Identifier&gt;,
     <span class="doccomment">/// A map containing custom keywords and precedence to recognize.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) custom_keywords: BTreeMap&lt;Identifier, <span class="prelude-ty">Option</span>&lt;Precedence&gt;&gt;,
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) custom_keywords: std::collections::BTreeMap&lt;Identifier, <span class="prelude-ty">Option</span>&lt;Precedence&gt;&gt;,
     <span class="doccomment">/// Custom syntax.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) custom_syntax: BTreeMap&lt;Identifier, Box&lt;CustomSyntax&gt;&gt;,
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) custom_syntax:
+        std::collections::BTreeMap&lt;Identifier, <span class="kw">crate</span>::api::custom_syntax::CustomSyntax&gt;,
     <span class="doccomment">/// Callback closure for filtering variable definition.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) def_var_filter: <span class="prelude-ty">Option</span>&lt;Box&lt;OnDefVarCallback&gt;&gt;,
     <span class="doccomment">/// Callback closure for resolving variable access.
@@ -448,7 +486,13 @@
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) progress: <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">crate</span>::func::native::OnProgressCallback&gt;&gt;,
 
     <span class="doccomment">/// Language options.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) options: LanguageOptions,
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) options: LangOptions,
+
+    <span class="doccomment">/// Default value for the custom state.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) def_tag: Dynamic,
+
+    <span class="doccomment">/// Script optimization level.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) optimization_level: OptimizationLevel,
 
     <span class="doccomment">/// Max limits.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
@@ -472,10 +516,19 @@
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
         </span>f.field(<span class="string">&quot;global_sub_modules&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.global_sub_modules);
 
-        f.field(<span class="string">&quot;disabled_symbols&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.disabled_symbols)
-            .field(<span class="string">&quot;custom_keywords&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.custom_keywords)
-            .field(<span class="string">&quot;custom_syntax&quot;</span>, <span class="kw-2">&amp;</span>(!<span class="self">self</span>.custom_syntax.is_empty()))
-            .field(<span class="string">&quot;def_var_filter&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.def_var_filter.is_some())
+        f.field(<span class="string">&quot;disabled_symbols&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.disabled_symbols);
+
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+        </span>f.field(<span class="string">&quot;custom_keywords&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.custom_keywords).field(
+            <span class="string">&quot;custom_syntax&quot;</span>,
+            <span class="kw-2">&amp;</span><span class="self">self
+                </span>.custom_syntax
+                .keys()
+                .map(<span class="kw">crate</span>::SmartString::as_str)
+                .collect::&lt;String&gt;(),
+        );
+
+        f.field(<span class="string">&quot;def_var_filter&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.def_var_filter.is_some())
             .field(<span class="string">&quot;resolve_var&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.resolve_var.is_some())
             .field(<span class="string">&quot;token_mapper&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.token_mapper.is_some());
 
@@ -541,13 +594,16 @@
         </span>{
             engine.print = Box::new(|s| <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, s));
             engine.debug = Box::new(|s, source, pos| {
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(source) = source {
-                    <span class="macro">println!</span>(<span class="string">&quot;{} @ {:?} | {}&quot;</span>, source, pos, s);
-                } <span class="kw">else if </span>pos.is_none() {
-                    <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, s);
-                } <span class="kw">else </span>{
-                    <span class="macro">println!</span>(<span class="string">&quot;{:?} | {}&quot;</span>, pos, s);
-                }
+                source.map_or_else(
+                    || {
+                        <span class="kw">if </span>pos.is_none() {
+                            <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, s);
+                        } <span class="kw">else </span>{
+                            <span class="macro">println!</span>(<span class="string">&quot;{:?} | {}&quot;</span>, pos, s);
+                        }
+                    },
+                    |source| <span class="macro">println!</span>(<span class="string">&quot;{} @ {:?} | {}&quot;</span>, source, pos, s),
+                )
             });
         }
 
@@ -566,15 +622,17 @@
             global_modules: StaticVec::new_const(),
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-            </span>global_sub_modules: BTreeMap::new(),
+            </span>global_sub_modules: std::collections::BTreeMap::new(),
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
             </span>module_resolver: Box::new(<span class="kw">crate</span>::module::resolvers::DummyModuleResolver::new()),
 
-            empty_string: ImmutableString::new(),
+            interned_strings: StringsInterner::new().into(),
             disabled_symbols: BTreeSet::new(),
-            custom_keywords: BTreeMap::new(),
-            custom_syntax: BTreeMap::new(),
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+            </span>custom_keywords: std::collections::BTreeMap::new(),
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+            </span>custom_syntax: std::collections::BTreeMap::new(),
 
             def_var_filter: <span class="prelude-val">None</span>,
             resolve_var: <span class="prelude-val">None</span>,
@@ -586,7 +644,14 @@
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
             </span>progress: <span class="prelude-val">None</span>,
 
-            options: LanguageOptions::new(),
+            options: LangOptions::new(),
+
+            def_tag: Dynamic::UNIT,
+
+            <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_optimize&quot;</span>))]
+            </span>optimization_level: OptimizationLevel::Simple,
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;no_optimize&quot;</span>)]
+            </span>optimization_level: (),
 
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
             </span>limits: <span class="kw">crate</span>::api::limits::Limits::new(),
@@ -603,38 +668,49 @@
         engine
     }
 
-    <span class="doccomment">/// Get an empty [`ImmutableString`].
+    <span class="doccomment">/// Get an interned [string][ImmutableString].
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;internals&quot;</span>))]
+    #[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_interned_string(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        string: <span class="kw">impl </span>AsRef&lt;str&gt; + Into&lt;ImmutableString&gt;,
+    ) -&gt; ImmutableString {
+        locked_write(<span class="kw-2">&amp;</span><span class="self">self</span>.interned_strings).get(string)
+    }
+
+    <span class="doccomment">/// _(internals)_ Get an interned [string][ImmutableString].
+    /// Exported under the `internals` feature only.
     ///
-    /// [`Engine`] keeps a single instance of an empty [`ImmutableString`] and uses this to create
-    /// shared instances for subsequent uses. This minimizes unnecessary allocations for empty strings.
+    /// [`Engine`] keeps a cache of [`ImmutableString`] instances and tries to avoid new allocations
+    /// when an existing instance is found.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;internals&quot;</span>)]
+    #[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub fn </span>get_interned_string(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        string: <span class="kw">impl </span>AsRef&lt;str&gt; + Into&lt;ImmutableString&gt;,
+    ) -&gt; ImmutableString {
+        locked_write(<span class="kw-2">&amp;</span><span class="self">self</span>.interned_strings).get(string)
+    }
+
+    <span class="doccomment">/// Get an empty [`ImmutableString`] which refers to a shared instance.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub fn </span>const_empty_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ImmutableString {
-        <span class="self">self</span>.empty_string.clone()
+        <span class="self">self</span>.get_interned_string(<span class="string">&quot;&quot;</span>)
     }
 
     <span class="doccomment">/// Check a result to ensure that it is valid.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>check_return_value(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>result: RhaiResult, _pos: Position) -&gt; RhaiResult {
-        <span class="kw">match </span>result {
-            <span class="prelude-val">Ok</span>(<span class="kw-2">ref mut </span>r) =&gt; {
-                <span class="comment">// Concentrate all empty strings into one instance to save memory
-                </span><span class="kw">if let </span>Dynamic(Union::Str(s, ..)) = r {
-                    <span class="kw">if </span>s.is_empty() {
-                        <span class="kw">if </span>!s.ptr_eq(<span class="kw-2">&amp;</span><span class="self">self</span>.empty_string) {
-                            <span class="kw-2">*</span>s = <span class="self">self</span>.const_empty_string();
-                        }
-                        <span class="kw">return </span>result;
-                    }
-                }
-
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
-                </span><span class="self">self</span>.check_data_size(<span class="kw-2">&amp;</span>r, _pos)<span class="question-mark">?</span>;
-            }
-            <span class="kw">_ </span>=&gt; (),
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>check_return_value(<span class="kw-2">&amp;</span><span class="self">self</span>, result: RhaiResult, _pos: Position) -&gt; RhaiResult {
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
+        </span><span class="kw">if let </span><span class="prelude-val">Ok</span>(<span class="kw-2">ref </span>r) = result {
+            <span class="self">self</span>.check_data_size(r, _pos)<span class="question-mark">?</span>;
         }
 
         result
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

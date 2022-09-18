@@ -7,7 +7,7 @@ scheduled. No other waking is required for the task to continue.</p>
 <h3 id="non-guarantees"><a href="#non-guarantees">Non-guarantees</a></h3>
 <p>This function may not yield all the way up to the executor if there are any
 special combinators above it in the call stack. For example, if a
-<a href="macro@crate::select"><code>tokio::select!</code></a> has another branch complete during the same poll as the
+<a href="../macro.select.html"><code>tokio::select!</code></a> has another branch complete during the same poll as the
 <code>yield_now()</code>, then the yield is not propagated all the way up to the
 runtime.</p>
 <p>It is generally not guaranteed that the runtime behaves like you expect it
@@ -21,4 +21,4 @@ other task is waiting for a notification from the IO driver.</p>
 <p>In general, changes to the order in which the runtime polls tasks is not
 considered a breaking change, and your program should be correct no matter
 which order the runtime polls your tasks in.</p>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/indicatif-0.16.2/src/state.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>state.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../indicatif/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../indicatif/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../indicatif/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/indicatif-0.17.1/src/state.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>state.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../indicatif/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../indicatif/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../indicatif/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -529,44 +529,343 @@
 <span id="529">529</span>
 <span id="530">530</span>
 <span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
 </pre><pre class="rust"><code><span class="kw">use </span>std::borrow::Cow;
-<span class="kw">use </span>std::io;
-<span class="kw">use </span>std::sync::mpsc::Sender;
-<span class="kw">use </span>std::sync::{Arc, Mutex, RwLock};
-<span class="kw">use </span>std::thread;
+<span class="kw">use </span>std::sync::atomic::{AtomicU64, AtomicU8, Ordering};
+<span class="kw">use </span>std::sync::Arc;
 <span class="kw">use </span>std::time::{Duration, Instant};
+<span class="kw">use </span>std::{fmt, io};
 
-<span class="kw">use </span><span class="kw">crate</span>::style::{ProgressFinish, ProgressStyle};
-<span class="kw">use </span><span class="kw">crate</span>::utils::{duration_to_secs, secs_to_duration, Estimate};
-<span class="kw">use </span>console::Term;
+<span class="kw">use </span><span class="kw">crate</span>::draw_target::ProgressDrawTarget;
+<span class="kw">use </span><span class="kw">crate</span>::style::ProgressStyle;
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>BarState {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) draw_target: ProgressDrawTarget,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) on_finish: ProgressFinish,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) style: ProgressStyle,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) state: ProgressState,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) tab_width: usize,
+}
+
+<span class="kw">impl </span>BarState {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(
+        len: <span class="prelude-ty">Option</span>&lt;u64&gt;,
+        draw_target: ProgressDrawTarget,
+        pos: Arc&lt;AtomicPosition&gt;,
+    ) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            draw_target,
+            on_finish: ProgressFinish::default(),
+            style: ProgressStyle::default_bar(),
+            state: ProgressState::new(len, pos),
+            tab_width: DEFAULT_TAB_WIDTH,
+        }
+    }
+
+    <span class="doccomment">/// Finishes the progress bar using the [`ProgressFinish`] behavior stored
+    /// in the [`ProgressStyle`].
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>finish_using_style(<span class="kw-2">&amp;mut </span><span class="self">self</span>, now: Instant, finish: ProgressFinish) {
+        <span class="self">self</span>.state.status = Status::DoneVisible;
+        <span class="kw">match </span>finish {
+            ProgressFinish::AndLeave =&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(len) = <span class="self">self</span>.state.len {
+                    <span class="self">self</span>.state.pos.set(len);
+                }
+            }
+            ProgressFinish::WithMessage(msg) =&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(len) = <span class="self">self</span>.state.len {
+                    <span class="self">self</span>.state.pos.set(len);
+                }
+                <span class="self">self</span>.state.message = TabExpandedString::new(msg, <span class="self">self</span>.tab_width);
+            }
+            ProgressFinish::AndClear =&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(len) = <span class="self">self</span>.state.len {
+                    <span class="self">self</span>.state.pos.set(len);
+                }
+                <span class="self">self</span>.state.status = Status::DoneHidden;
+            }
+            ProgressFinish::Abandon =&gt; {}
+            ProgressFinish::AbandonWithMessage(msg) =&gt; {
+                <span class="self">self</span>.state.message = TabExpandedString::new(msg, <span class="self">self</span>.tab_width)
+            }
+        }
+
+        <span class="comment">// There&#39;s no need to update the estimate here; once the `status` is no longer
+        // `InProgress`, we will use the length and elapsed time to estimate.
+        </span><span class="kw">let _ </span>= <span class="self">self</span>.draw(<span class="bool-val">true</span>, now);
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>reset(<span class="kw-2">&amp;mut </span><span class="self">self</span>, now: Instant, mode: Reset) {
+        <span class="kw">if let </span>Reset::Eta | Reset::All = mode {
+            <span class="self">self</span>.state.est.reset(now);
+        }
+
+        <span class="kw">if let </span>Reset::Elapsed | Reset::All = mode {
+            <span class="self">self</span>.state.started = now;
+        }
+
+        <span class="kw">if let </span>Reset::All = mode {
+            <span class="self">self</span>.state.pos.reset(now);
+            <span class="self">self</span>.state.status = Status::InProgress;
+
+            <span class="kw">for </span>(<span class="kw">_</span>, tracker) <span class="kw">in </span><span class="self">self</span>.style.format_map.iter_mut() {
+                tracker.reset(<span class="kw-2">&amp;</span><span class="self">self</span>.state, now);
+            }
+
+            <span class="kw">let _ </span>= <span class="self">self</span>.draw(<span class="bool-val">false</span>, now);
+        }
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>update(<span class="kw-2">&amp;mut </span><span class="self">self</span>, now: Instant, f: <span class="kw">impl </span>FnOnce(<span class="kw-2">&amp;mut </span>ProgressState), tick: bool) {
+        f(<span class="kw-2">&amp;mut </span><span class="self">self</span>.state);
+        <span class="kw">if </span>tick {
+            <span class="self">self</span>.tick(now);
+        }
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_length(<span class="kw-2">&amp;mut </span><span class="self">self</span>, now: Instant, len: u64) {
+        <span class="self">self</span>.state.len = <span class="prelude-val">Some</span>(len);
+        <span class="self">self</span>.update_estimate_and_draw(now);
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>inc_length(<span class="kw-2">&amp;mut </span><span class="self">self</span>, now: Instant, delta: u64) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(len) = <span class="self">self</span>.state.len {
+            <span class="self">self</span>.state.len = <span class="prelude-val">Some</span>(len.saturating_add(delta));
+        }
+        <span class="self">self</span>.update_estimate_and_draw(now);
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_tab_width(<span class="kw-2">&amp;mut </span><span class="self">self</span>, tab_width: usize) {
+        <span class="self">self</span>.tab_width = tab_width;
+        <span class="self">self</span>.state.message.set_tab_width(tab_width);
+        <span class="self">self</span>.state.prefix.set_tab_width(tab_width);
+        <span class="self">self</span>.style.set_tab_width(tab_width);
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_style(<span class="kw-2">&amp;mut </span><span class="self">self</span>, style: ProgressStyle) {
+        <span class="self">self</span>.style = style;
+        <span class="self">self</span>.style.set_tab_width(<span class="self">self</span>.tab_width);
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>tick(<span class="kw-2">&amp;mut </span><span class="self">self</span>, now: Instant) {
+        <span class="self">self</span>.state.tick = <span class="self">self</span>.state.tick.saturating_add(<span class="number">1</span>);
+        <span class="self">self</span>.update_estimate_and_draw(now);
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>update_estimate_and_draw(<span class="kw-2">&amp;mut </span><span class="self">self</span>, now: Instant) {
+        <span class="kw">let </span>pos = <span class="self">self</span>.state.pos.pos.load(Ordering::Relaxed);
+        <span class="self">self</span>.state.est.record(pos, now);
+        <span class="kw">let _ </span>= <span class="self">self</span>.draw(<span class="bool-val">false</span>, now);
+
+        <span class="kw">for </span>(<span class="kw">_</span>, tracker) <span class="kw">in </span><span class="self">self</span>.style.format_map.iter_mut() {
+            tracker.tick(<span class="kw-2">&amp;</span><span class="self">self</span>.state, now);
+        }
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>println(<span class="kw-2">&amp;mut </span><span class="self">self</span>, now: Instant, msg: <span class="kw-2">&amp;</span>str) {
+        <span class="kw">let </span>width = <span class="self">self</span>.draw_target.width();
+        <span class="kw">let </span><span class="kw-2">mut </span>drawable = <span class="kw">match </span><span class="self">self</span>.draw_target.drawable(<span class="bool-val">true</span>, now) {
+            <span class="prelude-val">Some</span>(drawable) =&gt; drawable,
+            <span class="prelude-val">None </span>=&gt; <span class="kw">return</span>,
+        };
+
+        <span class="kw">let </span><span class="kw-2">mut </span>draw_state = drawable.state();
+        draw_state.lines.extend(msg.lines().map(Into::into));
+        draw_state.orphan_lines_count = draw_state.lines.len();
+        <span class="kw">if </span>!<span class="macro">matches!</span>(<span class="self">self</span>.state.status, Status::DoneHidden) {
+            <span class="self">self</span>.style
+                .format_state(<span class="kw-2">&amp;</span><span class="self">self</span>.state, <span class="kw-2">&amp;mut </span>draw_state.lines, width);
+        }
+
+        drop(draw_state);
+        <span class="kw">let _ </span>= drawable.draw();
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>suspend&lt;F: FnOnce() -&gt; R, R&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, now: Instant, f: F) -&gt; R {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(drawable) = <span class="self">self</span>.draw_target.drawable(<span class="bool-val">true</span>, now) {
+            <span class="kw">let _ </span>= drawable.clear();
+        }
+
+        <span class="kw">let </span>ret = f();
+        <span class="kw">let _ </span>= <span class="self">self</span>.draw(<span class="bool-val">true</span>, Instant::now());
+        ret
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>draw(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>force_draw: bool, now: Instant) -&gt; io::Result&lt;()&gt; {
+        <span class="kw">let </span>width = <span class="self">self</span>.draw_target.width();
+
+        <span class="comment">// `|= self.is_finished()` should not be needed here, but we used to always draw for
+        // finished progress bars, so it&#39;s kept as to not cause compatibility issues in weird cases.
+        </span>force_draw |= <span class="self">self</span>.state.is_finished();
+        <span class="kw">let </span><span class="kw-2">mut </span>drawable = <span class="kw">match </span><span class="self">self</span>.draw_target.drawable(force_draw, now) {
+            <span class="prelude-val">Some</span>(drawable) =&gt; drawable,
+            <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(()),
+        };
+
+        <span class="kw">let </span><span class="kw-2">mut </span>draw_state = drawable.state();
+
+        <span class="kw">if </span>!<span class="macro">matches!</span>(<span class="self">self</span>.state.status, Status::DoneHidden) {
+            <span class="self">self</span>.style
+                .format_state(<span class="kw-2">&amp;</span><span class="self">self</span>.state, <span class="kw-2">&amp;mut </span>draw_state.lines, width);
+        }
+
+        drop(draw_state);
+        drawable.draw()
+    }
+}
+
+<span class="kw">impl </span>Drop <span class="kw">for </span>BarState {
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="comment">// Progress bar is already finished.  Do not need to do anything other than notify
+        // the `MultiProgress` that we&#39;re now a zombie.
+        </span><span class="kw">if </span><span class="self">self</span>.state.is_finished() {
+            <span class="self">self</span>.draw_target.mark_zombie();
+            <span class="kw">return</span>;
+        }
+
+        <span class="self">self</span>.finish_using_style(Instant::now(), <span class="self">self</span>.on_finish.clone());
+
+        <span class="comment">// Notify the `MultiProgress` that we&#39;re now a zombie.
+        </span><span class="self">self</span>.draw_target.mark_zombie();
+    }
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>Reset {
+    Eta,
+    Elapsed,
+    All,
+}
 
 <span class="doccomment">/// The state of a progress bar at a moment in time.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>ProgressState {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) style: ProgressStyle,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) pos: u64,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) len: u64,
+</span><span class="attribute">#[non_exhaustive]
+</span><span class="kw">pub struct </span>ProgressState {
+    pos: Arc&lt;AtomicPosition&gt;,
+    len: <span class="prelude-ty">Option</span>&lt;u64&gt;,
     <span class="kw">pub</span>(<span class="kw">crate</span>) tick: u64,
     <span class="kw">pub</span>(<span class="kw">crate</span>) started: Instant,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) draw_target: ProgressDrawTarget,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) message: Cow&lt;<span class="lifetime">&#39;static</span>, str&gt;,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) prefix: Cow&lt;<span class="lifetime">&#39;static</span>, str&gt;,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) draw_delta: u64,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) draw_rate: u64,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) draw_next: u64,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) status: Status,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) est: Estimate,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) tick_thread: <span class="prelude-ty">Option</span>&lt;thread::JoinHandle&lt;()&gt;&gt;,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) steady_tick: u64,
+    status: Status,
+    est: Estimator,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) message: TabExpandedString,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) prefix: TabExpandedString,
 }
 
 <span class="kw">impl </span>ProgressState {
-    <span class="doccomment">/// Returns the string that should be drawn for the
-    /// current spinner string.
-    </span><span class="kw">pub fn </span>current_tick_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
-        <span class="kw">if </span><span class="self">self</span>.is_finished() {
-            <span class="self">self</span>.style.get_final_tick_str()
-        } <span class="kw">else </span>{
-            <span class="self">self</span>.style.get_tick_str(<span class="self">self</span>.tick)
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(len: <span class="prelude-ty">Option</span>&lt;u64&gt;, pos: Arc&lt;AtomicPosition&gt;) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            pos,
+            len,
+            tick: <span class="number">0</span>,
+            status: Status::InProgress,
+            started: Instant::now(),
+            est: Estimator::new(Instant::now()),
+            message: TabExpandedString::NoTabs(<span class="string">&quot;&quot;</span>.into()),
+            prefix: TabExpandedString::NoTabs(<span class="string">&quot;&quot;</span>.into()),
         }
     }
 
@@ -579,277 +878,315 @@
         }
     }
 
-    <span class="doccomment">/// Returns `false` if the progress bar should no longer be
-    /// drawn.
-    </span><span class="kw">pub fn </span>should_render(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        !<span class="macro">matches!</span>(<span class="self">self</span>.status, Status::DoneHidden)
-    }
-
     <span class="doccomment">/// Returns the completion as a floating-point number between 0 and 1
     </span><span class="kw">pub fn </span>fraction(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; f32 {
-        <span class="kw">let </span>pct = <span class="kw">match </span>(<span class="self">self</span>.pos, <span class="self">self</span>.len) {
-            (<span class="kw">_</span>, <span class="number">0</span>) =&gt; <span class="number">1.0</span>,
+        <span class="kw">let </span>pos = <span class="self">self</span>.pos.pos.load(Ordering::Relaxed);
+        <span class="kw">let </span>pct = <span class="kw">match </span>(pos, <span class="self">self</span>.len) {
+            (<span class="kw">_</span>, <span class="prelude-val">None</span>) =&gt; <span class="number">1.0</span>,
+            (<span class="kw">_</span>, <span class="prelude-val">Some</span>(<span class="number">0</span>)) =&gt; <span class="number">1.0</span>,
             (<span class="number">0</span>, <span class="kw">_</span>) =&gt; <span class="number">0.0</span>,
-            (pos, len) =&gt; pos <span class="kw">as </span>f32 / len <span class="kw">as </span>f32,
+            (pos, <span class="prelude-val">Some</span>(len)) =&gt; pos <span class="kw">as </span>f32 / len <span class="kw">as </span>f32,
         };
         pct.max(<span class="number">0.0</span>).min(<span class="number">1.0</span>)
     }
 
-    <span class="doccomment">/// Returns the position of the status bar as `(pos, len)` tuple.
-    </span><span class="kw">pub fn </span>position(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (u64, u64) {
-        (<span class="self">self</span>.pos, <span class="self">self</span>.len)
-    }
-
-    <span class="doccomment">/// Returns the current message of the progress bar.
-    </span><span class="kw">pub fn </span>message(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.message
-    }
-
-    <span class="doccomment">/// Returns the current prefix of the progress bar.
-    </span><span class="kw">pub fn </span>prefix(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.prefix
-    }
-
-    <span class="doccomment">/// The entire draw width
-    </span><span class="kw">pub fn </span>width(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="self">self</span>.draw_target.width()
-    }
-
-    <span class="doccomment">/// Return the current average time per step
-    </span><span class="kw">pub fn </span>avg_time_per_step(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Duration {
-        <span class="self">self</span>.est.time_per_step()
-    }
-
     <span class="doccomment">/// The expected ETA
     </span><span class="kw">pub fn </span>eta(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Duration {
-        <span class="kw">if </span><span class="self">self</span>.len == !<span class="number">0 </span>|| <span class="self">self</span>.is_finished() {
+        <span class="kw">if </span><span class="self">self</span>.is_finished() {
             <span class="kw">return </span>Duration::new(<span class="number">0</span>, <span class="number">0</span>);
         }
-        <span class="kw">let </span>t = duration_to_secs(<span class="self">self</span>.avg_time_per_step());
-        <span class="comment">// add 0.75 to leave 0.25 sec of 0s for the user
-        </span>secs_to_duration(t * <span class="self">self</span>.len.saturating_sub(<span class="self">self</span>.pos) <span class="kw">as </span>f64 + <span class="number">0.75</span>)
+
+        <span class="kw">let </span>len = <span class="kw">match </span><span class="self">self</span>.len {
+            <span class="prelude-val">Some</span>(len) =&gt; len,
+            <span class="prelude-val">None </span>=&gt; <span class="kw">return </span>Duration::new(<span class="number">0</span>, <span class="number">0</span>),
+        };
+
+        <span class="kw">let </span>pos = <span class="self">self</span>.pos.pos.load(Ordering::Relaxed);
+        <span class="kw">let </span>t = <span class="self">self</span>.est.seconds_per_step();
+        secs_to_duration(t * len.saturating_sub(pos) <span class="kw">as </span>f64)
     }
 
     <span class="doccomment">/// The expected total duration (that is, elapsed time + expected ETA)
     </span><span class="kw">pub fn </span>duration(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Duration {
-        <span class="kw">if </span><span class="self">self</span>.len == !<span class="number">0 </span>|| <span class="self">self</span>.is_finished() {
+        <span class="kw">if </span><span class="self">self</span>.len.is_none() || <span class="self">self</span>.is_finished() {
             <span class="kw">return </span>Duration::new(<span class="number">0</span>, <span class="number">0</span>);
         }
         <span class="self">self</span>.started.elapsed() + <span class="self">self</span>.eta()
     }
 
     <span class="doccomment">/// The number of steps per second
-    </span><span class="kw">pub fn </span>per_sec(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
-        <span class="kw">let </span>avg_time = <span class="self">self</span>.avg_time_per_step().as_nanos();
-        <span class="kw">if </span>avg_time == <span class="number">0 </span>{
-            <span class="number">0
-        </span>} <span class="kw">else </span>{
-            (<span class="number">1_000_000_000 </span>/ avg_time) <span class="kw">as </span>u64
-        }
-    }
-
-    <span class="doccomment">/// Call the provided `FnOnce` to update the state. Then redraw the
-    /// progress bar if the state has changed.
-    </span><span class="kw">pub fn </span>update_and_draw&lt;F: FnOnce(<span class="kw-2">&amp;mut </span>ProgressState)&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, f: F) {
-        <span class="kw">if </span><span class="self">self</span>.update(f) {
-            <span class="self">self</span>.draw().ok();
-        }
-    }
-
-    <span class="doccomment">/// Call the provided `FnOnce` to update the state. Then unconditionally redraw the
-    /// progress bar.
-    </span><span class="kw">pub fn </span>update_and_force_draw&lt;F: FnOnce(<span class="kw-2">&amp;mut </span>ProgressState)&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, f: F) {
-        <span class="self">self</span>.update(|state| {
-            state.draw_next = state.pos;
-            f(state);
-        });
-        <span class="self">self</span>.draw().ok();
-    }
-
-    <span class="doccomment">/// Call the provided `FnOnce` to update the state. If a draw should be run, returns `true`.
-    </span><span class="kw">pub fn </span>update&lt;F: FnOnce(<span class="kw-2">&amp;mut </span>ProgressState)&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, f: F) -&gt; bool {
-        <span class="kw">let </span>old_pos = <span class="self">self</span>.pos;
-        f(<span class="self">self</span>);
-        <span class="kw">let </span>new_pos = <span class="self">self</span>.pos;
-        <span class="kw">if </span>new_pos != old_pos {
-            <span class="self">self</span>.est.record_step(new_pos);
-        }
-        <span class="kw">if </span>new_pos &gt;= <span class="self">self</span>.draw_next {
-            <span class="self">self</span>.draw_next = new_pos.saturating_add(<span class="kw">if </span><span class="self">self</span>.draw_rate != <span class="number">0 </span>{
-                <span class="self">self</span>.per_sec() / <span class="self">self</span>.draw_rate
-            } <span class="kw">else </span>{
-                <span class="self">self</span>.draw_delta
-            });
-            <span class="bool-val">true
-        </span>} <span class="kw">else </span>{
-            <span class="bool-val">false
-        </span>}
-    }
-
-    <span class="doccomment">/// Finishes the progress bar and leaves the current message.
-    </span><span class="kw">pub fn </span>finish(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="self">self</span>.update_and_force_draw(|state| {
-            state.pos = state.len;
-            state.status = Status::DoneVisible;
-        });
-    }
-
-    <span class="doccomment">/// Finishes the progress bar at current position and leaves the current message.
-    </span><span class="kw">pub fn </span>finish_at_current_pos(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="self">self</span>.update_and_force_draw(|state| {
-            state.status = Status::DoneVisible;
-        });
-    }
-
-    <span class="doccomment">/// Finishes the progress bar and sets a message.
-    </span><span class="kw">pub fn </span>finish_with_message(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: <span class="kw">impl </span>Into&lt;Cow&lt;<span class="lifetime">&#39;static</span>, str&gt;&gt;) {
-        <span class="kw">let </span>msg = msg.into();
-        <span class="self">self</span>.update_and_force_draw(|state| {
-            state.message = msg;
-            state.pos = state.len;
-            state.status = Status::DoneVisible;
-        });
-    }
-
-    <span class="doccomment">/// Finishes the progress bar and completely clears it.
-    </span><span class="kw">pub fn </span>finish_and_clear(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="self">self</span>.update_and_force_draw(|state| {
-            state.pos = state.len;
-            state.status = Status::DoneHidden;
-        });
-    }
-
-    <span class="doccomment">/// Finishes the progress bar and leaves the current message and progress.
-    </span><span class="kw">pub fn </span>abandon(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="self">self</span>.update_and_force_draw(|state| {
-            state.status = Status::DoneVisible;
-        });
-    }
-
-    <span class="doccomment">/// Finishes the progress bar and sets a message, and leaves the current progress.
-    </span><span class="kw">pub fn </span>abandon_with_message(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: <span class="kw">impl </span>Into&lt;Cow&lt;<span class="lifetime">&#39;static</span>, str&gt;&gt;) {
-        <span class="kw">let </span>msg = msg.into();
-        <span class="self">self</span>.update_and_force_draw(|state| {
-            state.message = msg;
-            state.status = Status::DoneVisible;
-        });
-    }
-
-    <span class="doccomment">/// Finishes the progress bar using the [`ProgressFinish`] behavior stored
-    /// in the [`ProgressStyle`].
-    </span><span class="kw">pub fn </span>finish_using_style(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="kw">match </span><span class="self">self</span>.style.get_on_finish() {
-            ProgressFinish::AndLeave =&gt; <span class="self">self</span>.finish(),
-            ProgressFinish::AtCurrentPos =&gt; <span class="self">self</span>.finish_at_current_pos(),
-            ProgressFinish::WithMessage(msg) =&gt; {
-                <span class="comment">// Equivalent to `self.finish_with_message` but avoids borrow checker error
-                </span><span class="self">self</span>.message.clone_from(msg);
-                <span class="self">self</span>.finish();
-            }
-            ProgressFinish::AndClear =&gt; <span class="self">self</span>.finish_and_clear(),
-            ProgressFinish::Abandon =&gt; <span class="self">self</span>.abandon(),
-            ProgressFinish::AbandonWithMessage(msg) =&gt; {
-                <span class="comment">// Equivalent to `self.abandon_with_message` but avoids borrow checker error
-                </span><span class="self">self</span>.message.clone_from(msg);
-                <span class="self">self</span>.abandon();
-            }
-        }
-    }
-
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>draw(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;()&gt; {
-        <span class="comment">// we can bail early if the draw target is hidden.
-        </span><span class="kw">if </span><span class="self">self</span>.draw_target.is_hidden() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(());
-        }
-
-        <span class="kw">let </span>draw_state = ProgressDrawState {
-            lines: <span class="kw">if </span><span class="self">self</span>.should_render() {
-                <span class="self">self</span>.style.format_state(<span class="kw-2">&amp;*</span><span class="self">self</span>)
-            } <span class="kw">else </span>{
-                <span class="macro">vec!</span>[]
+    </span><span class="kw">pub fn </span>per_sec(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; f64 {
+        <span class="kw">match </span><span class="self">self</span>.status {
+            Status::InProgress =&gt; <span class="kw">match </span><span class="number">1.0 </span>/ <span class="self">self</span>.est.seconds_per_step() {
+                per_sec <span class="kw">if </span>per_sec.is_nan() =&gt; <span class="number">0.0</span>,
+                per_sec =&gt; per_sec,
             },
-            orphan_lines: <span class="number">0</span>,
-            finished: <span class="self">self</span>.is_finished(),
-            force_draw: <span class="bool-val">false</span>,
-            move_cursor: <span class="bool-val">false</span>,
+            <span class="kw">_ </span>=&gt; {
+                <span class="kw">let </span>len = <span class="self">self</span>.len.unwrap_or_else(|| <span class="self">self</span>.pos());
+                len <span class="kw">as </span>f64 / <span class="self">self</span>.started.elapsed().as_secs_f64()
+            }
+        }
+    }
+
+    <span class="kw">pub fn </span>elapsed(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Duration {
+        <span class="self">self</span>.started.elapsed()
+    }
+
+    <span class="kw">pub fn </span>pos(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
+        <span class="self">self</span>.pos.pos.load(Ordering::Relaxed)
+    }
+
+    <span class="kw">pub fn </span>set_pos(<span class="kw-2">&amp;mut </span><span class="self">self</span>, pos: u64) {
+        <span class="self">self</span>.pos.set(pos);
+    }
+
+    <span class="attribute">#[allow(clippy::len_without_is_empty)]
+    </span><span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u64&gt; {
+        <span class="self">self</span>.len
+    }
+
+    <span class="kw">pub fn </span>set_len(<span class="kw-2">&amp;mut </span><span class="self">self</span>, len: u64) {
+        <span class="self">self</span>.len = <span class="prelude-val">Some</span>(len);
+    }
+}
+
+<span class="attribute">#[derive(Debug, PartialEq, Eq, Clone)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>TabExpandedString {
+    NoTabs(Cow&lt;<span class="lifetime">&#39;static</span>, str&gt;),
+    WithTabs {
+        original: Cow&lt;<span class="lifetime">&#39;static</span>, str&gt;,
+        expanded: String,
+        tab_width: usize,
+    },
+}
+
+<span class="kw">impl </span>TabExpandedString {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(s: Cow&lt;<span class="lifetime">&#39;static</span>, str&gt;, tab_width: usize) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>expanded = s.replace(<span class="string">&#39;\t&#39;</span>, <span class="kw-2">&amp;</span><span class="string">&quot; &quot;</span>.repeat(tab_width));
+        <span class="kw">if </span>s == expanded {
+            <span class="self">Self</span>::NoTabs(s)
+        } <span class="kw">else </span>{
+            <span class="self">Self</span>::WithTabs {
+                original: s,
+                expanded,
+                tab_width,
+            }
+        }
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>expanded(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
+        <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self </span>{
+            <span class="self">Self</span>::NoTabs(s) =&gt; {
+                <span class="macro">debug_assert!</span>(!s.contains(<span class="string">&#39;\t&#39;</span>));
+                s
+            }
+            <span class="self">Self</span>::WithTabs { expanded, .. } =&gt; expanded,
+        }
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_tab_width(<span class="kw-2">&amp;mut </span><span class="self">self</span>, new_tab_width: usize) {
+        <span class="kw">if let </span>TabExpandedString::WithTabs {
+            original,
+            expanded,
+            tab_width,
+        } = <span class="self">self
+        </span>{
+            <span class="kw">if </span><span class="kw-2">*</span>tab_width != new_tab_width {
+                <span class="kw-2">*</span>tab_width = new_tab_width;
+                <span class="kw-2">*</span>expanded = original.replace(<span class="string">&#39;\t&#39;</span>, <span class="kw-2">&amp;</span><span class="string">&quot; &quot;</span>.repeat(new_tab_width));
+            }
+        }
+    }
+}
+
+<span class="doccomment">/// Estimate the number of seconds per step
+///
+/// Ring buffer with constant capacity. Used by `ProgressBar`s to display `{eta}`,
+/// `{eta_precise}`, and `{*_per_sec}`.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>Estimator {
+    steps: [f64; <span class="number">16</span>],
+    pos: u8,
+    full: bool,
+    prev: (u64, Instant),
+}
+
+<span class="kw">impl </span>Estimator {
+    <span class="kw">fn </span>new(now: Instant) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            steps: [<span class="number">0.0</span>; <span class="number">16</span>],
+            pos: <span class="number">0</span>,
+            full: <span class="bool-val">false</span>,
+            prev: (<span class="number">0</span>, now),
+        }
+    }
+
+    <span class="kw">fn </span>record(<span class="kw-2">&amp;mut </span><span class="self">self</span>, new: u64, now: Instant) {
+        <span class="kw">let </span>delta = new.saturating_sub(<span class="self">self</span>.prev.<span class="number">0</span>);
+        <span class="kw">if </span>delta == <span class="number">0 </span>|| now &lt; <span class="self">self</span>.prev.<span class="number">1 </span>{
+            <span class="kw">return</span>;
+        }
+
+        <span class="kw">let </span>elapsed = now - <span class="self">self</span>.prev.<span class="number">1</span>;
+        <span class="kw">let </span>divisor = delta <span class="kw">as </span>f64;
+        <span class="kw">let </span><span class="kw-2">mut </span>batch = <span class="number">0.0</span>;
+        <span class="kw">if </span>divisor != <span class="number">0.0 </span>{
+            batch = duration_to_secs(elapsed) / divisor;
         };
-        <span class="self">self</span>.draw_target.apply_draw_state(draw_state)
-    }
-}
 
-<span class="kw">impl </span>Drop <span class="kw">for </span>ProgressState {
-    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="comment">// Progress bar is already finished.  Do not need to do anything.
-        </span><span class="kw">if </span><span class="self">self</span>.is_finished() {
-            <span class="kw">return</span>;
+        <span class="self">self</span>.steps[<span class="self">self</span>.pos <span class="kw">as </span>usize] = batch;
+        <span class="self">self</span>.pos = (<span class="self">self</span>.pos + <span class="number">1</span>) % <span class="number">16</span>;
+        <span class="kw">if </span>!<span class="self">self</span>.full &amp;&amp; <span class="self">self</span>.pos == <span class="number">0 </span>{
+            <span class="self">self</span>.full = <span class="bool-val">true</span>;
         }
 
-        <span class="self">self</span>.finish_using_style();
+        <span class="self">self</span>.prev = (new, now);
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>reset(<span class="kw-2">&amp;mut </span><span class="self">self</span>, now: Instant) {
+        <span class="self">self</span>.pos = <span class="number">0</span>;
+        <span class="self">self</span>.full = <span class="bool-val">false</span>;
+        <span class="self">self</span>.prev = (<span class="number">0</span>, now);
+    }
+
+    <span class="doccomment">/// Average time per step in seconds, using rolling buffer of last 15 steps
+    </span><span class="kw">fn </span>seconds_per_step(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; f64 {
+        <span class="kw">let </span>len = <span class="self">self</span>.len();
+        <span class="self">self</span>.steps[<span class="number">0</span>..len].iter().sum::&lt;f64&gt;() / len <span class="kw">as </span>f64
+    }
+
+    <span class="kw">fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="kw">match </span><span class="self">self</span>.full {
+            <span class="bool-val">true </span>=&gt; <span class="number">16</span>,
+            <span class="bool-val">false </span>=&gt; <span class="self">self</span>.pos <span class="kw">as </span>usize,
+        }
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>MultiProgressState {
-    <span class="doccomment">/// The collection of states corresponding to progress bars
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) objects: Vec&lt;<span class="prelude-ty">Option</span>&lt;MultiObject&gt;&gt;,
-    <span class="doccomment">/// Set of `None` elements in the `objects` vector
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) free_set: Vec&lt;usize&gt;,
-    <span class="doccomment">/// Indices to the `objects` to maintain correct visual order
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) ordering: Vec&lt;usize&gt;,
-    <span class="doccomment">/// Target for draw operation for MultiProgress
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) draw_target: ProgressDrawTarget,
-    <span class="doccomment">/// Whether or not to just move cursor instead of clearing lines
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) move_cursor: bool,
+<span class="kw">impl </span>fmt::Debug <span class="kw">for </span>Estimator {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        f.debug_struct(<span class="string">&quot;Estimate&quot;</span>)
+            .field(<span class="string">&quot;steps&quot;</span>, &amp;&amp;<span class="self">self</span>.steps[..<span class="self">self</span>.len()])
+            .field(<span class="string">&quot;prev&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.prev)
+            .finish()
+    }
 }
 
-<span class="kw">impl </span>MultiProgressState {
-    <span class="kw">fn </span>width(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="self">self</span>.draw_target.width()
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>AtomicPosition {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) pos: AtomicU64,
+    capacity: AtomicU8,
+    prev: AtomicU64,
+    start: Instant,
+}
+
+<span class="kw">impl </span>AtomicPosition {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new() -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            pos: AtomicU64::new(<span class="number">0</span>),
+            capacity: AtomicU8::new(MAX_BURST),
+            prev: AtomicU64::new(<span class="number">0</span>),
+            start: Instant::now(),
+        }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_done(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.objects.iter().all(|o| <span class="kw">match </span>o {
-            <span class="prelude-val">Some</span>(obj) =&gt; obj.done,
-            <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
-        })
-    }
-
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>remove_idx(<span class="kw-2">&amp;mut </span><span class="self">self</span>, idx: usize) {
-        <span class="kw">if </span><span class="self">self</span>.objects[idx].take().is_none() {
-            <span class="kw">return</span>;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>allow(<span class="kw-2">&amp;</span><span class="self">self</span>, now: Instant) -&gt; bool {
+        <span class="kw">if </span>now &lt; <span class="self">self</span>.start {
+            <span class="kw">return </span><span class="bool-val">false</span>;
         }
 
-        <span class="self">self</span>.free_set.push(idx);
-        <span class="self">self</span>.ordering.retain(|<span class="kw-2">&amp;</span>x| x != idx);
+        <span class="kw">let </span><span class="kw-2">mut </span>capacity = <span class="self">self</span>.capacity.load(Ordering::Acquire);
+        <span class="comment">// `prev` is the number of ms after `self.started` we last returned `true`, in ns
+        </span><span class="kw">let </span>prev = <span class="self">self</span>.prev.load(Ordering::Acquire);
+        <span class="comment">// `elapsed` is the number of ns since `self.started`
+        </span><span class="kw">let </span>elapsed = (now - <span class="self">self</span>.start).as_nanos() <span class="kw">as </span>u64;
+        <span class="comment">// `diff` is the number of ns since we last returned `true`
+        </span><span class="kw">let </span>diff = elapsed.saturating_sub(prev);
+
+        <span class="comment">// If `capacity` is 0 and not enough time (1ms) has passed since `prev`
+        // to add new capacity, return `false`. The goal of this method is to
+        // make this decision as efficient as possible.
+        </span><span class="kw">if </span>capacity == <span class="number">0 </span>&amp;&amp; diff &lt; INTERVAL {
+            <span class="kw">return </span><span class="bool-val">false</span>;
+        }
+
+        <span class="comment">// We now calculate `new`, the number of ms, in ns, since we last returned `true`,
+        // and `remainder`, which represents a number of ns less than 1ms which we cannot
+        // convert into capacity now, so we&#39;re saving it for later. We do this by
+        // substracting this from `elapsed` before storing it into `self.prev`.
+        </span><span class="kw">let </span>(new, remainder) = ((diff / INTERVAL), (diff % INTERVAL));
+        <span class="comment">// We add `new` to `capacity`, subtract one for returning `true` from here,
+        // then make sure it does not exceed a maximum of `MAX_BURST`.
+        </span>capacity = Ord::min(MAX_BURST <span class="kw">as </span>u128, (capacity <span class="kw">as </span>u128) + (new <span class="kw">as </span>u128) - <span class="number">1</span>) <span class="kw">as </span>u8;
+
+        <span class="comment">// Then, we just store `capacity` and `prev` atomically for the next iteration
+        </span><span class="self">self</span>.capacity.store(capacity, Ordering::Release);
+        <span class="self">self</span>.prev.store(elapsed - remainder, Ordering::Release);
+        <span class="bool-val">true
+    </span>}
+
+    <span class="kw">fn </span>reset(<span class="kw-2">&amp;</span><span class="self">self</span>, now: Instant) {
+        <span class="self">self</span>.set(<span class="number">0</span>);
+        <span class="kw">let </span>elapsed = (now.saturating_duration_since(<span class="self">self</span>.start)).as_millis() <span class="kw">as </span>u64;
+        <span class="self">self</span>.prev.store(elapsed, Ordering::Release);
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>inc(<span class="kw-2">&amp;</span><span class="self">self</span>, delta: u64) {
+        <span class="self">self</span>.pos.fetch_add(delta, Ordering::SeqCst);
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set(<span class="kw-2">&amp;</span><span class="self">self</span>, pos: u64) {
+        <span class="self">self</span>.pos.store(pos, Ordering::Release);
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>MultiObject {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) done: bool,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) draw_state: <span class="prelude-ty">Option</span>&lt;ProgressDrawState&gt;,
-}
+<span class="kw">const </span>INTERVAL: u64 = <span class="number">1_000_000</span>;
+<span class="kw">const </span>MAX_BURST: u8 = <span class="number">10</span>;
 
-<span class="doccomment">/// The drawn state of an element.
+<span class="doccomment">/// Behavior of a progress bar when it is finished
+///
+/// This is invoked when a [`ProgressBar`] or [`ProgressBarIter`] completes and
+/// [`ProgressBar::is_finished`] is false.
+///
+/// [`ProgressBar`]: crate::ProgressBar
+/// [`ProgressBarIter`]: crate::ProgressBarIter
+/// [`ProgressBar::is_finished`]: crate::ProgressBar::is_finished
 </span><span class="attribute">#[derive(Clone, Debug)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>ProgressDrawState {
-    <span class="doccomment">/// The lines to print (can contain ANSI codes)
-    </span><span class="kw">pub </span>lines: Vec&lt;String&gt;,
-    <span class="doccomment">/// The number of lines that shouldn&#39;t be reaped by the next tick.
-    </span><span class="kw">pub </span>orphan_lines: usize,
-    <span class="doccomment">/// True if the bar no longer needs drawing.
-    </span><span class="kw">pub </span>finished: bool,
-    <span class="doccomment">/// True if drawing should be forced.
-    </span><span class="kw">pub </span>force_draw: bool,
-    <span class="doccomment">/// True if we should move the cursor up when possible instead of clearing lines.
-    </span><span class="kw">pub </span>move_cursor: bool,
+</span><span class="kw">pub enum </span>ProgressFinish {
+    <span class="doccomment">/// Finishes the progress bar and leaves the current message
+    ///
+    /// Same behavior as calling [`ProgressBar::finish()`](crate::ProgressBar::finish).
+    </span>AndLeave,
+    <span class="doccomment">/// Finishes the progress bar and sets a message
+    ///
+    /// Same behavior as calling [`ProgressBar::finish_with_message()`](crate::ProgressBar::finish_with_message).
+    </span>WithMessage(Cow&lt;<span class="lifetime">&#39;static</span>, str&gt;),
+    <span class="doccomment">/// Finishes the progress bar and completely clears it (this is the default)
+    ///
+    /// Same behavior as calling [`ProgressBar::finish_and_clear()`](crate::ProgressBar::finish_and_clear).
+    </span>AndClear,
+    <span class="doccomment">/// Finishes the progress bar and leaves the current message and progress
+    ///
+    /// Same behavior as calling [`ProgressBar::abandon()`](crate::ProgressBar::abandon).
+    </span>Abandon,
+    <span class="doccomment">/// Finishes the progress bar and sets a message, and leaves the current progress
+    ///
+    /// Same behavior as calling [`ProgressBar::abandon_with_message()`](crate::ProgressBar::abandon_with_message).
+    </span>AbandonWithMessage(Cow&lt;<span class="lifetime">&#39;static</span>, str&gt;),
 }
 
-<span class="kw">impl </span>ProgressDrawState {
-    <span class="kw">pub fn </span>draw_to_term(<span class="kw-2">&amp;</span><span class="self">self</span>, term: <span class="kw-2">&amp;</span>Term) -&gt; io::Result&lt;()&gt; {
-        <span class="kw">for </span>line <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.lines {
-            term.write_line(line)<span class="question-mark">?</span>;
-        }
-        <span class="prelude-val">Ok</span>(())
+<span class="kw">impl </span>Default <span class="kw">for </span>ProgressFinish {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::AndClear
     }
+}
+
+<span class="kw">fn </span>duration_to_secs(d: Duration) -&gt; f64 {
+    d.as_secs() <span class="kw">as </span>f64 + f64::from(d.subsec_nanos()) / <span class="number">1_000_000_000f64
+</span>}
+
+<span class="kw">fn </span>secs_to_duration(s: f64) -&gt; Duration {
+    <span class="kw">let </span>secs = s.trunc() <span class="kw">as </span>u64;
+    <span class="kw">let </span>nanos = (s.fract() * <span class="number">1_000_000_000f64</span>) <span class="kw">as </span>u32;
+    Duration::new(secs, nanos)
 }
 
 <span class="attribute">#[derive(Debug)]
@@ -859,206 +1196,83 @@
     DoneHidden,
 }
 
-<span class="doccomment">/// Target for draw operations
-///
-/// This tells a progress bar or a multi progress object where to paint to.
-/// The draw target is a stateful wrapper over a drawing destination and
-/// internally optimizes how often the state is painted to the output
-/// device.
-</span><span class="kw">pub struct </span>ProgressDrawTarget {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) kind: ProgressDrawTargetKind,
-}
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>DEFAULT_TAB_WIDTH: usize = <span class="number">8</span>;
 
-<span class="kw">impl </span>ProgressDrawTarget {
-    <span class="doccomment">/// Draw to a buffered stdout terminal at a max of 15 times a second.
-    ///
-    /// For more information see `ProgressDrawTarget::to_term`.
-    </span><span class="kw">pub fn </span>stdout() -&gt; ProgressDrawTarget {
-        ProgressDrawTarget::term(Term::buffered_stdout(), <span class="number">15</span>)
-    }
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::ProgressBar;
 
-    <span class="doccomment">/// Draw to a buffered stderr terminal at a max of 15 times a second.
-    ///
-    /// This is the default draw target for progress bars.  For more
-    /// information see `ProgressDrawTarget::to_term`.
-    </span><span class="kw">pub fn </span>stderr() -&gt; ProgressDrawTarget {
-        ProgressDrawTarget::term(Term::buffered_stderr(), <span class="number">15</span>)
-    }
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_time_per_step() {
+        <span class="kw">let </span>test_rate = |items_per_second| {
+            <span class="kw">let </span><span class="kw-2">mut </span>now = Instant::now();
+            <span class="kw">let </span><span class="kw-2">mut </span>est = Estimator::new(now);
+            <span class="kw">let </span><span class="kw-2">mut </span>pos = <span class="number">0</span>;
 
-    <span class="doccomment">/// Draw to a buffered stdout terminal at a max of `refresh_rate` times a second.
-    ///
-    /// For more information see `ProgressDrawTarget::to_term`.
-    </span><span class="kw">pub fn </span>stdout_with_hz(refresh_rate: u64) -&gt; ProgressDrawTarget {
-        ProgressDrawTarget::term(Term::buffered_stdout(), refresh_rate)
-    }
-
-    <span class="doccomment">/// Draw to a buffered stderr terminal at a max of `refresh_rate` times a second.
-    ///
-    /// For more information see `ProgressDrawTarget::to_term`.
-    </span><span class="kw">pub fn </span>stderr_with_hz(refresh_rate: u64) -&gt; ProgressDrawTarget {
-        ProgressDrawTarget::term(Term::buffered_stderr(), refresh_rate)
-    }
-
-    <span class="doccomment">/// Draw to a buffered stdout terminal without max framerate.
-    ///
-    /// This is useful when data is known to come in very slowly and
-    /// not rendering some updates would be a problem (for instance
-    /// when messages are used extensively).
-    ///
-    /// For more information see `ProgressDrawTarget::to_term`.
-    </span><span class="kw">pub fn </span>stdout_nohz() -&gt; ProgressDrawTarget {
-        ProgressDrawTarget::term(Term::buffered_stdout(), <span class="prelude-val">None</span>)
-    }
-
-    <span class="doccomment">/// Draw to a buffered stderr terminal without max framerate.
-    ///
-    /// This is useful when data is known to come in very slowly and
-    /// not rendering some updates would be a problem (for instance
-    /// when messages are used extensively).
-    ///
-    /// For more information see `ProgressDrawTarget::to_term`.
-    </span><span class="kw">pub fn </span>stderr_nohz() -&gt; ProgressDrawTarget {
-        ProgressDrawTarget::term(Term::buffered_stderr(), <span class="prelude-val">None</span>)
-    }
-
-    <span class="doccomment">/// Draw to a terminal, optionally with a specific refresh rate.
-    ///
-    /// Progress bars are by default drawn to terminals however if the
-    /// terminal is not user attended the entire progress bar will be
-    /// hidden.  This is done so that piping to a file will not produce
-    /// useless escape codes in that file.
-    ///
-    /// Will panic if refresh_rate is `Some(0)`. To disable rate limiting use `None` instead.
-    </span><span class="attribute">#[allow(clippy::wrong_self_convention)]
-    #[deprecated(since = <span class="string">&quot;0.16.0&quot;</span>, note = <span class="string">&quot;Use `ProgressDrawTarget::term` instead&quot;</span>)]
-    </span><span class="kw">pub fn </span>to_term(term: Term, refresh_rate: <span class="kw">impl </span>Into&lt;<span class="prelude-ty">Option</span>&lt;u64&gt;&gt;) -&gt; ProgressDrawTarget {
-        ProgressDrawTarget::term(term, refresh_rate)
-    }
-
-    <span class="doccomment">/// Draw to a terminal, optionally with a specific refresh rate.
-    ///
-    /// Progress bars are by default drawn to terminals however if the
-    /// terminal is not user attended the entire progress bar will be
-    /// hidden.  This is done so that piping to a file will not produce
-    /// useless escape codes in that file.
-    ///
-    /// Will panic if refresh_rate is `Some(0)`. To disable rate limiting use `None` instead.
-    </span><span class="kw">pub fn </span>term(term: Term, refresh_rate: <span class="kw">impl </span>Into&lt;<span class="prelude-ty">Option</span>&lt;u64&gt;&gt;) -&gt; ProgressDrawTarget {
-        <span class="kw">let </span>rate = refresh_rate
-            .into()
-            .map(|x| Duration::from_millis(<span class="number">1000 </span>/ x))
-            .unwrap_or_else(|| Duration::from_secs(<span class="number">0</span>));
-        ProgressDrawTarget {
-            kind: ProgressDrawTargetKind::Term {
-                term,
-                last_line_count: <span class="number">0</span>,
-                rate,
-                last_draw: Instant::now() - rate,
-            },
-        }
-    }
-
-    <span class="doccomment">/// A hidden draw target.
-    ///
-    /// This forces a progress bar to be not rendered at all.
-    </span><span class="kw">pub fn </span>hidden() -&gt; ProgressDrawTarget {
-        ProgressDrawTarget {
-            kind: ProgressDrawTargetKind::Hidden,
-        }
-    }
-
-    <span class="doccomment">/// Returns true if the draw target is hidden.
-    ///
-    /// This is internally used in progress bars to figure out if overhead
-    /// from drawing can be prevented.
-    </span><span class="kw">pub fn </span>is_hidden(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">match </span><span class="self">self</span>.kind {
-            ProgressDrawTargetKind::Hidden =&gt; <span class="bool-val">true</span>,
-            ProgressDrawTargetKind::Term { <span class="kw-2">ref </span>term, .. } =&gt; !term.is_term(),
-            <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
-        }
-    }
-
-    <span class="doccomment">/// Returns the current width of the draw target.
-    </span><span class="kw">fn </span>width(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="kw">match </span><span class="self">self</span>.kind {
-            ProgressDrawTargetKind::Term { <span class="kw-2">ref </span>term, .. } =&gt; term.size().<span class="number">1 </span><span class="kw">as </span>usize,
-            ProgressDrawTargetKind::Remote { <span class="kw-2">ref </span>state, .. } =&gt; state.read().unwrap().width(),
-            ProgressDrawTargetKind::Hidden =&gt; <span class="number">0</span>,
-        }
-    }
-
-    <span class="doccomment">/// Apply the given draw state (draws it).
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>apply_draw_state(<span class="kw-2">&amp;mut </span><span class="self">self</span>, draw_state: ProgressDrawState) -&gt; io::Result&lt;()&gt; {
-        <span class="kw">let </span>(term, last_line_count, last_draw) = <span class="kw">match </span><span class="self">self</span>.kind {
-            ProgressDrawTargetKind::Term {
-                <span class="kw-2">ref </span>term,
-                <span class="kw-2">ref mut </span>last_line_count,
-                rate,
-                <span class="kw-2">ref mut </span>last_draw,
-            } <span class="kw">if </span>draw_state.finished || draw_state.force_draw || last_draw.elapsed() &gt; rate =&gt; {
-                (term, last_line_count, last_draw)
+            <span class="kw">for _ in </span><span class="number">0</span>..est.steps.len() {
+                pos += items_per_second;
+                now += Duration::from_secs(<span class="number">1</span>);
+                est.record(pos, now);
             }
-            ProgressDrawTargetKind::Remote { idx, <span class="kw-2">ref </span>chan, .. } =&gt; {
-                <span class="kw">return </span>chan
-                    .lock()
-                    .unwrap()
-                    .send((idx, draw_state))
-                    .map_err(|e| io::Error::new(io::ErrorKind::Other, e));
-            }
-            <span class="comment">// Hidden, finished, or no need to refresh yet
-            </span><span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(()),
+            <span class="kw">let </span>avg_seconds_per_step = est.seconds_per_step();
+
+            <span class="macro">assert!</span>(avg_seconds_per_step &gt; <span class="number">0.0</span>);
+            <span class="macro">assert!</span>(avg_seconds_per_step.is_finite());
+
+            <span class="kw">let </span>expected_rate = <span class="number">1.0 </span>/ items_per_second <span class="kw">as </span>f64;
+            <span class="kw">let </span>absolute_error = (avg_seconds_per_step - expected_rate).abs();
+            <span class="macro">assert!</span>(
+                absolute_error &lt; f64::EPSILON,
+                <span class="string">&quot;Expected rate: {}, actual: {}, absolute error: {}&quot;</span>,
+                expected_rate,
+                avg_seconds_per_step,
+                absolute_error
+            );
         };
 
-        <span class="kw">if </span>!draw_state.lines.is_empty() &amp;&amp; draw_state.move_cursor {
-            term.move_cursor_up(<span class="kw-2">*</span>last_line_count)<span class="question-mark">?</span>;
-        } <span class="kw">else </span>{
-            term.clear_last_lines(<span class="kw-2">*</span>last_line_count)<span class="question-mark">?</span>;
-        }
-
-        draw_state.draw_to_term(term)<span class="question-mark">?</span>;
-        term.flush()<span class="question-mark">?</span>;
-        <span class="kw-2">*</span>last_line_count = draw_state.lines.len() - draw_state.orphan_lines;
-        <span class="kw-2">*</span>last_draw = Instant::now();
-        <span class="prelude-val">Ok</span>(())
+        test_rate(<span class="number">1</span>);
+        test_rate(<span class="number">1_000</span>);
+        test_rate(<span class="number">1_000_000</span>);
+        test_rate(<span class="number">1_000_000_000</span>);
+        test_rate(<span class="number">1_000_000_001</span>);
+        test_rate(<span class="number">100_000_000_000</span>);
+        test_rate(<span class="number">1_000_000_000_000</span>);
+        test_rate(<span class="number">100_000_000_000_000</span>);
+        test_rate(<span class="number">1_000_000_000_000_000</span>);
     }
 
-    <span class="doccomment">/// Properly disconnects from the draw target
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>disconnect(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">match </span><span class="self">self</span>.kind {
-            ProgressDrawTargetKind::Term { .. } =&gt; {}
-            ProgressDrawTargetKind::Remote { idx, <span class="kw-2">ref </span>chan, .. } =&gt; {
-                chan.lock()
-                    .unwrap()
-                    .send((
-                        idx,
-                        ProgressDrawState {
-                            lines: <span class="macro">vec!</span>[],
-                            orphan_lines: <span class="number">0</span>,
-                            finished: <span class="bool-val">true</span>,
-                            force_draw: <span class="bool-val">false</span>,
-                            move_cursor: <span class="bool-val">false</span>,
-                        },
-                    ))
-                    .ok();
-            }
-            ProgressDrawTargetKind::Hidden =&gt; {}
-        };
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_duration_stuff() {
+        <span class="kw">let </span>duration = Duration::new(<span class="number">42</span>, <span class="number">100_000_000</span>);
+        <span class="kw">let </span>secs = duration_to_secs(duration);
+        <span class="macro">assert_eq!</span>(secs_to_duration(secs), duration);
     }
-}
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>ProgressDrawTargetKind {
-    Term {
-        term: Term,
-        last_line_count: usize,
-        rate: Duration,
-        last_draw: Instant,
-    },
-    Remote {
-        state: Arc&lt;RwLock&lt;MultiProgressState&gt;&gt;,
-        idx: usize,
-        chan: Mutex&lt;Sender&lt;(usize, ProgressDrawState)&gt;&gt;,
-    },
-    Hidden,
+
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_estimator_rewind_position() {
+        <span class="kw">let </span>now = Instant::now();
+        <span class="kw">let </span><span class="kw-2">mut </span>est = Estimator::new(now);
+        est.record(<span class="number">0</span>, now);
+        est.record(<span class="number">1</span>, now);
+        <span class="comment">// Should not panic.
+        </span>est.record(<span class="number">0</span>, now);
+
+        <span class="kw">let </span>pb = ProgressBar::hidden();
+        pb.set_length(<span class="number">10</span>);
+        pb.set_position(<span class="number">1</span>);
+        pb.tick();
+        <span class="comment">// Should not panic.
+        </span>pb.set_position(<span class="number">0</span>);
+    }
+
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_atomic_position_large_time_difference() {
+        <span class="kw">let </span>atomic_position = AtomicPosition::new();
+        <span class="kw">let </span>later = atomic_position.start + Duration::from_nanos(INTERVAL * u64::from(u8::MAX));
+        <span class="comment">// Should not panic.
+        </span>atomic_position.allow(later);
+    }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="indicatif" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="indicatif" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

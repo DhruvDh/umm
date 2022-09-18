@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rustix-0.34.8/src/process/priority.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>priority.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rustix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rustix-0.35.9/src/process/priority.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>priority.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rustix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -130,7 +130,7 @@
 <span id="130">130</span>
 <span id="131">131</span>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::process::{Pid, Uid};
-<span class="kw">use crate</span>::{imp, io};
+<span class="kw">use crate</span>::{backend, io};
 
 <span class="doccomment">/// `nice()`—Adjust the scheduling priority of the current process.
 ///
@@ -142,7 +142,7 @@
 /// [Linux]: https://man7.org/linux/man-pages/man2/nice.2.html
 </span><span class="attribute">#[inline]
 </span><span class="kw">pub fn </span>nice(inc: i32) -&gt; io::Result&lt;i32&gt; {
-    imp::process::syscalls::nice(inc)
+    backend::process::syscalls::nice(inc)
 }
 
 <span class="doccomment">/// `getpriority(PRIO_USER, uid)`—Get the scheduling priority of the given
@@ -160,7 +160,7 @@
 #[inline]
 #[doc(alias = <span class="string">&quot;getpriority&quot;</span>)]
 </span><span class="kw">pub fn </span>getpriority_user(uid: Uid) -&gt; io::Result&lt;i32&gt; {
-    imp::process::syscalls::getpriority_user(uid)
+    backend::process::syscalls::getpriority_user(uid)
 }
 
 <span class="doccomment">/// `getpriority(PRIO_PGRP, gid)`—Get the scheduling priority of the given
@@ -180,7 +180,7 @@
 #[inline]
 #[doc(alias = <span class="string">&quot;getpriority&quot;</span>)]
 </span><span class="kw">pub fn </span>getpriority_pgrp(pgid: <span class="prelude-ty">Option</span>&lt;Pid&gt;) -&gt; io::Result&lt;i32&gt; {
-    imp::process::syscalls::getpriority_pgrp(pgid)
+    backend::process::syscalls::getpriority_pgrp(pgid)
 }
 
 <span class="doccomment">/// `getpriority(PRIO_PROCESS, pid)`—Get the scheduling priority of the given
@@ -200,7 +200,7 @@
 #[inline]
 #[doc(alias = <span class="string">&quot;getpriority&quot;</span>)]
 </span><span class="kw">pub fn </span>getpriority_process(pid: <span class="prelude-ty">Option</span>&lt;Pid&gt;) -&gt; io::Result&lt;i32&gt; {
-    imp::process::syscalls::getpriority_process(pid)
+    backend::process::syscalls::getpriority_process(pid)
 }
 
 <span class="doccomment">/// `setpriority(PRIO_USER, uid)`—Get the scheduling priority of the given
@@ -218,7 +218,7 @@
 #[inline]
 #[doc(alias = <span class="string">&quot;setpriority&quot;</span>)]
 </span><span class="kw">pub fn </span>setpriority_user(uid: Uid, priority: i32) -&gt; io::Result&lt;()&gt; {
-    imp::process::syscalls::setpriority_user(uid, priority)
+    backend::process::syscalls::setpriority_user(uid, priority)
 }
 
 <span class="doccomment">/// `setpriority(PRIO_PGRP, pgid)`—Get the scheduling priority of the given
@@ -238,7 +238,7 @@
 #[inline]
 #[doc(alias = <span class="string">&quot;setpriority&quot;</span>)]
 </span><span class="kw">pub fn </span>setpriority_pgrp(pgid: <span class="prelude-ty">Option</span>&lt;Pid&gt;, priority: i32) -&gt; io::Result&lt;()&gt; {
-    imp::process::syscalls::setpriority_pgrp(pgid, priority)
+    backend::process::syscalls::setpriority_pgrp(pgid, priority)
 }
 
 <span class="doccomment">/// `setpriority(PRIO_PROCESS, pid)`—Get the scheduling priority of the given
@@ -258,7 +258,7 @@
 #[inline]
 #[doc(alias = <span class="string">&quot;setpriority&quot;</span>)]
 </span><span class="kw">pub fn </span>setpriority_process(pid: <span class="prelude-ty">Option</span>&lt;Pid&gt;, priority: i32) -&gt; io::Result&lt;()&gt; {
-    imp::process::syscalls::setpriority_process(pid, priority)
+    backend::process::syscalls::setpriority_process(pid, priority)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rustix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rustix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

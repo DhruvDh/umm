@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/func/hashing.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>hashing.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/func/hashing.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>hashing.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -191,6 +191,14 @@
 <span id="191">191</span>
 <span id="192">192</span>
 <span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Module containing utilities to hash functions and function calls.
 
 </span><span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
@@ -198,8 +206,13 @@
 <span class="kw">use </span>std::{
     any::TypeId,
     hash::{BuildHasher, Hash, Hasher},
-    iter::empty,
 };
+
+<span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
+</span><span class="kw">pub type </span>StraightHashMap&lt;K, V&gt; = hashbrown::HashMap&lt;K, V, StraightHasherBuilder&gt;;
+
+<span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_std&quot;</span>))]
+</span><span class="kw">pub type </span>StraightHashMap&lt;K, V&gt; = std::collections::HashMap&lt;K, V, StraightHasherBuilder&gt;;
 
 <span class="doccomment">/// Dummy hash value to map zeros to. This value can be anything.
 ///
@@ -224,31 +237,30 @@
 ///
 /// Panics when hashing any data type other than a [`u64`].
 </span><span class="attribute">#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
-</span><span class="kw">struct </span>StraightHasher(u64);
+</span><span class="kw">pub struct </span>StraightHasher(u64);
 
 <span class="kw">impl </span>Hasher <span class="kw">for </span>StraightHasher {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>finish(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
         <span class="self">self</span>.<span class="number">0
     </span>}
-    <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bytes: <span class="kw-2">&amp;</span>[u8]) {
-        <span class="macro">assert_eq!</span>(bytes.len(), <span class="number">8</span>, <span class="string">&quot;StraightHasher can only hash u64 values&quot;</span>);
-
-        <span class="kw">let </span><span class="kw-2">mut </span>key = [<span class="number">0_u8</span>; <span class="number">8</span>];
-        key.copy_from_slice(bytes);
-
-        <span class="self">self</span>.<span class="number">0 </span>= u64::from_ne_bytes(key);
-
-        <span class="kw">if </span><span class="self">self</span>.<span class="number">0 </span>== <span class="number">0 </span>{
-            <span class="self">self</span>.<span class="number">0 </span>= ALT_ZERO_HASH
+    <span class="attribute">#[inline(always)]
+    </span><span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _bytes: <span class="kw-2">&amp;</span>[u8]) {
+        <span class="macro">panic!</span>(<span class="string">&quot;StraightHasher can only hash u64 values&quot;</span>);
+    }
+    <span class="attribute">#[inline(always)]
+    </span><span class="kw">fn </span>write_u64(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: u64) {
+        <span class="kw">if </span>i == <span class="number">0 </span>{
+            <span class="self">self</span>.<span class="number">0 </span>= ALT_ZERO_HASH;
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.<span class="number">0 </span>= i;
         }
     }
 }
 
 <span class="doccomment">/// A hash builder for `StraightHasher`.
 </span><span class="attribute">#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Default)]
-</span><span class="kw">struct </span>StraightHasherBuilder;
+</span><span class="kw">pub struct </span>StraightHasherBuilder;
 
 <span class="kw">impl </span>BuildHasher <span class="kw">for </span>StraightHasherBuilder {
     <span class="kw">type </span>Hasher = StraightHasher;
@@ -280,15 +292,16 @@
 /// The first module name is skipped.  Hashing starts from the _second_ module in the chain.
 </span><span class="attribute">#[inline]
 #[must_use]
-</span><span class="kw">pub fn </span>calc_qualified_var_hash&lt;<span class="lifetime">&#39;a</span>&gt;(modules: <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;, var_name: <span class="kw-2">&amp;</span>str) -&gt; u64 {
+</span><span class="kw">pub fn </span>calc_qualified_var_hash&lt;<span class="lifetime">&#39;a</span>&gt;(
+    modules: <span class="kw">impl </span>IntoIterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str, IntoIter = <span class="kw">impl </span>ExactSizeIterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;&gt;,
+    var_name: <span class="kw-2">&amp;</span>str,
+) -&gt; u64 {
     <span class="kw">let </span>s = <span class="kw-2">&amp;mut </span>get_hasher();
 
     <span class="comment">// We always skip the first module
-    </span><span class="kw">let </span><span class="kw-2">mut </span>len = <span class="number">0</span>;
-    modules
-        .inspect(|<span class="kw">_</span>| len += <span class="number">1</span>)
-        .skip(<span class="number">1</span>)
-        .for_each(|m| m.hash(s));
+    </span><span class="kw">let </span>iter = modules.into_iter();
+    <span class="kw">let </span>len = iter.len();
+    iter.skip(<span class="number">1</span>).for_each(|m| m.hash(s));
     len.hash(s);
     var_name.hash(s);
 
@@ -314,18 +327,16 @@
 </span><span class="attribute">#[inline]
 #[must_use]
 </span><span class="kw">pub fn </span>calc_qualified_fn_hash&lt;<span class="lifetime">&#39;a</span>&gt;(
-    modules: <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
+    modules: <span class="kw">impl </span>IntoIterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str, IntoIter = <span class="kw">impl </span>ExactSizeIterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;&gt;,
     fn_name: <span class="kw-2">&amp;</span>str,
     num: usize,
 ) -&gt; u64 {
     <span class="kw">let </span>s = <span class="kw-2">&amp;mut </span>get_hasher();
 
     <span class="comment">// We always skip the first module
-    </span><span class="kw">let </span><span class="kw-2">mut </span>len = <span class="number">0</span>;
-    modules
-        .inspect(|<span class="kw">_</span>| len += <span class="number">1</span>)
-        .skip(<span class="number">1</span>)
-        .for_each(|m| m.hash(s));
+    </span><span class="kw">let </span>iter = modules.into_iter();
+    <span class="kw">let </span>len = iter.len();
+    iter.skip(<span class="number">1</span>).for_each(|m| m.hash(s));
     len.hash(s);
     fn_name.hash(s);
     num.hash(s);
@@ -347,7 +358,7 @@
 </span><span class="attribute">#[inline(always)]
 #[must_use]
 </span><span class="kw">pub fn </span>calc_fn_hash(fn_name: <span class="kw-2">&amp;</span>str, num: usize) -&gt; u64 {
-    calc_qualified_fn_hash(empty(), fn_name, num)
+    calc_qualified_fn_hash(<span class="prelude-val">None</span>, fn_name, num)
 }
 
 <span class="doccomment">/// Calculate a non-zero [`u64`] hash key from a list of parameter types.
@@ -359,10 +370,15 @@
 /// If the hash happens to be zero, it is mapped to `DEFAULT_HASH`.
 </span><span class="attribute">#[inline]
 #[must_use]
-</span><span class="kw">pub fn </span>calc_fn_params_hash(params: <span class="kw">impl </span>Iterator&lt;Item = TypeId&gt;) -&gt; u64 {
+</span><span class="kw">pub fn </span>calc_fn_params_hash(
+    params: <span class="kw">impl </span>IntoIterator&lt;Item = TypeId, IntoIter = <span class="kw">impl </span>ExactSizeIterator&lt;Item = TypeId&gt;&gt;,
+) -&gt; u64 {
     <span class="kw">let </span>s = <span class="kw-2">&amp;mut </span>get_hasher();
-    <span class="kw">let </span><span class="kw-2">mut </span>len = <span class="number">0</span>;
-    params.inspect(|<span class="kw">_</span>| len += <span class="number">1</span>).for_each(|t| t.hash(s));
+    <span class="kw">let </span>iter = params.into_iter();
+    <span class="kw">let </span>len = iter.len();
+    iter.for_each(|t| {
+        t.hash(s);
+    });
     len.hash(s);
 
     <span class="kw">match </span>s.finish() {
@@ -385,4 +401,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.2.2/src/parser.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../url/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../url/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../url/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/parser.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../url/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../url/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../url/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1591,19 +1591,6 @@
 <span id="1591">1591</span>
 <span id="1592">1592</span>
 <span id="1593">1593</span>
-<span id="1594">1594</span>
-<span id="1595">1595</span>
-<span id="1596">1596</span>
-<span id="1597">1597</span>
-<span id="1598">1598</span>
-<span id="1599">1599</span>
-<span id="1600">1600</span>
-<span id="1601">1601</span>
-<span id="1602">1602</span>
-<span id="1603">1603</span>
-<span id="1604">1604</span>
-<span id="1605">1605</span>
-<span id="1606">1606</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2013-2016 The rust-url developers.
 //
 // Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or
@@ -1658,15 +1645,12 @@
         ///
         /// This may be extended in the future so exhaustive matching is
         /// discouraged with an unused variant.
-        </span><span class="attribute">#[allow(clippy::manual_non_exhaustive)] </span><span class="comment">// introduced in 1.40, MSRV is 1.36
         </span><span class="attribute">#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+        #[non_exhaustive]
         </span><span class="kw">pub enum </span>ParseError {
             $(
                 <span class="macro-nonterminal">$name</span>,
             )+
-            <span class="doccomment">/// Unused variant enable non-exhaustive matching
-            </span><span class="attribute">#[doc(hidden)]
-            </span>__FutureProof,
         }
 
         <span class="kw">impl </span>fmt::Display <span class="kw">for </span>ParseError {
@@ -1675,9 +1659,6 @@
                     $(
                         ParseError::<span class="macro-nonterminal">$name </span>=&gt; fmt.write_str(<span class="macro-nonterminal">$description</span>),
                     )+
-                    ParseError::__FutureProof =&gt; {
-                        <span class="macro">unreachable!</span>(<span class="string">&quot;Don&#39;t abuse the FutureProof!&quot;</span>);
-                    }
                 }
             }
         }
@@ -1711,15 +1692,12 @@
         ///
         /// This may be extended in the future so exhaustive matching is
         /// discouraged with an unused variant.
-        </span><span class="attribute">#[allow(clippy::manual_non_exhaustive)] </span><span class="comment">// introduced in 1.40, MSRV is 1.36
         </span><span class="attribute">#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+        #[non_exhaustive]
         </span><span class="kw">pub enum </span>SyntaxViolation {
             $(
                 <span class="macro-nonterminal">$name</span>,
             )+
-            <span class="doccomment">/// Unused variant enable non-exhaustive matching
-            </span><span class="attribute">#[doc(hidden)]
-            </span>__FutureProof,
         }
 
         <span class="kw">impl </span>SyntaxViolation {
@@ -1728,9 +1706,6 @@
                     $(
                         SyntaxViolation::<span class="macro-nonterminal">$name </span>=&gt; <span class="macro-nonterminal">$description</span>,
                     )+
-                    SyntaxViolation::__FutureProof =&gt; {
-                        <span class="macro">unreachable!</span>(<span class="string">&quot;Don&#39;t abuse the FutureProof!&quot;</span>);
-                    }
                 }
             }
         }
@@ -1760,7 +1735,7 @@
     }
 }
 
-<span class="attribute">#[derive(Copy, Clone, PartialEq)]
+<span class="attribute">#[derive(Copy, Clone, PartialEq, Eq)]
 </span><span class="kw">pub enum </span>SchemeType {
     File,
     SpecialNotFile,
@@ -2833,13 +2808,11 @@
                     }
                 }
             }
-            <span class="comment">// Going from &amp;str to String to &amp;str to please the 1.33.0 borrow checker
-            </span><span class="kw">let </span>before_slash_string = <span class="kw">if </span>ends_with_slash {
-                <span class="self">self</span>.serialization[segment_start..<span class="self">self</span>.serialization.len() - <span class="number">1</span>].to_owned()
+            <span class="kw">let </span>segment_before_slash = <span class="kw">if </span>ends_with_slash {
+                <span class="kw-2">&amp;</span><span class="self">self</span>.serialization[segment_start..<span class="self">self</span>.serialization.len() - <span class="number">1</span>]
             } <span class="kw">else </span>{
-                <span class="self">self</span>.serialization[segment_start..<span class="self">self</span>.serialization.len()].to_owned()
+                <span class="kw-2">&amp;</span><span class="self">self</span>.serialization[segment_start..<span class="self">self</span>.serialization.len()]
             };
-            <span class="kw">let </span>segment_before_slash: <span class="kw-2">&amp;</span>str = <span class="kw-2">&amp;</span>before_slash_string;
             <span class="kw">match </span>segment_before_slash {
                 <span class="comment">// If buffer is a double-dot path segment, shorten url’s path,
                 </span><span class="string">&quot;..&quot; </span>| <span class="string">&quot;%2e%2e&quot; </span>| <span class="string">&quot;%2e%2E&quot; </span>| <span class="string">&quot;%2E%2e&quot; </span>| <span class="string">&quot;%2E%2E&quot; </span>| <span class="string">&quot;%2e.&quot; </span>| <span class="string">&quot;%2E.&quot; </span>| <span class="string">&quot;.%2e&quot;
@@ -2898,7 +2871,7 @@
             //FIXME: log violation
             </span><span class="kw">let </span>path = <span class="self">self</span>.serialization.split_off(path_start);
             <span class="self">self</span>.serialization.push(<span class="string">&#39;/&#39;</span>);
-            <span class="self">self</span>.serialization.push_str(<span class="kw-2">&amp;</span>path.trim_start_matches(<span class="string">&#39;/&#39;</span>));
+            <span class="self">self</span>.serialization.push_str(path.trim_start_matches(<span class="string">&#39;/&#39;</span>));
         }
 
         input
@@ -3029,7 +3002,8 @@
         scheme_end: u32,
         <span class="kw-2">mut </span>input: Input&lt;<span class="lifetime">&#39;i</span>&gt;,
     ) -&gt; <span class="prelude-ty">Option</span>&lt;Input&lt;<span class="lifetime">&#39;i</span>&gt;&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>query = String::new(); <span class="comment">// FIXME: use a streaming decoder instead
+        <span class="kw">let </span>len = input.chars.as_str().len();
+        <span class="kw">let </span><span class="kw-2">mut </span>query = String::with_capacity(len); <span class="comment">// FIXME: use a streaming decoder instead
         </span><span class="kw">let </span><span class="kw-2">mut </span>remaining = <span class="prelude-val">None</span>;
         <span class="kw">while let </span><span class="prelude-val">Some</span>(c) = input.next() {
             <span class="kw">if </span>c == <span class="string">&#39;#&#39; </span>&amp;&amp; <span class="self">self</span>.context == Context::UrlParser {
@@ -3169,17 +3143,17 @@
     is_windows_drive_letter(segment) &amp;&amp; segment.as_bytes()[<span class="number">1</span>] == <span class="string">b&#39;:&#39;
 </span>}
 
-<span class="doccomment">/// Wether the scheme is file:, the path has a single segment, and that segment
+<span class="doccomment">/// Whether the scheme is file:, the path has a single segment, and that segment
 /// is a Windows drive letter
 </span><span class="attribute">#[inline]
 </span><span class="kw">pub fn </span>is_windows_drive_letter(segment: <span class="kw-2">&amp;</span>str) -&gt; bool {
     segment.len() == <span class="number">2 </span>&amp;&amp; starts_with_windows_drive_letter(segment)
 }
 
-<span class="doccomment">/// Wether path starts with a root slash
+<span class="doccomment">/// Whether path starts with a root slash
 /// and a windows drive letter eg: &quot;/c:&quot; or &quot;/a:/&quot;
 </span><span class="kw">fn </span>path_starts_with_windows_drive_letter(s: <span class="kw-2">&amp;</span>str) -&gt; bool {
-    <span class="kw">if let </span><span class="prelude-val">Some</span>(c) = s.as_bytes().get(<span class="number">0</span>) {
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(c) = s.as_bytes().first() {
         <span class="macro">matches!</span>(c, <span class="string">b&#39;/&#39; </span>| <span class="string">b&#39;\\&#39; </span>| <span class="string">b&#39;?&#39; </span>| <span class="string">b&#39;#&#39;</span>) &amp;&amp; starts_with_windows_drive_letter(<span class="kw-2">&amp;</span>s[<span class="number">1</span>..])
     } <span class="kw">else </span>{
         <span class="bool-val">false
@@ -3211,4 +3185,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="url" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="url" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

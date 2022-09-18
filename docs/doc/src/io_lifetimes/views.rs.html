@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/io-lifetimes-0.6.1/src/views.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>views.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../io_lifetimes/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../io_lifetimes/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../io_lifetimes/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/io-lifetimes-0.7.3/src/views.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>views.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../io_lifetimes/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../io_lifetimes/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../io_lifetimes/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -189,6 +189,19 @@
 <span id="189">189</span>
 <span id="190">190</span>
 <span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Typed views using temporary objects.
 //!
 //! This module defines the return types for [`AsFilelike::as_filelike_view`]
@@ -196,23 +209,51 @@
 //!
 //! [`AsSocketlike::as_socketlike_view`]: crate::AsSocketlike::as_socketlike_view
 
-</span><span class="kw">use </span><span class="kw">crate</span>::raw::{AsRawFilelike, FromRawFilelike, IntoRawFilelike, RawFilelike};
-<span class="attribute">#[cfg(windows)]
-</span><span class="kw">use crate</span>::{
-    raw::{AsRawSocketlike, FromRawSocketlike, IntoRawSocketlike, RawSocketlike},
-    AsSocketlike, FromSocketlike, IntoSocketlike, OwnedSocketlike,
+</span><span class="kw">use </span><span class="kw">crate</span>::raw::{
+    AsRawFilelike, AsRawSocketlike, FromRawFilelike, FromRawSocketlike, IntoRawFilelike,
+    IntoRawSocketlike, RawFilelike, RawSocketlike,
 };
-<span class="kw">use crate</span>::{AsFilelike, FromFilelike, IntoFilelike, OwnedFilelike};
+<span class="kw">use crate</span>::{
+    AsFilelike, AsSocketlike, FromFilelike, FromSocketlike, IntoFilelike, IntoSocketlike,
+    OwnedFilelike, OwnedSocketlike,
+};
 <span class="kw">use </span>std::fmt;
 <span class="kw">use </span>std::marker::PhantomData;
-<span class="kw">use </span>std::ops::{Deref, DerefMut};
+<span class="kw">use </span>std::mem::ManuallyDrop;
+<span class="kw">use </span>std::ops::Deref;
+
+<span class="doccomment">/// Declare that a type is safe to use in a [`FilelikeView`].
+///
+/// # Safety
+///
+/// Types implementing this trait declare that if they are constructed with
+/// [`FromFilelike`] and consumed with [`IntoFilelike`], their `IntoFilelike`
+/// will return the same `OwnedFd` value that was passed to their
+/// `FromFilelike`.
+</span><span class="kw">pub unsafe trait </span>FilelikeViewType: FromFilelike + IntoFilelike {}
+
+<span class="doccomment">/// Declare that a type is safe to use in a [`SocketlikeView`].
+///
+/// # Safety
+///
+/// Types implementing this trait declare that if they are constructed with
+/// [`FromSocketlike`] and consumed with [`IntoSocketlike`], their
+/// `IntoSocketlike` will return the same `OwnedFd` value that was passed to
+/// their `FromSocketlike`.
+</span><span class="kw">pub unsafe trait </span>SocketlikeViewType: FromSocketlike + IntoSocketlike {}
 
 <span class="doccomment">/// A non-owning view of a resource which dereferences to a `&amp;Target` or
 /// `&amp;mut Target`. These are returned by [`AsFilelike::as_filelike_view`].
-</span><span class="kw">pub struct </span>FilelikeView&lt;<span class="lifetime">&#39;filelike</span>, Target: FromFilelike + IntoFilelike&gt; {
-    <span class="doccomment">/// The value to dereference to. This is an `Option` so that we can consume
-    /// it in our `Drop` impl.
-    </span>target: <span class="prelude-ty">Option</span>&lt;Target&gt;,
+</span><span class="kw">pub struct </span>FilelikeView&lt;<span class="lifetime">&#39;filelike</span>, Target: FilelikeViewType&gt; {
+    <span class="doccomment">/// The value to dereference to. This is a `ManuallyDrop` so that we can
+    /// consume it in our `Drop` impl.
+    </span>target: ManuallyDrop&lt;Target&gt;,
+
+    <span class="doccomment">/// `FilelikeViewType` implementors guarantee that their `Into&lt;OwnedFd&gt;`
+    /// returns the same fd as their `From&lt;OwnedFd&gt;` gave them. This field
+    /// allows us to verify this.
+    </span><span class="attribute">#[cfg(debug_assertions)]
+    </span>orig: RawFilelike,
 
     <span class="doccomment">/// This field exists because we don&#39;t otherwise explicitly use
     /// `&#39;filelike`.
@@ -221,25 +262,23 @@
 
 <span class="doccomment">/// A non-owning view of a resource which dereferences to a `&amp;Target` or
 /// `&amp;mut Target`. These are returned by [`AsSocketlike::as_socketlike_view`].
-///
-/// [`AsSocketlike::as_socketlike_view`]: crate::AsSocketlike::as_socketlike_view
-</span><span class="attribute">#[cfg(any(unix, target_os = <span class="string">&quot;wasi&quot;</span>))]
-</span><span class="kw">pub type </span>SocketlikeView&lt;<span class="lifetime">&#39;socketlike</span>, Target&gt; = FilelikeView&lt;<span class="lifetime">&#39;socketlike</span>, Target&gt;;
+</span><span class="kw">pub struct </span>SocketlikeView&lt;<span class="lifetime">&#39;socketlike</span>, Target: SocketlikeViewType&gt; {
+    <span class="doccomment">/// The value to dereference to. This is a `ManuallyDrop` so that we can
+    /// consume it in our `Drop` impl.
+    </span>target: ManuallyDrop&lt;Target&gt;,
 
-<span class="doccomment">/// A non-owning view of a resource which dereferences to a `&amp;Target` or
-/// `&amp;mut Target`. These are returned by [`AsSocketlike::as_socketlike_view`].
-</span><span class="attribute">#[cfg(windows)]
-</span><span class="kw">pub struct </span>SocketlikeView&lt;<span class="lifetime">&#39;socketlike</span>, Target: FromSocketlike + IntoSocketlike&gt; {
-    <span class="doccomment">/// The value to dereference to. This is an `Option` so that we can consume
-    /// it in our `Drop` impl.
-    </span>target: <span class="prelude-ty">Option</span>&lt;Target&gt;,
+    <span class="doccomment">/// `SocketlikeViewType` implementors guarantee that their `Into&lt;OwnedFd&gt;`
+    /// returns the same fd as their `From&lt;OwnedFd&gt;` gave them. This field
+    /// allows us to verify this.
+    </span><span class="attribute">#[cfg(debug_assertions)]
+    </span>orig: RawSocketlike,
 
     <span class="doccomment">/// This field exists because we don&#39;t otherwise explicitly use
     /// `&#39;socketlike`.
     </span>_phantom: PhantomData&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;socketlike </span>OwnedSocketlike&gt;,
 }
 
-<span class="kw">impl</span>&lt;Target: FromFilelike + IntoFilelike&gt; FilelikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
+<span class="kw">impl</span>&lt;Target: FilelikeViewType&gt; FilelikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
     <span class="doccomment">/// Construct a temporary `Target` and wrap it in a `FilelikeView` object.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new&lt;T: AsFilelike&gt;(filelike: <span class="kw-2">&amp;</span>T) -&gt; <span class="self">Self </span>{
@@ -260,14 +299,15 @@
     </span><span class="kw">pub unsafe fn </span>view_raw(raw: RawFilelike) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>owned = OwnedFilelike::from_raw_filelike(raw);
         <span class="self">Self </span>{
-            target: <span class="prelude-val">Some</span>(Target::from_filelike(owned)),
+            target: ManuallyDrop::new(Target::from_filelike(owned)),
+            <span class="attribute">#[cfg(debug_assertions)]
+            </span>orig: raw,
             _phantom: PhantomData,
         }
     }
 }
 
-<span class="attribute">#[cfg(windows)]
-</span><span class="kw">impl</span>&lt;Target: FromSocketlike + IntoSocketlike&gt; SocketlikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
+<span class="kw">impl</span>&lt;Target: SocketlikeViewType&gt; SocketlikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
     <span class="doccomment">/// Construct a temporary `Target` and wrap it in a `SocketlikeView`
     /// object.
     </span><span class="attribute">#[inline]
@@ -275,13 +315,7 @@
         <span class="comment">// Safety: The returned `SocketlikeView` is scoped to the lifetime of
         // `socketlike`, which we&#39;ve borrowed here, so the view won&#39;t outlive
         // the object it&#39;s borrowed from.
-        </span><span class="kw">let </span>owned = <span class="kw">unsafe </span>{
-            OwnedSocketlike::from_raw_socketlike(socketlike.as_socketlike().as_raw_socketlike())
-        };
-        <span class="self">Self </span>{
-            target: <span class="prelude-val">Some</span>(Target::from_socketlike(owned)),
-            _phantom: PhantomData,
-        }
+        </span><span class="kw">unsafe </span>{ <span class="self">Self</span>::view_raw(socketlike.as_socketlike().as_raw_socketlike()) }
     }
 
     <span class="doccomment">/// Construct a temporary `Target` from raw and wrap it in a
@@ -295,72 +329,67 @@
     </span><span class="kw">pub unsafe fn </span>view_raw(raw: RawSocketlike) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>owned = OwnedSocketlike::from_raw_socketlike(raw);
         <span class="self">Self </span>{
-            target: <span class="prelude-val">Some</span>(Target::from_socketlike(owned)),
+            target: ManuallyDrop::new(Target::from_socketlike(owned)),
+            <span class="attribute">#[cfg(debug_assertions)]
+            </span>orig: raw,
             _phantom: PhantomData,
         }
     }
 }
 
-<span class="kw">impl</span>&lt;Target: FromFilelike + IntoFilelike&gt; Deref <span class="kw">for </span>FilelikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
+<span class="kw">impl</span>&lt;Target: FilelikeViewType&gt; Deref <span class="kw">for </span>FilelikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
     <span class="kw">type </span>Target = Target;
 
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
-        <span class="self">self</span>.target.as_ref().unwrap()
+        <span class="kw-2">&amp;</span><span class="self">self</span>.target
     }
 }
 
-<span class="attribute">#[cfg(windows)]
-</span><span class="kw">impl</span>&lt;Target: FromSocketlike + IntoSocketlike&gt; Deref <span class="kw">for </span>SocketlikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
+<span class="kw">impl</span>&lt;Target: SocketlikeViewType&gt; Deref <span class="kw">for </span>SocketlikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
     <span class="kw">type </span>Target = Target;
 
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
-        <span class="self">self</span>.target.as_ref().unwrap()
+        <span class="kw-2">&amp;</span><span class="self">self</span>.target
     }
 }
 
-<span class="kw">impl</span>&lt;Target: FromFilelike + IntoFilelike&gt; DerefMut <span class="kw">for </span>FilelikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
+<span class="kw">impl</span>&lt;Target: FilelikeViewType&gt; Drop <span class="kw">for </span>FilelikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Target {
-        <span class="self">self</span>.target.as_mut().unwrap()
-    }
-}
-
-<span class="attribute">#[cfg(windows)]
-</span><span class="kw">impl</span>&lt;Target: FromSocketlike + IntoSocketlike&gt; DerefMut <span class="kw">for </span>SocketlikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
-    <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Target {
-        <span class="self">self</span>.target.as_mut().unwrap()
-    }
-}
-
-<span class="kw">impl</span>&lt;Target: FromFilelike + IntoFilelike&gt; Drop <span class="kw">for </span>FilelikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
-    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+    </span><span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="comment">// Use `Into*` to consume `self.target` without freeing its resource.
-        </span><span class="kw">let _ </span>= <span class="self">self
-            </span>.target
-            .take()
-            .unwrap()
+        //
+        // Safety: Using `ManuallyDrop::take` requires us to ensure that
+        // `self.target` is not used again. We don&#39;t use it again here, and
+        // this is the `drop` function, so we know it&#39;s not used afterward.
+        </span><span class="kw">let </span>_raw = <span class="kw">unsafe </span>{ ManuallyDrop::take(<span class="kw-2">&amp;mut </span><span class="self">self</span>.target) }
             .into_filelike()
             .into_raw_filelike();
+
+        <span class="attribute">#[cfg(debug_assertions)]
+        </span><span class="macro">debug_assert_eq!</span>(<span class="self">self</span>.orig, _raw);
     }
 }
 
-<span class="attribute">#[cfg(windows)]
-</span><span class="kw">impl</span>&lt;Target: FromSocketlike + IntoSocketlike&gt; Drop <span class="kw">for </span>SocketlikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
-    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+<span class="kw">impl</span>&lt;Target: SocketlikeViewType&gt; Drop <span class="kw">for </span>SocketlikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="comment">// Use `Into*` to consume `self.target` without freeing its resource.
-        </span><span class="kw">let _ </span>= <span class="self">self
-            </span>.target
-            .take()
-            .unwrap()
+        //
+        // Safety: Using `ManuallyDrop::take` requires us to ensure that
+        // `self.target` is not used again. We don&#39;t use it again here, and
+        // this is the `drop` function, so we know it&#39;s not used afterward.
+        </span><span class="kw">let </span>_raw = <span class="kw">unsafe </span>{ ManuallyDrop::take(<span class="kw-2">&amp;mut </span><span class="self">self</span>.target) }
             .into_socketlike()
             .into_raw_socketlike();
+
+        <span class="attribute">#[cfg(debug_assertions)]
+        </span><span class="macro">debug_assert_eq!</span>(<span class="self">self</span>.orig, _raw);
     }
 }
 
-<span class="kw">impl</span>&lt;Target: FromFilelike + IntoFilelike + fmt::Debug&gt; fmt::Debug <span class="kw">for </span>FilelikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
+<span class="kw">impl</span>&lt;Target: FilelikeViewType&gt; fmt::Debug <span class="kw">for </span>FilelikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
     <span class="attribute">#[allow(clippy::missing_inline_in_public_items)]
     </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
         f.debug_struct(<span class="string">&quot;FilelikeView&quot;</span>)
@@ -369,10 +398,7 @@
     }
 }
 
-<span class="attribute">#[cfg(windows)]
-</span><span class="kw">impl</span>&lt;Target: FromSocketlike + IntoSocketlike + fmt::Debug&gt; fmt::Debug
-    <span class="kw">for </span>SocketlikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt;
-{
+<span class="kw">impl</span>&lt;Target: SocketlikeViewType&gt; fmt::Debug <span class="kw">for </span>SocketlikeView&lt;<span class="lifetime">&#39;_</span>, Target&gt; {
     <span class="attribute">#[allow(clippy::missing_inline_in_public_items)]
     </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
         f.debug_struct(<span class="string">&quot;SocketlikeView&quot;</span>)
@@ -381,4 +407,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="io_lifetimes" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="io_lifetimes" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

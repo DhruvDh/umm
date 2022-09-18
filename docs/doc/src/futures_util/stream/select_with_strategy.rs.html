@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-util-0.3.21/src/stream/select_with_strategy.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>select_with_strategy.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../futures_util/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../futures_util/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../futures_util/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-util-0.3.24/src/stream/select_with_strategy.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>select_with_strategy.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../futures_util/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../futures_util/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../futures_util/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -227,8 +227,82 @@
 <span id="227">227</span>
 <span id="228">228</span>
 <span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::assert_stream;
-<span class="kw">use </span><span class="kw">crate</span>::stream::{Fuse, StreamExt};
 <span class="kw">use </span>core::{fmt, pin::Pin};
 <span class="kw">use </span>futures_core::stream::{FusedStream, Stream};
 <span class="kw">use </span>futures_core::task::{Context, Poll};
@@ -247,13 +321,15 @@
     <span class="doccomment">/// Toggle the value and return the old one.
     </span><span class="kw">pub fn </span>toggle(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>old = <span class="kw-2">*</span><span class="self">self</span>;
-
-        <span class="kw">match </span><span class="self">self </span>{
-            PollNext::Left =&gt; <span class="kw-2">*</span><span class="self">self </span>= PollNext::Right,
-            PollNext::Right =&gt; <span class="kw-2">*</span><span class="self">self </span>= PollNext::Left,
-        }
-
+        <span class="kw-2">*</span><span class="self">self </span>= <span class="self">self</span>.other();
         old
+    }
+
+    <span class="kw">fn </span>other(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PollNext {
+        <span class="kw">match </span><span class="self">self </span>{
+            PollNext::Left =&gt; PollNext::Right,
+            PollNext::Right =&gt; PollNext::Left,
+        }
     }
 }
 
@@ -263,14 +339,41 @@
     }
 }
 
+<span class="kw">enum </span>InternalState {
+    Start,
+    LeftFinished,
+    RightFinished,
+    BothFinished,
+}
+
+<span class="kw">impl </span>InternalState {
+    <span class="kw">fn </span>finish(<span class="kw-2">&amp;mut </span><span class="self">self</span>, ps: PollNext) {
+        <span class="kw">match </span>(<span class="kw-2">&amp;</span><span class="self">self</span>, ps) {
+            (InternalState::Start, PollNext::Left) =&gt; {
+                <span class="kw-2">*</span><span class="self">self </span>= InternalState::LeftFinished;
+            }
+            (InternalState::Start, PollNext::Right) =&gt; {
+                <span class="kw-2">*</span><span class="self">self </span>= InternalState::RightFinished;
+            }
+            (InternalState::LeftFinished, PollNext::Right)
+            | (InternalState::RightFinished, PollNext::Left) =&gt; {
+                <span class="kw-2">*</span><span class="self">self </span>= InternalState::BothFinished;
+            }
+            <span class="kw">_ </span>=&gt; {}
+        }
+    }
+}
+
 <span class="macro">pin_project! </span>{
     <span class="doccomment">/// Stream for the [`select_with_strategy()`] function. See function docs for details.
     </span><span class="attribute">#[must_use = <span class="string">&quot;streams do nothing unless polled&quot;</span>]
+    #[project = SelectWithStrategyProj]
     </span><span class="kw">pub struct </span>SelectWithStrategy&lt;St1, St2, Clos, State&gt; {
         <span class="attribute">#[pin]
-        </span>stream1: Fuse&lt;St1&gt;,
+        </span>stream1: St1,
         <span class="attribute">#[pin]
-        </span>stream2: Fuse&lt;St2&gt;,
+        </span>stream2: St2,
+        internal_state: InternalState,
         state: State,
         clos: Clos,
     }
@@ -349,9 +452,10 @@
     State: Default,
 {
     assert_stream::&lt;St1::Item, <span class="kw">_</span>&gt;(SelectWithStrategy {
-        stream1: stream1.fuse(),
-        stream2: stream2.fuse(),
+        stream1,
+        stream2,
         state: Default::default(),
+        internal_state: InternalState::Start,
         clos: which,
     })
 }
@@ -360,7 +464,7 @@
     <span class="doccomment">/// Acquires a reference to the underlying streams that this combinator is
     /// pulling from.
     </span><span class="kw">pub fn </span>get_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="kw-2">&amp;</span>St1, <span class="kw-2">&amp;</span>St2) {
-        (<span class="self">self</span>.stream1.get_ref(), <span class="self">self</span>.stream2.get_ref())
+        (<span class="kw-2">&amp;</span><span class="self">self</span>.stream1, <span class="kw-2">&amp;</span><span class="self">self</span>.stream2)
     }
 
     <span class="doccomment">/// Acquires a mutable reference to the underlying streams that this
@@ -369,7 +473,7 @@
     /// Note that care must be taken to avoid tampering with the state of the
     /// stream which may otherwise confuse this combinator.
     </span><span class="kw">pub fn </span>get_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; (<span class="kw-2">&amp;mut </span>St1, <span class="kw-2">&amp;mut </span>St2) {
-        (<span class="self">self</span>.stream1.get_mut(), <span class="self">self</span>.stream2.get_mut())
+        (<span class="kw-2">&amp;mut </span><span class="self">self</span>.stream1, <span class="kw-2">&amp;mut </span><span class="self">self</span>.stream2)
     }
 
     <span class="doccomment">/// Acquires a pinned mutable reference to the underlying streams that this
@@ -379,7 +483,7 @@
     /// stream which may otherwise confuse this combinator.
     </span><span class="kw">pub fn </span>get_pin_mut(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;) -&gt; (Pin&lt;<span class="kw-2">&amp;mut </span>St1&gt;, Pin&lt;<span class="kw-2">&amp;mut </span>St2&gt;) {
         <span class="kw">let </span>this = <span class="self">self</span>.project();
-        (this.stream1.get_pin_mut(), this.stream2.get_pin_mut())
+        (this.stream1, this.stream2)
     }
 
     <span class="doccomment">/// Consumes this combinator, returning the underlying streams.
@@ -387,7 +491,7 @@
     /// Note that this may discard intermediate state of this combinator, so
     /// care should be taken to avoid losing resources when this is called.
     </span><span class="kw">pub fn </span>into_inner(<span class="self">self</span>) -&gt; (St1, St2) {
-        (<span class="self">self</span>.stream1.into_inner(), <span class="self">self</span>.stream2.into_inner())
+        (<span class="self">self</span>.stream1, <span class="self">self</span>.stream2)
     }
 }
 
@@ -398,7 +502,58 @@
     Clos: FnMut(<span class="kw-2">&amp;mut </span>State) -&gt; PollNext,
 {
     <span class="kw">fn </span>is_terminated(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.stream1.is_terminated() &amp;&amp; <span class="self">self</span>.stream2.is_terminated()
+        <span class="kw">match </span><span class="self">self</span>.internal_state {
+            InternalState::BothFinished =&gt; <span class="bool-val">true</span>,
+            <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
+        }
+    }
+}
+
+<span class="attribute">#[inline]
+</span><span class="kw">fn </span>poll_side&lt;St1, St2, Clos, State&gt;(
+    select: <span class="kw-2">&amp;mut </span>SelectWithStrategyProj&lt;<span class="lifetime">&#39;_</span>, St1, St2, Clos, State&gt;,
+    side: PollNext,
+    cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;,
+) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;St1::Item&gt;&gt;
+<span class="kw">where
+    </span>St1: Stream,
+    St2: Stream&lt;Item = St1::Item&gt;,
+{
+    <span class="kw">match </span>side {
+        PollNext::Left =&gt; select.stream1.as_mut().poll_next(cx),
+        PollNext::Right =&gt; select.stream2.as_mut().poll_next(cx),
+    }
+}
+
+<span class="attribute">#[inline]
+</span><span class="kw">fn </span>poll_inner&lt;St1, St2, Clos, State&gt;(
+    select: <span class="kw-2">&amp;mut </span>SelectWithStrategyProj&lt;<span class="lifetime">&#39;_</span>, St1, St2, Clos, State&gt;,
+    side: PollNext,
+    cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;,
+) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;St1::Item&gt;&gt;
+<span class="kw">where
+    </span>St1: Stream,
+    St2: Stream&lt;Item = St1::Item&gt;,
+{
+    <span class="kw">let </span>first_done = <span class="kw">match </span>poll_side(select, side, cx) {
+        Poll::Ready(<span class="prelude-val">Some</span>(item)) =&gt; <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(item)),
+        Poll::Ready(<span class="prelude-val">None</span>) =&gt; {
+            select.internal_state.finish(side);
+            <span class="bool-val">true
+        </span>}
+        Poll::Pending =&gt; <span class="bool-val">false</span>,
+    };
+    <span class="kw">let </span>other = side.other();
+    <span class="kw">match </span>poll_side(select, other, cx) {
+        Poll::Ready(<span class="prelude-val">None</span>) =&gt; {
+            select.internal_state.finish(other);
+            <span class="kw">if </span>first_done {
+                Poll::Ready(<span class="prelude-val">None</span>)
+            } <span class="kw">else </span>{
+                Poll::Pending
+            }
+        }
+        a =&gt; a,
     }
 }
 
@@ -411,34 +566,29 @@
     <span class="kw">type </span>Item = St1::Item;
 
     <span class="kw">fn </span>poll_next(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;St1::Item&gt;&gt; {
-        <span class="kw">let </span>this = <span class="self">self</span>.project();
+        <span class="kw">let </span><span class="kw-2">mut </span>this = <span class="self">self</span>.project();
 
-        <span class="kw">match </span>(this.clos)(this.state) {
-            PollNext::Left =&gt; poll_inner(this.stream1, this.stream2, cx),
-            PollNext::Right =&gt; poll_inner(this.stream2, this.stream1, cx),
+        <span class="kw">match </span>this.internal_state {
+            InternalState::Start =&gt; {
+                <span class="kw">let </span>next_side = (this.clos)(this.state);
+                poll_inner(<span class="kw-2">&amp;mut </span>this, next_side, cx)
+            }
+            InternalState::LeftFinished =&gt; <span class="kw">match </span>this.stream2.poll_next(cx) {
+                Poll::Ready(<span class="prelude-val">None</span>) =&gt; {
+                    <span class="kw-2">*</span>this.internal_state = InternalState::BothFinished;
+                    Poll::Ready(<span class="prelude-val">None</span>)
+                }
+                a =&gt; a,
+            },
+            InternalState::RightFinished =&gt; <span class="kw">match </span>this.stream1.poll_next(cx) {
+                Poll::Ready(<span class="prelude-val">None</span>) =&gt; {
+                    <span class="kw-2">*</span>this.internal_state = InternalState::BothFinished;
+                    Poll::Ready(<span class="prelude-val">None</span>)
+                }
+                a =&gt; a,
+            },
+            InternalState::BothFinished =&gt; Poll::Ready(<span class="prelude-val">None</span>),
         }
-    }
-}
-
-<span class="kw">fn </span>poll_inner&lt;St1, St2&gt;(
-    a: Pin&lt;<span class="kw-2">&amp;mut </span>St1&gt;,
-    b: Pin&lt;<span class="kw-2">&amp;mut </span>St2&gt;,
-    cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;,
-) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;St1::Item&gt;&gt;
-<span class="kw">where
-    </span>St1: Stream,
-    St2: Stream&lt;Item = St1::Item&gt;,
-{
-    <span class="kw">let </span>a_done = <span class="kw">match </span>a.poll_next(cx) {
-        Poll::Ready(<span class="prelude-val">Some</span>(item)) =&gt; <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(item)),
-        Poll::Ready(<span class="prelude-val">None</span>) =&gt; <span class="bool-val">true</span>,
-        Poll::Pending =&gt; <span class="bool-val">false</span>,
-    };
-
-    <span class="kw">match </span>b.poll_next(cx) {
-        Poll::Ready(<span class="prelude-val">Some</span>(item)) =&gt; Poll::Ready(<span class="prelude-val">Some</span>(item)),
-        Poll::Ready(<span class="prelude-val">None</span>) <span class="kw">if </span>a_done =&gt; Poll::Ready(<span class="prelude-val">None</span>),
-        Poll::Ready(<span class="prelude-val">None</span>) | Poll::Pending =&gt; Poll::Pending,
     }
 }
 
@@ -457,4 +607,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="futures_util" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="futures_util" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

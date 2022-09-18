@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/packages/array_basic.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>array_basic.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/packages/array_basic.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>array_basic.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -2356,6 +2356,10 @@
 <span id="2356">2356</span>
 <span id="2357">2357</span>
 <span id="2358">2358</span>
+<span id="2359">2359</span>
+<span id="2360">2360</span>
+<span id="2361">2361</span>
+<span id="2362">2362</span>
 </pre><pre class="rust"><code><span class="attribute">#![cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
 
 </span><span class="kw">use </span><span class="kw">crate</span>::engine::OP_EQUALS;
@@ -2363,7 +2367,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::plugin::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::{
     def_package, Array, Dynamic, ExclusiveRange, FnPtr, InclusiveRange, NativeCallContext,
-    Position, RhaiResultOf, StaticVec, ERR, INT,
+    Position, RhaiResultOf, StaticVec, ERR, INT, MAX_USIZE_INT,
 };
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
@@ -2388,6 +2392,11 @@
     </span><span class="kw">pub fn </span>len(array: <span class="kw-2">&amp;mut </span>Array) -&gt; INT {
         array.len() <span class="kw">as </span>INT
     }
+    <span class="doccomment">/// Return true if the array is empty.
+    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;is_empty&quot;</span>, get = <span class="string">&quot;is_empty&quot;</span>, pure)]
+    </span><span class="kw">pub fn </span>is_empty(array: <span class="kw-2">&amp;mut </span>Array) -&gt; bool {
+        array.len() == <span class="number">0
+    </span>}
     <span class="doccomment">/// Get a copy of the element at the `index` position in the array.
     ///
     /// * If `index` &lt; 0, position counts from the end of the array (`-1` is the last element).
@@ -2476,7 +2485,7 @@
     /// let x = [1, 2, 3];
     /// let y = [true, &#39;x&#39;];
     ///
-    /// x.push(y);
+    /// x.append(y);
     ///
     /// print(x);       // prints &quot;[1, 2, 3, true, &#39;x&#39;]&quot;
     /// ```
@@ -2503,16 +2512,14 @@
     /// ```
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;+&quot;</span>)]
     </span><span class="kw">pub fn </span>concat(array1: Array, array2: Array) -&gt; Array {
-        <span class="kw">if </span>!array2.is_empty() {
-            <span class="kw">if </span>array1.is_empty() {
-                array2
-            } <span class="kw">else </span>{
-                <span class="kw">let </span><span class="kw-2">mut </span>array = array1;
-                array.extend(array2);
-                array
-            }
-        } <span class="kw">else </span>{
+        <span class="kw">if </span>array2.is_empty() {
             array1
+        } <span class="kw">else if </span>array1.is_empty() {
+            array2
+        } <span class="kw">else </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>array = array1;
+            array.extend(array2);
+            array
         }
     }
     <span class="doccomment">/// Add a new element into the array at a particular `index` position.
@@ -2572,6 +2579,8 @@
         len: INT,
         item: Dynamic,
     ) -&gt; RhaiResultOf&lt;()&gt; {
+        <span class="kw">let </span>len = len.min(MAX_USIZE_INT);
+
         <span class="kw">if </span>len &lt;= <span class="number">0 </span>|| (len <span class="kw">as </span>usize) &lt;= array.len() {
             <span class="kw">return </span><span class="prelude-val">Ok</span>(());
         }
@@ -2648,7 +2657,7 @@
         <span class="kw">if </span>array.is_empty() {
             Dynamic::UNIT
         } <span class="kw">else </span>{
-            array.pop().unwrap_or_else(|| Dynamic::UNIT)
+            array.pop().unwrap_or(Dynamic::UNIT)
         }
     }
     <span class="doccomment">/// Remove the first element from the array and return it.
@@ -2724,6 +2733,8 @@
     /// ```
     </span><span class="kw">pub fn </span>truncate(array: <span class="kw-2">&amp;mut </span>Array, len: INT) {
         <span class="kw">if </span>!array.is_empty() {
+            <span class="kw">let </span>len = len.min(MAX_USIZE_INT);
+
             <span class="kw">if </span>len &gt; <span class="number">0 </span>{
                 array.truncate(len <span class="kw">as </span>usize);
             } <span class="kw">else </span>{
@@ -2751,6 +2762,8 @@
     /// ```
     </span><span class="kw">pub fn </span>chop(array: <span class="kw-2">&amp;mut </span>Array, len: INT) {
         <span class="kw">if </span>!array.is_empty() {
+            <span class="kw">let </span>len = len.min(MAX_USIZE_INT);
+
             <span class="kw">if </span>len &lt;= <span class="number">0 </span>{
                 array.clear();
             } <span class="kw">else if </span>(len <span class="kw">as </span>usize) &lt; array.len() {
@@ -2790,7 +2803,7 @@
     </span><span class="kw">pub fn </span>splice_range(array: <span class="kw-2">&amp;mut </span>Array, range: ExclusiveRange, replace: Array) {
         <span class="kw">let </span>start = INT::max(range.start, <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(range.end, start);
-        splice(array, start, end - start, replace)
+        splice(array, start, end - start, replace);
     }
     <span class="doccomment">/// Replace an inclusive range of the array with another array.
     ///
@@ -2808,7 +2821,7 @@
     </span><span class="kw">pub fn </span>splice_inclusive_range(array: <span class="kw-2">&amp;mut </span>Array, range: InclusiveRange, replace: Array) {
         <span class="kw">let </span>start = INT::max(<span class="kw-2">*</span>range.start(), <span class="number">0</span>);
         <span class="kw">let </span>end = INT::max(<span class="kw-2">*</span>range.end(), start);
-        splice(array, start, end - start + <span class="number">1</span>, replace)
+        splice(array, start, end - start + <span class="number">1</span>, replace);
     }
     <span class="doccomment">/// Replace a portion of the array with another array.
     ///
@@ -2997,15 +3010,15 @@
     ///
     /// print(y);       // prints &quot;[0, 2, 6, 12, 20]&quot;
     /// ```
-    </span><span class="attribute">#[rhai_fn(return_raw, pure)]
-    </span><span class="kw">pub fn </span>map(ctx: NativeCallContext, array: <span class="kw-2">&amp;mut </span>Array, mapper: FnPtr) -&gt; RhaiResultOf&lt;Array&gt; {
+    </span><span class="attribute">#[rhai_fn(return_raw)]
+    </span><span class="kw">pub fn </span>map(ctx: NativeCallContext, array: Array, mapper: FnPtr) -&gt; RhaiResultOf&lt;Array&gt; {
         <span class="kw">if </span>array.is_empty() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(array.clone());
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(array);
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>ar = Array::with_capacity(array.len());
 
-        <span class="kw">for </span>(i, item) <span class="kw">in </span>array.iter().enumerate() {
+        <span class="kw">for </span>(i, item) <span class="kw">in </span>array.into_iter().enumerate() {
             ar.push(
                 mapper
                     .call_raw(<span class="kw-2">&amp;</span>ctx, <span class="prelude-val">None</span>, [item.clone()])
@@ -3013,7 +3026,7 @@
                         ERR::ErrorFunctionNotFound(fn_sig, ..)
                             <span class="kw">if </span>fn_sig.starts_with(mapper.fn_name()) =&gt;
                         {
-                            mapper.call_raw(<span class="kw-2">&amp;</span>ctx, <span class="prelude-val">None</span>, [item.clone(), (i <span class="kw">as </span>INT).into()])
+                            mapper.call_raw(<span class="kw-2">&amp;</span>ctx, <span class="prelude-val">None</span>, [item, (i <span class="kw">as </span>INT).into()])
                         }
                         <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(err),
                     })
@@ -3057,10 +3070,10 @@
     ///
     /// print(y);       // prints &quot;[0, 2, 6, 12, 20]&quot;
     /// ```
-    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;map&quot;</span>, return_raw, pure)]
+    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;map&quot;</span>, return_raw)]
     </span><span class="kw">pub fn </span>map_by_fn_name(
         ctx: NativeCallContext,
-        array: <span class="kw-2">&amp;mut </span>Array,
+        array: Array,
         mapper: <span class="kw-2">&amp;</span>str,
     ) -&gt; RhaiResultOf&lt;Array&gt; {
         map(ctx, array, FnPtr::new(mapper)<span class="question-mark">?</span>)
@@ -3087,15 +3100,15 @@
     ///
     /// print(y);       // prints &quot;[12, 20]&quot;
     /// ```
-    </span><span class="attribute">#[rhai_fn(return_raw, pure)]
-    </span><span class="kw">pub fn </span>filter(ctx: NativeCallContext, array: <span class="kw-2">&amp;mut </span>Array, filter: FnPtr) -&gt; RhaiResultOf&lt;Array&gt; {
+    </span><span class="attribute">#[rhai_fn(return_raw)]
+    </span><span class="kw">pub fn </span>filter(ctx: NativeCallContext, array: Array, filter: FnPtr) -&gt; RhaiResultOf&lt;Array&gt; {
         <span class="kw">if </span>array.is_empty() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(array.clone());
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(array);
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>ar = Array::new();
 
-        <span class="kw">for </span>(i, item) <span class="kw">in </span>array.iter().enumerate() {
+        <span class="kw">for </span>(i, item) <span class="kw">in </span>array.into_iter().enumerate() {
             <span class="kw">if </span>filter
                 .call_raw(<span class="kw-2">&amp;</span>ctx, <span class="prelude-val">None</span>, [item.clone()])
                 .or_else(|err| <span class="kw">match </span><span class="kw-2">*</span>err {
@@ -3117,7 +3130,7 @@
                 </span>.as_bool()
                 .unwrap_or(<span class="bool-val">false</span>)
             {
-                ar.push(item.clone());
+                ar.push(item);
             }
         }
 
@@ -3148,10 +3161,10 @@
     ///
     /// print(y);       // prints &quot;[12, 20]&quot;
     /// ```
-    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;filter&quot;</span>, return_raw, pure)]
+    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;filter&quot;</span>, return_raw)]
     </span><span class="kw">pub fn </span>filter_by_fn_name(
         ctx: NativeCallContext,
-        array: <span class="kw-2">&amp;mut </span>Array,
+        array: Array,
         filter_func: <span class="kw-2">&amp;</span>str,
     ) -&gt; RhaiResultOf&lt;Array&gt; {
         filter(ctx, array, FnPtr::new(filter_func)<span class="question-mark">?</span>)
@@ -3661,8 +3674,7 @@
     ///
     /// print(x);       // prints &quot;[1, 2, 3, 4, 3, 2, 1]&quot;
     /// ```
-    </span><span class="attribute">#[rhai_fn(return_raw)]
-    </span><span class="kw">pub fn </span>dedup(ctx: NativeCallContext, array: <span class="kw-2">&amp;mut </span>Array) -&gt; RhaiResultOf&lt;()&gt; {
+    </span><span class="kw">pub fn </span>dedup(ctx: NativeCallContext, array: <span class="kw-2">&amp;mut </span>Array) {
         <span class="kw">let </span>comparer = FnPtr::new_unchecked(OP_EQUALS, StaticVec::new_const());
         dedup_by_comparer(ctx, array, comparer)
     }
@@ -3689,25 +3701,19 @@
     ///
     /// print(x);       // prints &quot;[1, 2, 3, 4]&quot;
     /// ```
-    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;dedup&quot;</span>, return_raw)]
-    </span><span class="kw">pub fn </span>dedup_by_comparer(
-        ctx: NativeCallContext,
-        array: <span class="kw-2">&amp;mut </span>Array,
-        comparer: FnPtr,
-    ) -&gt; RhaiResultOf&lt;()&gt; {
+    </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;dedup&quot;</span>)]
+    </span><span class="kw">pub fn </span>dedup_by_comparer(ctx: NativeCallContext, array: <span class="kw-2">&amp;mut </span>Array, comparer: FnPtr) {
         <span class="kw">if </span>array.is_empty() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+            <span class="kw">return</span>;
         }
 
         array.dedup_by(|x, y| {
             comparer
                 .call_raw(<span class="kw-2">&amp;</span>ctx, <span class="prelude-val">None</span>, [y.clone(), x.clone()])
-                .unwrap_or_else(|<span class="kw">_</span>| Dynamic::FALSE)
+                .unwrap_or(Dynamic::FALSE)
                 .as_bool()
                 .unwrap_or(<span class="bool-val">false</span>)
         });
-
-        <span class="prelude-val">Ok</span>(())
     }
     <span class="doccomment">/// Remove duplicated _consecutive_ elements from the array that return `true` when applied a
     /// function named by `comparer`.
@@ -3740,7 +3746,7 @@
         array: <span class="kw-2">&amp;mut </span>Array,
         comparer: <span class="kw-2">&amp;</span>str,
     ) -&gt; RhaiResultOf&lt;()&gt; {
-        dedup_by_comparer(ctx, array, FnPtr::new(comparer)<span class="question-mark">?</span>)
+        <span class="prelude-val">Ok</span>(dedup_by_comparer(ctx, array, FnPtr::new(comparer)<span class="question-mark">?</span>))
     }
     <span class="doccomment">/// Reduce an array by iterating through all elements while applying the `reducer` function.
     ///
@@ -3755,11 +3761,11 @@
     /// ```rhai
     /// let x = [1, 2, 3, 4, 5];
     ///
-    /// let y = x.reduce(|r, v| v + if r == () { 0 } else { r });
+    /// let y = x.reduce(|r, v| v + (r ?? 0));
     ///
     /// print(y);       // prints 15
     ///
-    /// let y = x.reduce(|r, v, i| v + i + if r == () { 0 } else { r });
+    /// let y = x.reduce(|r, v, i| v + i + (r ?? 0));
     ///
     /// print(y);       // prints 25
     /// ```
@@ -3781,10 +3787,10 @@
     ///
     /// ```rhai
     /// fn process(r, x) {
-    ///     x + if r == () { 0 } else { r }
+    ///     x + (r ?? 0)
     /// }
     /// fn process_extra(r, x, i) {
-    ///     x + i + if r == () { 0 } else { r }
+    ///     x + i + (r ?? 0)
     /// }
     ///
     /// let x = [1, 2, 3, 4, 5];
@@ -3914,11 +3920,11 @@
     /// ```rhai
     /// let x = [1, 2, 3, 4, 5];
     ///
-    /// let y = x.reduce_rev(|r, v| v + if r == () { 0 } else { r });
+    /// let y = x.reduce_rev(|r, v| v + (r ?? 0));
     ///
     /// print(y);       // prints 15
     ///
-    /// let y = x.reduce_rev(|r, v, i| v + i + if r == () { 0 } else { r });
+    /// let y = x.reduce_rev(|r, v, i| v + i + (r ?? 0));
     ///
     /// print(y);       // prints 25
     /// ```
@@ -3941,10 +3947,10 @@
     ///
     /// ```rhai
     /// fn process(r, x) {
-    ///     x + if r == () { 0 } else { r }
+    ///     x + (r ?? 0)
     /// }
     /// fn process_extra(r, x, i) {
-    ///     x + i + if r == () { 0 } else { r }
+    ///     x + i + (r ?? 0)
     /// }
     ///
     /// let x = [1, 2, 3, 4, 5];
@@ -4097,13 +4103,15 @@
                 .call_raw(<span class="kw-2">&amp;</span>ctx, <span class="prelude-val">None</span>, [x.clone(), y.clone()])
                 .ok()
                 .and_then(|v| v.as_int().ok())
-                .map(|v| <span class="kw">match </span>v {
-                    v <span class="kw">if </span>v &gt; <span class="number">0 </span>=&gt; Ordering::Greater,
-                    v <span class="kw">if </span>v &lt; <span class="number">0 </span>=&gt; Ordering::Less,
-                    <span class="number">0 </span>=&gt; Ordering::Equal,
-                    <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;v is {}&quot;</span>, v),
-                })
-                .unwrap_or_else(|| x.type_id().cmp(<span class="kw-2">&amp;</span>y.type_id()))
+                .map_or_else(
+                    || x.type_id().cmp(<span class="kw-2">&amp;</span>y.type_id()),
+                    |v| <span class="kw">match </span>v {
+                        v <span class="kw">if </span>v &gt; <span class="number">0 </span>=&gt; Ordering::Greater,
+                        v <span class="kw">if </span>v &lt; <span class="number">0 </span>=&gt; Ordering::Less,
+                        <span class="number">0 </span>=&gt; Ordering::Equal,
+                        <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;v is {}&quot;</span>, v),
+                    },
+                )
         });
 
         <span class="prelude-val">Ok</span>(())
@@ -4477,7 +4485,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>x = <span class="number">0</span>;
 
         <span class="kw">while </span>x &lt; array.len() {
-            <span class="kw">if </span>!filter
+            <span class="kw">if </span>filter
                 .call_raw(<span class="kw-2">&amp;</span>ctx, <span class="prelude-val">None</span>, [array[x].clone()])
                 .or_else(|err| <span class="kw">match </span><span class="kw-2">*</span>err {
                     ERR::ErrorFunctionNotFound(fn_sig, ..)
@@ -4498,9 +4506,9 @@
                 </span>.as_bool()
                 .unwrap_or(<span class="bool-val">false</span>)
             {
-                drained.push(array.remove(x));
-            } <span class="kw">else </span>{
                 x += <span class="number">1</span>;
+            } <span class="kw">else </span>{
+                drained.push(array.remove(x));
             }
 
             i += <span class="number">1</span>;
@@ -4715,4 +4723,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

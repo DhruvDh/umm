@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -423,6 +423,50 @@
 <span id="423">423</span>
 <span id="424">424</span>
 <span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # Rhai - embedded scripting for Rust
 //!
 //! ![Rhai logo](https://rhai.rs/book/images/logo/rhai-banner-transparent-colour.svg)
@@ -436,7 +480,7 @@
 //!
 //! ## Contents of `my_script.rhai`
 //!
-//! ```ignore
+//! ```rhai
 //! /// Brute force factorial function
 //! fn factorial(x) {
 //!     if x == 1 { return 1; }
@@ -469,7 +513,7 @@
 //! #   #[cfg(not(target_family = &quot;wasm&quot;))]
 //! #   
 //!     // Evaluate the script, expecting a &#39;bool&#39; result
-//!     let result = engine.eval_file::&lt;bool&gt;(&quot;my_script.rhai&quot;.into())?;
+//!     let result: bool = engine.eval_file(&quot;my_script.rhai&quot;.into())?;
 //!
 //!     assert_eq!(result, true);
 //!
@@ -482,6 +526,19 @@
 //! See [The Rhai Book](https://rhai.rs/book) for details on the Rhai scripting engine and language.
 
 </span><span class="attribute">#![cfg_attr(feature = <span class="string">&quot;no_std&quot;</span>, no_std)]
+#![deny(missing_docs)]
+</span><span class="comment">// #![warn(clippy::all)]
+// #![warn(clippy::pedantic)]
+// #![warn(clippy::nursery)]
+// #![warn(clippy::cargo)]
+// #![warn(clippy::undocumented_unsafe_blocks)]
+</span><span class="attribute">#![allow(clippy::unit_arg)]
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::used_underscore_binding)]
+#![allow(clippy::inline_always)]
+#![allow(clippy::module_name_repetitions)]
+#![allow(clippy::negative_feature_names)]
+#![allow(clippy::module_inception)]
 
 #[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">extern crate </span>alloc;
@@ -546,6 +603,20 @@
 #[allow(non_camel_case_types)]
 </span><span class="kw">type </span>UNSIGNED_INT = u32;
 
+<span class="doccomment">/// The maximum integer that can fit into a [`usize`].
+</span><span class="attribute">#[cfg(not(target_pointer_width = <span class="string">&quot;32&quot;</span>))]
+</span><span class="kw">const </span>MAX_USIZE_INT: INT = INT::MAX;
+
+<span class="doccomment">/// The maximum integer that can fit into a [`usize`].
+</span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;only_i32&quot;</span>))]
+#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+</span><span class="kw">const </span>MAX_USIZE_INT: INT = usize::MAX <span class="kw">as </span>INT;
+
+<span class="doccomment">/// The maximum integer that can fit into a [`usize`].
+</span><span class="attribute">#[cfg(feature = <span class="string">&quot;only_i32&quot;</span>)]
+#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+</span><span class="kw">const </span>MAX_USIZE_INT: INT = INT::MAX;
+
 <span class="doccomment">/// Number of bits in [`INT`].
 ///
 /// It is 64 unless the `only_i32` feature is enabled when it will be 32.
@@ -554,6 +625,7 @@
 <span class="doccomment">/// Number of bytes that make up an [`INT`].
 ///
 /// It is 8 unless the `only_i32` feature is enabled when it will be 4.
+</span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
 </span><span class="kw">const </span>INT_BYTES: usize = std::mem::size_of::&lt;INT&gt;();
 
 <span class="doccomment">/// The system floating-point type. It is defined as [`f64`].
@@ -579,6 +651,7 @@
 ///
 /// It is 8 unless the `f32_float` feature is enabled when it will be 4.
 </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
+#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
 </span><span class="kw">const </span>FLOAT_BYTES: usize = std::mem::size_of::&lt;FLOAT&gt;();
 
 <span class="doccomment">/// An exclusive integer range.
@@ -587,8 +660,12 @@
 <span class="doccomment">/// An inclusive integer range.
 </span><span class="kw">type </span>InclusiveRange = std::ops::RangeInclusive&lt;INT&gt;;
 
-<span class="kw">pub use </span>api::custom_syntax::Expression;
-<span class="kw">pub use </span>api::events::VarDefInfo;
+<span class="attribute">#[allow(deprecated)]
+</span><span class="kw">pub use </span>api::build_type::{CustomType, TypeBuilder};
+<span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_std&quot;</span>))]
+#[cfg(not(target_family = <span class="string">&quot;wasm&quot;</span>))]
+</span><span class="kw">pub use </span>api::files::{eval_file, run_file};
+<span class="kw">pub use </span>api::{eval::eval, events::VarDefInfo, run::run};
 <span class="kw">pub use </span>ast::{FnAccess, AST};
 <span class="kw">pub use </span>engine::{Engine, OP_CONTAINS, OP_EQUALS};
 <span class="kw">pub use </span>eval::EvalContext;
@@ -600,6 +677,9 @@
 <span class="kw">pub use </span>types::{
     Dynamic, EvalAltResult, FnPtr, ImmutableString, LexError, ParseError, ParseErrorType, Scope,
 };
+
+<span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+</span><span class="kw">pub use </span>api::custom_syntax::Expression;
 
 <span class="doccomment">/// _(debugging)_ Module containing types for debugging.
 /// Exported under the `debugging` feature only.
@@ -692,8 +772,8 @@
 
 <span class="attribute">#[cfg(feature = <span class="string">&quot;internals&quot;</span>)]
 </span><span class="kw">pub use </span>tokenizer::{
-    InputStream, MultiInputsStream, Span, Token, TokenIterator, TokenizeState, TokenizerControl,
-    TokenizerControlBlock,
+    is_valid_function_name, is_valid_identifier, InputStream, MultiInputsStream, Span, Token,
+    TokenIterator, TokenizeState, TokenizerControl, TokenizerControlBlock,
 };
 
 <span class="attribute">#[cfg(feature = <span class="string">&quot;internals&quot;</span>)]
@@ -704,9 +784,13 @@
 
 <span class="attribute">#[cfg(feature = <span class="string">&quot;internals&quot;</span>)]
 </span><span class="kw">pub use </span>ast::{
-    ASTFlags, ASTNode, BinaryExpr, ConditionalStmtBlock, CustomExpr, Expr, FnCallExpr,
-    FnCallHashes, Ident, OpAssignment, ScriptFnDef, Stmt, StmtBlock, SwitchCases, TryCatchBlock,
+    ASTFlags, ASTNode, BinaryExpr, ConditionalExpr, Expr, FnCallExpr, FnCallHashes, Ident,
+    OpAssignment, RangeCase, ScriptFnDef, Stmt, StmtBlock, SwitchCasesCollection, TryCatchBlock,
 };
+
+<span class="attribute">#[cfg(feature = <span class="string">&quot;internals&quot;</span>)]
+#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+</span><span class="kw">pub use </span>ast::CustomExpr;
 
 <span class="attribute">#[cfg(feature = <span class="string">&quot;internals&quot;</span>)]
 #[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
@@ -723,6 +807,10 @@
 
 <span class="attribute">#[cfg(feature = <span class="string">&quot;internals&quot;</span>)]
 </span><span class="kw">pub use </span>eval::{Caches, FnResolutionCache, FnResolutionCacheEntry, GlobalRuntimeState};
+
+<span class="attribute">#[cfg(feature = <span class="string">&quot;internals&quot;</span>)]
+#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+</span><span class="kw">pub use </span>api::definitions::Definitions;
 
 <span class="doccomment">/// Alias to [`smallvec::SmallVec&lt;[T; 3]&gt;`](https://crates.io/crates/smallvec), which is a
 /// specialized [`Vec`] backed by a small, inline, fixed-size array when there are ≤ 3 items stored.
@@ -849,4 +937,4 @@
 #[cfg(feature = <span class="string">&quot;stdweb&quot;</span>)]
 </span><span class="macro">compile_error!</span>(<span class="string">&quot;`wasm-bindgen` and `stdweb` cannot be used together&quot;</span>);
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/percent-encoding-2.1.0/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../percent_encoding/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../percent_encoding/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../percent_encoding/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/percent-encoding-2.2.0/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../percent_encoding/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../percent_encoding/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../percent_encoding/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -440,6 +440,32 @@
 <span id="440">440</span>
 <span id="441">441</span>
 <span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2013-2016 The rust-url developers.
 //
 // Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or
@@ -448,7 +474,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-</span><span class="doccomment">//! URLs use special chacters to indicate the parts of the request.
+</span><span class="doccomment">//! URLs use special characters to indicate the parts of the request.
 //! For example, a `?` question mark marks the end of a path and the start of a query string.
 //! In order for that character to exist inside a path, it needs to be encoded differently.
 //!
@@ -463,9 +489,9 @@
 //! The [`AsciiSet`] parameter of [`percent_encode`] and [`utf8_percent_encode`]
 //! lets callers configure this.
 //!
-//! This crate delibarately does not provide many different sets.
+//! This crate deliberately does not provide many different sets.
 //! Users should consider in what context the encoded string will be used,
-//! real relevant specifications, and define their own set.
+//! read relevant specifications, and define their own set.
 //! This is done by using the `add` method of an existing set.
 //!
 //! # Examples
@@ -479,15 +505,22 @@
 //! assert_eq!(utf8_percent_encode(&quot;foo &lt;bar&gt;&quot;, FRAGMENT).to_string(), &quot;foo%20%3Cbar%3E&quot;);
 //! ```
 
-</span><span class="kw">use </span>std::borrow::Cow;
-<span class="kw">use </span>std::fmt;
-<span class="kw">use </span>std::slice;
-<span class="kw">use </span>std::str;
+</span><span class="attribute">#![no_std]
+#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+</span><span class="kw">extern crate </span>alloc;
+
+<span class="attribute">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+</span><span class="kw">use </span>alloc::{
+    borrow::{Cow, ToOwned},
+    string::String,
+    vec::Vec,
+};
+<span class="kw">use </span>core::{fmt, mem, slice, str};
 
 <span class="doccomment">/// Represents a set of characters or bytes in the ASCII range.
 ///
-/// This used in [`percent_encode`] and [`utf8_percent_encode`].
-/// This is simlar to [percent-encode sets](https://url.spec.whatwg.org/#percent-encoded-bytes).
+/// This is used in [`percent_encode`] and [`utf8_percent_encode`].
+/// This is similar to [percent-encode sets](https://url.spec.whatwg.org/#percent-encoded-bytes).
 ///
 /// Use the `add` method of an existing set to define a new set. For example:
 ///
@@ -505,7 +538,7 @@
 
 <span class="kw">const </span>ASCII_RANGE_LEN: usize = <span class="number">0x80</span>;
 
-<span class="kw">const </span>BITS_PER_CHUNK: usize = <span class="number">8 </span>* std::mem::size_of::&lt;Chunk&gt;();
+<span class="kw">const </span>BITS_PER_CHUNK: usize = <span class="number">8 </span>* mem::size_of::&lt;Chunk&gt;();
 
 <span class="kw">impl </span>AsciiSet {
     <span class="doccomment">/// Called with UTF-8 bytes rather than code points.
@@ -551,7 +584,7 @@
     ($( <span class="macro-nonterminal">$bool</span>: expr, )+) =&gt; {
         <span class="kw">fn </span>_static_assert() {
             $(
-                <span class="kw">let _ </span>= std::mem::transmute::&lt;[u8; <span class="macro-nonterminal">$bool </span><span class="kw">as </span>usize], u8&gt;;
+                <span class="kw">let _ </span>= mem::transmute::&lt;[u8; <span class="macro-nonterminal">$bool </span><span class="kw">as </span>usize], u8&gt;;
             )+
         }
     }
@@ -694,7 +727,9 @@
                 <span class="self">self</span>.bytes = remaining;
                 <span class="prelude-val">Some</span>(percent_encode_byte(first_byte))
             } <span class="kw">else </span>{
-                <span class="kw">for </span>(i, <span class="kw-2">&amp;</span>byte) <span class="kw">in </span>remaining.iter().enumerate() {
+                <span class="comment">// The unsafe blocks here are appropriate because the bytes are
+                // confirmed as a subset of UTF-8 in should_percent_encode.
+                </span><span class="kw">for </span>(i, <span class="kw-2">&amp;</span>byte) <span class="kw">in </span>remaining.iter().enumerate() {
                     <span class="kw">if </span><span class="self">self</span>.ascii_set.should_percent_encode(byte) {
                         <span class="comment">// 1 for first_byte + i for previous iterations of this loop
                         </span><span class="kw">let </span>(unchanged_slice, remaining) = <span class="self">self</span>.bytes.split_at(<span class="number">1 </span>+ i);
@@ -721,7 +756,7 @@
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; fmt::Display <span class="kw">for </span>PercentEncode&lt;<span class="lifetime">&#39;a</span>&gt; {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
         <span class="kw">for </span>c <span class="kw">in </span>(<span class="kw-2">*</span><span class="self">self</span>).clone() {
             formatter.write_str(c)<span class="question-mark">?
         </span>}
@@ -729,7 +764,8 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;PercentEncode&lt;<span class="lifetime">&#39;a</span>&gt;&gt; <span class="kw">for </span>Cow&lt;<span class="lifetime">&#39;a</span>, str&gt; {
+<span class="attribute">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;PercentEncode&lt;<span class="lifetime">&#39;a</span>&gt;&gt; <span class="kw">for </span>Cow&lt;<span class="lifetime">&#39;a</span>, str&gt; {
     <span class="kw">fn </span>from(<span class="kw-2">mut </span>iter: PercentEncode&lt;<span class="lifetime">&#39;a</span>&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">match </span>iter.next() {
             <span class="prelude-val">None </span>=&gt; <span class="string">&quot;&quot;</span>.into(),
@@ -752,7 +788,7 @@
 ///
 /// See [`percent_decode`] regarding the return type.
 </span><span class="attribute">#[inline]
-</span><span class="kw">pub fn </span>percent_decode_str(input: <span class="kw-2">&amp;</span>str) -&gt; PercentDecode {
+</span><span class="kw">pub fn </span>percent_decode_str(input: <span class="kw-2">&amp;</span>str) -&gt; PercentDecode&lt;<span class="lifetime">&#39;_</span>&gt; {
     percent_decode(input.as_bytes())
 }
 
@@ -775,7 +811,7 @@
 /// assert_eq!(percent_decode(b&quot;foo%20bar%3f&quot;).decode_utf8().unwrap(), &quot;foo bar?&quot;);
 /// ```
 </span><span class="attribute">#[inline]
-</span><span class="kw">pub fn </span>percent_decode(input: <span class="kw-2">&amp;</span>[u8]) -&gt; PercentDecode {
+</span><span class="kw">pub fn </span>percent_decode(input: <span class="kw-2">&amp;</span>[u8]) -&gt; PercentDecode&lt;<span class="lifetime">&#39;_</span>&gt; {
     PercentDecode {
         bytes: input.iter(),
     }
@@ -787,7 +823,7 @@
     bytes: slice::Iter&lt;<span class="lifetime">&#39;a</span>, u8&gt;,
 }
 
-<span class="kw">fn </span>after_percent_sign(iter: <span class="kw-2">&amp;mut </span>slice::Iter&lt;u8&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;u8&gt; {
+<span class="kw">fn </span>after_percent_sign(iter: <span class="kw-2">&amp;mut </span>slice::Iter&lt;<span class="lifetime">&#39;_</span>, u8&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;u8&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>cloned_iter = iter.clone();
     <span class="kw">let </span>h = char::from(<span class="kw-2">*</span>cloned_iter.next()<span class="question-mark">?</span>).to_digit(<span class="number">16</span>)<span class="question-mark">?</span>;
     <span class="kw">let </span>l = char::from(<span class="kw-2">*</span>cloned_iter.next()<span class="question-mark">?</span>).to_digit(<span class="number">16</span>)<span class="question-mark">?</span>;
@@ -810,11 +846,12 @@
 
     <span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
         <span class="kw">let </span>bytes = <span class="self">self</span>.bytes.len();
-        (bytes / <span class="number">3</span>, <span class="prelude-val">Some</span>(bytes))
+        ((bytes + <span class="number">2</span>) / <span class="number">3</span>, <span class="prelude-val">Some</span>(bytes))
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;PercentDecode&lt;<span class="lifetime">&#39;a</span>&gt;&gt; <span class="kw">for </span>Cow&lt;<span class="lifetime">&#39;a</span>, [u8]&gt; {
+<span class="attribute">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;PercentDecode&lt;<span class="lifetime">&#39;a</span>&gt;&gt; <span class="kw">for </span>Cow&lt;<span class="lifetime">&#39;a</span>, [u8]&gt; {
     <span class="kw">fn </span>from(iter: PercentDecode&lt;<span class="lifetime">&#39;a</span>&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">match </span>iter.if_any() {
             <span class="prelude-val">Some</span>(vec) =&gt; Cow::Owned(vec),
@@ -825,6 +862,7 @@
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; PercentDecode&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="doccomment">/// If the percent-decoding is different from the input, return it as a new bytes vector.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
     </span><span class="kw">fn </span>if_any(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>bytes_iter = <span class="self">self</span>.bytes.clone();
         <span class="kw">while </span>bytes_iter.any(|<span class="kw-2">&amp;</span>b| b == <span class="string">b&#39;%&#39;</span>) {
@@ -844,6 +882,7 @@
     <span class="doccomment">/// Decode the result of percent-decoding as UTF-8.
     ///
     /// This is return `Err` when the percent-decoded bytes are not well-formed in UTF-8.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
     </span><span class="kw">pub fn </span>decode_utf8(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Cow&lt;<span class="lifetime">&#39;a</span>, str&gt;, str::Utf8Error&gt; {
         <span class="kw">match </span><span class="self">self</span>.clone().into() {
             Cow::Borrowed(bytes) =&gt; <span class="kw">match </span>str::from_utf8(bytes) {
@@ -861,26 +900,39 @@
     ///
     /// Invalid UTF-8 percent-encoded byte sequences will be replaced � U+FFFD,
     /// the replacement character.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
     </span><span class="kw">pub fn </span>decode_utf8_lossy(<span class="self">self</span>) -&gt; Cow&lt;<span class="lifetime">&#39;a</span>, str&gt; {
         decode_utf8_lossy(<span class="self">self</span>.clone().into())
     }
 }
 
-<span class="kw">fn </span>decode_utf8_lossy(input: Cow&lt;[u8]&gt;) -&gt; Cow&lt;str&gt; {
-    <span class="kw">match </span>input {
+<span class="attribute">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+</span><span class="kw">fn </span>decode_utf8_lossy(input: Cow&lt;<span class="lifetime">&#39;_</span>, [u8]&gt;) -&gt; Cow&lt;<span class="lifetime">&#39;_</span>, str&gt; {
+    <span class="comment">// Note: This function is duplicated in `form_urlencoded/src/query_encoding.rs`.
+    </span><span class="kw">match </span>input {
         Cow::Borrowed(bytes) =&gt; String::from_utf8_lossy(bytes),
         Cow::Owned(bytes) =&gt; {
-            <span class="kw">let </span>raw_utf8: <span class="kw-2">*const </span>[u8];
             <span class="kw">match </span>String::from_utf8_lossy(<span class="kw-2">&amp;</span>bytes) {
-                Cow::Borrowed(utf8) =&gt; raw_utf8 = utf8.as_bytes(),
-                Cow::Owned(s) =&gt; <span class="kw">return </span>s.into(),
+                Cow::Borrowed(utf8) =&gt; {
+                    <span class="comment">// If from_utf8_lossy returns a Cow::Borrowed, then we can
+                    // be sure our original bytes were valid UTF-8. This is because
+                    // if the bytes were invalid UTF-8 from_utf8_lossy would have
+                    // to allocate a new owned string to back the Cow so it could
+                    // replace invalid bytes with a placeholder.
+
+                    // First we do a debug_assert to confirm our description above.
+                    </span><span class="kw">let </span>raw_utf8: <span class="kw-2">*const </span>[u8] = utf8.as_bytes();
+                    <span class="macro">debug_assert!</span>(raw_utf8 == <span class="kw-2">&amp;*</span>bytes <span class="kw">as </span><span class="kw-2">*const </span>[u8]);
+
+                    <span class="comment">// Given we know the original input bytes are valid UTF-8,
+                    // and we have ownership of those bytes, we re-use them and
+                    // return a Cow::Owned here.
+                    </span>Cow::Owned(<span class="kw">unsafe </span>{ String::from_utf8_unchecked(bytes) })
+                }
+                Cow::Owned(s) =&gt; Cow::Owned(s),
             }
-            <span class="comment">// from_utf8_lossy returned a borrow of `bytes` unchanged.
-            </span><span class="macro">debug_assert!</span>(raw_utf8 == <span class="kw-2">&amp;*</span>bytes <span class="kw">as </span><span class="kw-2">*const </span>[u8]);
-            <span class="comment">// Reuse the existing `Vec` allocation.
-            </span><span class="kw">unsafe </span>{ String::from_utf8_unchecked(bytes) }.into()
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="percent_encoding" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="percent_encoding" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

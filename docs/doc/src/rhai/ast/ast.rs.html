@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/ast/ast.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ast.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/ast/ast.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ast.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -911,6 +911,102 @@
 <span id="911">911</span>
 <span id="912">912</span>
 <span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
+<span id="974">974</span>
+<span id="975">975</span>
+<span id="976">976</span>
+<span id="977">977</span>
+<span id="978">978</span>
+<span id="979">979</span>
+<span id="980">980</span>
+<span id="981">981</span>
+<span id="982">982</span>
+<span id="983">983</span>
+<span id="984">984</span>
+<span id="985">985</span>
+<span id="986">986</span>
+<span id="987">987</span>
+<span id="988">988</span>
+<span id="989">989</span>
+<span id="990">990</span>
+<span id="991">991</span>
+<span id="992">992</span>
+<span id="993">993</span>
+<span id="994">994</span>
+<span id="995">995</span>
+<span id="996">996</span>
+<span id="997">997</span>
+<span id="998">998</span>
+<span id="999">999</span>
+<span id="1000">1000</span>
+<span id="1001">1001</span>
+<span id="1002">1002</span>
+<span id="1003">1003</span>
+<span id="1004">1004</span>
+<span id="1005">1005</span>
+<span id="1006">1006</span>
+<span id="1007">1007</span>
+<span id="1008">1008</span>
+<span id="1009">1009</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Module defining the AST (abstract syntax tree).
 
 </span><span class="kw">use super</span>::{ASTFlags, Expr, FnAccess, Stmt, StmtBlock, StmtBlockContainer};
@@ -934,6 +1030,9 @@
     <span class="doccomment">/// Source of the [`AST`].
     /// No source if string is empty.
     </span>source: Identifier,
+    <span class="doccomment">/// [`AST`] documentation.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+    </span>doc: <span class="kw">crate</span>::SmartString,
     <span class="doccomment">/// Global statements.
     </span>body: StmtBlock,
     <span class="doccomment">/// Script-defined functions.
@@ -955,19 +1054,17 @@
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
         <span class="kw">let </span><span class="kw-2">mut </span>fp = f.debug_struct(<span class="string">&quot;AST&quot;</span>);
 
-        <span class="kw">if </span>!<span class="self">self</span>.source.is_empty() {
-            fp.field(<span class="string">&quot;source: &quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.source);
-        }
+        fp.field(<span class="string">&quot;source&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.source);
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+        </span>fp.field(<span class="string">&quot;doc&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.doc);
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>resolver) = <span class="self">self</span>.resolver {
-            fp.field(<span class="string">&quot;resolver: &quot;</span>, resolver);
-        }
+        </span>fp.field(<span class="string">&quot;resolver&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.resolver);
 
         fp.field(<span class="string">&quot;body&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.body.as_slice());
 
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
         </span><span class="kw">if </span>!<span class="self">self</span>.lib.is_empty() {
-            <span class="kw">for </span>(.., <span class="kw-2">ref </span>fn_def) <span class="kw">in </span><span class="self">self</span>.lib.iter_script_fn() {
+            <span class="kw">for </span>(.., fn_def) <span class="kw">in </span><span class="self">self</span>.lib.iter_script_fn() {
                 <span class="kw">let </span>sig = fn_def.to_string();
                 fp.field(<span class="kw-2">&amp;</span>sig, <span class="kw-2">&amp;</span>fn_def.body.as_slice());
             }
@@ -987,6 +1084,8 @@
     ) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             source: Identifier::new_const(),
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+            </span>doc: <span class="kw">crate</span>::SmartString::new_const(),
             body: StmtBlock::new(statements, Position::NONE, Position::NONE),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             </span>lib: functions.into(),
@@ -1005,6 +1104,8 @@
     ) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             source: Identifier::new_const(),
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+            </span>doc: <span class="kw">crate</span>::SmartString::new_const(),
             body: StmtBlock::new(statements, Position::NONE, Position::NONE),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             </span>lib: functions.into(),
@@ -1053,6 +1154,8 @@
     </span><span class="kw">pub fn </span>empty() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             source: Identifier::new_const(),
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+            </span>doc: <span class="kw">crate</span>::SmartString::new_const(),
             body: StmtBlock::NONE,
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             </span>lib: <span class="kw">crate</span>::Module::new().into(),
@@ -1073,7 +1176,7 @@
     <span class="doccomment">/// Get a reference to the source.
     </span><span class="attribute">#[inline(always)]
     #[must_use]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>source_raw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Identifier {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>source_raw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Identifier {
         <span class="kw-2">&amp;</span><span class="self">self</span>.source
     }
     <span class="doccomment">/// Set the source.
@@ -1093,6 +1196,44 @@
         <span class="self">self</span>.source.clear();
         <span class="self">self
     </span>}
+    <span class="doccomment">/// Get the documentation (if any).
+    /// Exported under the `metadata` feature only.
+    ///
+    /// Documentation is a collection of all comment lines beginning with `//!`.
+    ///
+    /// Leading white-spaces are stripped, and each line always starts with `//!`.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+    #[inline(always)]
+    #[must_use]
+    </span><span class="kw">pub fn </span>doc(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.doc
+    }
+    <span class="doccomment">/// Clear the documentation.
+    /// Exported under the `metadata` feature only.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+    #[inline(always)]
+    </span><span class="kw">pub fn </span>clear_doc(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.doc.clear();
+        <span class="self">self
+    </span>}
+    <span class="doccomment">/// Get a mutable reference to the documentation.
+    ///
+    /// Only available under `metadata`.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+    #[inline(always)]
+    #[must_use]
+    #[allow(dead_code)]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>doc_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="kw">crate</span>::SmartString {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.doc
+    }
+    <span class="doccomment">/// Set the documentation.
+    ///
+    /// Only available under `metadata`.
+    </span><span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+    #[inline(always)]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_doc(<span class="kw-2">&amp;mut </span><span class="self">self</span>, doc: <span class="kw">impl </span>Into&lt;<span class="kw">crate</span>::SmartString&gt;) {
+        <span class="self">self</span>.doc = doc.into();
+    }
     <span class="doccomment">/// Get the statements.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;internals&quot;</span>))]
     #[inline(always)]
@@ -1129,7 +1270,7 @@
     #[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
     #[inline(always)]
     #[must_use]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>shared_lib(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt; {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>shared_lib(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt; {
         <span class="kw-2">&amp;</span><span class="self">self</span>.lib
     }
     <span class="doccomment">/// _(internals)_ Get the internal shared [`Module`][crate::Module] containing all script-defined functions.
@@ -1140,15 +1281,15 @@
     #[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
     #[inline(always)]
     #[must_use]
-    </span><span class="kw">pub fn </span>shared_lib(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt; {
+    </span><span class="kw">pub const fn </span>shared_lib(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::Module&gt; {
         <span class="kw-2">&amp;</span><span class="self">self</span>.lib
     }
-    <span class="doccomment">/// Get the embedded [module resolver][`ModuleResolver`].
+    <span class="doccomment">/// Get the embedded [module resolver][crate::ModuleResolver].
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;internals&quot;</span>))]
     #[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
     #[inline(always)]
     #[must_use]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>resolver(
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>resolver(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
     ) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::module::resolvers::StaticModuleResolver&gt;&gt; {
         <span class="self">self</span>.resolver.as_ref()
@@ -1161,12 +1302,12 @@
     #[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
     #[inline(always)]
     #[must_use]
-    </span><span class="kw">pub fn </span>resolver(
+    </span><span class="kw">pub const fn </span>resolver(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
     ) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::module::resolvers::StaticModuleResolver&gt;&gt; {
         <span class="self">self</span>.resolver.as_ref()
     }
-    <span class="doccomment">/// Set the embedded [module resolver][`ModuleResolver`].
+    <span class="doccomment">/// Set the embedded [module resolver][crate::ModuleResolver].
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
     #[inline(always)]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_resolver(
@@ -1205,6 +1346,8 @@
         lib.merge_filtered(<span class="kw-2">&amp;</span><span class="self">self</span>.lib, <span class="kw-2">&amp;</span>filter);
         <span class="self">Self </span>{
             source: <span class="self">self</span>.source.clone(),
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+            </span>doc: <span class="self">self</span>.doc.clone(),
             body: StmtBlock::NONE,
             lib: lib.into(),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
@@ -1218,6 +1361,8 @@
     </span><span class="kw">pub fn </span>clone_statements_only(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             source: <span class="self">self</span>.source.clone(),
+            <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+            </span>doc: <span class="self">self</span>.doc.clone(),
             body: <span class="self">self</span>.body.clone(),
             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             </span>lib: <span class="kw">crate</span>::Module::new().into(),
@@ -1419,20 +1564,52 @@
             lib
         };
 
-        <span class="kw">if </span>!other.source.is_empty() {
+        <span class="kw">let </span><span class="kw-2">mut </span>_ast = <span class="kw">if </span>other.source.is_empty() {
+            <span class="self">Self</span>::new(
+                merged,
+                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+                </span>lib,
+            )
+        } <span class="kw">else </span>{
             <span class="self">Self</span>::new_with_source(
                 merged,
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
                 </span>lib,
                 other.source.clone(),
             )
-        } <span class="kw">else </span>{
-            <span class="self">Self</span>::new(
-                merged,
-                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                </span>lib,
-            )
+        };
+
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+        </span><span class="kw">match </span>(
+            <span class="self">self</span>.resolver().map_or(<span class="bool-val">true</span>, |r| r.is_empty()),
+            other.resolver().map_or(<span class="bool-val">true</span>, |r| r.is_empty()),
+        ) {
+            (<span class="bool-val">true</span>, <span class="bool-val">true</span>) =&gt; (),
+            (<span class="bool-val">false</span>, <span class="bool-val">true</span>) =&gt; {
+                _ast.set_resolver(<span class="self">self</span>.resolver().unwrap().clone());
+            }
+            (<span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
+                _ast.set_resolver(other.resolver().unwrap().clone());
+            }
+            (<span class="bool-val">false</span>, <span class="bool-val">false</span>) =&gt; {
+                <span class="kw">let </span><span class="kw-2">mut </span>resolver = <span class="self">self</span>.resolver().unwrap().as_ref().clone();
+                <span class="kw">let </span>other_resolver = other.resolver().unwrap().as_ref().clone();
+                <span class="kw">for </span>(k, v) <span class="kw">in </span>other_resolver {
+                    resolver.insert(k, <span class="kw">crate</span>::func::shared_take_or_clone(v));
+                }
+                _ast.set_resolver(resolver);
+            }
         }
+
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+        </span><span class="kw">if </span>!other.doc.is_empty() {
+            <span class="kw">if </span>!_ast.doc.is_empty() {
+                _ast.doc.push(<span class="string">&#39;\n&#39;</span>);
+            }
+            _ast.doc.push_str(other.doc());
+        }
+
+        _ast
     }
     <span class="doccomment">/// Combine one [`AST`] with another.  The second [`AST`] is consumed.
     ///
@@ -1500,13 +1677,39 @@
         other: <span class="self">Self</span>,
         _filter: <span class="kw">impl </span>Fn(FnNamespace, FnAccess, bool, <span class="kw-2">&amp;</span>str, usize) -&gt; bool,
     ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+        </span><span class="kw">match </span>(
+            <span class="self">self</span>.resolver().map_or(<span class="bool-val">true</span>, |r| r.is_empty()),
+            other.resolver().map_or(<span class="bool-val">true</span>, |r| r.is_empty()),
+        ) {
+            (<span class="kw">_</span>, <span class="bool-val">true</span>) =&gt; (),
+            (<span class="bool-val">true</span>, <span class="bool-val">false</span>) =&gt; {
+                <span class="self">self</span>.set_resolver(other.resolver.unwrap());
+            }
+            (<span class="bool-val">false</span>, <span class="bool-val">false</span>) =&gt; {
+                <span class="kw">let </span>resolver = <span class="kw">crate</span>::func::shared_make_mut(<span class="self">self</span>.resolver.as_mut().unwrap());
+                <span class="kw">let </span>other_resolver = <span class="kw">crate</span>::func::shared_take_or_clone(other.resolver.unwrap());
+                <span class="kw">for </span>(k, v) <span class="kw">in </span>other_resolver {
+                    resolver.insert(k, <span class="kw">crate</span>::func::shared_take_or_clone(v));
+                }
+            }
+        }
+
         <span class="self">self</span>.body.extend(other.body.into_iter());
 
         <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
         </span><span class="kw">if </span>!other.lib.is_empty() {
-            <span class="kw">crate</span>::func::native::shared_make_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>.lib)
-                .merge_filtered(<span class="kw-2">&amp;</span>other.lib, <span class="kw-2">&amp;</span>_filter);
+            <span class="kw">crate</span>::func::shared_make_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>.lib).merge_filtered(<span class="kw-2">&amp;</span>other.lib, <span class="kw-2">&amp;</span>_filter);
         }
+
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
+        </span><span class="kw">if </span>!other.doc.is_empty() {
+            <span class="kw">if </span>!<span class="self">self</span>.doc.is_empty() {
+                <span class="self">self</span>.doc.push(<span class="string">&#39;\n&#39;</span>);
+            }
+            <span class="self">self</span>.doc.push_str(<span class="kw-2">&amp;</span>other.doc);
+        }
+
         <span class="self">self
     </span>}
     <span class="doccomment">/// Filter out the functions, retaining only some based on a filter predicate.
@@ -1541,7 +1744,7 @@
         filter: <span class="kw">impl </span>Fn(FnNamespace, FnAccess, <span class="kw-2">&amp;</span>str, usize) -&gt; bool,
     ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!<span class="self">self</span>.lib.is_empty() {
-            <span class="kw">crate</span>::func::native::shared_make_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>.lib).retain_script_functions(filter);
+            <span class="kw">crate</span>::func::shared_make_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>.lib).retain_script_functions(filter);
         }
         <span class="self">self
     </span>}
@@ -1663,12 +1866,9 @@
                 <span class="kw">if </span>options.contains(ASTFlags::CONSTANT) &amp;&amp; include_constants
                     || !options.contains(ASTFlags::CONSTANT) &amp;&amp; include_variables =&gt;
             {
-                <span class="kw">let </span>(name, expr, ..) = x.as_ref();
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = expr.get_literal_value() {
-                    <span class="prelude-val">Some</span>((name.as_str(), options.contains(ASTFlags::CONSTANT), value))
-                } <span class="kw">else </span>{
-                    <span class="prelude-val">None
-                </span>}
+                <span class="kw">let </span>(name, expr, ..) = <span class="kw-2">&amp;**</span>x;
+                expr.get_literal_value()
+                    .map(|value| (name.as_str(), options.contains(ASTFlags::CONSTANT), value))
             }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         })
@@ -1677,30 +1877,21 @@
     /// Return `false` from the callback to terminate the walk.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;internals&quot;</span>))]
     #[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-    #[inline]
+    #[inline(always)]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>walk(<span class="kw-2">&amp;</span><span class="self">self</span>, on_node: <span class="kw-2">&amp;mut </span><span class="kw">impl </span>FnMut(<span class="kw-2">&amp;</span>[ASTNode]) -&gt; bool) -&gt; bool {
-        <span class="kw">let </span>path = <span class="kw-2">&amp;mut </span>Vec::new();
-
-        <span class="kw">for </span>stmt <span class="kw">in </span><span class="self">self</span>.statements() {
-            <span class="kw">if </span>!stmt.walk(path, on_node) {
-                <span class="kw">return </span><span class="bool-val">false</span>;
-            }
-        }
-        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-        </span><span class="kw">for </span>stmt <span class="kw">in </span><span class="self">self</span>.iter_fn_def().flat_map(|f| f.body.iter()) {
-            <span class="kw">if </span>!stmt.walk(path, on_node) {
-                <span class="kw">return </span><span class="bool-val">false</span>;
-            }
-        }
-
-        <span class="bool-val">true
-    </span>}
+        <span class="self">self</span>._walk(on_node)
+    }
     <span class="doccomment">/// _(internals)_ Recursively walk the [`AST`], including function bodies (if any).
     /// Return `false` from the callback to terminate the walk.
     /// Exported under the `internals` feature only.
     </span><span class="attribute">#[cfg(feature = <span class="string">&quot;internals&quot;</span>)]
-    #[inline]
+    #[inline(always)]
     </span><span class="kw">pub fn </span>walk(<span class="kw-2">&amp;</span><span class="self">self</span>, on_node: <span class="kw-2">&amp;mut </span><span class="kw">impl </span>FnMut(<span class="kw-2">&amp;</span>[ASTNode]) -&gt; bool) -&gt; bool {
+        <span class="self">self</span>._walk(on_node)
+    }
+    <span class="doccomment">/// Recursively walk the [`AST`], including function bodies (if any).
+    /// Return `false` from the callback to terminate the walk.
+    </span><span class="kw">fn </span>_walk(<span class="kw-2">&amp;</span><span class="self">self</span>, on_node: <span class="kw-2">&amp;mut </span><span class="kw">impl </span>FnMut(<span class="kw-2">&amp;</span>[ASTNode]) -&gt; bool) -&gt; bool {
         <span class="kw">let </span>path = <span class="kw-2">&amp;mut </span>Vec::new();
 
         <span class="kw">for </span>stmt <span class="kw">in </span><span class="self">self</span>.statements() {
@@ -1728,7 +1919,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;A: Into&lt;AST&gt;&gt; AddAssign&lt;A&gt; <span class="kw">for </span>AST {
+<span class="kw">impl</span>&lt;A: Into&lt;<span class="self">Self</span>&gt;&gt; AddAssign&lt;A&gt; <span class="kw">for </span>AST {
     <span class="attribute">#[inline(always)]
     </span><span class="kw">fn </span>add_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: A) {
         <span class="self">self</span>.combine(rhs.into());
@@ -1796,6 +1987,7 @@
 
 <span class="kw">impl </span>ASTNode&lt;<span class="lifetime">&#39;_</span>&gt; {
     <span class="doccomment">/// Get the [`Position`] of this [`ASTNode`].
+    </span><span class="attribute">#[must_use]
     </span><span class="kw">pub fn </span>position(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Position {
         <span class="kw">match </span><span class="self">self </span>{
             ASTNode::Stmt(stmt) =&gt; stmt.position(),
@@ -1825,4 +2017,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

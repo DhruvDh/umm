@@ -40,7 +40,7 @@ and are communicable only by Rust’s move semantics.</p>
 <p>Values of these types are threaded through the protocol state machine, leading to terminal
 states that look like:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">struct </span>ExpectTraffic {
+<div class="example-wrap ignore"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>ExpectTraffic {
    (...)
     _cert_verified: verify::ServerCertVerified,
     _sig_verified: verify::HandshakeSignatureValid,
@@ -81,4 +81,4 @@ the message type before further operations.</p>
 </ul>
 <p>In the future we plan to formally prove that all possible transitions modelled in this system of types
 are correct with respect to the standard(s).  At the moment we rely merely on exhaustive testing.</p>
-<div class="footnotes"><hr><ol><li id="fn1"><p>a logical TLS message: post-decryption, post-fragmentation.&nbsp;<a href="#fnref1">↩</a></p></li></ol></div></div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rustls" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+<div class="footnotes"><hr><ol><li id="fn1"><p>a logical TLS message: post-decryption, post-fragmentation.&nbsp;<a href="#fnref1">↩</a></p></li></ol></div></div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rustls" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/itertools-0.10.3/src/either_or_both.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>either_or_both.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../itertools/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../itertools/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../itertools/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/itertools-0.10.4/src/either_or_both.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>either_or_both.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../itertools/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../itertools/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../itertools/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -203,6 +203,55 @@
 <span id="203">203</span>
 <span id="204">204</span>
 <span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::EitherOrBoth::<span class="kw-2">*</span>;
 
 <span class="kw">use </span>either::Either;
@@ -370,6 +419,33 @@
     }
 
     <span class="doccomment">/// Returns a tuple consisting of the `l` and `r` in `Both(l, r)`, if present.
+    /// Otherwise, returns the wrapped value for the present element, and the supplied
+    /// value for the other. The first (`l`) argument is used for a missing `Left`
+    /// value. The second (`r`) argument is used for a missing `Right` value.
+    ///
+    /// Arguments passed to `or` are eagerly evaluated; if you are passing
+    /// the result of a function call, it is recommended to use [`or_else`],
+    /// which is lazily evaluated.
+    ///
+    /// [`or_else`]: EitherOrBoth::or_else
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use itertools::EitherOrBoth;
+    /// assert_eq!(EitherOrBoth::Both(&quot;tree&quot;, 1).or(&quot;stone&quot;, 5), (&quot;tree&quot;, 1));
+    /// assert_eq!(EitherOrBoth::Left(&quot;tree&quot;).or(&quot;stone&quot;, 5), (&quot;tree&quot;, 5));
+    /// assert_eq!(EitherOrBoth::Right(1).or(&quot;stone&quot;, 5), (&quot;stone&quot;, 1));
+    /// ```
+    </span><span class="kw">pub fn </span>or(<span class="self">self</span>, l: A, r: B) -&gt; (A, B) {
+        <span class="kw">match </span><span class="self">self </span>{
+            Left(inner_l) =&gt; (inner_l, r),
+            Right(inner_r) =&gt; (l, inner_r),
+            Both(inner_l, inner_r) =&gt; (inner_l, inner_r),
+        }
+    }
+
+    <span class="doccomment">/// Returns a tuple consisting of the `l` and `r` in `Both(l, r)`, if present.
     /// Otherwise, returns the wrapped value for the present element, and the [`default`](Default::default)
     /// for the other.
     </span><span class="kw">pub fn </span>or_default(<span class="self">self</span>) -&gt; (A, B)
@@ -381,6 +457,28 @@
             EitherOrBoth::Left(l) =&gt; (l, B::default()),
             EitherOrBoth::Right(r) =&gt; (A::default(), r),
             EitherOrBoth::Both(l, r) =&gt; (l, r),
+        }
+    }
+
+    <span class="doccomment">/// Returns a tuple consisting of the `l` and `r` in `Both(l, r)`, if present.
+    /// Otherwise, returns the wrapped value for the present element, and computes the
+    /// missing value with the supplied closure. The first argument (`l`) is used for a
+    /// missing `Left` value. The second argument (`r`) is used for a missing `Right` value.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use itertools::EitherOrBoth;
+    /// let k = 10;
+    /// assert_eq!(EitherOrBoth::Both(&quot;tree&quot;, 1).or_else(|| &quot;stone&quot;, || 2 * k), (&quot;tree&quot;, 1));
+    /// assert_eq!(EitherOrBoth::Left(&quot;tree&quot;).or_else(|| &quot;stone&quot;, || 2 * k), (&quot;tree&quot;, 20));
+    /// assert_eq!(EitherOrBoth::Right(1).or_else(|| &quot;stone&quot;, || 2 * k), (&quot;stone&quot;, 1));
+    /// ```
+    </span><span class="kw">pub fn </span>or_else&lt;L: FnOnce() -&gt; A, R: FnOnce() -&gt; B&gt;(<span class="self">self</span>, l: L, r: R) -&gt; (A, B) {
+        <span class="kw">match </span><span class="self">self </span>{
+            Left(inner_l) =&gt; (inner_l, r()),
+            Right(inner_r) =&gt; (l(), inner_r),
+            Both(inner_l, inner_r) =&gt; (inner_l, inner_r),
         }
     }
 }
@@ -409,4 +507,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="itertools" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="itertools" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

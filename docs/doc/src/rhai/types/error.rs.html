@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/types/error.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>error.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/types/error.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>error.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -528,6 +528,9 @@
 <span id="528">528</span>
 <span id="529">529</span>
 <span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Module containing error definitions for the evaluation process.
 
 </span><span class="kw">use crate</span>::{Dynamic, ImmutableString, ParseErrorType, Position, INT};
@@ -572,6 +575,8 @@
     </span>ErrorVariableNotFound(String, Position),
     <span class="doccomment">/// Access of an unknown object map property. Wrapped value is the property name.
     </span>ErrorPropertyNotFound(String, Position),
+    <span class="doccomment">/// Access of an invalid index. Wrapped value is the index name.
+    </span>ErrorIndexNotFound(Dynamic, Position),
     <span class="doccomment">/// Call to an unknown function. Wrapped value is the function signature.
     </span>ErrorFunctionNotFound(String, Position),
     <span class="doccomment">/// Usage of an unknown [module][crate::Module]. Wrapped value is the [module][crate::Module] name.
@@ -679,10 +684,11 @@
             </span>}
             <span class="self">Self</span>::ErrorInModule(s, err, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Error in module &#39;{}&#39; &gt; {}&quot;</span>, s, err)<span class="question-mark">?</span>,
 
-            <span class="self">Self</span>::ErrorVariableExists(s, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Variable is already defined: {}&quot;</span>, s)<span class="question-mark">?</span>,
+            <span class="self">Self</span>::ErrorVariableExists(s, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Variable already defined: {}&quot;</span>, s)<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorForbiddenVariable(s, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Forbidden variable name: {}&quot;</span>, s)<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorVariableNotFound(s, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Variable not found: {}&quot;</span>, s)<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorPropertyNotFound(s, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Property not found: {}&quot;</span>, s)<span class="question-mark">?</span>,
+            <span class="self">Self</span>::ErrorIndexNotFound(s, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Invalid index: {}&quot;</span>, s)<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorFunctionNotFound(s, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Function not found: {}&quot;</span>, s)<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorModuleNotFound(s, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Module not found: {}&quot;</span>, s)<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorDataRace(s, ..) =&gt; {
@@ -692,9 +698,9 @@
                 <span class="string">&quot;&quot; </span>=&gt; f.write_str(<span class="string">&quot;Malformed dot expression&quot;</span>),
                 s =&gt; f.write_str(s),
             }<span class="question-mark">?</span>,
-            <span class="self">Self</span>::ErrorIndexingType(s, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Indexer not registered: {}&quot;</span>, s)<span class="question-mark">?</span>,
-            <span class="self">Self</span>::ErrorUnboundThis(..) =&gt; f.write_str(<span class="string">&quot;&#39;this&#39; is not bound&quot;</span>)<span class="question-mark">?</span>,
-            <span class="self">Self</span>::ErrorFor(..) =&gt; f.write_str(<span class="string">&quot;For loop expects a type that is iterable&quot;</span>)<span class="question-mark">?</span>,
+            <span class="self">Self</span>::ErrorIndexingType(s, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Indexer unavailable: {}&quot;</span>, s)<span class="question-mark">?</span>,
+            <span class="self">Self</span>::ErrorUnboundThis(..) =&gt; f.write_str(<span class="string">&quot;&#39;this&#39; not bound&quot;</span>)<span class="question-mark">?</span>,
+            <span class="self">Self</span>::ErrorFor(..) =&gt; f.write_str(<span class="string">&quot;For loop expects an iterable type&quot;</span>)<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorTooManyOperations(..) =&gt; f.write_str(<span class="string">&quot;Too many operations&quot;</span>)<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorTooManyModules(..) =&gt; f.write_str(<span class="string">&quot;Too many modules imported&quot;</span>)<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorStackOverflow(..) =&gt; f.write_str(<span class="string">&quot;Stack overflow&quot;</span>)<span class="question-mark">?</span>,
@@ -711,14 +717,14 @@
 
             <span class="self">Self</span>::ErrorAssignmentToConstant(s, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Cannot modify constant: {}&quot;</span>, s)<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorMismatchOutputType(e, a, ..) =&gt; <span class="kw">match </span>(a.as_str(), e.as_str()) {
-                (<span class="string">&quot;&quot;</span>, e) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Output type is incorrect, expecting {}&quot;</span>, e),
-                (a, <span class="string">&quot;&quot;</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Output type is incorrect: {}&quot;</span>, a),
-                (a, e) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Output type is incorrect: {} (expecting {})&quot;</span>, a, e),
+                (<span class="string">&quot;&quot;</span>, e) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Output type incorrect, expecting {}&quot;</span>, e),
+                (a, <span class="string">&quot;&quot;</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Output type incorrect: {}&quot;</span>, a),
+                (a, e) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Output type incorrect: {} (expecting {})&quot;</span>, a, e),
             }<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorMismatchDataType(e, a, ..) =&gt; <span class="kw">match </span>(a.as_str(), e.as_str()) {
-                (<span class="string">&quot;&quot;</span>, e) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Data type is incorrect, expecting {}&quot;</span>, e),
-                (a, <span class="string">&quot;&quot;</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Data type is incorrect: {}&quot;</span>, a),
-                (a, e) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Data type is incorrect: {} (expecting {})&quot;</span>, a, e),
+                (<span class="string">&quot;&quot;</span>, e) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Data type incorrect, expecting {}&quot;</span>, e),
+                (a, <span class="string">&quot;&quot;</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Data type incorrect: {}&quot;</span>, a),
+                (a, e) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Data type incorrect: {} (expecting {})&quot;</span>, a, e),
             }<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorArithmetic(s, ..) =&gt; <span class="kw">match </span>s.as_str() {
                 <span class="string">&quot;&quot; </span>=&gt; f.write_str(<span class="string">&quot;Arithmetic error&quot;</span>),
@@ -734,12 +740,12 @@
                 <span class="number">0 </span>=&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Array index {} out of bounds: array is empty&quot;</span>, index),
                 <span class="number">1 </span>=&gt; <span class="macro">write!</span>(
                     f,
-                    <span class="string">&quot;Array index {} out of bounds: only 1 element in the array&quot;</span>,
+                    <span class="string">&quot;Array index {} out of bounds: only 1 element in array&quot;</span>,
                     index
                 ),
                 <span class="kw">_ </span>=&gt; <span class="macro">write!</span>(
                     f,
-                    <span class="string">&quot;Array index {} out of bounds: only {} elements in the array&quot;</span>,
+                    <span class="string">&quot;Array index {} out of bounds: only {} elements in array&quot;</span>,
                     index, max
                 ),
             }<span class="question-mark">?</span>,
@@ -747,18 +753,18 @@
                 <span class="number">0 </span>=&gt; <span class="macro">write!</span>(f, <span class="string">&quot;String index {} out of bounds: string is empty&quot;</span>, index),
                 <span class="number">1 </span>=&gt; <span class="macro">write!</span>(
                     f,
-                    <span class="string">&quot;String index {} out of bounds: only 1 character in the string&quot;</span>,
+                    <span class="string">&quot;String index {} out of bounds: only 1 character in string&quot;</span>,
                     index
                 ),
                 <span class="kw">_ </span>=&gt; <span class="macro">write!</span>(
                     f,
-                    <span class="string">&quot;String index {} out of bounds: only {} characters in the string&quot;</span>,
+                    <span class="string">&quot;String index {} out of bounds: only {} characters in string&quot;</span>,
                     index, max
                 ),
             }<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorBitFieldBounds(max, index, ..) =&gt; <span class="macro">write!</span>(
                 f,
-                <span class="string">&quot;Bit-field index {} out of bounds: only {} bits in the bit-field&quot;</span>,
+                <span class="string">&quot;Bit-field index {} out of bounds: only {} bits in bit-field&quot;</span>,
                 index, max
             )<span class="question-mark">?</span>,
             <span class="self">Self</span>::ErrorDataTooLarge(typ, ..) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{} exceeds maximum limit&quot;</span>, typ)<span class="question-mark">?</span>,
@@ -821,6 +827,7 @@
             | <span class="self">Self</span>::ErrorForbiddenVariable(..)
             | <span class="self">Self</span>::ErrorVariableNotFound(..)
             | <span class="self">Self</span>::ErrorPropertyNotFound(..)
+            | <span class="self">Self</span>::ErrorIndexNotFound(..)
             | <span class="self">Self</span>::ErrorModuleNotFound(..)
             | <span class="self">Self</span>::ErrorDataRace(..)
             | <span class="self">Self</span>::ErrorAssignmentToConstant(..)
@@ -867,7 +874,7 @@
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>dump_fields(<span class="kw-2">&amp;</span><span class="self">self</span>, map: <span class="kw-2">&amp;mut </span><span class="kw">crate</span>::Map) {
         map.insert(
             <span class="string">&quot;error&quot;</span>.into(),
-            <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>)
+            <span class="macro">format!</span>(<span class="string">&quot;{self:?}&quot;</span>)
                 .split(<span class="string">&#39;(&#39;</span>)
                 .next()
                 .expect(<span class="string">&quot;`ErrorXXX(...)`&quot;</span>)
@@ -894,9 +901,6 @@
                 map.insert(<span class="string">&quot;function&quot;</span>.into(), f.into());
                 map.insert(<span class="string">&quot;source&quot;</span>.into(), s.into());
             }
-            <span class="self">Self</span>::ErrorInModule(m, ..) =&gt; {
-                map.insert(<span class="string">&quot;module&quot;</span>.into(), m.into());
-            }
             <span class="self">Self</span>::ErrorMismatchDataType(r, a, ..) | <span class="self">Self</span>::ErrorMismatchOutputType(r, a, ..) =&gt; {
                 map.insert(<span class="string">&quot;requested&quot;</span>.into(), r.into());
                 map.insert(<span class="string">&quot;actual&quot;</span>.into(), a.into());
@@ -907,9 +911,6 @@
                 map.insert(<span class="string">&quot;length&quot;</span>.into(), (<span class="kw-2">*</span>n <span class="kw">as </span>INT).into());
                 map.insert(<span class="string">&quot;index&quot;</span>.into(), (<span class="kw-2">*</span>i <span class="kw">as </span>INT).into());
             }
-            <span class="self">Self</span>::ErrorIndexingType(t, ..) =&gt; {
-                map.insert(<span class="string">&quot;type&quot;</span>.into(), t.into());
-            }
             <span class="self">Self</span>::ErrorVariableExists(v, ..)
             | <span class="self">Self</span>::ErrorForbiddenVariable(v, ..)
             | <span class="self">Self</span>::ErrorVariableNotFound(v, ..)
@@ -918,14 +919,17 @@
             | <span class="self">Self</span>::ErrorAssignmentToConstant(v, ..) =&gt; {
                 map.insert(<span class="string">&quot;variable&quot;</span>.into(), v.into());
             }
-            <span class="self">Self</span>::ErrorModuleNotFound(m, ..) =&gt; {
+            <span class="self">Self</span>::ErrorIndexNotFound(v, ..) =&gt; {
+                map.insert(<span class="string">&quot;index&quot;</span>.into(), v.clone());
+            }
+            <span class="self">Self</span>::ErrorInModule(m, ..) | <span class="self">Self</span>::ErrorModuleNotFound(m, ..) =&gt; {
                 map.insert(<span class="string">&quot;module&quot;</span>.into(), m.into());
             }
             <span class="self">Self</span>::ErrorDotExpr(p, ..) =&gt; {
                 map.insert(<span class="string">&quot;property&quot;</span>.into(), p.into());
             }
 
-            <span class="self">Self</span>::ErrorDataTooLarge(t, ..) =&gt; {
+            <span class="self">Self</span>::ErrorIndexingType(t, ..) | <span class="self">Self</span>::ErrorDataTooLarge(t, ..) =&gt; {
                 map.insert(<span class="string">&quot;type&quot;</span>.into(), t.into());
             }
             <span class="self">Self</span>::ErrorTerminated(t, ..) =&gt; {
@@ -978,6 +982,7 @@
             | <span class="self">Self</span>::ErrorForbiddenVariable(.., pos)
             | <span class="self">Self</span>::ErrorVariableNotFound(.., pos)
             | <span class="self">Self</span>::ErrorPropertyNotFound(.., pos)
+            | <span class="self">Self</span>::ErrorIndexNotFound(.., pos)
             | <span class="self">Self</span>::ErrorModuleNotFound(.., pos)
             | <span class="self">Self</span>::ErrorDataRace(.., pos)
             | <span class="self">Self</span>::ErrorAssignmentToConstant(.., pos)
@@ -1029,6 +1034,7 @@
             | <span class="self">Self</span>::ErrorForbiddenVariable(.., pos)
             | <span class="self">Self</span>::ErrorVariableNotFound(.., pos)
             | <span class="self">Self</span>::ErrorPropertyNotFound(.., pos)
+            | <span class="self">Self</span>::ErrorIndexNotFound(.., pos)
             | <span class="self">Self</span>::ErrorModuleNotFound(.., pos)
             | <span class="self">Self</span>::ErrorDataRace(.., pos)
             | <span class="self">Self</span>::ErrorAssignmentToConstant(.., pos)
@@ -1048,7 +1054,7 @@
         <span class="self">self
     </span>}
     <span class="doccomment">/// Consume the current [`EvalAltResult`] and return a new one with the specified [`Position`]
-    /// if the current position is [`Position::None`].
+    /// if the current position is [`Position::NONE`].
     </span><span class="attribute">#[inline(never)]
     #[must_use]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fill_position(<span class="kw-2">mut </span><span class="self">self</span>: Box&lt;<span class="self">Self</span>&gt;, new_position: Position) -&gt; Box&lt;<span class="self">Self</span>&gt; {
@@ -1059,4 +1065,4 @@
     </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/packages/string_basic.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>string_basic.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/packages/string_basic.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>string_basic.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -396,6 +396,12 @@
 <span id="396">396</span>
 <span id="397">397</span>
 <span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::plugin::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::{def_package, FnPtr, INT};
 <span class="kw">use </span>std::any::TypeId;
@@ -467,13 +473,13 @@
     <span class="doccomment">/// Convert the value of the `item` into a string in debug format.
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;to_debug&quot;</span>, pure)]
     </span><span class="kw">pub fn </span>to_debug_generic(ctx: NativeCallContext, item: <span class="kw-2">&amp;mut </span>Dynamic) -&gt; ImmutableString {
-        ctx.engine().map_type_name(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, item)).into()
+        ctx.engine().map_type_name(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;{item:?}&quot;</span>)).into()
     }
 
     <span class="doccomment">/// Return the empty string.
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;print&quot;</span>, name = <span class="string">&quot;debug&quot;</span>)]
     </span><span class="kw">pub fn </span>print_empty_string(ctx: NativeCallContext) -&gt; ImmutableString {
-        ctx.engine().const_empty_string()
+        ctx.engine().get_interned_string(<span class="string">&quot;&quot;</span>)
     }
 
     <span class="doccomment">/// Return the `string`.
@@ -484,7 +490,7 @@
     <span class="doccomment">/// Convert the string into debug format.
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;debug&quot;</span>, name = <span class="string">&quot;to_debug&quot;</span>, pure)]
     </span><span class="kw">pub fn </span>debug_string(string: <span class="kw-2">&amp;mut </span>ImmutableString) -&gt; ImmutableString {
-        <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, string).into()
+        <span class="macro">format!</span>(<span class="string">&quot;{string:?}&quot;</span>).into()
     }
 
     <span class="doccomment">/// Return the character into a string.
@@ -495,7 +501,7 @@
     <span class="doccomment">/// Convert the string into debug format.
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;debug&quot;</span>, name = <span class="string">&quot;to_debug&quot;</span>)]
     </span><span class="kw">pub fn </span>debug_char(character: char) -&gt; ImmutableString {
-        <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, character).into()
+        <span class="macro">format!</span>(<span class="string">&quot;{character:?}&quot;</span>).into()
     }
 
     <span class="doccomment">/// Convert the function pointer into a string in debug format.
@@ -507,19 +513,19 @@
     <span class="doccomment">/// Return the boolean value into a string.
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;print&quot;</span>, name = <span class="string">&quot;to_string&quot;</span>)]
     </span><span class="kw">pub fn </span>print_bool(value: bool) -&gt; ImmutableString {
-        <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, value).into()
+        value.to_string().into()
     }
     <span class="doccomment">/// Convert the boolean value into a string in debug format.
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;debug&quot;</span>, name = <span class="string">&quot;to_debug&quot;</span>)]
     </span><span class="kw">pub fn </span>debug_bool(value: bool) -&gt; ImmutableString {
-        <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, value).into()
+        <span class="macro">format!</span>(<span class="string">&quot;{value:?}&quot;</span>).into()
     }
 
     <span class="doccomment">/// Return the empty string.
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;print&quot;</span>, name = <span class="string">&quot;to_string&quot;</span>)]
     </span><span class="kw">pub fn </span>print_unit(ctx: NativeCallContext, unit: ()) -&gt; ImmutableString {
         <span class="kw">let _ </span>= unit;
-        ctx.engine().const_empty_string()
+        ctx.engine().get_interned_string(<span class="string">&quot;&quot;</span>)
     }
     <span class="doccomment">/// Convert the unit into a string in debug format.
     </span><span class="attribute">#[rhai_fn(name = <span class="string">&quot;debug&quot;</span>, name = <span class="string">&quot;to_debug&quot;</span>)]
@@ -544,13 +550,15 @@
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
     #[rhai_fn(name = <span class="string">&quot;debug&quot;</span>, name = <span class="string">&quot;to_debug&quot;</span>)]
     </span><span class="kw">pub fn </span>debug_f64(number: f64) -&gt; ImmutableString {
-        <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="kw">crate</span>::ast::FloatWrapper::new(number)).into()
+        <span class="kw">let </span>number = <span class="kw">crate</span>::ast::FloatWrapper::new(number);
+        <span class="macro">format!</span>(<span class="string">&quot;{number:?}&quot;</span>).into()
     }
     <span class="doccomment">/// Convert the value of `number` into a string.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
     #[rhai_fn(name = <span class="string">&quot;debug&quot;</span>, name = <span class="string">&quot;to_debug&quot;</span>)]
     </span><span class="kw">pub fn </span>debug_f32(number: f32) -&gt; ImmutableString {
-        <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="kw">crate</span>::ast::FloatWrapper::new(number)).into()
+        <span class="kw">let </span>number = <span class="kw">crate</span>::ast::FloatWrapper::new(number);
+        <span class="macro">format!</span>(<span class="string">&quot;{number:?}&quot;</span>).into()
     }
 
     <span class="doccomment">/// Convert the array into a string.
@@ -593,12 +601,16 @@
         result.push_str(<span class="string">&quot;#{&quot;</span>);
 
         map.iter_mut().enumerate().for_each(|(i, (k, v))| {
-            result.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
+            <span class="kw">use </span>std::fmt::Write;
+
+            <span class="macro">write!</span>(
+                result,
                 <span class="string">&quot;{:?}: {}{}&quot;</span>,
                 k,
                 <span class="kw-2">&amp;</span>print_with_func(FUNC_TO_DEBUG, <span class="kw-2">&amp;</span>ctx, v),
                 <span class="kw">if </span>i &lt; len - <span class="number">1 </span>{ <span class="string">&quot;, &quot; </span>} <span class="kw">else </span>{ <span class="string">&quot;&quot; </span>}
-            ));
+            )
+            .unwrap();
         });
 
         result.push(<span class="string">&#39;}&#39;</span>);
@@ -609,13 +621,13 @@
 <span class="attribute">#[export_module]
 </span><span class="kw">mod </span>number_formatting {
     <span class="kw">fn </span>to_hex&lt;T: LowerHex&gt;(value: T) -&gt; ImmutableString {
-        <span class="macro">format!</span>(<span class="string">&quot;{:x}&quot;</span>, value).into()
+        <span class="macro">format!</span>(<span class="string">&quot;{value:x}&quot;</span>).into()
     }
     <span class="kw">fn </span>to_octal&lt;T: Octal&gt;(value: T) -&gt; ImmutableString {
-        <span class="macro">format!</span>(<span class="string">&quot;{:o}&quot;</span>, value).into()
+        <span class="macro">format!</span>(<span class="string">&quot;{value:o}&quot;</span>).into()
     }
     <span class="kw">fn </span>to_binary&lt;T: Binary&gt;(value: T) -&gt; ImmutableString {
-        <span class="macro">format!</span>(<span class="string">&quot;{:b}&quot;</span>, value).into()
+        <span class="macro">format!</span>(<span class="string">&quot;{value:b}&quot;</span>).into()
     }
 
     <span class="doccomment">/// Convert the `value` into a string in hex format.
@@ -795,4 +807,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

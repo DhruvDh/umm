@@ -958,6 +958,51 @@
 <span id="958">958</span>
 <span id="959">959</span>
 <span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
+<span id="974">974</span>
+<span id="975">975</span>
+<span id="976">976</span>
+<span id="977">977</span>
+<span id="978">978</span>
+<span id="979">979</span>
+<span id="980">980</span>
+<span id="981">981</span>
+<span id="982">982</span>
+<span id="983">983</span>
+<span id="984">984</span>
+<span id="985">985</span>
+<span id="986">986</span>
+<span id="987">987</span>
+<span id="988">988</span>
+<span id="989">989</span>
+<span id="990">990</span>
+<span id="991">991</span>
+<span id="992">992</span>
+<span id="993">993</span>
+<span id="994">994</span>
+<span id="995">995</span>
+<span id="996">996</span>
+<span id="997">997</span>
+<span id="998">998</span>
+<span id="999">999</span>
+<span id="1000">1000</span>
+<span id="1001">1001</span>
+<span id="1002">1002</span>
+<span id="1003">1003</span>
+<span id="1004">1004</span>
+<span id="1005">1005</span>
 </pre><pre class="rust"><code><span class="attribute">#![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
@@ -978,6 +1023,7 @@
     <span class="prelude-ty">Result</span>,
 };
 <span class="kw">use </span>colored::Colorize;
+<span class="kw">use </span>futures::stream::FuturesUnordered;
 <span class="kw">use </span>rhai::EvalAltResult;
 <span class="kw">use </span>serde::{
     Deserialize,
@@ -1527,7 +1573,6 @@
             sourcepath,
             root_dir: ROOT_DIR.display().to_string(),
         };
-
         proj.download_libraries_if_needed()<span class="question-mark">?</span>;
         proj.update_vscode_settings()<span class="question-mark">?</span>;
         proj.update_vscode_tasks()<span class="question-mark">?</span>;
@@ -1562,7 +1607,8 @@
         }
     }
 
-    <span class="doccomment">/// Downloads certain libraries like JUnit if found in imports
+    <span class="doccomment">/// Downloads certain libraries like JUnit if found in imports.
+    /// times out after 20 seconds.
     </span><span class="kw">pub fn </span>download_libraries_if_needed(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">let </span>need_junit = <span class="lifetime">&#39;outer</span>: {
             <span class="kw">for </span>file <span class="kw">in </span><span class="self">self</span>.files.iter() {
@@ -1584,37 +1630,73 @@
                 std::fs::create_dir(LIB_DIR.as_path()).unwrap();
             }
 
-            download(
-        <span class="string">&quot;https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-platform-console-standalone-1.9.0-RC1.jar&quot;</span>,
-        <span class="kw-2">&amp;</span>LIB_DIR.join(JUNIT_PLATFORM),
-<span class="bool-val">false    </span>)<span class="question-mark">?</span>;
+            <span class="kw">let </span>rt = RUNTIME_HANDLE.handle().clone();
 
-            download(
-                <span class="string">&quot;https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-4.13.2.jar&quot;</span>,
-                <span class="kw-2">&amp;</span>LIB_DIR.join(<span class="string">&quot;junit-4.13.2.jar&quot;</span>),
-                <span class="bool-val">false</span>,
-            )<span class="question-mark">?</span>;
+            rt.block_on(<span class="kw">async </span>{
+                <span class="kw">let </span>handle1 = rt.spawn(<span class="kw">async </span>{
+                    download(
+                    <span class="string">&quot;https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-platform-console-standalone-1.9.0-RC1.jar&quot;</span>,
+                    <span class="kw-2">&amp;</span>LIB_DIR.join(JUNIT_PLATFORM),
+                <span class="bool-val">false
+                        </span>)
+                        .<span class="kw">await
+                </span>});
 
-            download(
-                <span class="string">&quot;https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-1.9.5.jar&quot;</span>,
-                <span class="kw-2">&amp;</span>LIB_DIR.join(<span class="string">&quot;pitest.jar&quot;</span>),
-                <span class="bool-val">false</span>,
-            )<span class="question-mark">?</span>;
-            download(
-                <span class="string">&quot;https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-command-line-1.9.5.jar&quot;</span>,
-                <span class="kw-2">&amp;</span>LIB_DIR.join(<span class="string">&quot;pitest-command-line.jar&quot;</span>),
-                <span class="bool-val">false</span>,
-            )<span class="question-mark">?</span>;
-            download(
-                <span class="string">&quot;https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-entry-1.9.5.jar&quot;</span>,
-                <span class="kw-2">&amp;</span>LIB_DIR.join(<span class="string">&quot;pitest-entry.jar&quot;</span>),
-                <span class="bool-val">false</span>,
-            )<span class="question-mark">?</span>;
-            download(
-                <span class="string">&quot;https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-junit5-plugin-1.0.0.jar&quot;</span>,
-                <span class="kw-2">&amp;</span>LIB_DIR.join(<span class="string">&quot;pitest-junit5-plugin.jar&quot;</span>),
-                <span class="bool-val">false</span>,
-            )<span class="question-mark">?</span>;
+                <span class="kw">let </span>handle2 = rt.spawn(<span class="kw">async </span>{
+                    download(
+                        <span class="string">&quot;https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-4.13.2.jar&quot;</span>,
+                        <span class="kw-2">&amp;</span>LIB_DIR.join(<span class="string">&quot;junit-4.13.2.jar&quot;</span>),
+                        <span class="bool-val">false</span>,
+                    )
+                    .<span class="kw">await
+                </span>});
+
+                <span class="kw">let </span>handle3 = rt.spawn(<span class="kw">async </span>{
+                    download(
+                        <span class="string">&quot;https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-1.9.5.jar&quot;</span>,
+                        <span class="kw-2">&amp;</span>LIB_DIR.join(<span class="string">&quot;pitest.jar&quot;</span>),
+                        <span class="bool-val">false</span>,
+                    )
+                    .<span class="kw">await
+                </span>});
+
+                <span class="kw">let </span>handle4 = rt.spawn(<span class="kw">async </span>{
+                    download(
+                        <span class="string">&quot;https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-command-line-1.9.5.jar&quot;</span>,
+                        <span class="kw-2">&amp;</span>LIB_DIR.join(<span class="string">&quot;pitest-command-line.jar&quot;</span>),
+                        <span class="bool-val">false</span>,
+                    )
+                    .<span class="kw">await
+                </span>});
+
+                <span class="kw">let </span>handle5 = rt.spawn(<span class="kw">async </span>{
+                    download(
+                        <span class="string">&quot;https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-entry-1.9.5.jar&quot;</span>,
+                        <span class="kw-2">&amp;</span>LIB_DIR.join(<span class="string">&quot;pitest-entry.jar&quot;</span>),
+                        <span class="bool-val">false</span>,
+                    )
+                    .<span class="kw">await
+                </span>});
+
+                <span class="kw">let </span>handle6 = rt.spawn(<span class="kw">async </span>{
+                    download(
+                        <span class="string">&quot;https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-junit5-plugin-1.0.0.jar&quot;</span>,
+                        <span class="kw-2">&amp;</span>LIB_DIR.join(<span class="string">&quot;pitest-junit5-plugin.jar&quot;</span>),
+                        <span class="bool-val">false</span>,
+                    )
+                    .<span class="kw">await
+                </span>});
+
+                <span class="kw">let </span>handles = FuturesUnordered::new();
+                handles.push(handle1);
+                handles.push(handle2);
+                handles.push(handle3);
+                handles.push(handle4);
+                handles.push(handle5);
+                handles.push(handle6);
+
+                futures::future::try_join_all(handles).<span class="kw">await
+            </span>})<span class="question-mark">?</span>;
         }
         <span class="prelude-val">Ok</span>(())
     }
@@ -1841,17 +1923,25 @@
                     .build(),
             );
         }
+        <span class="kw">let </span>rt = RUNTIME_HANDLE.handle().clone();
 
-        <span class="kw">let </span>grading_json = download_to_string(GRADING_SCRIPTS_URL)<span class="question-mark">?</span>;
-        <span class="kw">let </span>grading_json: serde_json::Value = serde_json::from_str(<span class="kw-2">&amp;</span>grading_json)<span class="question-mark">?</span>;
-        <span class="kw">let </span>grading_json = grading_json
-            .get(COURSE)
-            .ok_or_else(|| <span class="macro">anyhow!</span>(<span class="string">&quot;Could not find course: {}&quot;</span>, COURSE))<span class="question-mark">?
-            </span>.get(TERM)
-            .ok_or_else(|| <span class="macro">anyhow!</span>(<span class="string">&quot;Could not find term {} in {}&quot;</span>, TERM, COURSE))<span class="question-mark">?</span>;
+        <span class="kw">let </span>resp = rt.block_on(<span class="kw">async </span>{
+            POSTGREST_CLIENT
+                .from(<span class="string">&quot;grading_scripts&quot;</span>)
+                .eq(<span class="string">&quot;course&quot;</span>, COURSE)
+                .eq(<span class="string">&quot;term&quot;</span>, TERM)
+                .select(<span class="string">&quot;assignment&quot;</span>)
+                .execute()
+                .<span class="kw">await</span><span class="question-mark">?
+                </span>.text()
+                .<span class="kw">await
+                </span>.context(<span class="string">&quot;Could not get grading scripts&quot;</span>)
+        });
+        <span class="kw">let </span>resp: serde_json::Value = serde_json::from_str(resp<span class="question-mark">?</span>.as_str())<span class="question-mark">?</span>;
+
         <span class="kw">let </span><span class="kw-2">mut </span>keys = <span class="macro">vec!</span>[];
-        <span class="kw">for </span>(key, <span class="kw">_</span>) <span class="kw">in </span>grading_json.as_object().unwrap() {
-            keys.push(key.to_string());
+        <span class="kw">for </span>val <span class="kw">in </span>resp.as_array().unwrap() {
+            keys.push(val.as_object().unwrap()[<span class="string">&quot;assignment&quot;</span>].to_string());
         }
 
         inputs.push(vscode::Input::PickString {
@@ -1919,4 +2009,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="umm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="umm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

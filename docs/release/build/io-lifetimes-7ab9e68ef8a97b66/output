@@ -1,0 +1,3 @@
+cargo:rustc-cfg=rustc_attrs
+cargo:rustc-cfg=panic_in_const_fn
+cargo:rerun-if-changed=build.rs

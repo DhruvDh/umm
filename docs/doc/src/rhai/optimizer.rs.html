@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/optimizer.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>optimizer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/optimizer.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>optimizer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1357,10 +1357,72 @@
 <span id="1357">1357</span>
 <span id="1358">1358</span>
 <span id="1359">1359</span>
+<span id="1360">1360</span>
+<span id="1361">1361</span>
+<span id="1362">1362</span>
+<span id="1363">1363</span>
+<span id="1364">1364</span>
+<span id="1365">1365</span>
+<span id="1366">1366</span>
+<span id="1367">1367</span>
+<span id="1368">1368</span>
+<span id="1369">1369</span>
+<span id="1370">1370</span>
+<span id="1371">1371</span>
+<span id="1372">1372</span>
+<span id="1373">1373</span>
+<span id="1374">1374</span>
+<span id="1375">1375</span>
+<span id="1376">1376</span>
+<span id="1377">1377</span>
+<span id="1378">1378</span>
+<span id="1379">1379</span>
+<span id="1380">1380</span>
+<span id="1381">1381</span>
+<span id="1382">1382</span>
+<span id="1383">1383</span>
+<span id="1384">1384</span>
+<span id="1385">1385</span>
+<span id="1386">1386</span>
+<span id="1387">1387</span>
+<span id="1388">1388</span>
+<span id="1389">1389</span>
+<span id="1390">1390</span>
+<span id="1391">1391</span>
+<span id="1392">1392</span>
+<span id="1393">1393</span>
+<span id="1394">1394</span>
+<span id="1395">1395</span>
+<span id="1396">1396</span>
+<span id="1397">1397</span>
+<span id="1398">1398</span>
+<span id="1399">1399</span>
+<span id="1400">1400</span>
+<span id="1401">1401</span>
+<span id="1402">1402</span>
+<span id="1403">1403</span>
+<span id="1404">1404</span>
+<span id="1405">1405</span>
+<span id="1406">1406</span>
+<span id="1407">1407</span>
+<span id="1408">1408</span>
+<span id="1409">1409</span>
+<span id="1410">1410</span>
+<span id="1411">1411</span>
+<span id="1412">1412</span>
+<span id="1413">1413</span>
+<span id="1414">1414</span>
+<span id="1415">1415</span>
+<span id="1416">1416</span>
+<span id="1417">1417</span>
+<span id="1418">1418</span>
+<span id="1419">1419</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Module implementing the [`AST`] optimizer.
 </span><span class="attribute">#![cfg(not(feature = <span class="string">&quot;no_optimize&quot;</span>))]
 
-</span><span class="kw">use </span><span class="kw">crate</span>::ast::{ASTFlags, Expr, OpAssignment, Stmt, StmtBlock, StmtBlockContainer, SwitchCases};
+</span><span class="kw">use </span><span class="kw">crate</span>::ast::{
+    ASTFlags, Expr, OpAssignment, Stmt, StmtBlock, StmtBlockContainer, SwitchCasesCollection,
+};
 <span class="kw">use </span><span class="kw">crate</span>::engine::{KEYWORD_DEBUG, KEYWORD_EVAL, KEYWORD_FN_PTR, KEYWORD_PRINT, KEYWORD_TYPE_OF};
 <span class="kw">use </span><span class="kw">crate</span>::eval::{Caches, GlobalRuntimeState};
 <span class="kw">use </span><span class="kw">crate</span>::func::builtin::get_builtin_binary_op_fn;
@@ -1369,7 +1431,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::types::dynamic::AccessMode;
 <span class="kw">use crate</span>::{
     calc_fn_hash, calc_fn_params_hash, combine_hashes, Dynamic, Engine, FnPtr, Identifier,
-    Position, Scope, StaticVec, AST, INT, INT_BITS,
+    ImmutableString, Position, Scope, StaticVec, AST, INT,
 };
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
@@ -1414,7 +1476,7 @@
     <span class="doccomment">/// The global runtime state.
     </span>global: GlobalRuntimeState&lt;<span class="lifetime">&#39;a</span>&gt;,
     <span class="doccomment">/// Function resolution caches.
-    </span>caches: Caches,
+    </span>caches: Caches&lt;<span class="lifetime">&#39;a</span>&gt;,
     <span class="doccomment">/// [Module][crate::Module] containing script-defined functions.
     </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
     </span>lib: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">crate</span>::Module],
@@ -1460,7 +1522,7 @@
     <span class="doccomment">/// Prune the list of constants back to a specified size.
     </span><span class="attribute">#[inline(always)]
     </span><span class="kw">pub fn </span>restore_var(<span class="kw-2">&amp;mut </span><span class="self">self</span>, len: usize) {
-        <span class="self">self</span>.variables.truncate(len)
+        <span class="self">self</span>.variables.truncate(len);
     }
     <span class="doccomment">/// Add a new variable to the list.
     </span><span class="attribute">#[inline(always)]
@@ -1470,7 +1532,7 @@
         access: AccessMode,
         value: <span class="prelude-ty">Option</span>&lt;Dynamic&gt;,
     ) {
-        <span class="self">self</span>.variables.push((name.into(), access, value))
+        <span class="self">self</span>.variables.push((name.into(), access, value));
     }
     <span class="doccomment">/// Look up a constant from the list.
     </span><span class="attribute">#[inline]
@@ -1508,7 +1570,7 @@
                 <span class="kw-2">&amp;mut </span><span class="self">self</span>.caches,
                 lib,
                 fn_name,
-                calc_fn_hash(<span class="kw-2">&amp;</span>fn_name, arg_values.len()),
+                calc_fn_hash(fn_name, arg_values.len()),
                 <span class="kw-2">&amp;mut </span>arg_values.iter_mut().collect::&lt;StaticVec&lt;<span class="kw">_</span>&gt;&gt;(),
                 <span class="bool-val">false</span>,
                 <span class="bool-val">false</span>,
@@ -1526,7 +1588,7 @@
     hash_script: u64,
     arg_types: <span class="kw">impl </span>AsRef&lt;[TypeId]&gt;,
 ) -&gt; bool {
-    <span class="kw">let </span>hash_params = calc_fn_params_hash(arg_types.as_ref().iter().cloned());
+    <span class="kw">let </span>hash_params = calc_fn_params_hash(arg_types.as_ref().iter().copied());
     <span class="kw">let </span>hash = combine_hashes(hash_script, hash_params);
 
     <span class="comment">// First check the global namespace and packages, but skip modules that are standard because
@@ -1569,26 +1631,21 @@
     };
 
     <span class="comment">// Flatten blocks
-    </span><span class="kw">loop </span>{
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(n) = statements.iter().enumerate().find_map(|(i, s)| <span class="kw">match </span>s {
-            Stmt::Block(block, ..) <span class="kw">if </span>!block.iter().any(Stmt::is_block_dependent) =&gt; <span class="prelude-val">Some</span>(i),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
-        }) {
-            <span class="kw">let </span>(first, second) = statements.split_at_mut(n);
-            <span class="kw">let </span>stmt = mem::take(<span class="kw-2">&amp;mut </span>second[<span class="number">0</span>]);
-            <span class="kw">let </span><span class="kw-2">mut </span>stmts = <span class="kw">match </span>stmt {
-                Stmt::Block(block, ..) =&gt; block,
-                stmt =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;Stmt::Block expected but gets {:?}&quot;</span>, stmt),
-            };
-            statements = first
-                .iter_mut()
-                .map(mem::take)
-                .chain(stmts.iter_mut().map(mem::take))
-                .chain(second.iter_mut().skip(<span class="number">1</span>).map(mem::take))
-                .collect();
-        } <span class="kw">else </span>{
-            <span class="kw">break</span>;
-        }
+    </span><span class="kw">while let </span><span class="prelude-val">Some</span>(n) = statements.iter().position(
+        |s| <span class="macro">matches!</span>(s, Stmt::Block(block, ..) <span class="kw">if </span>!block.iter().any(Stmt::is_block_dependent)),
+    ) {
+        <span class="kw">let </span>(first, second) = statements.split_at_mut(n);
+        <span class="kw">let </span>stmt = mem::take(<span class="kw-2">&amp;mut </span>second[<span class="number">0</span>]);
+        <span class="kw">let </span><span class="kw-2">mut </span>stmts = <span class="kw">match </span>stmt {
+            Stmt::Block(block, ..) =&gt; block,
+            stmt =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;Stmt::Block expected but gets {:?}&quot;</span>, stmt),
+        };
+        statements = first
+            .iter_mut()
+            .map(mem::take)
+            .chain(stmts.iter_mut().map(mem::take))
+            .chain(second.iter_mut().skip(<span class="number">1</span>).map(mem::take))
+            .collect();
 
         is_dirty = <span class="bool-val">true</span>;
     }
@@ -1663,21 +1720,20 @@
         <span class="kw">while </span>index &lt; statements.len() {
             <span class="kw">if </span>preserve_result &amp;&amp; index &gt;= statements.len() - <span class="number">1 </span>{
                 <span class="kw">break</span>;
-            } <span class="kw">else </span>{
-                <span class="kw">match </span>statements[index] {
-                    <span class="kw-2">ref </span>stmt <span class="kw">if </span>is_pure(stmt) &amp;&amp; index &gt;= first_non_constant =&gt; {
-                        state.set_dirty();
-                        statements.remove(index);
-                    }
-                    <span class="kw-2">ref </span>stmt <span class="kw">if </span>stmt.is_pure() =&gt; {
-                        state.set_dirty();
-                        <span class="kw">if </span>index &lt; first_non_constant {
-                            first_non_constant -= <span class="number">1</span>;
-                        }
-                        statements.remove(index);
-                    }
-                    <span class="kw">_ </span>=&gt; index += <span class="number">1</span>,
+            }
+            <span class="kw">match </span>statements[index] {
+                <span class="kw-2">ref </span>stmt <span class="kw">if </span>is_pure(stmt) &amp;&amp; index &gt;= first_non_constant =&gt; {
+                    state.set_dirty();
+                    statements.remove(index);
                 }
+                <span class="kw-2">ref </span>stmt <span class="kw">if </span>stmt.is_pure() =&gt; {
+                    state.set_dirty();
+                    <span class="kw">if </span>index &lt; first_non_constant {
+                        first_non_constant -= <span class="number">1</span>;
+                    }
+                    statements.remove(index);
+                }
+                <span class="kw">_ </span>=&gt; index += <span class="number">1</span>,
             }
         }
 
@@ -1795,7 +1851,7 @@
             <span class="kw">if </span>!x.<span class="number">0</span>.is_op_assignment()
                 &amp;&amp; x.<span class="number">1</span>.lhs.is_variable_access(<span class="bool-val">true</span>)
                 &amp;&amp; <span class="macro">matches!</span>(<span class="kw-2">&amp;</span>x.<span class="number">1</span>.rhs, Expr::FnCall(x2, ..)
-                        <span class="kw">if </span>Token::lookup_from_syntax(<span class="kw-2">&amp;</span>x2.name).map(|t| t.has_op_assignment()).unwrap_or(<span class="bool-val">false</span>)
+                        <span class="kw">if </span>Token::lookup_from_syntax(<span class="kw-2">&amp;</span>x2.name).map_or(<span class="bool-val">false</span>, |t| t.has_op_assignment())
                         &amp;&amp; x2.args.len() == <span class="number">2
                         </span>&amp;&amp; x2.args[<span class="number">0</span>].get_variable_name(<span class="bool-val">true</span>) == x.<span class="number">1</span>.lhs.get_variable_name(<span class="bool-val">true</span>)
                 ) =&gt;
@@ -1871,7 +1927,7 @@
         }
         <span class="comment">// if expr { if_block } else { else_block }
         </span>Stmt::If(x, ..) =&gt; {
-            <span class="kw">let </span>(condition, body, other) = x.as_mut();
+            <span class="kw">let </span>(condition, body, other) = <span class="kw-2">&amp;mut **</span>x;
             optimize_expr(condition, state, <span class="bool-val">false</span>);
             <span class="kw-2">**</span>body =
                 optimize_stmt_block(mem::take(<span class="kw-2">&amp;mut **</span>body), state, preserve_result, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
@@ -1883,12 +1939,13 @@
         </span>Stmt::Switch(x, pos) <span class="kw">if </span>x.<span class="number">0</span>.is_constant() =&gt; {
             <span class="kw">let </span>(
                 match_expr,
-                SwitchCases {
+                SwitchCasesCollection {
+                    expressions,
                     cases,
                     ranges,
                     def_case,
                 },
-            ) = x.as_mut();
+            ) = <span class="kw-2">&amp;mut **</span>x;
 
             <span class="kw">let </span>value = match_expr.get_literal_value().unwrap();
             <span class="kw">let </span>hasher = <span class="kw-2">&amp;mut </span>get_hasher();
@@ -1896,95 +1953,104 @@
             <span class="kw">let </span>hash = hasher.finish();
 
             <span class="comment">// First check hashes
-            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(block) = cases.get_mut(<span class="kw-2">&amp;</span>hash) {
-                <span class="kw">match </span>mem::take(<span class="kw-2">&amp;mut </span>block.condition) {
-                    Expr::BoolConstant(<span class="bool-val">true</span>, ..) =&gt; {
-                        <span class="comment">// Promote the matched case
-                        </span><span class="kw">let </span>statements = optimize_stmt_block(
-                            mem::take(<span class="kw-2">&amp;mut </span>block.statements),
-                            state,
-                            <span class="bool-val">true</span>,
-                            <span class="bool-val">true</span>,
-                            <span class="bool-val">false</span>,
-                        );
-                        <span class="kw-2">*</span>stmt = (statements, block.statements.span()).into();
+            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(case_blocks_list) = cases.get(<span class="kw-2">&amp;</span>hash) {
+                <span class="kw">match </span><span class="kw-2">&amp;</span>case_blocks_list[..] {
+                    [] =&gt; (),
+                    [index] =&gt; {
+                        <span class="kw">let </span><span class="kw-2">mut </span>b = mem::take(<span class="kw-2">&amp;mut </span>expressions[<span class="kw-2">*</span>index]);
+                        cases.clear();
+
+                        <span class="kw">if </span>b.is_always_true() {
+                            <span class="comment">// Promote the matched case
+                            </span><span class="kw">let </span><span class="kw-2">mut </span>statements = Stmt::Expr(mem::take(<span class="kw-2">&amp;mut </span>b.expr).into());
+                            optimize_stmt(<span class="kw-2">&amp;mut </span>statements, state, <span class="bool-val">true</span>);
+                            <span class="kw-2">*</span>stmt = statements;
+                        } <span class="kw">else </span>{
+                            <span class="comment">// switch const { case if condition =&gt; stmt, _ =&gt; def } =&gt; if condition { stmt } else { def }
+                            </span>optimize_expr(<span class="kw-2">&amp;mut </span>b.condition, state, <span class="bool-val">false</span>);
+
+                            <span class="kw">let </span>else_stmt = <span class="kw">if let </span><span class="prelude-val">Some</span>(index) = def_case {
+                                <span class="kw">let </span><span class="kw-2">mut </span>def_stmt =
+                                    Stmt::Expr(mem::take(<span class="kw-2">&amp;mut </span>expressions[<span class="kw-2">*</span>index].expr).into());
+                                optimize_stmt(<span class="kw-2">&amp;mut </span>def_stmt, state, <span class="bool-val">true</span>);
+                                def_stmt.into()
+                            } <span class="kw">else </span>{
+                                StmtBlock::NONE
+                            };
+
+                            <span class="kw-2">*</span>stmt = Stmt::If(
+                                (
+                                    mem::take(<span class="kw-2">&amp;mut </span>b.condition),
+                                    Stmt::Expr(mem::take(<span class="kw-2">&amp;mut </span>b.expr).into()).into(),
+                                    else_stmt,
+                                )
+                                    .into(),
+                                match_expr.start_position(),
+                            );
+                        }
+
+                        state.set_dirty();
+                        <span class="kw">return</span>;
                     }
-                    <span class="kw-2">mut </span>condition =&gt; {
-                        <span class="comment">// switch const { case if condition =&gt; stmt, _ =&gt; def } =&gt; if condition { stmt } else { def }
-                        </span>optimize_expr(<span class="kw-2">&amp;mut </span>condition, state, <span class="bool-val">false</span>);
+                    <span class="kw">_ </span>=&gt; {
+                        <span class="kw">for </span><span class="kw-2">&amp;</span>index <span class="kw">in </span>case_blocks_list {
+                            <span class="kw">let </span><span class="kw-2">mut </span>b = mem::take(<span class="kw-2">&amp;mut </span>expressions[index]);
 
-                        <span class="kw">let </span>def_stmt =
-                            optimize_stmt_block(mem::take(def_case), state, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
-
-                        <span class="kw-2">*</span>stmt = Stmt::If(
-                            (
-                                condition,
-                                mem::take(<span class="kw-2">&amp;mut </span>block.statements),
-                                StmtBlock::new_with_span(
-                                    def_stmt,
-                                    def_case.span_or_else(<span class="kw-2">*</span>pos, Position::NONE),
-                                ),
-                            )
-                                .into(),
-                            match_expr.start_position(),
-                        );
+                            <span class="kw">if </span>b.is_always_true() {
+                                <span class="comment">// Promote the matched case
+                                </span><span class="kw">let </span><span class="kw-2">mut </span>statements = Stmt::Expr(mem::take(<span class="kw-2">&amp;mut </span>b.expr).into());
+                                optimize_stmt(<span class="kw-2">&amp;mut </span>statements, state, <span class="bool-val">true</span>);
+                                <span class="kw-2">*</span>stmt = statements;
+                                state.set_dirty();
+                                <span class="kw">return</span>;
+                            }
+                        }
                     }
                 }
-
-                state.set_dirty();
-                <span class="kw">return</span>;
             }
 
             <span class="comment">// Then check ranges
             </span><span class="kw">if </span>value.is::&lt;INT&gt;() &amp;&amp; !ranges.is_empty() {
-                <span class="kw">let </span>value = value.as_int().expect(<span class="string">&quot;`INT`&quot;</span>);
+                <span class="kw">let </span>value = value.as_int().unwrap();
 
                 <span class="comment">// Only one range or all ranges without conditions
                 </span><span class="kw">if </span>ranges.len() == <span class="number">1
                     </span>|| ranges
                         .iter()
-                        .all(|(.., c)| <span class="macro">matches!</span>(c.condition, Expr::BoolConstant(<span class="bool-val">true</span>, ..)))
+                        .all(|r| expressions[r.index()].is_always_true())
                 {
-                    <span class="kw">for </span>(.., block) <span class="kw">in
-                        </span>ranges
-                            .iter_mut()
-                            .filter(|&amp;&amp;<span class="kw-2">mut </span>(start, end, inclusive, ..)| {
-                                (!inclusive &amp;&amp; (start..end).contains(<span class="kw-2">&amp;</span>value))
-                                    || (inclusive &amp;&amp; (start..=end).contains(<span class="kw-2">&amp;</span>value))
-                            })
-                    {
-                        <span class="kw">match </span>mem::take(<span class="kw-2">&amp;mut </span>block.condition) {
-                            Expr::BoolConstant(<span class="bool-val">true</span>, ..) =&gt; {
-                                <span class="comment">// Promote the matched case
-                                </span><span class="kw">let </span>statements = mem::take(<span class="kw-2">&amp;mut *</span>block.statements);
-                                <span class="kw">let </span>statements =
-                                    optimize_stmt_block(statements, state, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
-                                <span class="kw-2">*</span>stmt = (statements, block.statements.span()).into();
-                            }
-                            <span class="kw-2">mut </span>condition =&gt; {
-                                <span class="comment">// switch const { range if condition =&gt; stmt, _ =&gt; def } =&gt; if condition { stmt } else { def }
-                                </span>optimize_expr(<span class="kw-2">&amp;mut </span>condition, state, <span class="bool-val">false</span>);
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(r) = ranges.iter().find(|r| r.contains(value)) {
+                        <span class="kw">let </span>range_block = <span class="kw-2">&amp;mut </span>expressions[r.index()];
 
-                                <span class="kw">let </span>def_stmt = optimize_stmt_block(
-                                    mem::take(def_case),
-                                    state,
-                                    <span class="bool-val">true</span>,
-                                    <span class="bool-val">true</span>,
-                                    <span class="bool-val">false</span>,
-                                );
-                                <span class="kw-2">*</span>stmt = Stmt::If(
-                                    (
-                                        condition,
-                                        mem::take(<span class="kw-2">&amp;mut </span>block.statements),
-                                        StmtBlock::new_with_span(
-                                            def_stmt,
-                                            def_case.span_or_else(<span class="kw-2">*</span>pos, Position::NONE),
-                                        ),
-                                    )
-                                        .into(),
-                                    match_expr.start_position(),
-                                );
-                            }
+                        <span class="kw">if </span>range_block.is_always_true() {
+                            <span class="comment">// Promote the matched case
+                            </span><span class="kw">let </span>block = <span class="kw-2">&amp;mut </span>expressions[r.index()];
+                            <span class="kw">let </span><span class="kw-2">mut </span>statements = Stmt::Expr(mem::take(<span class="kw-2">&amp;mut </span>block.expr).into());
+                            optimize_stmt(<span class="kw-2">&amp;mut </span>statements, state, <span class="bool-val">true</span>);
+                            <span class="kw-2">*</span>stmt = statements;
+                        } <span class="kw">else </span>{
+                            <span class="kw">let </span><span class="kw-2">mut </span>condition = mem::take(<span class="kw-2">&amp;mut </span>range_block.condition);
+
+                            <span class="comment">// switch const { range if condition =&gt; stmt, _ =&gt; def } =&gt; if condition { stmt } else { def }
+                            </span>optimize_expr(<span class="kw-2">&amp;mut </span>condition, state, <span class="bool-val">false</span>);
+
+                            <span class="kw">let </span>else_stmt = <span class="kw">if let </span><span class="prelude-val">Some</span>(index) = def_case {
+                                <span class="kw">let </span><span class="kw-2">mut </span>def_stmt =
+                                    Stmt::Expr(mem::take(<span class="kw-2">&amp;mut </span>expressions[<span class="kw-2">*</span>index].expr).into());
+                                optimize_stmt(<span class="kw-2">&amp;mut </span>def_stmt, state, <span class="bool-val">true</span>);
+                                def_stmt.into()
+                            } <span class="kw">else </span>{
+                                StmtBlock::NONE
+                            };
+
+                            <span class="kw">let </span>if_stmt =
+                                Stmt::Expr(mem::take(<span class="kw-2">&amp;mut </span>expressions[r.index()].expr).into())
+                                    .into();
+
+                            <span class="kw-2">*</span>stmt = Stmt::If(
+                                (condition, if_stmt, else_stmt).into(),
+                                match_expr.start_position(),
+                            );
                         }
 
                         state.set_dirty();
@@ -1999,29 +2065,16 @@
 
                     <span class="kw">let </span>old_ranges_len = ranges.len();
 
-                    ranges.retain(|<span class="kw-2">&amp;mut </span>(start, end, inclusive, ..)| {
-                        (!inclusive &amp;&amp; (start..end).contains(<span class="kw-2">&amp;</span>value))
-                            || (inclusive &amp;&amp; (start..=end).contains(<span class="kw-2">&amp;</span>value))
-                    });
+                    ranges.retain(|r| r.contains(value));
 
                     <span class="kw">if </span>ranges.len() != old_ranges_len {
                         state.set_dirty();
                     }
 
-                    <span class="kw">for </span>(.., block) <span class="kw">in </span>ranges.iter_mut() {
-                        <span class="kw">let </span>statements = mem::take(<span class="kw-2">&amp;mut *</span>block.statements);
-                        <span class="kw-2">*</span>block.statements =
-                            optimize_stmt_block(statements, state, preserve_result, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
-
-                        optimize_expr(<span class="kw-2">&amp;mut </span>block.condition, state, <span class="bool-val">false</span>);
-
-                        <span class="kw">match </span>block.condition {
-                            Expr::Unit(pos) =&gt; {
-                                block.condition = Expr::BoolConstant(<span class="bool-val">true</span>, pos);
-                                state.set_dirty()
-                            }
-                            <span class="kw">_ </span>=&gt; (),
-                        }
+                    <span class="kw">for </span>r <span class="kw">in </span><span class="kw-2">&amp;*</span>ranges {
+                        <span class="kw">let </span>b = <span class="kw-2">&amp;mut </span>expressions[r.index()];
+                        optimize_expr(<span class="kw-2">&amp;mut </span>b.condition, state, <span class="bool-val">false</span>);
+                        optimize_expr(<span class="kw-2">&amp;mut </span>b.expr, state, <span class="bool-val">false</span>);
                     }
                     <span class="kw">return</span>;
                 }
@@ -2029,90 +2082,114 @@
 
             <span class="comment">// Promote the default case
             </span>state.set_dirty();
-            <span class="kw">let </span>def_stmt = optimize_stmt_block(mem::take(def_case), state, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
-            <span class="kw-2">*</span>stmt = (def_stmt, def_case.span_or_else(<span class="kw-2">*</span>pos, Position::NONE)).into();
+
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(index) = def_case {
+                <span class="kw">let </span><span class="kw-2">mut </span>def_stmt = Stmt::Expr(mem::take(<span class="kw-2">&amp;mut </span>expressions[<span class="kw-2">*</span>index].expr).into());
+                optimize_stmt(<span class="kw-2">&amp;mut </span>def_stmt, state, <span class="bool-val">true</span>);
+                <span class="kw-2">*</span>stmt = def_stmt;
+            } <span class="kw">else </span>{
+                <span class="kw-2">*</span>stmt = StmtBlock::empty(<span class="kw-2">*</span>pos).into();
+            }
         }
         <span class="comment">// switch
         </span>Stmt::Switch(x, ..) =&gt; {
             <span class="kw">let </span>(
                 match_expr,
-                SwitchCases {
+                SwitchCasesCollection {
+                    expressions,
                     cases,
                     ranges,
                     def_case,
                     ..
                 },
-            ) = x.as_mut();
+            ) = <span class="kw-2">&amp;mut **</span>x;
 
             optimize_expr(match_expr, state, <span class="bool-val">false</span>);
 
-            <span class="comment">// Optimize cases
-            </span><span class="kw">for </span>block <span class="kw">in </span>cases.values_mut() {
-                <span class="kw">let </span>statements = mem::take(<span class="kw-2">&amp;mut *</span>block.statements);
-                <span class="kw-2">*</span>block.statements =
-                    optimize_stmt_block(statements, state, preserve_result, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
+            <span class="comment">// Optimize blocks
+            </span><span class="kw">for </span>b <span class="kw">in </span>expressions.iter_mut() {
+                optimize_expr(<span class="kw-2">&amp;mut </span>b.condition, state, <span class="bool-val">false</span>);
+                optimize_expr(<span class="kw-2">&amp;mut </span>b.expr, state, <span class="bool-val">false</span>);
 
-                optimize_expr(<span class="kw-2">&amp;mut </span>block.condition, state, <span class="bool-val">false</span>);
-
-                <span class="kw">match </span>block.condition {
-                    Expr::Unit(pos) =&gt; {
-                        block.condition = Expr::BoolConstant(<span class="bool-val">true</span>, pos);
-                        state.set_dirty();
-                    }
-                    <span class="kw">_ </span>=&gt; (),
+                <span class="kw">if </span>b.is_always_false() &amp;&amp; !b.expr.is_unit() {
+                    b.expr = Expr::Unit(b.expr.position());
+                    state.set_dirty();
                 }
             }
 
             <span class="comment">// Remove false cases
-            </span>cases.retain(|<span class="kw">_</span>, block| <span class="kw">match </span>block.condition {
-                Expr::BoolConstant(<span class="bool-val">false</span>, ..) =&gt; {
+            </span>cases.retain(|<span class="kw">_</span>, list| {
+                <span class="comment">// Remove all entries that have false conditions
+                </span>list.retain(|index| {
+                    <span class="kw">if </span>expressions[<span class="kw-2">*</span>index].is_always_false() {
+                        state.set_dirty();
+                        <span class="bool-val">false
+                    </span>} <span class="kw">else </span>{
+                        <span class="bool-val">true
+                    </span>}
+                });
+                <span class="comment">// Remove all entries after a `true` condition
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(n) = list
+                    .iter()
+                    .position(|<span class="kw-2">&amp;</span>index| expressions[index].is_always_true())
+                {
+                    <span class="kw">if </span>n + <span class="number">1 </span>&lt; list.len() {
+                        state.set_dirty();
+                        list.truncate(n + <span class="number">1</span>);
+                    }
+                }
+                <span class="comment">// Remove if no entry left
+                </span><span class="kw">if </span>list.is_empty() {
                     state.set_dirty();
                     <span class="bool-val">false
+                </span>} <span class="kw">else </span>{
+                    <span class="bool-val">true
                 </span>}
-                <span class="kw">_ </span>=&gt; <span class="bool-val">true</span>,
             });
-
-            <span class="comment">// Optimize ranges
-            </span><span class="kw">for </span>(.., block) <span class="kw">in </span>ranges.iter_mut() {
-                <span class="kw">let </span>statements = mem::take(<span class="kw-2">&amp;mut *</span>block.statements);
-                <span class="kw-2">*</span>block.statements =
-                    optimize_stmt_block(statements, state, preserve_result, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
-
-                optimize_expr(<span class="kw-2">&amp;mut </span>block.condition, state, <span class="bool-val">false</span>);
-
-                <span class="kw">match </span>block.condition {
-                    Expr::Unit(pos) =&gt; {
-                        block.condition = Expr::BoolConstant(<span class="bool-val">true</span>, pos);
-                        state.set_dirty();
-                    }
-                    <span class="kw">_ </span>=&gt; (),
-                }
-            }
 
             <span class="comment">// Remove false ranges
-            </span>ranges.retain(|(.., block)| <span class="kw">match </span>block.condition {
-                Expr::BoolConstant(<span class="bool-val">false</span>, ..) =&gt; {
+            </span>ranges.retain(|r| {
+                <span class="kw">if </span>expressions[r.index()].is_always_false() {
                     state.set_dirty();
                     <span class="bool-val">false
+                </span>} <span class="kw">else </span>{
+                    <span class="bool-val">true
                 </span>}
-                <span class="kw">_ </span>=&gt; <span class="bool-val">true</span>,
             });
 
-            <span class="kw">let </span>def_block = mem::take(<span class="kw-2">&amp;mut ***</span>def_case);
-            <span class="kw-2">***</span>def_case = optimize_stmt_block(def_block, state, preserve_result, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(index) = def_case {
+                optimize_expr(<span class="kw-2">&amp;mut </span>expressions[<span class="kw-2">*</span>index].expr, state, <span class="bool-val">false</span>);
+            }
+
+            <span class="comment">// Remove unused block statements
+            </span><span class="kw">for </span>index <span class="kw">in </span><span class="number">0</span>..expressions.len() {
+                <span class="kw">if </span><span class="kw-2">*</span>def_case == <span class="prelude-val">Some</span>(index)
+                    || cases.values().flat_map(|c| c.iter()).any(|<span class="kw-2">&amp;</span>n| n == index)
+                    || ranges.iter().any(|r| r.index() == index)
+                {
+                    <span class="kw">continue</span>;
+                }
+
+                <span class="kw">let </span>b = <span class="kw-2">&amp;mut </span>expressions[index];
+
+                <span class="kw">if </span>!b.expr.is_unit() {
+                    b.expr = Expr::Unit(b.expr.position());
+                    state.set_dirty();
+                }
+            }
         }
 
         <span class="comment">// while false { block } -&gt; Noop
         </span>Stmt::While(x, ..) <span class="kw">if </span><span class="macro">matches!</span>(x.<span class="number">0</span>, Expr::BoolConstant(<span class="bool-val">false</span>, ..)) =&gt; <span class="kw">match </span>x.<span class="number">0 </span>{
             Expr::BoolConstant(<span class="bool-val">false</span>, pos) =&gt; {
                 state.set_dirty();
-                <span class="kw-2">*</span>stmt = Stmt::Noop(pos)
+                <span class="kw-2">*</span>stmt = Stmt::Noop(pos);
             }
             <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;`Expr::BoolConstant&quot;</span>),
         },
         <span class="comment">// while expr { block }
         </span>Stmt::While(x, ..) =&gt; {
-            <span class="kw">let </span>(condition, body) = x.as_mut();
+            <span class="kw">let </span>(condition, body) = <span class="kw-2">&amp;mut **</span>x;
             optimize_expr(condition, state, <span class="bool-val">false</span>);
             <span class="kw">if let </span>Expr::BoolConstant(<span class="bool-val">true</span>, pos) = condition {
                 <span class="kw-2">*</span>condition = Expr::Unit(<span class="kw-2">*</span>pos);
@@ -2125,14 +2202,14 @@
                     </span>Stmt::BreakLoop(options, pos) <span class="kw">if </span>options.contains(ASTFlags::BREAK) =&gt; {
                         <span class="comment">// Only a single break statement - turn into running the guard expression once
                         </span>state.set_dirty();
-                        <span class="kw">if </span>!condition.is_unit() {
+                        <span class="kw">if </span>condition.is_unit() {
+                            <span class="kw-2">*</span>stmt = Stmt::Noop(pos);
+                        } <span class="kw">else </span>{
                             <span class="kw">let </span><span class="kw-2">mut </span>statements = <span class="macro">vec!</span>[Stmt::Expr(mem::take(condition).into())];
                             <span class="kw">if </span>preserve_result {
-                                statements.push(Stmt::Noop(pos))
+                                statements.push(Stmt::Noop(pos));
                             }
                             <span class="kw-2">*</span>stmt = (statements, Span::new(pos, Position::NONE)).into();
-                        } <span class="kw">else </span>{
-                            <span class="kw-2">*</span>stmt = Stmt::Noop(pos);
                         };
                     }
                     <span class="kw">_ </span>=&gt; (),
@@ -2175,7 +2252,7 @@
         }
         <span class="comment">// let id = expr;
         </span>Stmt::Var(x, options, ..) <span class="kw">if </span>!options.contains(ASTFlags::CONSTANT) =&gt; {
-            optimize_expr(<span class="kw-2">&amp;mut </span>x.<span class="number">1</span>, state, <span class="bool-val">false</span>)
+            optimize_expr(<span class="kw-2">&amp;mut </span>x.<span class="number">1</span>, state, <span class="bool-val">false</span>);
         }
         <span class="comment">// import expr as var;
         </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
@@ -2217,10 +2294,25 @@
                 optimize_stmt_block(mem::take(<span class="kw-2">&amp;mut *</span>x.catch_block), state, <span class="bool-val">false</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
         }
 
+        <span class="comment">// expr(stmt)
+        </span>Stmt::Expr(expr) <span class="kw">if </span><span class="macro">matches!</span>(<span class="kw-2">**</span>expr, Expr::Stmt(..)) =&gt; {
+            state.set_dirty();
+            <span class="kw">match </span>expr.as_mut() {
+                Expr::Stmt(block) <span class="kw">if </span>!block.is_empty() =&gt; {
+                    <span class="kw">let </span><span class="kw-2">mut </span>stmt_block = <span class="kw-2">*</span>mem::take(block);
+                    <span class="kw-2">*</span>stmt_block =
+                        optimize_stmt_block(mem::take(<span class="kw-2">&amp;mut *</span>stmt_block), state, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
+                    <span class="kw-2">*</span>stmt = stmt_block.into();
+                }
+                Expr::Stmt(..) =&gt; <span class="kw-2">*</span>stmt = Stmt::Noop(expr.position()),
+                <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;`Expr::Stmt`&quot;</span>),
+            }
+        }
+
         Stmt::Expr(expr) =&gt; {
             optimize_expr(expr, state, <span class="bool-val">false</span>);
 
-            <span class="kw">match </span>expr.as_mut() {
+            <span class="kw">match </span><span class="kw-2">&amp;mut **</span>expr {
                 <span class="comment">// func(...)
                 </span>Expr::FnCall(x, pos) =&gt; {
                     state.set_dirty();
@@ -2261,19 +2353,32 @@
     <span class="kw">match </span>expr {
         <span class="comment">// {}
         </span>Expr::Stmt(x) <span class="kw">if </span>x.is_empty() =&gt; { state.set_dirty(); <span class="kw-2">*</span>expr = Expr::Unit(x.position()) }
+        Expr::Stmt(x) <span class="kw">if </span>x.len() == <span class="number">1 </span>&amp;&amp; <span class="macro">matches!</span>(x.statements()[<span class="number">0</span>], Stmt::Expr(..)) =&gt; {
+            state.set_dirty();
+            <span class="kw">match </span>x.take_statements().remove(<span class="number">0</span>) {
+                Stmt::Expr(<span class="kw-2">mut </span>e) =&gt; {
+                    optimize_expr(<span class="kw-2">&amp;mut </span>e, state, <span class="bool-val">false</span>);
+                    <span class="kw-2">*</span>expr = <span class="kw-2">*</span>e;
+                }
+                <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;`Expr::Stmt`&quot;</span>)
+            }
+        }
         <span class="comment">// { stmt; ... } - do not count promotion as dirty because it gets turned back into an array
         </span>Expr::Stmt(x) =&gt; {
             <span class="kw-2">***</span>x = optimize_stmt_block(mem::take(<span class="kw-2">&amp;mut **</span>x), state, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
 
             <span class="comment">// { Stmt(Expr) } - promote
-            </span><span class="kw">match </span>x.as_mut().as_mut() {
-                [ Stmt::Expr(e) ] =&gt; { state.set_dirty(); <span class="kw-2">*</span>expr = mem::take(e); }
-                <span class="kw">_ </span>=&gt; ()
-            }
+            </span><span class="kw">if let </span>[ Stmt::Expr(e) ] = <span class="kw-2">&amp;mut ****</span>x { state.set_dirty(); <span class="kw-2">*</span>expr = mem::take(e); }
+        }
+        <span class="comment">// ()?.rhs
+        </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+        </span>Expr::Dot(x, options, ..) <span class="kw">if </span>options.contains(ASTFlags::NEGATED) &amp;&amp; <span class="macro">matches!</span>(x.lhs, Expr::Unit(..)) =&gt; {
+            state.set_dirty();
+            <span class="kw-2">*</span>expr = mem::take(<span class="kw-2">&amp;mut </span>x.lhs);
         }
         <span class="comment">// lhs.rhs
         </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-        </span>Expr::Dot(x,<span class="kw">_</span>, ..) <span class="kw">if </span>!_chaining =&gt; <span class="kw">match </span>(<span class="kw-2">&amp;mut </span>x.lhs, <span class="kw-2">&amp;mut </span>x.rhs) {
+        </span>Expr::Dot(x, ..) <span class="kw">if </span>!_chaining =&gt; <span class="kw">match </span>(<span class="kw-2">&amp;mut </span>x.lhs, <span class="kw-2">&amp;mut </span>x.rhs) {
             <span class="comment">// map.string
             </span>(Expr::Map(m, pos), Expr::Property(p, ..)) <span class="kw">if </span>m.<span class="number">0</span>.iter().all(|(.., x)| x.is_pure()) =&gt; {
                 <span class="kw">let </span>prop = p.<span class="number">2</span>.as_str();
@@ -2281,8 +2386,7 @@
                 // All other items can be thrown away.
                 </span>state.set_dirty();
                 <span class="kw-2">*</span>expr = mem::take(<span class="kw-2">&amp;mut </span>m.<span class="number">0</span>).into_iter().find(|(x, ..)| x.as_str() == prop)
-                            .map(|(.., <span class="kw-2">mut </span>expr)| { expr.set_position(<span class="kw-2">*</span>pos); expr })
-                            .unwrap_or_else(|| Expr::Unit(<span class="kw-2">*</span>pos));
+                            .map_or_else(|| Expr::Unit(<span class="kw-2">*</span>pos), |(.., <span class="kw-2">mut </span>expr)| { expr.set_position(<span class="kw-2">*</span>pos); expr });
             }
             <span class="comment">// var.rhs
             </span>(Expr::Variable(..), rhs) =&gt; optimize_expr(rhs, state, <span class="bool-val">true</span>),
@@ -2291,13 +2395,19 @@
         }
         <span class="comment">// ....lhs.rhs
         </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-        </span>Expr::Dot(x,<span class="kw">_</span>, ..) =&gt; { optimize_expr(<span class="kw-2">&amp;mut </span>x.lhs, state, <span class="bool-val">false</span>); optimize_expr(<span class="kw-2">&amp;mut </span>x.rhs, state, _chaining); }
+        </span>Expr::Dot(x,..) =&gt; { optimize_expr(<span class="kw-2">&amp;mut </span>x.lhs, state, <span class="bool-val">false</span>); optimize_expr(<span class="kw-2">&amp;mut </span>x.rhs, state, _chaining); }
 
+        <span class="comment">// ()?[rhs]
+        </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
+        </span>Expr::Index(x, options, ..) <span class="kw">if </span>options.contains(ASTFlags::NEGATED) &amp;&amp; <span class="macro">matches!</span>(x.lhs, Expr::Unit(..)) =&gt; {
+            state.set_dirty();
+            <span class="kw-2">*</span>expr = mem::take(<span class="kw-2">&amp;mut </span>x.lhs);
+        }
         <span class="comment">// lhs[rhs]
         </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
         </span>Expr::Index(x, ..) <span class="kw">if </span>!_chaining =&gt; <span class="kw">match </span>(<span class="kw-2">&amp;mut </span>x.lhs, <span class="kw-2">&amp;mut </span>x.rhs) {
             <span class="comment">// array[int]
-            </span>(Expr::Array(a, pos), Expr::IntegerConstant(i, ..)) <span class="kw">if </span><span class="kw-2">*</span>i &gt;= <span class="number">0 </span>&amp;&amp; (<span class="kw-2">*</span>i <span class="kw">as </span>usize) &lt; a.len() &amp;&amp; a.iter().all(Expr::is_pure) =&gt; {
+            </span>(Expr::Array(a, pos), Expr::IntegerConstant(i, ..)) <span class="kw">if </span><span class="kw-2">*</span>i &gt;= <span class="number">0 </span>&amp;&amp; <span class="kw-2">*</span>i &lt;= <span class="kw">crate</span>::MAX_USIZE_INT &amp;&amp; (<span class="kw-2">*</span>i <span class="kw">as </span>usize) &lt; a.len() &amp;&amp; a.iter().all(Expr::is_pure) =&gt; {
                 <span class="comment">// Array literal where everything is pure - promote the indexed item.
                 // All other items can be thrown away.
                 </span>state.set_dirty();
@@ -2306,11 +2416,11 @@
                 <span class="kw-2">*</span>expr = result;
             }
             <span class="comment">// array[-int]
-            </span>(Expr::Array(a, pos), Expr::IntegerConstant(i, ..)) <span class="kw">if </span><span class="kw-2">*</span>i &lt; <span class="number">0 </span>&amp;&amp; i.checked_abs().map(|n| n <span class="kw">as </span>usize &lt;= a.len()).unwrap_or(<span class="bool-val">false</span>) &amp;&amp; a.iter().all(Expr::is_pure) =&gt; {
+            </span>(Expr::Array(a, pos), Expr::IntegerConstant(i, ..)) <span class="kw">if </span><span class="kw-2">*</span>i &lt; <span class="number">0 </span>&amp;&amp; i.unsigned_abs() <span class="kw">as </span>u64 &lt;= a.len() <span class="kw">as </span>u64 &amp;&amp; a.iter().all(Expr::is_pure) =&gt; {
                 <span class="comment">// Array literal where everything is pure - promote the indexed item.
                 // All other items can be thrown away.
                 </span>state.set_dirty();
-                <span class="kw">let </span>index = a.len() - i.abs() <span class="kw">as </span>usize;
+                <span class="kw">let </span>index = a.len() - i.unsigned_abs() <span class="kw">as </span>usize;
                 <span class="kw">let </span><span class="kw-2">mut </span>result = mem::take(<span class="kw-2">&amp;mut </span>a[index]);
                 result.set_position(<span class="kw-2">*</span>pos);
                 <span class="kw-2">*</span>expr = result;
@@ -2321,32 +2431,31 @@
                 // All other items can be thrown away.
                 </span>state.set_dirty();
                 <span class="kw-2">*</span>expr = mem::take(<span class="kw-2">&amp;mut </span>m.<span class="number">0</span>).into_iter().find(|(x, ..)| x.as_str() == s.as_str())
-                            .map(|(.., <span class="kw-2">mut </span>expr)| { expr.set_position(<span class="kw-2">*</span>pos); expr })
-                            .unwrap_or_else(|| Expr::Unit(<span class="kw-2">*</span>pos));
+                            .map_or_else(|| Expr::Unit(<span class="kw-2">*</span>pos), |(.., <span class="kw-2">mut </span>expr)| { expr.set_position(<span class="kw-2">*</span>pos); expr });
             }
             <span class="comment">// int[int]
-            </span>(Expr::IntegerConstant(n, pos), Expr::IntegerConstant(i, ..)) <span class="kw">if </span><span class="kw-2">*</span>i &gt;= <span class="number">0 </span>&amp;&amp; (<span class="kw-2">*</span>i <span class="kw">as </span>usize) &lt; INT_BITS =&gt; {
+            </span>(Expr::IntegerConstant(n, pos), Expr::IntegerConstant(i, ..)) <span class="kw">if </span><span class="kw-2">*</span>i &gt;= <span class="number">0 </span>&amp;&amp; <span class="kw-2">*</span>i &lt;= <span class="kw">crate</span>::MAX_USIZE_INT &amp;&amp; (<span class="kw-2">*</span>i <span class="kw">as </span>usize) &lt; <span class="kw">crate</span>::INT_BITS =&gt; {
                 <span class="comment">// Bit-field literal indexing - get the bit
                 </span>state.set_dirty();
                 <span class="kw-2">*</span>expr = Expr::BoolConstant((<span class="kw-2">*</span>n &amp; (<span class="number">1 </span>&lt;&lt; (<span class="kw-2">*</span>i <span class="kw">as </span>usize))) != <span class="number">0</span>, <span class="kw-2">*</span>pos);
             }
             <span class="comment">// int[-int]
-            </span>(Expr::IntegerConstant(n, pos), Expr::IntegerConstant(i, ..)) <span class="kw">if </span><span class="kw-2">*</span>i &lt; <span class="number">0 </span>&amp;&amp; i.checked_abs().map(|i| i <span class="kw">as </span>usize &lt;= INT_BITS).unwrap_or(<span class="bool-val">false</span>) =&gt; {
+            </span>(Expr::IntegerConstant(n, pos), Expr::IntegerConstant(i, ..)) <span class="kw">if </span><span class="kw-2">*</span>i &lt; <span class="number">0 </span>&amp;&amp; i.unsigned_abs() <span class="kw">as </span>u64 &lt;= <span class="kw">crate</span>::INT_BITS <span class="kw">as </span>u64 =&gt; {
                 <span class="comment">// Bit-field literal indexing - get the bit
                 </span>state.set_dirty();
-                <span class="kw-2">*</span>expr = Expr::BoolConstant((<span class="kw-2">*</span>n &amp; (<span class="number">1 </span>&lt;&lt; (INT_BITS - i.abs() <span class="kw">as </span>usize))) != <span class="number">0</span>, <span class="kw-2">*</span>pos);
+                <span class="kw-2">*</span>expr = Expr::BoolConstant((<span class="kw-2">*</span>n &amp; (<span class="number">1 </span>&lt;&lt; (<span class="kw">crate</span>::INT_BITS - i.unsigned_abs() <span class="kw">as </span>usize))) != <span class="number">0</span>, <span class="kw-2">*</span>pos);
             }
             <span class="comment">// string[int]
-            </span>(Expr::StringConstant(s, pos), Expr::IntegerConstant(i, ..)) <span class="kw">if </span><span class="kw-2">*</span>i &gt;= <span class="number">0 </span>&amp;&amp; (<span class="kw-2">*</span>i <span class="kw">as </span>usize) &lt; s.chars().count() =&gt; {
+            </span>(Expr::StringConstant(s, pos), Expr::IntegerConstant(i, ..)) <span class="kw">if </span><span class="kw-2">*</span>i &gt;= <span class="number">0 </span>&amp;&amp; <span class="kw-2">*</span>i &lt;= <span class="kw">crate</span>::MAX_USIZE_INT &amp;&amp; (<span class="kw-2">*</span>i <span class="kw">as </span>usize) &lt; s.chars().count() =&gt; {
                 <span class="comment">// String literal indexing - get the character
                 </span>state.set_dirty();
                 <span class="kw-2">*</span>expr = Expr::CharConstant(s.chars().nth(<span class="kw-2">*</span>i <span class="kw">as </span>usize).unwrap(), <span class="kw-2">*</span>pos);
             }
             <span class="comment">// string[-int]
-            </span>(Expr::StringConstant(s, pos), Expr::IntegerConstant(i, ..)) <span class="kw">if </span><span class="kw-2">*</span>i &lt; <span class="number">0 </span>&amp;&amp; i.checked_abs().map(|n| n <span class="kw">as </span>usize &lt;= s.chars().count()).unwrap_or(<span class="bool-val">false</span>) =&gt; {
+            </span>(Expr::StringConstant(s, pos), Expr::IntegerConstant(i, ..)) <span class="kw">if </span><span class="kw-2">*</span>i &lt; <span class="number">0 </span>&amp;&amp; i.unsigned_abs() <span class="kw">as </span>u64 &lt;= s.chars().count() <span class="kw">as </span>u64 =&gt; {
                 <span class="comment">// String literal indexing - get the character
                 </span>state.set_dirty();
-                <span class="kw-2">*</span>expr = Expr::CharConstant(s.chars().rev().nth(i.abs() <span class="kw">as </span>usize - <span class="number">1</span>).unwrap(), <span class="kw-2">*</span>pos);
+                <span class="kw-2">*</span>expr = Expr::CharConstant(s.chars().rev().nth(i.unsigned_abs() <span class="kw">as </span>usize - <span class="number">1</span>).unwrap(), <span class="kw-2">*</span>pos);
             }
             <span class="comment">// var[rhs]
             </span>(Expr::Variable(..), rhs) =&gt; optimize_expr(rhs, state, <span class="bool-val">true</span>),
@@ -2359,12 +2468,12 @@
         <span class="comment">// ``
         </span>Expr::InterpolatedString(x, pos) <span class="kw">if </span>x.is_empty() =&gt; {
             state.set_dirty();
-            <span class="kw-2">*</span>expr = Expr::StringConstant(state.engine.const_empty_string(), <span class="kw-2">*</span>pos);
+            <span class="kw-2">*</span>expr = Expr::StringConstant(state.engine.get_interned_string(<span class="string">&quot;&quot;</span>), <span class="kw-2">*</span>pos);
         }
-        <span class="comment">// `...`
-        </span>Expr::InterpolatedString(x, ..) <span class="kw">if </span>x.len() == <span class="number">1 </span>&amp;&amp; <span class="macro">matches!</span>(x[<span class="number">0</span>], Expr::StringConstant(..)) =&gt; {
+        <span class="comment">// `... ${const} ...`
+        </span>Expr::InterpolatedString(..) <span class="kw">if </span>expr.is_constant() =&gt; {
             state.set_dirty();
-            <span class="kw-2">*</span>expr = mem::take(<span class="kw-2">&amp;mut </span>x[<span class="number">0</span>]);
+            <span class="kw-2">*</span>expr = Expr::StringConstant(expr.get_literal_value().unwrap().cast::&lt;ImmutableString&gt;(), expr.position());
         }
         <span class="comment">// `... ${ ... } ...`
         </span>Expr::InterpolatedString(x, ..) =&gt; {
@@ -2426,6 +2535,16 @@
             <span class="comment">// lhs || rhs
             </span>(lhs, rhs) =&gt; { optimize_expr(lhs, state, <span class="bool-val">false</span>); optimize_expr(rhs, state, <span class="bool-val">false</span>); }
         },
+        <span class="comment">// () ?? rhs -&gt; rhs
+        </span>Expr::Coalesce(x, ..) <span class="kw">if </span><span class="macro">matches!</span>(x.lhs, Expr::Unit(..)) =&gt; {
+            state.set_dirty();
+            <span class="kw-2">*</span>expr = mem::take(<span class="kw-2">&amp;mut </span>x.rhs);
+        },
+        <span class="comment">// lhs:constant ?? rhs -&gt; lhs
+        </span>Expr::Coalesce(x, ..) <span class="kw">if </span>x.lhs.is_constant() =&gt; {
+            state.set_dirty();
+            <span class="kw-2">*</span>expr = mem::take(<span class="kw-2">&amp;mut </span>x.lhs);
+        },
 
         <span class="comment">// eval!
         </span>Expr::FnCall(x, ..) <span class="kw">if </span>x.name == KEYWORD_EVAL =&gt; {
@@ -2444,7 +2563,7 @@
                 <span class="kw">_ </span>=&gt; Dynamic::UNIT
             };
 
-            <span class="kw">if let </span><span class="prelude-val">Ok</span>(fn_ptr) = fn_name.into_immutable_string().map_err(|err| err.into()).and_then(FnPtr::try_from) {
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(fn_ptr) = fn_name.into_immutable_string().map_err(Into::into).and_then(FnPtr::try_from) {
                 state.set_dirty();
                 <span class="kw-2">*</span>expr = Expr::DynamicConstant(Box::new(fn_ptr.into()), <span class="kw-2">*</span>pos);
             } <span class="kw">else </span>{
@@ -2481,7 +2600,7 @@
                     <span class="kw">return</span>;
                 }
                 <span class="comment">// Overloaded operators can override built-in.
-                </span><span class="kw">_ if </span>x.args.len() == <span class="number">2 </span>&amp;&amp; !has_native_fn_override(state.engine, x.hashes.native, arg_types.as_ref()) =&gt; {
+                </span><span class="kw">_ if </span>x.args.len() == <span class="number">2 </span>&amp;&amp; (state.engine.fast_operators() || !has_native_fn_override(state.engine, x.hashes.native, <span class="kw-2">&amp;</span>arg_types)) =&gt; {
                     <span class="kw">if let </span><span class="prelude-val">Some</span>(result) = get_builtin_binary_op_fn(<span class="kw-2">&amp;</span>x.name, <span class="kw-2">&amp;</span>arg_values[<span class="number">0</span>], <span class="kw-2">&amp;</span>arg_values[<span class="number">1</span>])
                         .and_then(|f| {
                             <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
@@ -2583,12 +2702,13 @@
         }
 
         <span class="comment">// Custom syntax
+        </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
         </span>Expr::Custom(x, ..) =&gt; {
             <span class="kw">if </span>x.scope_may_be_changed {
                 state.propagate_constants = <span class="bool-val">false</span>;
             }
-            x.inputs.iter_mut().for_each(|expr| optimize_expr(expr, state, <span class="bool-val">false</span>));
-        }
+            <span class="comment">// Do not optimize custom syntax expressions as you won&#39;t know how they would be called
+        </span>}
 
         <span class="comment">// All other expressions - skip
         </span><span class="kw">_ </span>=&gt; (),
@@ -2633,10 +2753,10 @@
 
     <span class="comment">// Add constants and variables from the scope
     </span><span class="kw">for </span>(name, constant, value) <span class="kw">in </span>scope.iter() {
-        <span class="kw">if </span>!constant {
-            state.push_var(name, AccessMode::ReadWrite, <span class="prelude-val">None</span>);
-        } <span class="kw">else </span>{
+        <span class="kw">if </span>constant {
             state.push_var(name, AccessMode::ReadOnly, <span class="prelude-val">Some</span>(value));
+        } <span class="kw">else </span>{
+            state.push_var(name, AccessMode::ReadWrite, <span class="prelude-val">None</span>);
         }
     }
 
@@ -2680,7 +2800,7 @@
             <span class="kw">let </span>lib2 = <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>lib2];
 
             <span class="kw">for </span>fn_def <span class="kw">in </span>functions {
-                <span class="kw">let </span><span class="kw-2">mut </span>fn_def = <span class="kw">crate</span>::func::native::shared_take_or_clone(fn_def);
+                <span class="kw">let </span><span class="kw-2">mut </span>fn_def = <span class="kw">crate</span>::func::shared_take_or_clone(fn_def);
 
                 <span class="comment">// Optimize the function body
                 </span><span class="kw">let </span>body = mem::take(<span class="kw-2">&amp;mut *</span>fn_def.body);
@@ -2706,7 +2826,7 @@
             OptimizationLevel::Simple | OptimizationLevel::Full =&gt; optimize_top_level(
                 statements,
                 engine,
-                <span class="kw-2">&amp;</span>scope,
+                scope,
                 <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
                 </span><span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>lib],
                 optimization_level,
@@ -2717,4 +2837,4 @@
     )
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.7.0/src/func/call.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>call.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.10.0/src/func/call.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>call.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rhai/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1430,10 +1430,44 @@
 <span id="1430">1430</span>
 <span id="1431">1431</span>
 <span id="1432">1432</span>
+<span id="1433">1433</span>
+<span id="1434">1434</span>
+<span id="1435">1435</span>
+<span id="1436">1436</span>
+<span id="1437">1437</span>
+<span id="1438">1438</span>
+<span id="1439">1439</span>
+<span id="1440">1440</span>
+<span id="1441">1441</span>
+<span id="1442">1442</span>
+<span id="1443">1443</span>
+<span id="1444">1444</span>
+<span id="1445">1445</span>
+<span id="1446">1446</span>
+<span id="1447">1447</span>
+<span id="1448">1448</span>
+<span id="1449">1449</span>
+<span id="1450">1450</span>
+<span id="1451">1451</span>
+<span id="1452">1452</span>
+<span id="1453">1453</span>
+<span id="1454">1454</span>
+<span id="1455">1455</span>
+<span id="1456">1456</span>
+<span id="1457">1457</span>
+<span id="1458">1458</span>
+<span id="1459">1459</span>
+<span id="1460">1460</span>
+<span id="1461">1461</span>
+<span id="1462">1462</span>
+<span id="1463">1463</span>
+<span id="1464">1464</span>
+<span id="1465">1465</span>
+<span id="1466">1466</span>
+<span id="1467">1467</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Implement function-calling mechanism for [`Engine`].
 
 </span><span class="kw">use </span><span class="kw">super</span>::callable_function::CallableFunction;
-<span class="kw">use </span><span class="kw">super</span>::native::FnAny;
 <span class="kw">use super</span>::{get_builtin_binary_op_fn, get_builtin_op_assignment_fn};
 <span class="kw">use </span><span class="kw">crate</span>::api::default_limits::MAX_DYNAMIC_PARAMETERS;
 <span class="kw">use </span><span class="kw">crate</span>::ast::{Expr, FnCallHashes, Stmt};
@@ -1444,9 +1478,13 @@
 <span class="kw">use </span><span class="kw">crate</span>::eval::{Caches, FnResolutionCacheEntry, GlobalRuntimeState};
 <span class="kw">use crate</span>::{
     calc_fn_hash, calc_fn_params_hash, combine_hashes, Dynamic, Engine, FnArgsVec, FnPtr,
-    Identifier, ImmutableString, Module, OptimizationLevel, Position, RhaiError, RhaiResult,
-    RhaiResultOf, Scope, ERR,
+    ImmutableString, Module, OptimizationLevel, Position, RhaiError, RhaiResult, RhaiResultOf,
+    Scope, ERR,
 };
+<span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
+</span><span class="kw">use </span>hashbrown::hash_map::Entry;
+<span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_std&quot;</span>))]
+</span><span class="kw">use </span>std::collections::hash_map::Entry;
 <span class="attribute">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::{
@@ -1500,7 +1538,7 @@
         <span class="comment">// Replace the first reference with a reference to the clone, force-casting the lifetime.
         // Must remember to restore it later with `restore_first_arg`.
         //
-        // # Safety
+        // SAFETY:
         //
         // Blindly casting a reference to another lifetime saves allocation and string cloning,
         // but must be used with the utmost care.
@@ -1550,7 +1588,7 @@
         .find(|(.., a)| a.is_locked())
     {
         <span class="kw">return </span><span class="prelude-val">Err</span>(ERR::ErrorDataRace(
-            <span class="macro">format!</span>(<span class="string">&quot;argument #{} of function &#39;{}&#39;&quot;</span>, n + <span class="number">1</span>, fn_name),
+            <span class="macro">format!</span>(<span class="string">&quot;argument #{} of function &#39;{fn_name}&#39;&quot;</span>, n + <span class="number">1</span>),
             Position::NONE,
         )
         .into());
@@ -1559,49 +1597,53 @@
     <span class="prelude-val">Ok</span>(())
 }
 
+<span class="doccomment">/// Generate the signature for a function call.
+</span><span class="attribute">#[inline]
+#[must_use]
+</span><span class="kw">pub fn </span>gen_fn_call_signature(engine: <span class="kw-2">&amp;</span>Engine, fn_name: <span class="kw-2">&amp;</span>str, args: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;mut </span>Dynamic]) -&gt; String {
+    <span class="macro">format!</span>(
+        <span class="string">&quot;{fn_name} ({})&quot;</span>,
+        args.iter()
+            .map(|a| <span class="kw">if </span>a.is::&lt;ImmutableString&gt;() {
+                <span class="string">&quot;&amp;str | ImmutableString | String&quot;
+            </span>} <span class="kw">else </span>{
+                engine.map_type_name(a.type_name())
+            })
+            .collect::&lt;FnArgsVec&lt;<span class="kw">_</span>&gt;&gt;()
+            .join(<span class="string">&quot;, &quot;</span>)
+    )
+}
+
+<span class="doccomment">/// Generate the signature for a namespace-qualified function call.
+///
+/// Not available under `no_module`.
+</span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+#[inline]
+#[must_use]
+</span><span class="kw">pub fn </span>gen_qualified_fn_call_signature(
+    engine: <span class="kw-2">&amp;</span>Engine,
+    namespace: <span class="kw-2">&amp;</span><span class="kw">crate</span>::ast::Namespace,
+    fn_name: <span class="kw-2">&amp;</span>str,
+    args: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;mut </span>Dynamic],
+) -&gt; String {
+    <span class="kw">let </span>(ns, sep) = (
+        namespace.to_string(),
+        <span class="kw">if </span>namespace.is_empty() {
+            <span class="string">&quot;&quot;
+        </span>} <span class="kw">else </span>{
+            <span class="kw">crate</span>::tokenizer::Token::DoubleColon.literal_syntax()
+        },
+    );
+
+    <span class="macro">format!</span>(<span class="string">&quot;{ns}{sep}{}&quot;</span>, gen_fn_call_signature(engine, fn_name, args))
+}
+
 <span class="kw">impl </span>Engine {
-    <span class="doccomment">/// Generate the signature for a function call.
-    </span><span class="attribute">#[inline]
-    #[must_use]
-    </span><span class="kw">fn </span>gen_call_signature(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))] </span>namespace: <span class="kw-2">&amp;</span><span class="kw">crate</span>::ast::Namespace,
-        fn_name: <span class="kw-2">&amp;</span>str,
-        args: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;mut </span>Dynamic],
-    ) -&gt; String {
-        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-        </span><span class="kw">let </span>(ns, sep) = (
-            namespace.to_string(),
-            <span class="kw">if </span>!namespace.is_empty() {
-                <span class="kw">crate</span>::tokenizer::Token::DoubleColon.literal_syntax()
-            } <span class="kw">else </span>{
-                <span class="string">&quot;&quot;
-            </span>},
-        );
-        <span class="attribute">#[cfg(feature = <span class="string">&quot;no_module&quot;</span>)]
-        </span><span class="kw">let </span>(ns, sep) = (<span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>);
-
-        <span class="macro">format!</span>(
-            <span class="string">&quot;{}{}{} ({})&quot;</span>,
-            ns,
-            sep,
-            fn_name,
-            args.iter()
-                .map(|a| <span class="kw">if </span>a.is::&lt;ImmutableString&gt;() {
-                    <span class="string">&quot;&amp;str | ImmutableString | String&quot;
-                </span>} <span class="kw">else </span>{
-                    <span class="self">self</span>.map_type_name(a.type_name())
-                })
-                .collect::&lt;FnArgsVec&lt;<span class="kw">_</span>&gt;&gt;()
-                .join(<span class="string">&quot;, &quot;</span>)
-        )
-    }
-
-    <span class="doccomment">/// Resolve a function call.
+    <span class="doccomment">/// Resolve a normal (non-qualified) function call.
     ///
     /// Search order:
     /// 1) AST - script functions in the AST
-    /// 2) Global namespace - functions registered via Engine::register_XXX
+    /// 2) Global namespace - functions registered via `Engine::register_XXX`
     /// 3) Global registered modules - packages
     /// 4) Imported modules - functions marked with global namespace
     /// 5) Static registered modules
@@ -1609,138 +1651,135 @@
     </span><span class="kw">fn </span>resolve_fn&lt;<span class="lifetime">&#39;s</span>&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         _global: <span class="kw-2">&amp;</span>GlobalRuntimeState,
-        state: <span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span>Caches,
+        caches: <span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span>Caches,
         lib: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>Module],
         fn_name: <span class="kw-2">&amp;</span>str,
-        hash_script: u64,
+        hash_base: u64,
         args: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>FnCallArgs&gt;,
         allow_dynamic: bool,
         is_op_assignment: bool,
     ) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span>FnResolutionCacheEntry&gt; {
-        <span class="kw">if </span>hash_script == <span class="number">0 </span>{
+        <span class="kw">if </span>hash_base == <span class="number">0 </span>{
             <span class="kw">return </span><span class="prelude-val">None</span>;
         }
 
-        <span class="kw">let </span><span class="kw-2">mut </span>hash = args.as_ref().map_or(hash_script, |args| {
+        <span class="kw">let </span><span class="kw-2">mut </span>hash = args.as_ref().map_or(hash_base, |args| {
             combine_hashes(
-                hash_script,
+                hash_base,
                 calc_fn_params_hash(args.iter().map(|a| a.type_id())),
             )
         });
 
-        <span class="kw">let </span>result = state
-            .fn_resolution_cache_mut()
-            .entry(hash)
-            .or_insert_with(|| {
+        <span class="kw">match </span>caches.fn_resolution_cache_mut().entry(hash) {
+            Entry::Occupied(entry) =&gt; entry.into_mut().as_ref(),
+            Entry::Vacant(entry) =&gt; {
                 <span class="kw">let </span>num_args = args.as_ref().map_or(<span class="number">0</span>, |a| a.len());
-                <span class="kw">let </span>max_bitmask = <span class="kw">if </span>!allow_dynamic {
-                    <span class="number">0
-                </span>} <span class="kw">else </span>{
-                    <span class="number">1usize </span>&lt;&lt; usize::min(num_args, MAX_DYNAMIC_PARAMETERS)
-                };
-                <span class="kw">let </span><span class="kw-2">mut </span>bitmask = <span class="number">1usize</span>; <span class="comment">// Bitmask of which parameter to replace with `Dynamic`
+                <span class="kw">let </span><span class="kw-2">mut </span>max_bitmask = <span class="number">0</span>; <span class="comment">// One above maximum bitmask based on number of parameters.
+                                         // Set later when a specific matching function is not found.
+                </span><span class="kw">let </span><span class="kw-2">mut </span>bitmask = <span class="number">1usize</span>; <span class="comment">// Bitmask of which parameter to replace with `Dynamic`
 
                 </span><span class="kw">loop </span>{
                     <span class="kw">let </span>func = lib
                         .iter()
-                        .find_map(|<span class="kw-2">&amp;</span>m| {
-                            m.get_fn(hash).cloned().map(|func| FnResolutionCacheEntry {
-                                func,
-                                source: m.id_raw().clone(),
-                            })
-                        })
+                        .find_map(|<span class="kw-2">&amp;</span>m| m.get_fn(hash).map(|f| (f, m.id())))
                         .or_else(|| {
-                            <span class="self">self</span>.global_modules.iter().find_map(|m| {
-                                m.get_fn(hash).cloned().map(|func| FnResolutionCacheEntry {
-                                    func,
-                                    source: m.id_raw().clone(),
-                                })
-                            })
+                            <span class="self">self</span>.global_modules
+                                .iter()
+                                .find_map(|m| m.get_fn(hash).map(|f| (f, m.id())))
                         });
 
                     <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-                    </span><span class="kw">let </span>func = func
-                        .or_else(|| {
-                            _global.get_qualified_fn(hash).map(|(func, source)| {
-                                FnResolutionCacheEntry {
-                                    func: func.clone(),
-                                    source: source
-                                        .map_or_else(|| Identifier::new_const(), Into::into),
-                                }
-                            })
-                        })
-                        .or_else(|| {
-                            <span class="self">self</span>.global_sub_modules.values().find_map(|m| {
-                                m.get_qualified_fn(hash).cloned().map(|func| {
-                                    FnResolutionCacheEntry {
-                                        func,
-                                        source: m.id_raw().clone(),
-                                    }
-                                })
-                            })
-                        });
+                    </span><span class="kw">let </span>func = func.or_else(|| _global.get_qualified_fn(hash)).or_else(|| {
+                        <span class="self">self</span>.global_sub_modules
+                            .values()
+                            .find_map(|m| m.get_qualified_fn(hash).map(|f| (f, m.id())))
+                    });
 
-                    <span class="kw">match </span>func {
-                        <span class="comment">// Specific version found
-                        </span><span class="prelude-val">Some</span>(f) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>(Box::new(f)),
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>((f, s)) = func {
+                        <span class="comment">// Specific version found - insert into cache and return it
+                        </span><span class="kw">let </span>new_entry = FnResolutionCacheEntry {
+                            func: f.clone(),
+                            source: s.map(|s| Box::new(s.into())),
+                        };
+                        <span class="kw">return </span>entry.insert(<span class="prelude-val">Some</span>(new_entry)).as_ref();
+                    }
 
-                        <span class="comment">// Stop when all permutations are exhausted
-                        </span><span class="prelude-val">None </span><span class="kw">if </span>bitmask &gt;= max_bitmask =&gt; {
-                            <span class="kw">if </span>num_args != <span class="number">2 </span>{
-                                <span class="kw">return </span><span class="prelude-val">None</span>;
-                            }
+                    <span class="comment">// Check `Dynamic` parameters for functions with parameters
+                    </span><span class="kw">if </span>allow_dynamic &amp;&amp; max_bitmask == <span class="number">0 </span>&amp;&amp; num_args &gt; <span class="number">0 </span>{
+                        <span class="kw">let </span>is_dynamic = lib.iter().any(|<span class="kw-2">&amp;</span>m| m.may_contain_dynamic_fn(hash_base))
+                            || <span class="self">self
+                                </span>.global_modules
+                                .iter()
+                                .any(|m| m.may_contain_dynamic_fn(hash_base));
 
-                            <span class="kw">return </span>args.and_then(|args| {
-                                <span class="kw">if </span>!is_op_assignment {
-                                    get_builtin_binary_op_fn(fn_name, <span class="kw-2">&amp;</span>args[<span class="number">0</span>], <span class="kw-2">&amp;</span>args[<span class="number">1</span>]).map(|f| {
-                                        FnResolutionCacheEntry {
-                                            func: CallableFunction::from_method(
-                                                Box::new(f) <span class="kw">as </span>Box&lt;FnAny&gt;
-                                            ),
-                                            source: Identifier::new_const(),
-                                        }
-                                    })
-                                } <span class="kw">else </span>{
-                                    <span class="kw">let </span>(first_arg, rest_args) = args.split_first().unwrap();
+                        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+                        </span><span class="kw">let </span>is_dynamic = is_dynamic
+                            || _global
+                                .iter_imports_raw()
+                                .any(|(<span class="kw">_</span>, m)| m.may_contain_dynamic_fn(hash_base))
+                            || <span class="self">self
+                                </span>.global_sub_modules
+                                .values()
+                                .any(|m| m.may_contain_dynamic_fn(hash_base));
 
-                                    get_builtin_op_assignment_fn(fn_name, <span class="kw-2">*</span>first_arg, rest_args[<span class="number">0</span>])
-                                        .map(|f| FnResolutionCacheEntry {
-                                            func: CallableFunction::from_method(
-                                                Box::new(f) <span class="kw">as </span>Box&lt;FnAny&gt;
-                                            ),
-                                            source: Identifier::new_const(),
-                                        })
-                                }
-                                .map(Box::new)
-                            });
-                        }
-
-                        <span class="comment">// Try all permutations with `Dynamic` wildcards
-                        </span><span class="prelude-val">None </span>=&gt; {
-                            <span class="kw">let </span>hash_params = calc_fn_params_hash(
-                                args.as_ref()
-                                    .expect(<span class="string">&quot;no permutations&quot;</span>)
-                                    .iter()
-                                    .enumerate()
-                                    .map(|(i, a)| {
-                                        <span class="kw">let </span>mask = <span class="number">1usize </span>&lt;&lt; (num_args - i - <span class="number">1</span>);
-                                        <span class="kw">if </span>bitmask &amp; mask != <span class="number">0 </span>{
-                                            <span class="comment">// Replace with `Dynamic`
-                                            </span>TypeId::of::&lt;Dynamic&gt;()
-                                        } <span class="kw">else </span>{
-                                            a.type_id()
-                                        }
-                                    }),
-                            );
-                            hash = combine_hashes(hash_script, hash_params);
-
-                            bitmask += <span class="number">1</span>;
+                        <span class="comment">// Set maximum bitmask when there are dynamic versions of the function
+                        </span><span class="kw">if </span>is_dynamic {
+                            max_bitmask = <span class="number">1usize </span>&lt;&lt; usize::min(num_args, MAX_DYNAMIC_PARAMETERS);
                         }
                     }
-                }
-            });
 
-        result.as_ref().map(Box::as_ref)
+                    <span class="comment">// Stop when all permutations are exhausted
+                    </span><span class="kw">if </span>bitmask &gt;= max_bitmask {
+                        <span class="kw">if </span>num_args != <span class="number">2 </span>{
+                            <span class="kw">return </span><span class="prelude-val">None</span>;
+                        }
+
+                        <span class="comment">// Try to find a built-in version
+                        </span><span class="kw">let </span>builtin = args.and_then(|args| {
+                            <span class="kw">if </span>is_op_assignment {
+                                <span class="kw">let </span>(first_arg, rest_args) = args.split_first().unwrap();
+
+                                get_builtin_op_assignment_fn(fn_name, <span class="kw-2">*</span>first_arg, rest_args[<span class="number">0</span>]).map(
+                                    |f| FnResolutionCacheEntry {
+                                        func: CallableFunction::from_fn_builtin(f),
+                                        source: <span class="prelude-val">None</span>,
+                                    },
+                                )
+                            } <span class="kw">else </span>{
+                                get_builtin_binary_op_fn(fn_name, args[<span class="number">0</span>], args[<span class="number">1</span>]).map(|f| {
+                                    FnResolutionCacheEntry {
+                                        func: CallableFunction::from_fn_builtin(f),
+                                        source: <span class="prelude-val">None</span>,
+                                    }
+                                })
+                            }
+                        });
+
+                        <span class="kw">return </span>entry.insert(builtin).as_ref();
+                    }
+
+                    <span class="comment">// Try all permutations with `Dynamic` wildcards
+                    </span><span class="kw">let </span>hash_params = calc_fn_params_hash(
+                        args.as_ref()
+                            .expect(<span class="string">&quot;no permutations&quot;</span>)
+                            .iter()
+                            .enumerate()
+                            .map(|(i, a)| {
+                                <span class="kw">let </span>mask = <span class="number">1usize </span>&lt;&lt; (num_args - i - <span class="number">1</span>);
+                                <span class="kw">if </span>bitmask &amp; mask == <span class="number">0 </span>{
+                                    a.type_id()
+                                } <span class="kw">else </span>{
+                                    <span class="comment">// Replace with `Dynamic`
+                                    </span>TypeId::of::&lt;Dynamic&gt;()
+                                }
+                            }),
+                    );
+                    hash = combine_hashes(hash_base, hash_params);
+
+                    bitmask += <span class="number">1</span>;
+                }
+            }
+        }
     }
 
     <span class="doccomment">/// # Main Entry-Point
@@ -1785,7 +1824,7 @@
         );
 
         <span class="kw">if </span>func.is_some() {
-            <span class="kw">let </span>is_method = func.map(|f| f.func.is_method()).unwrap_or(<span class="bool-val">false</span>);
+            <span class="kw">let </span>is_method = func.map_or(<span class="bool-val">false</span>, |f| f.func.is_method());
 
             <span class="comment">// Push a new call stack frame
             </span><span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
@@ -1802,9 +1841,10 @@
                     </span>backup.change_first_arg_to_copy(args);
                 }
 
-                <span class="kw">let </span>source = <span class="kw">match </span>(source.as_str(), parent_source.as_str()) {
-                    (<span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>) =&gt; <span class="prelude-val">None</span>,
-                    (<span class="string">&quot;&quot;</span>, s) | (s, ..) =&gt; <span class="prelude-val">Some</span>(s),
+                <span class="kw">let </span>source = <span class="kw">match </span>(source, parent_source.as_str()) {
+                    (<span class="prelude-val">None</span>, <span class="string">&quot;&quot;</span>) =&gt; <span class="prelude-val">None</span>,
+                    (<span class="prelude-val">None</span>, s) =&gt; <span class="prelude-val">Some</span>(s),
+                    (<span class="prelude-val">Some</span>(s), ..) =&gt; <span class="prelude-val">Some</span>(s.as_str()),
                 };
 
                 <span class="attribute">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
@@ -1821,11 +1861,9 @@
                 </span><span class="kw">let </span>context = (<span class="self">self</span>, name, source, <span class="kw-2">&amp;*</span>global, lib, pos, level).into();
 
                 <span class="kw">let </span>result = <span class="kw">if </span>func.is_plugin_fn() {
-                    func.get_plugin_fn()
-                        .expect(<span class="string">&quot;plugin function&quot;</span>)
-                        .call(context, args)
+                    func.get_plugin_fn().unwrap().call(context, args)
                 } <span class="kw">else </span>{
-                    func.get_native_fn().expect(<span class="string">&quot;native function&quot;</span>)(context, args)
+                    func.get_native_fn().unwrap()(context, args)
                 };
 
                 <span class="comment">// Restore the original reference
@@ -1866,8 +1904,8 @@
 
             <span class="comment">// Check the data size of any `&amp;mut` object, which may be changed.
             </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
-            </span><span class="kw">if </span>is_ref_mut &amp;&amp; args.len() &gt; <span class="number">0 </span>{
-                <span class="self">self</span>.check_data_size(<span class="kw-2">&amp;</span>args[<span class="number">0</span>], pos)<span class="question-mark">?</span>;
+            </span><span class="kw">if </span>is_ref_mut &amp;&amp; !args.is_empty() {
+                <span class="self">self</span>.check_data_size(args[<span class="number">0</span>], pos)<span class="question-mark">?</span>;
             }
 
             <span class="comment">// See if the function match print/debug (which requires special processing)
@@ -1877,7 +1915,7 @@
                         <span class="kw">let </span>t = <span class="self">self</span>.map_type_name(type_name::&lt;ImmutableString&gt;()).into();
                         ERR::ErrorMismatchOutputType(t, typ.into(), pos)
                     })<span class="question-mark">?</span>;
-                    ((<span class="kw-2">&amp;*</span><span class="self">self</span>.print)(<span class="kw-2">&amp;</span>text).into(), <span class="bool-val">false</span>)
+                    ((<span class="kw-2">*</span><span class="self">self</span>.print)(<span class="kw-2">&amp;</span>text).into(), <span class="bool-val">false</span>)
                 }
                 KEYWORD_DEBUG =&gt; {
                     <span class="kw">let </span>text = result.into_immutable_string().map_err(|typ| {
@@ -1889,7 +1927,7 @@
                     </span>} <span class="kw">else </span>{
                         <span class="prelude-val">Some</span>(global.source.as_str())
                     };
-                    ((<span class="kw-2">&amp;*</span><span class="self">self</span>.debug)(<span class="kw-2">&amp;</span>text, source, pos).into(), <span class="bool-val">false</span>)
+                    ((<span class="kw-2">*</span><span class="self">self</span>.debug)(<span class="kw-2">&amp;</span>text, source, pos).into(), <span class="bool-val">false</span>)
                 }
                 <span class="kw">_ </span>=&gt; (result, is_method),
             });
@@ -1906,7 +1944,7 @@
                 <span class="kw">let </span>t0 = <span class="self">self</span>.map_type_name(args[<span class="number">0</span>].type_name());
                 <span class="kw">let </span>t1 = <span class="self">self</span>.map_type_name(args[<span class="number">1</span>].type_name());
 
-                <span class="prelude-val">Err</span>(ERR::ErrorIndexingType(<span class="macro">format!</span>(<span class="string">&quot;{} [{}]&quot;</span>, t0, t1), pos).into())
+                <span class="prelude-val">Err</span>(ERR::ErrorIndexingType(<span class="macro">format!</span>(<span class="string">&quot;{t0} [{t1}]&quot;</span>), pos).into())
             }
 
             <span class="comment">// index setter function not found?
@@ -1918,7 +1956,7 @@
                 <span class="kw">let </span>t1 = <span class="self">self</span>.map_type_name(args[<span class="number">1</span>].type_name());
                 <span class="kw">let </span>t2 = <span class="self">self</span>.map_type_name(args[<span class="number">2</span>].type_name());
 
-                <span class="prelude-val">Err</span>(ERR::ErrorIndexingType(<span class="macro">format!</span>(<span class="string">&quot;{} [{}] = {}&quot;</span>, t0, t1, t2), pos).into())
+                <span class="prelude-val">Err</span>(ERR::ErrorIndexingType(<span class="macro">format!</span>(<span class="string">&quot;{t0} [{t1}] = {t2}&quot;</span>), pos).into())
             }
 
             <span class="comment">// Getter function not found?
@@ -1931,9 +1969,8 @@
 
                 <span class="prelude-val">Err</span>(ERR::ErrorDotExpr(
                     <span class="macro">format!</span>(
-                        <span class="string">&quot;Unknown property &#39;{}&#39; - a getter is not registered for type &#39;{}&#39;&quot;</span>,
-                        prop, t0
-                    ),
+                        <span class="string">&quot;Unknown property &#39;{prop}&#39; - a getter is not registered for type &#39;{t0}&#39;&quot;
+                    </span>),
                     pos,
                 )
                 .into())
@@ -1950,25 +1987,17 @@
 
                 <span class="prelude-val">Err</span>(ERR::ErrorDotExpr(
                     <span class="macro">format!</span>(
-                        <span class="string">&quot;No writable property &#39;{}&#39; - a setter is not registered for type &#39;{}&#39; to handle &#39;{}&#39;&quot;</span>,
-                        prop, t0, t1
-                    ),
+                        <span class="string">&quot;No writable property &#39;{prop}&#39; - a setter is not registered for type &#39;{t0}&#39; to handle &#39;{t1}&#39;&quot;
+                    </span>),
                     pos,
                 )
                 .into())
             }
 
             <span class="comment">// Raise error
-            </span><span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(ERR::ErrorFunctionNotFound(
-                <span class="self">self</span>.gen_call_signature(
-                    <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-                    </span><span class="kw-2">&amp;</span><span class="kw">crate</span>::ast::Namespace::NONE,
-                    name,
-                    args,
-                ),
-                pos,
-            )
-            .into()),
+            </span><span class="kw">_ </span>=&gt; {
+                <span class="prelude-val">Err</span>(ERR::ErrorFunctionNotFound(gen_fn_call_signature(<span class="self">self</span>, name, args), pos).into())
+            }
         }
     }
 
@@ -1999,7 +2028,7 @@
     ) -&gt; RhaiResultOf&lt;(Dynamic, bool)&gt; {
         <span class="kw">fn </span>no_method_err(name: <span class="kw-2">&amp;</span>str, pos: Position) -&gt; RhaiResultOf&lt;(Dynamic, bool)&gt; {
             <span class="prelude-val">Err</span>(ERR::ErrorRuntime(
-                (<span class="macro">format!</span>(<span class="string">&quot;&#39;{0}&#39; should not be called this way. Try {0}(...);&quot;</span>, name)).into(),
+                <span class="macro">format!</span>(<span class="string">&quot;&#39;{name}&#39; should not be called this way. Try {name}(...);&quot;</span>).into(),
                 pos,
             )
             .into())
@@ -2026,7 +2055,7 @@
                 <span class="kw">let </span>num_params = args[<span class="number">1</span>].as_int().expect(<span class="string">&quot;`INT`&quot;</span>);
 
                 <span class="kw">return </span><span class="prelude-val">Ok</span>((
-                    <span class="kw">if </span>num_params &lt; <span class="number">0 </span>{
+                    <span class="kw">if </span>num_params &lt; <span class="number">0 </span>|| num_params &gt; <span class="kw">crate</span>::MAX_USIZE_INT {
                         <span class="bool-val">false
                     </span>} <span class="kw">else </span>{
                         <span class="kw">let </span>hash_script = calc_fn_hash(fn_name.as_str(), num_params <span class="kw">as </span>usize);
@@ -2058,7 +2087,7 @@
 
         <span class="comment">// Script-defined function call?
         </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(FnResolutionCacheEntry { func, <span class="kw-2">mut </span>source }) = <span class="self">self
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(FnResolutionCacheEntry { func, <span class="kw-2">ref </span>source }) = <span class="self">self
             </span>.resolve_fn(
                 global,
                 caches,
@@ -2089,7 +2118,12 @@
                 }
             };
 
-            mem::swap(<span class="kw-2">&amp;mut </span>global.source, <span class="kw-2">&amp;mut </span>source);
+            <span class="kw">let </span>orig_source = mem::replace(
+                <span class="kw-2">&amp;mut </span>global.source,
+                source
+                    .as_ref()
+                    .map_or(<span class="kw">crate</span>::Identifier::new_const(), |s| (<span class="kw-2">**</span>s).clone()),
+            );
 
             <span class="kw">let </span>result = <span class="kw">if </span>_is_method_call {
                 <span class="comment">// Method call of script function - map first argument to `this`
@@ -2127,7 +2161,7 @@
             };
 
             <span class="comment">// Restore the original source
-            </span>mem::swap(<span class="kw-2">&amp;mut </span>global.source, <span class="kw-2">&amp;mut </span>source);
+            </span>global.source = orig_source;
 
             <span class="kw">return </span><span class="prelude-val">Ok</span>((result<span class="question-mark">?</span>, <span class="bool-val">false</span>));
         }
@@ -2140,7 +2174,7 @@
     }
 
     <span class="doccomment">/// Evaluate a list of statements with no `this` pointer.
-    /// This is commonly used to evaluate a list of statements in an [`AST`] or a script function body.
+    /// This is commonly used to evaluate a list of statements in an [`AST`][crate::AST] or a script function body.
     </span><span class="attribute">#[inline]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>eval_global_statements(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -2161,162 +2195,6 @@
             }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(err),
         })
-    }
-
-    <span class="doccomment">/// Call a dot method.
-    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>make_method_call(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        global: <span class="kw-2">&amp;mut </span>GlobalRuntimeState,
-        caches: <span class="kw-2">&amp;mut </span>Caches,
-        lib: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>Module],
-        fn_name: <span class="kw-2">&amp;</span>str,
-        <span class="kw-2">mut </span>hash: FnCallHashes,
-        target: <span class="kw-2">&amp;mut </span><span class="kw">crate</span>::eval::Target,
-        (call_args, call_arg_pos): <span class="kw-2">&amp;mut </span>(FnArgsVec&lt;Dynamic&gt;, Position),
-        pos: Position,
-        level: usize,
-    ) -&gt; RhaiResultOf&lt;(Dynamic, bool)&gt; {
-        <span class="kw">let </span>is_ref_mut = target.is_ref();
-
-        <span class="kw">let </span>(result, updated) = <span class="kw">match </span>fn_name {
-            KEYWORD_FN_PTR_CALL <span class="kw">if </span>target.is::&lt;FnPtr&gt;() =&gt; {
-                <span class="comment">// FnPtr call
-                </span><span class="kw">let </span>fn_ptr = target.read_lock::&lt;FnPtr&gt;().expect(<span class="string">&quot;`FnPtr`&quot;</span>);
-                <span class="comment">// Redirect function name
-                </span><span class="kw">let </span>fn_name = fn_ptr.fn_name();
-                <span class="kw">let </span>args_len = call_args.len() + fn_ptr.curry().len();
-                <span class="comment">// Recalculate hashes
-                </span><span class="kw">let </span>new_hash = calc_fn_hash(fn_name, args_len).into();
-                <span class="comment">// Arguments are passed as-is, adding the curried arguments
-                </span><span class="kw">let </span><span class="kw-2">mut </span>curry = FnArgsVec::with_capacity(fn_ptr.num_curried());
-                curry.extend(fn_ptr.curry().iter().cloned());
-                <span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::with_capacity(curry.len() + call_args.len());
-                args.extend(curry.iter_mut());
-                args.extend(call_args.iter_mut());
-
-                <span class="comment">// Map it to name(args) in function-call style
-                </span><span class="self">self</span>.exec_fn_call(
-                    <span class="prelude-val">None</span>, global, caches, lib, fn_name, new_hash, <span class="kw-2">&amp;mut </span>args, <span class="bool-val">false</span>, <span class="bool-val">false</span>, pos,
-                    level,
-                )
-            }
-            KEYWORD_FN_PTR_CALL =&gt; {
-                <span class="kw">if </span>!call_args.is_empty() {
-                    <span class="kw">if </span>!call_args[<span class="number">0</span>].is::&lt;FnPtr&gt;() {
-                        <span class="kw">let </span>typ = <span class="self">self</span>.map_type_name(call_args[<span class="number">0</span>].type_name());
-                        <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="self">self</span>.make_type_mismatch_err::&lt;FnPtr&gt;(typ, <span class="kw-2">*</span>call_arg_pos));
-                    }
-                } <span class="kw">else </span>{
-                    <span class="kw">let </span>typ = <span class="self">self</span>.map_type_name(target.type_name());
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="self">self</span>.make_type_mismatch_err::&lt;FnPtr&gt;(typ, pos));
-                }
-
-                <span class="comment">// FnPtr call on object
-                </span><span class="kw">let </span>fn_ptr = call_args.remove(<span class="number">0</span>).cast::&lt;FnPtr&gt;();
-                <span class="comment">// Redirect function name
-                </span><span class="kw">let </span>fn_name = fn_ptr.fn_name();
-                <span class="kw">let </span>args_len = call_args.len() + fn_ptr.curry().len();
-                <span class="comment">// Recalculate hash
-                </span><span class="kw">let </span>new_hash = FnCallHashes::from_all(
-                    <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                    </span>calc_fn_hash(fn_name, args_len),
-                    calc_fn_hash(fn_name, args_len + <span class="number">1</span>),
-                );
-                <span class="comment">// Replace the first argument with the object pointer, adding the curried arguments
-                </span><span class="kw">let </span><span class="kw-2">mut </span>curry = FnArgsVec::with_capacity(fn_ptr.num_curried());
-                curry.extend(fn_ptr.curry().iter().cloned());
-                <span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::with_capacity(curry.len() + call_args.len() + <span class="number">1</span>);
-                args.push(target.as_mut());
-                args.extend(curry.iter_mut());
-                args.extend(call_args.iter_mut());
-
-                <span class="comment">// Map it to name(args) in function-call style
-                </span><span class="self">self</span>.exec_fn_call(
-                    <span class="prelude-val">None</span>, global, caches, lib, fn_name, new_hash, <span class="kw-2">&amp;mut </span>args, is_ref_mut, <span class="bool-val">true</span>, pos,
-                    level,
-                )
-            }
-            KEYWORD_FN_PTR_CURRY =&gt; {
-                <span class="kw">if </span>!target.is::&lt;FnPtr&gt;() {
-                    <span class="kw">let </span>typ = <span class="self">self</span>.map_type_name(target.type_name());
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="self">self</span>.make_type_mismatch_err::&lt;FnPtr&gt;(typ, pos));
-                }
-
-                <span class="kw">let </span>fn_ptr = target.read_lock::&lt;FnPtr&gt;().expect(<span class="string">&quot;`FnPtr`&quot;</span>);
-
-                <span class="comment">// Curry call
-                </span><span class="prelude-val">Ok</span>((
-                    <span class="kw">if </span>call_args.is_empty() {
-                        fn_ptr.clone()
-                    } <span class="kw">else </span>{
-                        FnPtr::new_unchecked(
-                            fn_ptr.fn_name_raw().clone(),
-                            fn_ptr
-                                .curry()
-                                .iter()
-                                .cloned()
-                                .chain(call_args.iter_mut().map(mem::take))
-                                .collect(),
-                        )
-                    }
-                    .into(),
-                    <span class="bool-val">false</span>,
-                ))
-            }
-
-            <span class="comment">// Handle is_shared()
-            </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            </span><span class="kw">crate</span>::engine::KEYWORD_IS_SHARED <span class="kw">if </span>call_args.is_empty() =&gt; {
-                <span class="kw">return </span><span class="prelude-val">Ok</span>((target.is_shared().into(), <span class="bool-val">false</span>));
-            }
-
-            <span class="kw">_ </span>=&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>fn_name = fn_name;
-                <span class="kw">let </span>_redirected;
-
-                <span class="comment">// Check if it is a map method call in OOP style
-                </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(map) = target.read_lock::&lt;<span class="kw">crate</span>::Map&gt;() {
-                    <span class="kw">if let </span><span class="prelude-val">Some</span>(val) = map.get(fn_name) {
-                        <span class="kw">if let </span><span class="prelude-val">Some</span>(fn_ptr) = val.read_lock::&lt;FnPtr&gt;() {
-                            <span class="comment">// Remap the function name
-                            </span>_redirected = fn_ptr.fn_name_raw().clone();
-                            fn_name = <span class="kw-2">&amp;</span>_redirected;
-                            <span class="comment">// Add curried arguments
-                            </span><span class="kw">if </span>fn_ptr.is_curried() {
-                                call_args.insert_many(<span class="number">0</span>, fn_ptr.curry().iter().cloned());
-                            }
-                            <span class="comment">// Recalculate the hash based on the new function name and new arguments
-                            </span>hash = FnCallHashes::from_all(
-                                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                                </span>calc_fn_hash(fn_name, call_args.len()),
-                                calc_fn_hash(fn_name, call_args.len() + <span class="number">1</span>),
-                            );
-                        }
-                    }
-                };
-
-                <span class="comment">// Attached object pointer in front of the arguments
-                </span><span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::with_capacity(call_args.len() + <span class="number">1</span>);
-                args.push(target.as_mut());
-                args.extend(call_args.iter_mut());
-
-                <span class="self">self</span>.exec_fn_call(
-                    <span class="prelude-val">None</span>, global, caches, lib, fn_name, hash, <span class="kw-2">&amp;mut </span>args, is_ref_mut, <span class="bool-val">true</span>, pos,
-                    level,
-                )
-            }
-        }<span class="question-mark">?</span>;
-
-        <span class="comment">// Propagate the changed value back to the source if necessary
-        </span><span class="kw">if </span>updated {
-            target
-                .propagate_changed_value()
-                .map_err(|err| err.fill_position(pos))<span class="question-mark">?</span>;
-        }
-
-        <span class="prelude-val">Ok</span>((result, updated))
     }
 
     <span class="doccomment">/// Evaluate an argument.
@@ -2355,6 +2233,196 @@
         <span class="prelude-val">Ok</span>((result<span class="question-mark">?</span>, arg_expr.start_position()))
     }
 
+    <span class="doccomment">/// Call a dot method.
+    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>make_method_call(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        global: <span class="kw-2">&amp;mut </span>GlobalRuntimeState,
+        caches: <span class="kw-2">&amp;mut </span>Caches,
+        lib: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>Module],
+        fn_name: <span class="kw-2">&amp;</span>str,
+        <span class="kw-2">mut </span>hash: FnCallHashes,
+        target: <span class="kw-2">&amp;mut </span><span class="kw">crate</span>::eval::Target,
+        <span class="kw-2">mut </span>call_args: <span class="kw-2">&amp;mut </span>[Dynamic],
+        first_arg_pos: Position,
+        fn_call_pos: Position,
+        level: usize,
+    ) -&gt; RhaiResultOf&lt;(Dynamic, bool)&gt; {
+        <span class="kw">let </span>is_ref_mut = target.is_ref();
+
+        <span class="kw">let </span>(result, updated) = <span class="kw">match </span>fn_name {
+            KEYWORD_FN_PTR_CALL <span class="kw">if </span>target.is::&lt;FnPtr&gt;() =&gt; {
+                <span class="comment">// FnPtr call
+                </span><span class="kw">let </span>fn_ptr = target.read_lock::&lt;FnPtr&gt;().expect(<span class="string">&quot;`FnPtr`&quot;</span>);
+                <span class="comment">// Redirect function name
+                </span><span class="kw">let </span>fn_name = fn_ptr.fn_name();
+                <span class="kw">let </span>args_len = call_args.len() + fn_ptr.curry().len();
+                <span class="comment">// Recalculate hashes
+                </span><span class="kw">let </span>new_hash = calc_fn_hash(fn_name, args_len).into();
+                <span class="comment">// Arguments are passed as-is, adding the curried arguments
+                </span><span class="kw">let </span><span class="kw-2">mut </span>curry = FnArgsVec::with_capacity(fn_ptr.curry().len());
+                curry.extend(fn_ptr.curry().iter().cloned());
+                <span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::with_capacity(curry.len() + call_args.len());
+                args.extend(curry.iter_mut());
+                args.extend(call_args.iter_mut());
+
+                <span class="comment">// Map it to name(args) in function-call style
+                </span><span class="self">self</span>.exec_fn_call(
+                    <span class="prelude-val">None</span>,
+                    global,
+                    caches,
+                    lib,
+                    fn_name,
+                    new_hash,
+                    <span class="kw-2">&amp;mut </span>args,
+                    <span class="bool-val">false</span>,
+                    <span class="bool-val">false</span>,
+                    fn_call_pos,
+                    level,
+                )
+            }
+            KEYWORD_FN_PTR_CALL =&gt; {
+                <span class="kw">if </span>call_args.is_empty() {
+                    <span class="kw">let </span>typ = <span class="self">self</span>.map_type_name(target.type_name());
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="self">self</span>.make_type_mismatch_err::&lt;FnPtr&gt;(typ, fn_call_pos));
+                } <span class="kw">else if </span>!call_args[<span class="number">0</span>].is::&lt;FnPtr&gt;() {
+                    <span class="kw">let </span>typ = <span class="self">self</span>.map_type_name(call_args[<span class="number">0</span>].type_name());
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="self">self</span>.make_type_mismatch_err::&lt;FnPtr&gt;(typ, first_arg_pos));
+                }
+
+                <span class="comment">// FnPtr call on object
+                </span><span class="kw">let </span>fn_ptr = mem::take(<span class="kw-2">&amp;mut </span>call_args[<span class="number">0</span>]).cast::&lt;FnPtr&gt;();
+                call_args = <span class="kw-2">&amp;mut </span>call_args[<span class="number">1</span>..];
+
+                <span class="comment">// Redirect function name
+                </span><span class="kw">let </span>fn_name = fn_ptr.fn_name();
+                <span class="kw">let </span>args_len = call_args.len() + fn_ptr.curry().len();
+                <span class="comment">// Recalculate hash
+                </span><span class="kw">let </span>new_hash = FnCallHashes::from_all(
+                    <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+                    </span>calc_fn_hash(fn_name, args_len),
+                    calc_fn_hash(fn_name, args_len + <span class="number">1</span>),
+                );
+                <span class="comment">// Replace the first argument with the object pointer, adding the curried arguments
+                </span><span class="kw">let </span><span class="kw-2">mut </span>curry = FnArgsVec::with_capacity(fn_ptr.curry().len());
+                curry.extend(fn_ptr.curry().iter().cloned());
+                <span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::with_capacity(curry.len() + call_args.len() + <span class="number">1</span>);
+                args.push(target.as_mut());
+                args.extend(curry.iter_mut());
+                args.extend(call_args.iter_mut());
+
+                <span class="comment">// Map it to name(args) in function-call style
+                </span><span class="self">self</span>.exec_fn_call(
+                    <span class="prelude-val">None</span>,
+                    global,
+                    caches,
+                    lib,
+                    fn_name,
+                    new_hash,
+                    <span class="kw-2">&amp;mut </span>args,
+                    is_ref_mut,
+                    <span class="bool-val">true</span>,
+                    fn_call_pos,
+                    level,
+                )
+            }
+            KEYWORD_FN_PTR_CURRY =&gt; {
+                <span class="kw">if </span>!target.is::&lt;FnPtr&gt;() {
+                    <span class="kw">let </span>typ = <span class="self">self</span>.map_type_name(target.type_name());
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="self">self</span>.make_type_mismatch_err::&lt;FnPtr&gt;(typ, fn_call_pos));
+                }
+
+                <span class="kw">let </span>fn_ptr = target.read_lock::&lt;FnPtr&gt;().expect(<span class="string">&quot;`FnPtr`&quot;</span>);
+
+                <span class="comment">// Curry call
+                </span><span class="prelude-val">Ok</span>((
+                    <span class="kw">if </span>call_args.is_empty() {
+                        fn_ptr.clone()
+                    } <span class="kw">else </span>{
+                        FnPtr::new_unchecked(
+                            fn_ptr.fn_name_raw().clone(),
+                            fn_ptr
+                                .curry()
+                                .iter()
+                                .cloned()
+                                .chain(call_args.iter_mut().map(mem::take))
+                                .collect(),
+                        )
+                    }
+                    .into(),
+                    <span class="bool-val">false</span>,
+                ))
+            }
+
+            <span class="comment">// Handle is_shared()
+            </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
+            </span><span class="kw">crate</span>::engine::KEYWORD_IS_SHARED <span class="kw">if </span>call_args.is_empty() =&gt; {
+                <span class="kw">return </span><span class="prelude-val">Ok</span>((target.is_shared().into(), <span class="bool-val">false</span>));
+            }
+
+            <span class="kw">_ </span>=&gt; {
+                <span class="kw">let </span><span class="kw-2">mut </span>fn_name = fn_name;
+                <span class="kw">let </span>_redirected;
+                <span class="kw">let </span><span class="kw-2">mut </span>_arg_values: FnArgsVec&lt;<span class="kw">_</span>&gt;;
+                <span class="kw">let </span><span class="kw-2">mut </span>call_args = call_args;
+
+                <span class="comment">// Check if it is a map method call in OOP style
+                </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(map) = target.read_lock::&lt;<span class="kw">crate</span>::Map&gt;() {
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(val) = map.get(fn_name) {
+                        <span class="kw">if let </span><span class="prelude-val">Some</span>(fn_ptr) = val.read_lock::&lt;FnPtr&gt;() {
+                            <span class="comment">// Remap the function name
+                            </span>_redirected = fn_ptr.fn_name_raw().clone();
+                            fn_name = <span class="kw-2">&amp;</span>_redirected;
+                            <span class="comment">// Add curried arguments
+                            </span><span class="kw">if </span>fn_ptr.is_curried() {
+                                _arg_values = fn_ptr
+                                    .curry()
+                                    .iter()
+                                    .cloned()
+                                    .chain(call_args.iter_mut().map(mem::take))
+                                    .collect();
+                                call_args = <span class="kw-2">&amp;mut </span>_arg_values;
+                            }
+                            <span class="comment">// Recalculate the hash based on the new function name and new arguments
+                            </span>hash = FnCallHashes::from_all(
+                                <span class="attribute">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+                                </span>calc_fn_hash(fn_name, call_args.len()),
+                                calc_fn_hash(fn_name, call_args.len() + <span class="number">1</span>),
+                            );
+                        }
+                    }
+                };
+
+                <span class="comment">// Attached object pointer in front of the arguments
+                </span><span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::with_capacity(call_args.len() + <span class="number">1</span>);
+                args.push(target.as_mut());
+                args.extend(call_args.iter_mut());
+
+                <span class="self">self</span>.exec_fn_call(
+                    <span class="prelude-val">None</span>,
+                    global,
+                    caches,
+                    lib,
+                    fn_name,
+                    hash,
+                    <span class="kw-2">&amp;mut </span>args,
+                    is_ref_mut,
+                    <span class="bool-val">true</span>,
+                    fn_call_pos,
+                    level,
+                )
+            }
+        }<span class="question-mark">?</span>;
+
+        <span class="comment">// Propagate the changed value back to the source if necessary
+        </span><span class="kw">if </span>updated {
+            target.propagate_changed_value(fn_call_pos)<span class="question-mark">?</span>;
+        }
+
+        <span class="prelude-val">Ok</span>((result, updated))
+    }
+
     <span class="doccomment">/// Call a function in normal function-call style.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>make_function_call(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -2368,6 +2436,7 @@
         args_expr: <span class="kw-2">&amp;</span>[Expr],
         hashes: FnCallHashes,
         capture_scope: bool,
+        is_operator: bool,
         pos: Position,
         level: usize,
     ) -&gt; RhaiResult {
@@ -2380,6 +2449,8 @@
         <span class="kw">let </span>redirected; <span class="comment">// Handle call() - Redirect function call
 
         </span><span class="kw">match </span>name {
+            <span class="kw">_ if </span>is_operator =&gt; (),
+
             <span class="comment">// Handle call()
             </span>KEYWORD_FN_PTR_CALL <span class="kw">if </span>total_args &gt;= <span class="number">1 </span>=&gt; {
                 <span class="kw">let </span>arg = first_arg.unwrap();
@@ -2407,10 +2478,10 @@
 
                 <span class="comment">// Recalculate hash
                 </span><span class="kw">let </span>args_len = total_args + curry.len();
-                hashes = <span class="kw">if </span>!hashes.is_native_only() {
-                    calc_fn_hash(name, args_len).into()
-                } <span class="kw">else </span>{
+                hashes = <span class="kw">if </span>hashes.is_native_only() {
                     FnCallHashes::from_native(calc_fn_hash(name, args_len))
+                } <span class="kw">else </span>{
+                    calc_fn_hash(name, args_len).into()
                 };
             }
             <span class="comment">// Handle Fn()
@@ -2479,7 +2550,7 @@
                     .as_int()
                     .map_err(|typ| <span class="self">self</span>.make_type_mismatch_err::&lt;<span class="kw">crate</span>::INT&gt;(typ, arg_pos))<span class="question-mark">?</span>;
 
-                <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="kw">if </span>num_params &lt; <span class="number">0 </span>{
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="kw">if </span>num_params &lt; <span class="number">0 </span>|| num_params &gt; <span class="kw">crate</span>::MAX_USIZE_INT {
                     <span class="bool-val">false
                 </span>} <span class="kw">else </span>{
                     <span class="kw">let </span>hash_script = calc_fn_hash(<span class="kw-2">&amp;</span>fn_name, num_params <span class="kw">as </span>usize);
@@ -2551,7 +2622,7 @@
         </span><span class="kw">if </span>capture_scope &amp;&amp; !scope.is_empty() {
             first_arg
                 .iter()
-                .map(|<span class="kw-2">&amp;</span>v| v)
+                .copied()
                 .chain(a_expr.iter())
                 .try_for_each(|expr| {
                     <span class="self">self</span>.get_arg_value(scope, global, caches, lib, this_ptr, expr, level)
@@ -2593,7 +2664,7 @@
                 <span class="kw">let </span>(<span class="kw-2">mut </span>target, _pos) =
                     <span class="self">self</span>.search_namespace(scope, global, lib, this_ptr, first_expr, level)<span class="question-mark">?</span>;
 
-                <span class="kw">if </span>target.as_ref().is_read_only() {
+                <span class="kw">if </span>target.is_read_only() {
                     target = target.into_owned();
                 }
 
@@ -2607,13 +2678,11 @@
 
                 <span class="kw">if </span>target_is_shared || target.is_temp_value() {
                     arg_values.insert(<span class="number">0</span>, target.take_or_clone().flatten());
-                    args.extend(arg_values.iter_mut())
                 } <span class="kw">else </span>{
                     <span class="comment">// Turn it into a method call only if the object is not shared and not a simple value
                     </span>is_ref_mut = <span class="bool-val">true</span>;
                     <span class="kw">let </span>obj_ref = target.take_ref().expect(<span class="string">&quot;ref&quot;</span>);
                     args.push(obj_ref);
-                    args.extend(arg_values.iter_mut());
                 }
             } <span class="kw">else </span>{
                 <span class="comment">// func(..., ...)
@@ -2625,8 +2694,9 @@
                             .map(|(value, ..)| arg_values.push(value.flatten()))
                     })<span class="question-mark">?</span>;
                 args.extend(curry.iter_mut());
-                args.extend(arg_values.iter_mut());
             }
+
+            args.extend(arg_values.iter_mut());
         }
 
         <span class="self">self</span>.exec_fn_call(
@@ -2741,11 +2811,11 @@
             </span><span class="kw">while </span>bitmask &lt; max_bitmask {
                 <span class="kw">let </span>hash_params = calc_fn_params_hash(args.iter().enumerate().map(|(i, a)| {
                     <span class="kw">let </span>mask = <span class="number">1usize </span>&lt;&lt; (num_args - i - <span class="number">1</span>);
-                    <span class="kw">if </span>bitmask &amp; mask != <span class="number">0 </span>{
+                    <span class="kw">if </span>bitmask &amp; mask == <span class="number">0 </span>{
+                        a.type_id()
+                    } <span class="kw">else </span>{
                         <span class="comment">// Replace with `Dynamic`
                         </span>TypeId::of::&lt;Dynamic&gt;()
-                    } <span class="kw">else </span>{
-                        a.type_id()
                     }
                 }));
                 <span class="kw">let </span>hash_qualified_fn = combine_hashes(hash, hash_params);
@@ -2763,7 +2833,7 @@
         }
 
         <span class="comment">// Clone first argument if the function is not a method after-all
-        </span><span class="kw">if </span>!func.map(|f| f.is_method()).unwrap_or(<span class="bool-val">true</span>) {
+        </span><span class="kw">if </span>!func.map_or(<span class="bool-val">true</span>, CallableFunction::is_method) {
             <span class="kw">if let </span><span class="prelude-val">Some</span>(first) = first_arg_value {
                 <span class="kw-2">*</span>first = args[<span class="number">0</span>].clone();
                 args[<span class="number">0</span>] = first;
@@ -2809,7 +2879,7 @@
             <span class="prelude-val">Some</span>(f) =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;unknown function type: {:?}&quot;</span>, f),
 
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(ERR::ErrorFunctionNotFound(
-                <span class="self">self</span>.gen_call_signature(namespace, fn_name, <span class="kw-2">&amp;</span>args),
+                gen_qualified_fn_call_signature(<span class="self">self</span>, namespace, fn_name, <span class="kw-2">&amp;</span>args),
                 pos,
             )
             .into()),
@@ -2863,4 +2933,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rhai" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

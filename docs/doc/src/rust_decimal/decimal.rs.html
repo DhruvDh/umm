@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rust_decimal-1.24.0/src/decimal.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>decimal.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rust_decimal/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rust_decimal/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rust_decimal/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rust_decimal-1.26.1/src/decimal.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>decimal.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../rust_decimal/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../rust_decimal/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../rust_decimal/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -2533,6 +2533,51 @@
 <span id="2533">2533</span>
 <span id="2534">2534</span>
 <span id="2535">2535</span>
+<span id="2536">2536</span>
+<span id="2537">2537</span>
+<span id="2538">2538</span>
+<span id="2539">2539</span>
+<span id="2540">2540</span>
+<span id="2541">2541</span>
+<span id="2542">2542</span>
+<span id="2543">2543</span>
+<span id="2544">2544</span>
+<span id="2545">2545</span>
+<span id="2546">2546</span>
+<span id="2547">2547</span>
+<span id="2548">2548</span>
+<span id="2549">2549</span>
+<span id="2550">2550</span>
+<span id="2551">2551</span>
+<span id="2552">2552</span>
+<span id="2553">2553</span>
+<span id="2554">2554</span>
+<span id="2555">2555</span>
+<span id="2556">2556</span>
+<span id="2557">2557</span>
+<span id="2558">2558</span>
+<span id="2559">2559</span>
+<span id="2560">2560</span>
+<span id="2561">2561</span>
+<span id="2562">2562</span>
+<span id="2563">2563</span>
+<span id="2564">2564</span>
+<span id="2565">2565</span>
+<span id="2566">2566</span>
+<span id="2567">2567</span>
+<span id="2568">2568</span>
+<span id="2569">2569</span>
+<span id="2570">2570</span>
+<span id="2571">2571</span>
+<span id="2572">2572</span>
+<span id="2573">2573</span>
+<span id="2574">2574</span>
+<span id="2575">2575</span>
+<span id="2576">2576</span>
+<span id="2577">2577</span>
+<span id="2578">2578</span>
+<span id="2579">2579</span>
+<span id="2580">2580</span>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::constants::{
     MAX_I128_REPR, MAX_PRECISION_U32, POWERS_10, SCALE_MASK, SCALE_SHIFT, SIGN_MASK, SIGN_SHIFT, U32_MASK, U8_MASK,
     UNSIGN_MASK,
@@ -2540,20 +2585,31 @@
 <span class="kw">use </span><span class="kw">crate</span>::ops;
 <span class="kw">use </span><span class="kw">crate</span>::Error;
 
+<span class="attribute">#[cfg(feature = <span class="string">&quot;rkyv-safe&quot;</span>)]
+</span><span class="kw">use </span>bytecheck::CheckBytes;
 <span class="kw">use </span>core::{
     cmp::{Ordering::Equal, <span class="kw-2">*</span>},
     fmt,
     hash::{Hash, Hasher},
-    iter::Sum,
+    iter::{Product, Sum},
     ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Rem, RemAssign, Sub, SubAssign},
     str::FromStr,
 };
-<span class="attribute">#[cfg(feature = <span class="string">&quot;diesel&quot;</span>)]
+
+<span class="comment">// Diesel configuration
+</span><span class="attribute">#[cfg(feature = <span class="string">&quot;diesel2&quot;</span>)]
+</span><span class="kw">use </span>diesel::deserialize::FromSqlRow;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;diesel2&quot;</span>)]
+</span><span class="kw">use </span>diesel::expression::AsExpression;
+<span class="attribute">#[cfg(any(feature = <span class="string">&quot;diesel1&quot;</span>, feature = <span class="string">&quot;diesel2&quot;</span>))]
 </span><span class="kw">use </span>diesel::sql_types::Numeric;
+
 <span class="attribute">#[allow(unused_imports)] </span><span class="comment">// It&#39;s not actually dead code below, but the compiler thinks it is.
 </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;std&quot;</span>))]
 </span><span class="kw">use </span>num_traits::float::FloatCore;
 <span class="kw">use </span>num_traits::{FromPrimitive, Num, One, Signed, ToPrimitive, Zero};
+<span class="attribute">#[cfg(feature = <span class="string">&quot;rkyv&quot;</span>)]
+</span><span class="kw">use </span>rkyv::{Archive, Deserialize, Serialize};
 
 <span class="doccomment">/// The smallest value that can be represented by this decimal type.
 </span><span class="kw">const </span>MIN: Decimal = Decimal {
@@ -2630,12 +2686,24 @@
 /// where m is an integer such that -2&lt;sup&gt;96&lt;/sup&gt; &lt; m &lt; 2&lt;sup&gt;96&lt;/sup&gt;, and e is an integer
 /// between 0 and 28 inclusive.
 </span><span class="attribute">#[derive(Clone, Copy)]
-#[cfg_attr(feature = <span class="string">&quot;diesel&quot;</span>, derive(FromSqlRow, AsExpression), sql_type = <span class="string">&quot;Numeric&quot;</span>)]
+#[cfg_attr(
+    all(feature = <span class="string">&quot;diesel1&quot;</span>, not(feature = <span class="string">&quot;diesel2&quot;</span>)),
+    derive(FromSqlRow, AsExpression),
+    sql_type = <span class="string">&quot;Numeric&quot;
+</span>)]
+#[cfg_attr(feature = <span class="string">&quot;diesel2&quot;</span>, derive(FromSqlRow, AsExpression), diesel(sql_type = Numeric))]
 #[cfg_attr(feature = <span class="string">&quot;c-repr&quot;</span>, repr(C))]
 #[cfg_attr(
     feature = <span class="string">&quot;borsh&quot;</span>,
     derive(borsh::BorshDeserialize, borsh::BorshSerialize, borsh::BorshSchema)
 )]
+#[cfg_attr(
+    feature = <span class="string">&quot;rkyv&quot;</span>,
+    derive(Archive, Deserialize, Serialize),
+    archive(compare(PartialEq)),
+    archive_attr(derive(Debug))
+)]
+#[cfg_attr(feature = <span class="string">&quot;rkyv-safe&quot;</span>, archive_attr(derive(CheckBytes)))]
 </span><span class="kw">pub struct </span>Decimal {
     <span class="comment">// Bits 0-15: unused
     // Bits 16-23: Contains &quot;e&quot;, a value between 0-28 that indicates the scale
@@ -5049,6 +5117,28 @@
     }
 }
 
+<span class="kw">impl </span>Product <span class="kw">for </span>Decimal {
+    <span class="doccomment">/// Panics if out-of-bounds
+    </span><span class="kw">fn </span>product&lt;I: Iterator&lt;Item = Decimal&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>product = ONE;
+        <span class="kw">for </span>i <span class="kw">in </span>iter {
+            product <span class="kw-2">*</span>= i;
+        }
+        product
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Product&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Decimal&gt; <span class="kw">for </span>Decimal {
+    <span class="doccomment">/// Panics if out-of-bounds
+    </span><span class="kw">fn </span>product&lt;I: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Decimal&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>product = ONE;
+        <span class="kw">for </span>i <span class="kw">in </span>iter {
+            product <span class="kw-2">*</span>= i;
+        }
+        product
+    }
+}
+
 <span class="kw">impl </span>Sum <span class="kw">for </span>Decimal {
     <span class="kw">fn </span>sum&lt;I: Iterator&lt;Item = Decimal&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>sum = ZERO;
@@ -5069,4 +5159,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rust_decimal" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rust_decimal" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

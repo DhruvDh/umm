@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tree-sitter-0.20.6/binding_rust/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../tree_sitter/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../tree_sitter/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../tree_sitter/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tree-sitter-0.20.9/binding_rust/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../tree_sitter/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../tree_sitter/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../tree_sitter/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -2233,6 +2233,119 @@
 <span id="2233">2233</span>
 <span id="2234">2234</span>
 <span id="2235">2235</span>
+<span id="2236">2236</span>
+<span id="2237">2237</span>
+<span id="2238">2238</span>
+<span id="2239">2239</span>
+<span id="2240">2240</span>
+<span id="2241">2241</span>
+<span id="2242">2242</span>
+<span id="2243">2243</span>
+<span id="2244">2244</span>
+<span id="2245">2245</span>
+<span id="2246">2246</span>
+<span id="2247">2247</span>
+<span id="2248">2248</span>
+<span id="2249">2249</span>
+<span id="2250">2250</span>
+<span id="2251">2251</span>
+<span id="2252">2252</span>
+<span id="2253">2253</span>
+<span id="2254">2254</span>
+<span id="2255">2255</span>
+<span id="2256">2256</span>
+<span id="2257">2257</span>
+<span id="2258">2258</span>
+<span id="2259">2259</span>
+<span id="2260">2260</span>
+<span id="2261">2261</span>
+<span id="2262">2262</span>
+<span id="2263">2263</span>
+<span id="2264">2264</span>
+<span id="2265">2265</span>
+<span id="2266">2266</span>
+<span id="2267">2267</span>
+<span id="2268">2268</span>
+<span id="2269">2269</span>
+<span id="2270">2270</span>
+<span id="2271">2271</span>
+<span id="2272">2272</span>
+<span id="2273">2273</span>
+<span id="2274">2274</span>
+<span id="2275">2275</span>
+<span id="2276">2276</span>
+<span id="2277">2277</span>
+<span id="2278">2278</span>
+<span id="2279">2279</span>
+<span id="2280">2280</span>
+<span id="2281">2281</span>
+<span id="2282">2282</span>
+<span id="2283">2283</span>
+<span id="2284">2284</span>
+<span id="2285">2285</span>
+<span id="2286">2286</span>
+<span id="2287">2287</span>
+<span id="2288">2288</span>
+<span id="2289">2289</span>
+<span id="2290">2290</span>
+<span id="2291">2291</span>
+<span id="2292">2292</span>
+<span id="2293">2293</span>
+<span id="2294">2294</span>
+<span id="2295">2295</span>
+<span id="2296">2296</span>
+<span id="2297">2297</span>
+<span id="2298">2298</span>
+<span id="2299">2299</span>
+<span id="2300">2300</span>
+<span id="2301">2301</span>
+<span id="2302">2302</span>
+<span id="2303">2303</span>
+<span id="2304">2304</span>
+<span id="2305">2305</span>
+<span id="2306">2306</span>
+<span id="2307">2307</span>
+<span id="2308">2308</span>
+<span id="2309">2309</span>
+<span id="2310">2310</span>
+<span id="2311">2311</span>
+<span id="2312">2312</span>
+<span id="2313">2313</span>
+<span id="2314">2314</span>
+<span id="2315">2315</span>
+<span id="2316">2316</span>
+<span id="2317">2317</span>
+<span id="2318">2318</span>
+<span id="2319">2319</span>
+<span id="2320">2320</span>
+<span id="2321">2321</span>
+<span id="2322">2322</span>
+<span id="2323">2323</span>
+<span id="2324">2324</span>
+<span id="2325">2325</span>
+<span id="2326">2326</span>
+<span id="2327">2327</span>
+<span id="2328">2328</span>
+<span id="2329">2329</span>
+<span id="2330">2330</span>
+<span id="2331">2331</span>
+<span id="2332">2332</span>
+<span id="2333">2333</span>
+<span id="2334">2334</span>
+<span id="2335">2335</span>
+<span id="2336">2336</span>
+<span id="2337">2337</span>
+<span id="2338">2338</span>
+<span id="2339">2339</span>
+<span id="2340">2340</span>
+<span id="2341">2341</span>
+<span id="2342">2342</span>
+<span id="2343">2343</span>
+<span id="2344">2344</span>
+<span id="2345">2345</span>
+<span id="2346">2346</span>
+<span id="2347">2347</span>
+<span id="2348">2348</span>
 </pre><pre class="rust"><code><span class="kw">mod </span>ffi;
 <span class="kw">mod </span>util;
 
@@ -2260,21 +2373,25 @@
 /// assigned an ABI version number that corresponds to the current CLI version.
 /// The Tree-sitter library is generally backwards-compatible with languages
 /// generated using older CLI versions, but is not forwards-compatible.
+</span><span class="attribute">#[doc(alias = <span class="string">&quot;TREE_SITTER_LANGUAGE_VERSION&quot;</span>)]
 </span><span class="kw">pub const </span>LANGUAGE_VERSION: usize = ffi::TREE_SITTER_LANGUAGE_VERSION;
 
 <span class="doccomment">/// The earliest ABI version that is supported by the current version of the
 /// library.
+</span><span class="attribute">#[doc(alias = <span class="string">&quot;TREE_SITTER_MIN_COMPATIBLE_LANGUAGE_VERSION&quot;</span>)]
 </span><span class="kw">pub const </span>MIN_COMPATIBLE_LANGUAGE_VERSION: usize = ffi::TREE_SITTER_MIN_COMPATIBLE_LANGUAGE_VERSION;
 
 <span class="kw">pub const </span>PARSER_HEADER: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="macro">include_str!</span>(<span class="string">&quot;../include/tree_sitter/parser.h&quot;</span>);
 
 <span class="doccomment">/// An opaque object that defines how to parse a particular language. The code for each
 /// `Language` is generated by the Tree-sitter CLI.
-</span><span class="attribute">#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+</span><span class="attribute">#[doc(alias = <span class="string">&quot;TSLanguage&quot;</span>)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(transparent)]
 </span><span class="kw">pub struct </span>Language(<span class="kw-2">*const </span>ffi::TSLanguage);
 
 <span class="doccomment">/// A tree that represents the syntactic structure of a source code file.
+</span><span class="attribute">#[doc(alias = <span class="string">&quot;TSTree&quot;</span>)]
 </span><span class="kw">pub struct </span>Tree(NonNull&lt;ffi::TSTree&gt;);
 
 <span class="doccomment">/// A position in a multi-line text document, in terms of rows and columns.
@@ -2308,11 +2425,13 @@
 }
 
 <span class="doccomment">/// A single node within a syntax `Tree`.
-</span><span class="attribute">#[derive(Clone, Copy)]
+</span><span class="attribute">#[doc(alias = <span class="string">&quot;TSNode&quot;</span>)]
+#[derive(Clone, Copy)]
 #[repr(transparent)]
 </span><span class="kw">pub struct </span>Node&lt;<span class="lifetime">&#39;a</span>&gt;(ffi::TSNode, PhantomData&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>()&gt;);
 
 <span class="doccomment">/// A stateful object that this is used to produce a `Tree` based on some source code.
+</span><span class="attribute">#[doc(alias = <span class="string">&quot;TSParser&quot;</span>)]
 </span><span class="kw">pub struct </span>Parser(NonNull&lt;ffi::TSParser&gt;);
 
 <span class="doccomment">/// A type of log message.
@@ -2326,10 +2445,12 @@
 </span><span class="kw">type </span>Logger&lt;<span class="lifetime">&#39;a</span>&gt; = Box&lt;<span class="kw">dyn </span>FnMut(LogType, <span class="kw-2">&amp;</span>str) + <span class="lifetime">&#39;a</span>&gt;;
 
 <span class="doccomment">/// A stateful object for walking a syntax `Tree` efficiently.
+</span><span class="attribute">#[doc(alias = <span class="string">&quot;TSTreeCursor&quot;</span>)]
 </span><span class="kw">pub struct </span>TreeCursor&lt;<span class="lifetime">&#39;a</span>&gt;(ffi::TSTreeCursor, PhantomData&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>()&gt;);
 
 <span class="doccomment">/// A set of patterns that match nodes in a syntax tree.
-</span><span class="attribute">#[derive(Debug)]
+</span><span class="attribute">#[doc(alias = <span class="string">&quot;TSQuery&quot;</span>)]
+#[derive(Debug)]
 </span><span class="kw">pub struct </span>Query {
     ptr: NonNull&lt;ffi::TSQuery&gt;,
     capture_names: Vec&lt;String&gt;,
@@ -2364,6 +2485,7 @@
 }
 
 <span class="doccomment">/// A stateful object for executing a `Query` on a syntax `Tree`.
+</span><span class="attribute">#[doc(alias = <span class="string">&quot;TSQueryCursor&quot;</span>)]
 </span><span class="kw">pub struct </span>QueryCursor {
     ptr: NonNull&lt;ffi::TSQueryCursor&gt;,
 }
@@ -2478,16 +2600,19 @@
 <span class="kw">impl </span>Language {
     <span class="doccomment">/// Get the ABI version number that indicates which version of the Tree-sitter CLI
     /// that was used to generate this `Language`.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_language_version&quot;</span>)]
     </span><span class="kw">pub fn </span>version(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="kw">unsafe </span>{ ffi::ts_language_version(<span class="self">self</span>.<span class="number">0</span>) <span class="kw">as </span>usize }
     }
 
     <span class="doccomment">/// Get the number of distinct node types in this language.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_language_symbol_count&quot;</span>)]
     </span><span class="kw">pub fn </span>node_kind_count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="kw">unsafe </span>{ ffi::ts_language_symbol_count(<span class="self">self</span>.<span class="number">0</span>) <span class="kw">as </span>usize }
     }
 
     <span class="doccomment">/// Get the name of the node kind for the given numerical id.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_language_symbol_name&quot;</span>)]
     </span><span class="kw">pub fn </span>node_kind_for_id(<span class="kw-2">&amp;</span><span class="self">self</span>, id: u16) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
         <span class="kw">let </span>ptr = <span class="kw">unsafe </span>{ ffi::ts_language_symbol_name(<span class="self">self</span>.<span class="number">0</span>, id) };
         <span class="kw">if </span>ptr.is_null() {
@@ -2498,6 +2623,7 @@
     }
 
     <span class="doccomment">/// Get the numeric id for the given node kind.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_language_symbol_for_name&quot;</span>)]
     </span><span class="kw">pub fn </span>id_for_node_kind(<span class="kw-2">&amp;</span><span class="self">self</span>, kind: <span class="kw-2">&amp;</span>str, named: bool) -&gt; u16 {
         <span class="kw">unsafe </span>{
             ffi::ts_language_symbol_for_name(
@@ -2515,18 +2641,21 @@
         <span class="kw">unsafe </span>{ ffi::ts_language_symbol_type(<span class="self">self</span>.<span class="number">0</span>, id) == ffi::TSSymbolType_TSSymbolTypeRegular }
     }
 
-    <span class="kw">pub fn </span>node_kind_is_visible(<span class="kw-2">&amp;</span><span class="self">self</span>, id: u16) -&gt; bool {
+    <span class="attribute">#[doc(alias = <span class="string">&quot;ts_language_symbol_type&quot;</span>)]
+    </span><span class="kw">pub fn </span>node_kind_is_visible(<span class="kw-2">&amp;</span><span class="self">self</span>, id: u16) -&gt; bool {
         <span class="kw">unsafe </span>{
             ffi::ts_language_symbol_type(<span class="self">self</span>.<span class="number">0</span>, id) &lt;= ffi::TSSymbolType_TSSymbolTypeAnonymous
         }
     }
 
     <span class="doccomment">/// Get the number of distinct field names in this language.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_language_field_count&quot;</span>)]
     </span><span class="kw">pub fn </span>field_count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="kw">unsafe </span>{ ffi::ts_language_field_count(<span class="self">self</span>.<span class="number">0</span>) <span class="kw">as </span>usize }
     }
 
     <span class="doccomment">/// Get the field names for the given numerical id.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_language_field_name_for_id&quot;</span>)]
     </span><span class="kw">pub fn </span>field_name_for_id(<span class="kw-2">&amp;</span><span class="self">self</span>, field_id: u16) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
         <span class="kw">let </span>ptr = <span class="kw">unsafe </span>{ ffi::ts_language_field_name_for_id(<span class="self">self</span>.<span class="number">0</span>, field_id) };
         <span class="kw">if </span>ptr.is_null() {
@@ -2537,6 +2666,7 @@
     }
 
     <span class="doccomment">/// Get the numerical id for the given field name.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_language_field_id_for_name&quot;</span>)]
     </span><span class="kw">pub fn </span>field_id_for_name(<span class="kw-2">&amp;</span><span class="self">self</span>, field_name: <span class="kw">impl </span>AsRef&lt;[u8]&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;u16&gt; {
         <span class="kw">let </span>field_name = field_name.as_ref();
         <span class="kw">let </span>id = <span class="kw">unsafe </span>{
@@ -2571,6 +2701,7 @@
     /// Tree-sitter CLI. Check the language&#39;s version using [Language::version]
     /// and compare it to this library&#39;s [LANGUAGE_VERSION](LANGUAGE_VERSION) and
     /// [MIN_COMPATIBLE_LANGUAGE_VERSION](MIN_COMPATIBLE_LANGUAGE_VERSION) constants.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_parser_set_language&quot;</span>)]
     </span><span class="kw">pub fn </span>set_language(<span class="kw-2">&amp;mut </span><span class="self">self</span>, language: Language) -&gt; <span class="prelude-ty">Result</span>&lt;(), LanguageError&gt; {
         <span class="kw">let </span>version = language.version();
         <span class="kw">if </span>version &lt; MIN_COMPATIBLE_LANGUAGE_VERSION || version &gt; LANGUAGE_VERSION {
@@ -2584,6 +2715,7 @@
     }
 
     <span class="doccomment">/// Get the parser&#39;s current language.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_parser_language&quot;</span>)]
     </span><span class="kw">pub fn </span>language(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Language&gt; {
         <span class="kw">let </span>ptr = <span class="kw">unsafe </span>{ ffi::ts_parser_language(<span class="self">self</span>.<span class="number">0</span>.as_ptr()) };
         <span class="kw">if </span>ptr.is_null() {
@@ -2594,12 +2726,14 @@
     }
 
     <span class="doccomment">/// Get the parser&#39;s current logger.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_parser_logger&quot;</span>)]
     </span><span class="kw">pub fn </span>logger(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Logger&gt; {
         <span class="kw">let </span>logger = <span class="kw">unsafe </span>{ ffi::ts_parser_logger(<span class="self">self</span>.<span class="number">0</span>.as_ptr()) };
         <span class="kw">unsafe </span>{ (logger.payload <span class="kw">as </span><span class="kw-2">*mut </span>Logger).as_ref() }
     }
 
     <span class="doccomment">/// Set the logging callback that a parser should use during parsing.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_parser_set_logger&quot;</span>)]
     </span><span class="kw">pub fn </span>set_logger(<span class="kw-2">&amp;mut </span><span class="self">self</span>, logger: <span class="prelude-ty">Option</span>&lt;Logger&gt;) {
         <span class="kw">let </span>prev_logger = <span class="kw">unsafe </span>{ ffi::ts_parser_logger(<span class="self">self</span>.<span class="number">0</span>.as_ptr()) };
         <span class="kw">if </span>!prev_logger.payload.is_null() {
@@ -2647,12 +2781,14 @@
     /// to pipe these graphs directly to a `dot(1)` process in order to generate
     /// SVG output.
     </span><span class="attribute">#[cfg(unix)]
+    #[doc(alias = <span class="string">&quot;ts_parser_print_dot_graphs&quot;</span>)]
     </span><span class="kw">pub fn </span>print_dot_graphs(<span class="kw-2">&amp;mut </span><span class="self">self</span>, file: <span class="kw-2">&amp;</span><span class="kw">impl </span>AsRawFd) {
         <span class="kw">let </span>fd = file.as_raw_fd();
         <span class="kw">unsafe </span>{ ffi::ts_parser_print_dot_graphs(<span class="self">self</span>.<span class="number">0</span>.as_ptr(), ffi::dup(fd)) }
     }
 
     <span class="doccomment">/// Stop the parser from printing debugging graphs while parsing.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_parser_print_dot_graphs&quot;</span>)]
     </span><span class="kw">pub fn </span>stop_printing_dot_graphs(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="kw">unsafe </span>{ ffi::ts_parser_print_dot_graphs(<span class="self">self</span>.<span class="number">0</span>.as_ptr(), -<span class="number">1</span>) }
     }
@@ -2670,6 +2806,7 @@
     ///  * The parser has not yet had a language assigned with [Parser::set_language]
     ///  * The timeout set with [Parser::set_timeout_micros] expired
     ///  * The cancellation flag set with [Parser::set_cancellation_flag] was flipped
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_parser_parse&quot;</span>)]
     </span><span class="kw">pub fn </span>parse(<span class="kw-2">&amp;mut </span><span class="self">self</span>, text: <span class="kw">impl </span>AsRef&lt;[u8]&gt;, old_tree: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Tree&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;Tree&gt; {
         <span class="kw">let </span>bytes = text.as_ref();
         <span class="kw">let </span>len = bytes.len();
@@ -2812,6 +2949,7 @@
     /// by default, it will resume where it left off on the next call to `parse` or
     /// other parsing functions. If you don&#39;t want to resume, and instead intend to
     /// use this parser to parse some other document, you must call `reset` first.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_parser_reset&quot;</span>)]
     </span><span class="kw">pub fn </span>reset(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="kw">unsafe </span>{ ffi::ts_parser_reset(<span class="self">self</span>.<span class="number">0</span>.as_ptr()) }
     }
@@ -2819,6 +2957,7 @@
     <span class="doccomment">/// Get the duration in microseconds that parsing is allowed to take.
     ///
     /// This is set via [set_timeout_micros](Parser::set_timeout_micros).
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_parser_timeout_micros&quot;</span>)]
     </span><span class="kw">pub fn </span>timeout_micros(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
         <span class="kw">unsafe </span>{ ffi::ts_parser_timeout_micros(<span class="self">self</span>.<span class="number">0</span>.as_ptr()) }
     }
@@ -2828,6 +2967,7 @@
     ///
     /// If parsing takes longer than this, it will halt early, returning `None`.
     /// See `parse` for more information.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_parser_set_timeout_micros&quot;</span>)]
     </span><span class="kw">pub fn </span>set_timeout_micros(<span class="kw-2">&amp;mut </span><span class="self">self</span>, timeout_micros: u64) {
         <span class="kw">unsafe </span>{ ffi::ts_parser_set_timeout_micros(<span class="self">self</span>.<span class="number">0</span>.as_ptr(), timeout_micros) }
     }
@@ -2848,6 +2988,7 @@
     /// ```
     /// If this requirement is not satisfied, method will return IncludedRangesError
     /// error with an offset in the passed ranges slice pointing to a first incorrect range.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_parser_set_included_ranges&quot;</span>)]
     </span><span class="kw">pub fn </span>set_included_ranges&lt;<span class="lifetime">&#39;a</span>&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         ranges: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[Range],
@@ -2877,6 +3018,7 @@
     }
 
     <span class="doccomment">/// Get the parser&#39;s current cancellation flag pointer.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_parser_cancellation_flag&quot;</span>)]
     </span><span class="kw">pub unsafe fn </span>cancellation_flag(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>AtomicUsize&gt; {
         (ffi::ts_parser_cancellation_flag(<span class="self">self</span>.<span class="number">0</span>.as_ptr()) <span class="kw">as </span><span class="kw-2">*const </span>AtomicUsize).as_ref()
     }
@@ -2886,6 +3028,7 @@
     /// If a pointer is assigned, then the parser will periodically read from
     /// this pointer during parsing. If it reads a non-zero value, it will halt early,
     /// returning `None`. See [parse](Parser::parse) for more information.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_parser_set_cancellation_flag&quot;</span>)]
     </span><span class="kw">pub unsafe fn </span>set_cancellation_flag(<span class="kw-2">&amp;mut </span><span class="self">self</span>, flag: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>AtomicUsize&gt;) {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(flag) = flag {
             ffi::ts_parser_set_cancellation_flag(
@@ -2908,11 +3051,27 @@
 
 <span class="kw">impl </span>Tree {
     <span class="doccomment">/// Get the root node of the syntax tree.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_root_node&quot;</span>)]
     </span><span class="kw">pub fn </span>root_node(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Node {
         Node::new(<span class="kw">unsafe </span>{ ffi::ts_tree_root_node(<span class="self">self</span>.<span class="number">0</span>.as_ptr()) }).unwrap()
     }
 
+    <span class="doccomment">/// Get the root node of the syntax tree, but with its position shifted
+    /// forward by the given offset.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_root_node_with_offset&quot;</span>)]
+    </span><span class="kw">pub fn </span>root_node_with_offset(<span class="kw-2">&amp;</span><span class="self">self</span>, offset_bytes: usize, offset_extent: Point) -&gt; Node {
+        Node::new(<span class="kw">unsafe </span>{
+            ffi::ts_tree_root_node_with_offset(
+                <span class="self">self</span>.<span class="number">0</span>.as_ptr(),
+                offset_bytes <span class="kw">as </span>u32,
+                offset_extent.into(),
+            )
+        })
+        .unwrap()
+    }
+
     <span class="doccomment">/// Get the language that was used to parse the syntax tree.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_language&quot;</span>)]
     </span><span class="kw">pub fn </span>language(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Language {
         Language(<span class="kw">unsafe </span>{ ffi::ts_tree_language(<span class="self">self</span>.<span class="number">0</span>.as_ptr()) })
     }
@@ -2922,6 +3081,7 @@
     ///
     /// You must describe the edit both in terms of byte offsets and in terms of
     /// row/column coordinates.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_edit&quot;</span>)]
     </span><span class="kw">pub fn </span>edit(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edit: <span class="kw-2">&amp;</span>InputEdit) {
         <span class="kw">let </span>edit = edit.into();
         <span class="kw">unsafe </span>{ ffi::ts_tree_edit(<span class="self">self</span>.<span class="number">0</span>.as_ptr(), <span class="kw-2">&amp;</span>edit) };
@@ -2939,15 +3099,16 @@
     /// ranges match up to the new tree. Generally, you&#39;ll want to call this method right
     /// after calling one of the [Parser::parse] functions. Call it on the old tree that
     /// was passed to parse, and pass the new tree that was returned from `parse`.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_get_changed_ranges&quot;</span>)]
     </span><span class="kw">pub fn </span>changed_ranges(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Tree) -&gt; <span class="kw">impl </span>ExactSizeIterator&lt;Item = Range&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>count = <span class="number">0</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>count = <span class="number">0u32</span>;
         <span class="kw">unsafe </span>{
             <span class="kw">let </span>ptr = ffi::ts_tree_get_changed_ranges(
                 <span class="self">self</span>.<span class="number">0</span>.as_ptr(),
                 other.<span class="number">0</span>.as_ptr(),
-                <span class="kw-2">&amp;mut </span>count <span class="kw">as </span><span class="kw-2">*mut </span><span class="kw">_ as </span><span class="kw-2">*mut </span>u32,
+                <span class="kw-2">&amp;mut </span>count <span class="kw">as </span><span class="kw-2">*mut </span>u32,
             );
-            util::CBufferIter::new(ptr, count).map(|r| r.into())
+            util::CBufferIter::new(ptr, count <span class="kw">as </span>usize).map(|r| r.into())
         }
     }
 }
@@ -2990,11 +3151,13 @@
     }
 
     <span class="doccomment">/// Get this node&#39;s type as a numerical id.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_symbol&quot;</span>)]
     </span><span class="kw">pub fn </span>kind_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u16 {
         <span class="kw">unsafe </span>{ ffi::ts_node_symbol(<span class="self">self</span>.<span class="number">0</span>) }
     }
 
     <span class="doccomment">/// Get this node&#39;s type as a string.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_type&quot;</span>)]
     </span><span class="kw">pub fn </span>kind(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str {
         <span class="kw">unsafe </span>{ CStr::from_ptr(ffi::ts_node_type(<span class="self">self</span>.<span class="number">0</span>)) }
             .to_str()
@@ -3002,6 +3165,7 @@
     }
 
     <span class="doccomment">/// Get the [Language] that was used to parse this node&#39;s syntax tree.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_language&quot;</span>)]
     </span><span class="kw">pub fn </span>language(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Language {
         Language(<span class="kw">unsafe </span>{ ffi::ts_tree_language(<span class="self">self</span>.<span class="number">0</span>.tree) })
     }
@@ -3010,6 +3174,7 @@
     ///
     /// Named nodes correspond to named rules in the grammar, whereas *anonymous* nodes
     /// correspond to string literals in the grammar.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_is_named&quot;</span>)]
     </span><span class="kw">pub fn </span>is_named(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="kw">unsafe </span>{ ffi::ts_node_is_named(<span class="self">self</span>.<span class="number">0</span>) }
     }
@@ -3018,17 +3183,20 @@
     ///
     /// Extra nodes represent things like comments, which are not required the grammar,
     /// but can appear anywhere.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_is_extra&quot;</span>)]
     </span><span class="kw">pub fn </span>is_extra(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="kw">unsafe </span>{ ffi::ts_node_is_extra(<span class="self">self</span>.<span class="number">0</span>) }
     }
 
     <span class="doccomment">/// Check if this node has been edited.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_has_changes&quot;</span>)]
     </span><span class="kw">pub fn </span>has_changes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="kw">unsafe </span>{ ffi::ts_node_has_changes(<span class="self">self</span>.<span class="number">0</span>) }
     }
 
     <span class="doccomment">/// Check if this node represents a syntax error or contains any syntax errors anywhere
     /// within it.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_has_error&quot;</span>)]
     </span><span class="kw">pub fn </span>has_error(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="kw">unsafe </span>{ ffi::ts_node_has_error(<span class="self">self</span>.<span class="number">0</span>) }
     }
@@ -3045,16 +3213,19 @@
     ///
     /// Missing nodes are inserted by the parser in order to recover from certain kinds of
     /// syntax errors.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_is_missing&quot;</span>)]
     </span><span class="kw">pub fn </span>is_missing(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="kw">unsafe </span>{ ffi::ts_node_is_missing(<span class="self">self</span>.<span class="number">0</span>) }
     }
 
     <span class="doccomment">/// Get the byte offsets where this node starts.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_start_byte&quot;</span>)]
     </span><span class="kw">pub fn </span>start_byte(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="kw">unsafe </span>{ ffi::ts_node_start_byte(<span class="self">self</span>.<span class="number">0</span>) <span class="kw">as </span>usize }
     }
 
     <span class="doccomment">/// Get the byte offsets where this node end.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_end_byte&quot;</span>)]
     </span><span class="kw">pub fn </span>end_byte(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="kw">unsafe </span>{ ffi::ts_node_end_byte(<span class="self">self</span>.<span class="number">0</span>) <span class="kw">as </span>usize }
     }
@@ -3076,12 +3247,14 @@
     }
 
     <span class="doccomment">/// Get this node&#39;s start position in terms of rows and columns.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_start_point&quot;</span>)]
     </span><span class="kw">pub fn </span>start_position(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Point {
         <span class="kw">let </span>result = <span class="kw">unsafe </span>{ ffi::ts_node_start_point(<span class="self">self</span>.<span class="number">0</span>) };
         result.into()
     }
 
     <span class="doccomment">/// Get this node&#39;s end position in terms of rows and columns.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_end_point&quot;</span>)]
     </span><span class="kw">pub fn </span>end_position(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Point {
         <span class="kw">let </span>result = <span class="kw">unsafe </span>{ ffi::ts_node_end_point(<span class="self">self</span>.<span class="number">0</span>) };
         result.into()
@@ -3093,11 +3266,13 @@
     /// This method is fairly fast, but its cost is technically log(i), so you
     /// if you might be iterating over a long list of children, you should use
     /// [Node::children] instead.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_child&quot;</span>)]
     </span><span class="kw">pub fn </span>child(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{ ffi::ts_node_child(<span class="self">self</span>.<span class="number">0</span>, i <span class="kw">as </span>u32) })
     }
 
     <span class="doccomment">/// Get this node&#39;s number of children.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_child_count&quot;</span>)]
     </span><span class="kw">pub fn </span>child_count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="kw">unsafe </span>{ ffi::ts_node_child_count(<span class="self">self</span>.<span class="number">0</span>) <span class="kw">as </span>usize }
     }
@@ -3108,6 +3283,7 @@
     /// This method is fairly fast, but its cost is technically log(i), so you
     /// if you might be iterating over a long list of children, you should use
     /// [Node::named_children] instead.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_named_child&quot;</span>)]
     </span><span class="kw">pub fn </span>named_child&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{ ffi::ts_node_named_child(<span class="self">self</span>.<span class="number">0</span>, i <span class="kw">as </span>u32) })
     }
@@ -3115,6 +3291,7 @@
     <span class="doccomment">/// Get this node&#39;s number of *named* children.
     ///
     /// See also [Node::is_named].
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_named_child_count&quot;</span>)]
     </span><span class="kw">pub fn </span>named_child_count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="kw">unsafe </span>{ ffi::ts_node_named_child_count(<span class="self">self</span>.<span class="number">0</span>) <span class="kw">as </span>usize }
     }
@@ -3123,6 +3300,7 @@
     ///
     /// If multiple children may have the same field name, access them using
     /// [children_by_field_name](Node::children_by_field_name)
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_child_by_field_name&quot;</span>)]
     </span><span class="kw">pub fn </span>child_by_field_name(<span class="kw-2">&amp;</span><span class="self">self</span>, field_name: <span class="kw">impl </span>AsRef&lt;[u8]&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>field_name = field_name.as_ref();
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{
@@ -3138,11 +3316,13 @@
     ///
     /// See also [child_by_field_name](Node::child_by_field_name). You can convert a field name to
     /// an id using [Language::field_id_for_name].
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_child_by_field_id&quot;</span>)]
     </span><span class="kw">pub fn </span>child_by_field_id(<span class="kw-2">&amp;</span><span class="self">self</span>, field_id: u16) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{ ffi::ts_node_child_by_field_id(<span class="self">self</span>.<span class="number">0</span>, field_id) })
     }
 
     <span class="doccomment">/// Get the field name of this node&#39;s child at the given index.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_field_name_for_child&quot;</span>)]
     </span><span class="kw">pub fn </span>field_name_for_child(<span class="kw-2">&amp;</span><span class="self">self</span>, child_index: u32) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
         <span class="kw">unsafe </span>{
             <span class="kw">let </span>ptr = ffi::ts_node_field_name_for_child(<span class="self">self</span>.<span class="number">0</span>, child_index);
@@ -3238,31 +3418,37 @@
     }
 
     <span class="doccomment">/// Get this node&#39;s immediate parent.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_parent&quot;</span>)]
     </span><span class="kw">pub fn </span>parent(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{ ffi::ts_node_parent(<span class="self">self</span>.<span class="number">0</span>) })
     }
 
     <span class="doccomment">/// Get this node&#39;s next sibling.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_next_sibling&quot;</span>)]
     </span><span class="kw">pub fn </span>next_sibling(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{ ffi::ts_node_next_sibling(<span class="self">self</span>.<span class="number">0</span>) })
     }
 
     <span class="doccomment">/// Get this node&#39;s previous sibling.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_prev_sibling&quot;</span>)]
     </span><span class="kw">pub fn </span>prev_sibling(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{ ffi::ts_node_prev_sibling(<span class="self">self</span>.<span class="number">0</span>) })
     }
 
     <span class="doccomment">/// Get this node&#39;s next named sibling.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_next_named_sibling&quot;</span>)]
     </span><span class="kw">pub fn </span>next_named_sibling(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{ ffi::ts_node_next_named_sibling(<span class="self">self</span>.<span class="number">0</span>) })
     }
 
     <span class="doccomment">/// Get this node&#39;s previous named sibling.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_prev_named_sibling&quot;</span>)]
     </span><span class="kw">pub fn </span>prev_named_sibling(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{ ffi::ts_node_prev_named_sibling(<span class="self">self</span>.<span class="number">0</span>) })
     }
 
     <span class="doccomment">/// Get the smallest node within this node that spans the given range.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_descendant_for_byte_range&quot;</span>)]
     </span><span class="kw">pub fn </span>descendant_for_byte_range(<span class="kw-2">&amp;</span><span class="self">self</span>, start: usize, end: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{
             ffi::ts_node_descendant_for_byte_range(<span class="self">self</span>.<span class="number">0</span>, start <span class="kw">as </span>u32, end <span class="kw">as </span>u32)
@@ -3270,6 +3456,7 @@
     }
 
     <span class="doccomment">/// Get the smallest named node within this node that spans the given range.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_named_descendant_for_byte_range&quot;</span>)]
     </span><span class="kw">pub fn </span>named_descendant_for_byte_range(<span class="kw-2">&amp;</span><span class="self">self</span>, start: usize, end: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{
             ffi::ts_node_named_descendant_for_byte_range(<span class="self">self</span>.<span class="number">0</span>, start <span class="kw">as </span>u32, end <span class="kw">as </span>u32)
@@ -3277,6 +3464,7 @@
     }
 
     <span class="doccomment">/// Get the smallest node within this node that spans the given range.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_descendant_for_point_range&quot;</span>)]
     </span><span class="kw">pub fn </span>descendant_for_point_range(<span class="kw-2">&amp;</span><span class="self">self</span>, start: Point, end: Point) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{
             ffi::ts_node_descendant_for_point_range(<span class="self">self</span>.<span class="number">0</span>, start.into(), end.into())
@@ -3284,13 +3472,15 @@
     }
 
     <span class="doccomment">/// Get the smallest named node within this node that spans the given range.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_named_descendant_for_point_range&quot;</span>)]
     </span><span class="kw">pub fn </span>named_descendant_for_point_range(<span class="kw-2">&amp;</span><span class="self">self</span>, start: Point, end: Point) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::new(<span class="kw">unsafe </span>{
             ffi::ts_node_named_descendant_for_point_range(<span class="self">self</span>.<span class="number">0</span>, start.into(), end.into())
         })
     }
 
-    <span class="kw">pub fn </span>to_sexp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+    <span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_string&quot;</span>)]
+    </span><span class="kw">pub fn </span>to_sexp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
         <span class="kw">let </span>c_string = <span class="kw">unsafe </span>{ ffi::ts_node_string(<span class="self">self</span>.<span class="number">0</span>) };
         <span class="kw">let </span>result = <span class="kw">unsafe </span>{ CStr::from_ptr(c_string) }
             .to_str()
@@ -3309,6 +3499,7 @@
     }
 
     <span class="doccomment">/// Create a new [TreeCursor] starting from this node.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_cursor_new&quot;</span>)]
     </span><span class="kw">pub fn </span>walk(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; TreeCursor&lt;<span class="lifetime">&#39;tree</span>&gt; {
         TreeCursor(<span class="kw">unsafe </span>{ ffi::ts_tree_cursor_new(<span class="self">self</span>.<span class="number">0</span>) }, PhantomData)
     }
@@ -3320,6 +3511,7 @@
     /// afterward will already reflect the edit. You only need to use [Node::edit]
     /// when you have a specific [Node] instance that you want to keep and continue
     /// to use after an edit.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_node_edit&quot;</span>)]
     </span><span class="kw">pub fn </span>edit(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edit: <span class="kw-2">&amp;</span>InputEdit) {
         <span class="kw">let </span>edit = edit.into();
         <span class="kw">unsafe </span>{ ffi::ts_node_edit(<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0 </span><span class="kw">as </span><span class="kw-2">*mut </span>ffi::TSNode, <span class="kw-2">&amp;</span>edit) }
@@ -3358,6 +3550,7 @@
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; TreeCursor&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="doccomment">/// Get the tree cursor&#39;s current [Node].
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_cursor_current_node&quot;</span>)]
     </span><span class="kw">pub fn </span>node(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Node&lt;<span class="lifetime">&#39;a</span>&gt; {
         Node(
             <span class="kw">unsafe </span>{ ffi::ts_tree_cursor_current_node(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>) },
@@ -3368,6 +3561,7 @@
     <span class="doccomment">/// Get the numerical field id of this tree cursor&#39;s current node.
     ///
     /// See also [field_name](TreeCursor::field_name).
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_cursor_current_field_id&quot;</span>)]
     </span><span class="kw">pub fn </span>field_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u16&gt; {
         <span class="kw">unsafe </span>{
             <span class="kw">let </span>id = ffi::ts_tree_cursor_current_field_id(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>);
@@ -3380,6 +3574,7 @@
     }
 
     <span class="doccomment">/// Get the field name of this tree cursor&#39;s current node.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_cursor_current_field_name&quot;</span>)]
     </span><span class="kw">pub fn </span>field_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
         <span class="kw">unsafe </span>{
             <span class="kw">let </span>ptr = ffi::ts_tree_cursor_current_field_name(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>);
@@ -3395,6 +3590,7 @@
     ///
     /// This returns `true` if the cursor successfully moved, and returns `false`
     /// if there were no children.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_cursor_goto_first_child&quot;</span>)]
     </span><span class="kw">pub fn </span>goto_first_child(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; bool {
         <span class="kw">return unsafe </span>{ ffi::ts_tree_cursor_goto_first_child(<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0</span>) };
     }
@@ -3403,6 +3599,7 @@
     ///
     /// This returns `true` if the cursor successfully moved, and returns `false`
     /// if there was no parent node (the cursor was already on the root node).
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_cursor_goto_parent&quot;</span>)]
     </span><span class="kw">pub fn </span>goto_parent(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; bool {
         <span class="kw">return unsafe </span>{ ffi::ts_tree_cursor_goto_parent(<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0</span>) };
     }
@@ -3411,6 +3608,7 @@
     ///
     /// This returns `true` if the cursor successfully moved, and returns `false`
     /// if there was no next sibling node.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_cursor_goto_next_sibling&quot;</span>)]
     </span><span class="kw">pub fn </span>goto_next_sibling(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; bool {
         <span class="kw">return unsafe </span>{ ffi::ts_tree_cursor_goto_next_sibling(<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0</span>) };
     }
@@ -3420,6 +3618,7 @@
     ///
     /// This returns the index of the child node if one was found, and returns `None`
     /// if no such child was found.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_cursor_goto_first_child_for_byte&quot;</span>)]
     </span><span class="kw">pub fn </span>goto_first_child_for_byte(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
         <span class="kw">let </span>result =
             <span class="kw">unsafe </span>{ ffi::ts_tree_cursor_goto_first_child_for_byte(<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0</span>, index <span class="kw">as </span>u32) };
@@ -3435,6 +3634,7 @@
     ///
     /// This returns the index of the child node if one was found, and returns `None`
     /// if no such child was found.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_cursor_goto_first_child_for_point&quot;</span>)]
     </span><span class="kw">pub fn </span>goto_first_child_for_point(<span class="kw-2">&amp;mut </span><span class="self">self</span>, point: Point) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
         <span class="kw">let </span>result =
             <span class="kw">unsafe </span>{ ffi::ts_tree_cursor_goto_first_child_for_point(<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0</span>, point.into()) };
@@ -3446,6 +3646,7 @@
     }
 
     <span class="doccomment">/// Re-initialize this tree cursor to start at a different node.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_tree_cursor_reset&quot;</span>)]
     </span><span class="kw">pub fn </span>reset(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node: Node&lt;<span class="lifetime">&#39;a</span>&gt;) {
         <span class="kw">unsafe </span>{ ffi::ts_tree_cursor_reset(<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0</span>, node.<span class="number">0</span>) };
     }
@@ -3773,6 +3974,7 @@
     }
 
     <span class="doccomment">/// Get the byte offset where the given pattern starts in the query&#39;s source.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_start_byte_for_pattern&quot;</span>)]
     </span><span class="kw">pub fn </span>start_byte_for_pattern(<span class="kw-2">&amp;</span><span class="self">self</span>, pattern_index: usize) -&gt; usize {
         <span class="kw">if </span>pattern_index &gt;= <span class="self">self</span>.text_predicates.len() {
             <span class="macro">panic!</span>(
@@ -3787,6 +3989,7 @@
     }
 
     <span class="doccomment">/// Get the number of patterns in the query.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_pattern_count&quot;</span>)]
     </span><span class="kw">pub fn </span>pattern_count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="kw">unsafe </span>{ ffi::ts_query_pattern_count(<span class="self">self</span>.ptr.as_ptr()) <span class="kw">as </span>usize }
     }
@@ -3838,6 +4041,7 @@
     ///
     /// This prevents the capture from being returned in matches, and also avoids any
     /// resource usage associated with recording the capture.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_disable_capture&quot;</span>)]
     </span><span class="kw">pub fn </span>disable_capture(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>str) {
         <span class="kw">unsafe </span>{
             ffi::ts_query_disable_capture(
@@ -3852,14 +4056,22 @@
     ///
     /// This prevents the pattern from matching, and also avoids any resource usage
     /// associated with the pattern.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_disable_pattern&quot;</span>)]
     </span><span class="kw">pub fn </span>disable_pattern(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize) {
         <span class="kw">unsafe </span>{ ffi::ts_query_disable_pattern(<span class="self">self</span>.ptr.as_ptr(), index <span class="kw">as </span>u32) }
+    }
+
+    <span class="doccomment">/// Check if a given pattern within a query has a single root node.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_is_pattern_guaranteed_at_step&quot;</span>)]
+    </span><span class="kw">pub fn </span>is_pattern_rooted(<span class="kw-2">&amp;</span><span class="self">self</span>, index: usize) -&gt; bool {
+        <span class="kw">unsafe </span>{ ffi::ts_query_is_pattern_rooted(<span class="self">self</span>.ptr.as_ptr(), index <span class="kw">as </span>u32) }
     }
 
     <span class="doccomment">/// Check if a given step in a query is &#39;definite&#39;.
     ///
     /// A query step is &#39;definite&#39; if its parent pattern will be guaranteed to match
     /// successfully once it reaches the step.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_is_pattern_guaranteed_at_step&quot;</span>)]
     </span><span class="kw">pub fn </span>is_pattern_guaranteed_at_step(<span class="kw-2">&amp;</span><span class="self">self</span>, byte_offset: usize) -&gt; bool {
         <span class="kw">unsafe </span>{
             ffi::ts_query_is_pattern_guaranteed_at_step(<span class="self">self</span>.ptr.as_ptr(), byte_offset <span class="kw">as </span>u32)
@@ -3933,6 +4145,7 @@
     <span class="doccomment">/// Create a new cursor for executing a given query.
     ///
     /// The cursor stores the state that is needed to iteratively search for matches.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_new&quot;</span>)]
     </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         QueryCursor {
             ptr: <span class="kw">unsafe </span>{ NonNull::new_unchecked(ffi::ts_query_cursor_new()) },
@@ -3940,12 +4153,14 @@
     }
 
     <span class="doccomment">/// Return the maximum number of in-progress matches for this cursor.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_match_limit&quot;</span>)]
     </span><span class="kw">pub fn </span>match_limit(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
         <span class="kw">unsafe </span>{ ffi::ts_query_cursor_match_limit(<span class="self">self</span>.ptr.as_ptr()) }
     }
 
     <span class="doccomment">/// Set the maximum number of in-progress matches for this cursor.  The limit must be &gt; 0 and
     /// &lt;= 65536.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_set_match_limit&quot;</span>)]
     </span><span class="kw">pub fn </span>set_match_limit(<span class="kw-2">&amp;mut </span><span class="self">self</span>, limit: u32) {
         <span class="kw">unsafe </span>{
             ffi::ts_query_cursor_set_match_limit(<span class="self">self</span>.ptr.as_ptr(), limit);
@@ -3954,6 +4169,7 @@
 
     <span class="doccomment">/// Check if, on its last execution, this cursor exceeded its maximum number of
     /// in-progress matches.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_did_exceed_match_limit&quot;</span>)]
     </span><span class="kw">pub fn </span>did_exceed_match_limit(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="kw">unsafe </span>{ ffi::ts_query_cursor_did_exceed_match_limit(<span class="self">self</span>.ptr.as_ptr()) }
     }
@@ -3963,6 +4179,7 @@
     /// Each match contains the index of the pattern that matched, and a list of captures.
     /// Because multiple patterns can match the same set of nodes, one match may contain
     /// captures that appear *before* some of the captures from a previous match.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_exec&quot;</span>)]
     </span><span class="kw">pub fn </span>matches&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tree</span>: <span class="lifetime">&#39;a</span>, T: TextProvider&lt;<span class="lifetime">&#39;a</span>&gt; + <span class="lifetime">&#39;a</span>&gt;(
         <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span><span class="self">self</span>,
         query: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Query,
@@ -3985,6 +4202,7 @@
     ///
     /// This is useful if you don&#39;t care about which pattern matched, and just want a single,
     /// ordered sequence of captures.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_exec&quot;</span>)]
     </span><span class="kw">pub fn </span>captures&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tree</span>: <span class="lifetime">&#39;a</span>, T: TextProvider&lt;<span class="lifetime">&#39;a</span>&gt; + <span class="lifetime">&#39;a</span>&gt;(
         <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span><span class="self">self</span>,
         query: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Query,
@@ -4004,6 +4222,7 @@
     }
 
     <span class="doccomment">/// Set the range in which the query will be executed, in terms of byte offsets.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_set_byte_range&quot;</span>)]
     </span><span class="kw">pub fn </span>set_byte_range(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: ops::Range&lt;usize&gt;) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">unsafe </span>{
             ffi::ts_query_cursor_set_byte_range(
@@ -4016,6 +4235,7 @@
     </span>}
 
     <span class="doccomment">/// Set the range in which the query will be executed, in terms of rows and columns.
+    </span><span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_set_point_range&quot;</span>)]
     </span><span class="kw">pub fn </span>set_point_range(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: ops::Range&lt;Point&gt;) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">unsafe </span>{
             ffi::ts_query_cursor_set_point_range(
@@ -4033,7 +4253,8 @@
         <span class="self">self</span>.id
     }
 
-    <span class="kw">pub fn </span>remove(<span class="self">self</span>) {
+    <span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_remove_match&quot;</span>)]
+    </span><span class="kw">pub fn </span>remove(<span class="self">self</span>) {
         <span class="kw">unsafe </span>{ ffi::ts_query_cursor_remove_match(<span class="self">self</span>.cursor, <span class="self">self</span>.id) }
     }
 
@@ -4200,13 +4421,15 @@
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tree</span>, T: TextProvider&lt;<span class="lifetime">&#39;a</span>&gt;&gt; QueryMatches&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tree</span>, T&gt; {
-    <span class="kw">pub fn </span>set_byte_range(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: ops::Range&lt;usize&gt;) {
+    <span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_set_byte_range&quot;</span>)]
+    </span><span class="kw">pub fn </span>set_byte_range(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: ops::Range&lt;usize&gt;) {
         <span class="kw">unsafe </span>{
             ffi::ts_query_cursor_set_byte_range(<span class="self">self</span>.ptr, range.start <span class="kw">as </span>u32, range.end <span class="kw">as </span>u32);
         }
     }
 
-    <span class="kw">pub fn </span>set_point_range(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: ops::Range&lt;Point&gt;) {
+    <span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_set_point_range&quot;</span>)]
+    </span><span class="kw">pub fn </span>set_point_range(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: ops::Range&lt;Point&gt;) {
         <span class="kw">unsafe </span>{
             ffi::ts_query_cursor_set_point_range(<span class="self">self</span>.ptr, range.start.into(), range.end.into());
         }
@@ -4214,13 +4437,15 @@
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tree</span>, T: TextProvider&lt;<span class="lifetime">&#39;a</span>&gt;&gt; QueryCaptures&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tree</span>, T&gt; {
-    <span class="kw">pub fn </span>set_byte_range(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: ops::Range&lt;usize&gt;) {
+    <span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_set_byte_range&quot;</span>)]
+    </span><span class="kw">pub fn </span>set_byte_range(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: ops::Range&lt;usize&gt;) {
         <span class="kw">unsafe </span>{
             ffi::ts_query_cursor_set_byte_range(<span class="self">self</span>.ptr, range.start <span class="kw">as </span>u32, range.end <span class="kw">as </span>u32);
         }
     }
 
-    <span class="kw">pub fn </span>set_point_range(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: ops::Range&lt;Point&gt;) {
+    <span class="attribute">#[doc(alias = <span class="string">&quot;ts_query_cursor_set_point_range&quot;</span>)]
+    </span><span class="kw">pub fn </span>set_point_range(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: ops::Range&lt;Point&gt;) {
         <span class="kw">unsafe </span>{
             ffi::ts_query_cursor_set_point_range(<span class="self">self</span>.ptr, range.start.into(), range.end.into());
         }
@@ -4444,7 +4669,8 @@
 
 <span class="kw">static </span><span class="kw-2">mut </span>FREE_FN: <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn</span>(ptr: <span class="kw-2">*mut </span>c_void) = free;
 
-<span class="kw">pub unsafe fn </span>set_allocator(
+<span class="attribute">#[doc(alias = <span class="string">&quot;ts_set_allocator&quot;</span>)]
+</span><span class="kw">pub unsafe fn </span>set_allocator(
     new_malloc: <span class="prelude-ty">Option</span>&lt;<span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn</span>(usize) -&gt; <span class="kw-2">*mut </span>c_void&gt;,
     new_calloc: <span class="prelude-ty">Option</span>&lt;<span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn</span>(usize, usize) -&gt; <span class="kw-2">*mut </span>c_void&gt;,
     new_realloc: <span class="prelude-ty">Option</span>&lt;<span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn</span>(<span class="kw-2">*mut </span>c_void, usize) -&gt; <span class="kw-2">*mut </span>c_void&gt;,
@@ -4469,4 +4695,4 @@
 <span class="kw">unsafe impl </span>Sync <span class="kw">for </span>QueryCursor {}
 <span class="kw">unsafe impl </span>Sync <span class="kw">for </span>Tree {}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tree_sitter" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tree_sitter" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

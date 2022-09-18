@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tracing-0.1.35/src/span.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>span.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../tracing/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/tokio-rs/tracing/master/assets/logo-type.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../tracing/index.html"><div class="logo-container">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tracing-0.1.36/src/span.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>span.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../tracing/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/tokio-rs/tracing/master/assets/logo-type.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../tracing/index.html"><div class="logo-container">
                     <img src="https://raw.githubusercontent.com/tokio-rs/tracing/master/assets/logo-type.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../tracing/index.html">
                         <img src="https://raw.githubusercontent.com/tokio-rs/tracing/master/assets/logo-type.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
@@ -1617,6 +1617,12 @@
 <span id="1615">1615</span>
 <span id="1616">1616</span>
 <span id="1617">1617</span>
+<span id="1618">1618</span>
+<span id="1619">1619</span>
+<span id="1620">1620</span>
+<span id="1621">1621</span>
+<span id="1622">1622</span>
+<span id="1623">1623</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Spans represent periods of time in which a program was executing in a
 //! particular context.
 //!
@@ -2755,7 +2761,7 @@
     ///
     /// // Now, record a value for parting as well.
     /// // (note that the field name is passed as a string slice)
-    /// span.record(&quot;parting&quot;, &amp;&quot;goodbye world!&quot;);
+    /// span.record(&quot;parting&quot;, &quot;goodbye world!&quot;);
     /// ```
     /// However, it may also be used to record a _new_ value for a field whose
     /// value was already recorded:
@@ -2773,7 +2779,7 @@
     ///     }
     ///     Err(_) =&gt; {
     ///         // Things are no longer okay!
-    ///         span.record(&quot;is_okay&quot;, &amp;false);
+    ///         span.record(&quot;is_okay&quot;, false);
     ///     }
     /// }
     /// ```
@@ -2800,17 +2806,17 @@
     /// // Now, you try to record a value for a new field, `new_field`, which was not
     /// // declared as `Empty` or populated when you created `span`.
     /// // You won&#39;t get any error, but the assignment will have no effect!
-    /// span.record(&quot;new_field&quot;, &amp;&quot;interesting_value_you_really_need&quot;);
+    /// span.record(&quot;new_field&quot;, &quot;interesting_value_you_really_need&quot;);
     ///
     /// // Instead, all fields that may be recorded after span creation should be declared up front,
     /// // using field::Empty when a value is not known, as we did for `parting`.
     /// // This `record` call will indeed replace field::Empty with &quot;you will be remembered&quot;.
-    /// span.record(&quot;parting&quot;, &amp;&quot;you will be remembered&quot;);
+    /// span.record(&quot;parting&quot;, &quot;you will be remembered&quot;);
     /// ```
     ///
     /// [`field::Empty`]: super::field::Empty
     /// [`Metadata`]: super::Metadata
-    </span><span class="kw">pub fn </span>record&lt;Q: <span class="question-mark">?</span>Sized, V&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, field: <span class="kw-2">&amp;</span>Q, value: <span class="kw-2">&amp;</span>V) -&gt; <span class="kw-2">&amp;</span><span class="self">Self
+    </span><span class="kw">pub fn </span>record&lt;Q: <span class="question-mark">?</span>Sized, V&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, field: <span class="kw-2">&amp;</span>Q, value: V) -&gt; <span class="kw-2">&amp;</span><span class="self">Self
     </span><span class="kw">where
         </span>Q: field::AsField,
         V: field::Value,
@@ -2820,7 +2826,7 @@
                 <span class="self">self</span>.record_all(
                     <span class="kw-2">&amp;</span>meta
                         .fields()
-                        .value_set(<span class="kw-2">&amp;</span>[(<span class="kw-2">&amp;</span>field, <span class="prelude-val">Some</span>(value <span class="kw">as </span><span class="kw-2">&amp;</span><span class="kw">dyn </span>field::Value))]),
+                        .value_set(<span class="kw-2">&amp;</span>[(<span class="kw-2">&amp;</span>field, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>value <span class="kw">as </span><span class="kw-2">&amp;</span><span class="kw">dyn </span>field::Value))]),
                 );
             }
         }
@@ -3233,6 +3239,12 @@
     <span class="kw">impl </span>AssertSync <span class="kw">for </span>Span {}
     <span class="kw">impl </span>AssertSync <span class="kw">for </span>Entered&lt;<span class="lifetime">&#39;_</span>&gt; {}
     <span class="kw">impl </span>AssertSync <span class="kw">for </span>EnteredSpan {}
+
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_record_backwards_compat() {
+        Span::current().record(<span class="string">&quot;some-key&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;some text&quot;</span>);
+        Span::current().record(<span class="string">&quot;some-key&quot;</span>, <span class="kw-2">&amp;</span><span class="bool-val">false</span>);
+    }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

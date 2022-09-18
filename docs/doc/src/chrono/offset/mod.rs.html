@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/chrono-0.4.19/src/offset/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../chrono/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../chrono/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../chrono/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/chrono-0.4.22/src/offset/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../chrono/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../chrono/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../chrono/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -529,6 +529,12 @@
 <span id="529">529</span>
 <span id="530">530</span>
 <span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
 </pre><pre class="rust"><code><span class="comment">// This is a part of Chrono.
 // See README.md and LICENSE.txt for details.
 
@@ -551,10 +557,21 @@
 
 </span><span class="kw">use </span>core::fmt;
 
-<span class="kw">use </span>format::{parse, ParseResult, Parsed, StrftimeItems};
-<span class="kw">use </span>naive::{NaiveDate, NaiveDateTime, NaiveTime};
-<span class="kw">use </span>Weekday;
-<span class="kw">use </span>{Date, DateTime};
+<span class="kw">use </span><span class="kw">crate</span>::format::{parse, ParseResult, Parsed, StrftimeItems};
+<span class="kw">use </span><span class="kw">crate</span>::naive::{NaiveDate, NaiveDateTime, NaiveTime};
+<span class="kw">use </span><span class="kw">crate</span>::Weekday;
+<span class="kw">use crate</span>::{Date, DateTime};
+
+<span class="kw">mod </span>fixed;
+<span class="kw">pub use </span><span class="self">self</span>::fixed::FixedOffset;
+
+<span class="attribute">#[cfg(feature = <span class="string">&quot;clock&quot;</span>)]
+</span><span class="kw">mod </span>local;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;clock&quot;</span>)]
+</span><span class="kw">pub use </span><span class="self">self</span>::local::Local;
+
+<span class="kw">mod </span>utc;
+<span class="kw">pub use </span><span class="self">self</span>::utc::Utc;
 
 <span class="doccomment">/// The conversion result from the local time to the timezone-aware datetime types.
 </span><span class="attribute">#[derive(Clone, PartialEq, Debug, Copy, Eq, Hash)]
@@ -736,11 +753,11 @@
     ///
     /// # Example
     ///
-    /// ~~~~
+    /// ```
     /// use chrono::{Utc, TimeZone};
     ///
     /// assert_eq!(Utc.ymd(2015, 5, 15).to_string(), &quot;2015-05-15UTC&quot;);
-    /// ~~~~
+    /// ```
     </span><span class="kw">fn </span>ymd(<span class="kw-2">&amp;</span><span class="self">self</span>, year: i32, month: u32, day: u32) -&gt; Date&lt;<span class="self">Self</span>&gt; {
         <span class="self">self</span>.ymd_opt(year, month, day).unwrap()
     }
@@ -755,12 +772,12 @@
     ///
     /// # Example
     ///
-    /// ~~~~
+    /// ```
     /// use chrono::{Utc, LocalResult, TimeZone};
     ///
     /// assert_eq!(Utc.ymd_opt(2015, 5, 15).unwrap().to_string(), &quot;2015-05-15UTC&quot;);
     /// assert_eq!(Utc.ymd_opt(2000, 0, 0), LocalResult::None);
-    /// ~~~~
+    /// ```
     </span><span class="kw">fn </span>ymd_opt(<span class="kw-2">&amp;</span><span class="self">self</span>, year: i32, month: u32, day: u32) -&gt; LocalResult&lt;Date&lt;<span class="self">Self</span>&gt;&gt; {
         <span class="kw">match </span>NaiveDate::from_ymd_opt(year, month, day) {
             <span class="prelude-val">Some</span>(d) =&gt; <span class="self">self</span>.from_local_date(<span class="kw-2">&amp;</span>d),
@@ -778,11 +795,11 @@
     ///
     /// # Example
     ///
-    /// ~~~~
+    /// ```
     /// use chrono::{Utc, TimeZone};
     ///
     /// assert_eq!(Utc.yo(2015, 135).to_string(), &quot;2015-05-15UTC&quot;);
-    /// ~~~~
+    /// ```
     </span><span class="kw">fn </span>yo(<span class="kw-2">&amp;</span><span class="self">self</span>, year: i32, ordinal: u32) -&gt; Date&lt;<span class="self">Self</span>&gt; {
         <span class="self">self</span>.yo_opt(year, ordinal).unwrap()
     }
@@ -813,11 +830,11 @@
     ///
     /// # Example
     ///
-    /// ~~~~
+    /// ```
     /// use chrono::{Utc, Weekday, TimeZone};
     ///
     /// assert_eq!(Utc.isoywd(2015, 20, Weekday::Fri).to_string(), &quot;2015-05-15UTC&quot;);
-    /// ~~~~
+    /// ```
     </span><span class="kw">fn </span>isoywd(<span class="kw-2">&amp;</span><span class="self">self</span>, year: i32, week: u32, weekday: Weekday) -&gt; Date&lt;<span class="self">Self</span>&gt; {
         <span class="self">self</span>.isoywd_opt(year, week, weekday).unwrap()
     }
@@ -847,11 +864,11 @@
     ///
     /// # Example
     ///
-    /// ~~~~
+    /// ```
     /// use chrono::{Utc, TimeZone};
     ///
     /// assert_eq!(Utc.timestamp(1431648000, 0).to_string(), &quot;2015-05-15 00:00:00 UTC&quot;);
-    /// ~~~~
+    /// ```
     </span><span class="kw">fn </span>timestamp(<span class="kw-2">&amp;</span><span class="self">self</span>, secs: i64, nsecs: u32) -&gt; DateTime&lt;<span class="self">Self</span>&gt; {
         <span class="self">self</span>.timestamp_opt(secs, nsecs).unwrap()
     }
@@ -877,11 +894,11 @@
     ///
     /// # Example
     ///
-    /// ~~~~
+    /// ```
     /// use chrono::{Utc, TimeZone};
     ///
     /// assert_eq!(Utc.timestamp_millis(1431648000).timestamp(), 1431648);
-    /// ~~~~
+    /// ```
     </span><span class="kw">fn </span>timestamp_millis(<span class="kw-2">&amp;</span><span class="self">self</span>, millis: i64) -&gt; DateTime&lt;<span class="self">Self</span>&gt; {
         <span class="self">self</span>.timestamp_millis_opt(millis).unwrap()
     }
@@ -896,13 +913,13 @@
     ///
     /// # Example
     ///
-    /// ~~~~
+    /// ```
     /// use chrono::{Utc, TimeZone, LocalResult};
     /// match Utc.timestamp_millis_opt(1431648000) {
     ///     LocalResult::Single(dt) =&gt; assert_eq!(dt.timestamp(), 1431648),
     ///     _ =&gt; panic!(&quot;Incorrect timestamp_millis&quot;),
     /// };
-    /// ~~~~
+    /// ```
     </span><span class="kw">fn </span>timestamp_millis_opt(<span class="kw-2">&amp;</span><span class="self">self</span>, millis: i64) -&gt; LocalResult&lt;DateTime&lt;<span class="self">Self</span>&gt;&gt; {
         <span class="kw">let </span>(<span class="kw-2">mut </span>secs, <span class="kw-2">mut </span>millis) = (millis / <span class="number">1000</span>, millis % <span class="number">1000</span>);
         <span class="kw">if </span>millis &lt; <span class="number">0 </span>{
@@ -920,11 +937,11 @@
     ///
     /// # Example
     ///
-    /// ~~~~
+    /// ```
     /// use chrono::{Utc, TimeZone};
     ///
     /// assert_eq!(Utc.timestamp_nanos(1431648000000000).timestamp(), 1431648);
-    /// ~~~~
+    /// ```
     </span><span class="kw">fn </span>timestamp_nanos(<span class="kw-2">&amp;</span><span class="self">self</span>, nanos: i64) -&gt; DateTime&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>(<span class="kw-2">mut </span>secs, <span class="kw-2">mut </span>nanos) = (nanos / <span class="number">1_000_000_000</span>, nanos % <span class="number">1_000_000_000</span>);
         <span class="kw">if </span>nanos &lt; <span class="number">0 </span>{
@@ -934,16 +951,17 @@
         <span class="self">self</span>.timestamp_opt(secs, nanos <span class="kw">as </span>u32).unwrap()
     }
 
-    <span class="doccomment">/// Parses a string with the specified format string and
-    /// returns a `DateTime` with the current offset.
-    /// See the [`format::strftime` module](../format/strftime/index.html)
-    /// on the supported escape sequences.
+    <span class="doccomment">/// Parses a string with the specified format string and returns a
+    /// `DateTime` with the current offset.
     ///
-    /// If the format does not include offsets, the current offset is assumed;
-    /// otherwise the input should have a matching UTC offset.
+    /// See the [`crate::format::strftime`] module on the
+    /// supported escape sequences.
     ///
-    /// See also `DateTime::parse_from_str` which gives a local `DateTime`
-    /// with parsed `FixedOffset`.
+    /// If the to-be-parsed string includes an offset, it *must* match the
+    /// offset of the TimeZone, otherwise an error will be returned.
+    ///
+    /// See also [`DateTime::parse_from_str`] which gives a [`DateTime`] with
+    /// parsed [`FixedOffset`].
     </span><span class="kw">fn </span>datetime_from_str(<span class="kw-2">&amp;</span><span class="self">self</span>, s: <span class="kw-2">&amp;</span>str, fmt: <span class="kw-2">&amp;</span>str) -&gt; ParseResult&lt;DateTime&lt;<span class="self">Self</span>&gt;&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>parsed = Parsed::new();
         parse(<span class="kw-2">&amp;mut </span>parsed, s, StrftimeItems::new(fmt))<span class="question-mark">?</span>;
@@ -960,6 +978,7 @@
     </span><span class="kw">fn </span>offset_from_local_datetime(<span class="kw-2">&amp;</span><span class="self">self</span>, local: <span class="kw-2">&amp;</span>NaiveDateTime) -&gt; LocalResult&lt;<span class="self">Self</span>::Offset&gt;;
 
     <span class="doccomment">/// Converts the local `NaiveDate` to the timezone-aware `Date` if possible.
+    </span><span class="attribute">#[allow(clippy::wrong_self_convention)]
     </span><span class="kw">fn </span>from_local_date(<span class="kw-2">&amp;</span><span class="self">self</span>, local: <span class="kw-2">&amp;</span>NaiveDate) -&gt; LocalResult&lt;Date&lt;<span class="self">Self</span>&gt;&gt; {
         <span class="self">self</span>.offset_from_local_date(local).map(|offset| {
             <span class="comment">// since FixedOffset is within +/- 1 day, the date is never affected
@@ -968,6 +987,7 @@
     }
 
     <span class="doccomment">/// Converts the local `NaiveDateTime` to the timezone-aware `DateTime` if possible.
+    </span><span class="attribute">#[allow(clippy::wrong_self_convention)]
     </span><span class="kw">fn </span>from_local_datetime(<span class="kw-2">&amp;</span><span class="self">self</span>, local: <span class="kw-2">&amp;</span>NaiveDateTime) -&gt; LocalResult&lt;DateTime&lt;<span class="self">Self</span>&gt;&gt; {
         <span class="self">self</span>.offset_from_local_datetime(local)
             .map(|offset| DateTime::from_utc(<span class="kw-2">*</span>local - offset.fix(), offset))
@@ -981,26 +1001,18 @@
 
     <span class="doccomment">/// Converts the UTC `NaiveDate` to the local time.
     /// The UTC is continuous and thus this cannot fail (but can give the duplicate local time).
+    </span><span class="attribute">#[allow(clippy::wrong_self_convention)]
     </span><span class="kw">fn </span>from_utc_date(<span class="kw-2">&amp;</span><span class="self">self</span>, utc: <span class="kw-2">&amp;</span>NaiveDate) -&gt; Date&lt;<span class="self">Self</span>&gt; {
         Date::from_utc(<span class="kw-2">*</span>utc, <span class="self">self</span>.offset_from_utc_date(utc))
     }
 
     <span class="doccomment">/// Converts the UTC `NaiveDateTime` to the local time.
     /// The UTC is continuous and thus this cannot fail (but can give the duplicate local time).
+    </span><span class="attribute">#[allow(clippy::wrong_self_convention)]
     </span><span class="kw">fn </span>from_utc_datetime(<span class="kw-2">&amp;</span><span class="self">self</span>, utc: <span class="kw-2">&amp;</span>NaiveDateTime) -&gt; DateTime&lt;<span class="self">Self</span>&gt; {
         DateTime::from_utc(<span class="kw-2">*</span>utc, <span class="self">self</span>.offset_from_utc_datetime(utc))
     }
 }
-
-<span class="kw">mod </span>fixed;
-<span class="attribute">#[cfg(feature = <span class="string">&quot;clock&quot;</span>)]
-</span><span class="kw">mod </span>local;
-<span class="kw">mod </span>utc;
-
-<span class="kw">pub use </span><span class="self">self</span>::fixed::FixedOffset;
-<span class="attribute">#[cfg(feature = <span class="string">&quot;clock&quot;</span>)]
-</span><span class="kw">pub use </span><span class="self">self</span>::local::Local;
-<span class="kw">pub use </span><span class="self">self</span>::utc::Utc;
 
 <span class="attribute">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
@@ -1061,4 +1073,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="chrono" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="chrono" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

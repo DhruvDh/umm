@@ -19,7 +19,7 @@ generated via meta-programming.</p>
 </span><span class="macro">const_assert!</span>(VALUE &gt;= <span class="number">2</span>);</code></pre></div>
 <p>Inputs are type-checked as booleans:</p>
 
-<div class='information'><div class='tooltip compile_fail'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered compile_fail"><code><span class="macro">const_assert!</span>(!<span class="number">0</span>);</code></pre></div>
+<div class="example-wrap compile_fail"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="macro">const_assert!</span>(!<span class="number">0</span>);</code></pre></div>
 <p>Despite this being a macro, we see this produces a type error:</p>
 <div class="example-wrap"><pre class="language-txt"><code>  | const_assert!(!0);
   |               ^^ expected bool, found integral variable
@@ -29,5 +29,5 @@ generated via meta-programming.</p>
 <p>The following fails to compile because multiplying by 5 does not have an
 identity property:</p>
 
-<div class='information'><div class='tooltip compile_fail'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered compile_fail"><code><span class="macro">const_assert!</span>(<span class="number">5 </span>* <span class="number">5 </span>== <span class="number">5</span>);</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="static_assertions" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+<div class="example-wrap compile_fail"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="macro">const_assert!</span>(<span class="number">5 </span>* <span class="number">5 </span>== <span class="number">5</span>);</code></pre></div>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="static_assertions" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

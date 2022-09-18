@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-1.0.96/src/buffer.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>buffer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../syn/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../syn/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../syn/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-1.0.99/src/buffer.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>buffer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../syn/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../syn/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../syn/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -411,6 +411,36 @@
 <span id="411">411</span>
 <span id="412">412</span>
 <span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
 </pre><pre class="rust"><code><span class="doccomment">//! A stably addressed token buffer supporting efficient traversal based on a
 //! cheaply copyable cursor.
 //!
@@ -427,7 +457,9 @@
 </span><span class="kw">use </span><span class="kw">crate</span>::proc_macro <span class="kw">as </span>pm;
 <span class="kw">use </span><span class="kw">crate</span>::Lifetime;
 <span class="kw">use </span>proc_macro2::{Delimiter, Group, Ident, Literal, Punct, Spacing, Span, TokenStream, TokenTree};
+<span class="kw">use </span>std::hint;
 <span class="kw">use </span>std::marker::PhantomData;
+<span class="kw">use </span>std::mem;
 <span class="kw">use </span>std::ptr;
 <span class="kw">use </span>std::slice;
 
@@ -470,29 +502,39 @@
     <span class="comment">// NOTE: Do not mutate the Vec returned from this function once it returns;
     // the address of its backing memory must remain stable.
     </span><span class="kw">fn </span>inner_new(stream: TokenStream, up: <span class="kw-2">*const </span>Entry) -&gt; TokenBuffer {
-        <span class="comment">// Build up the entries list, recording the locations of any Groups
-        // in the list to be processed later.
-        </span><span class="kw">let </span><span class="kw-2">mut </span>entries = Vec::new();
-        <span class="kw">let </span><span class="kw-2">mut </span>groups = Vec::new();
-        <span class="kw">for </span>tt <span class="kw">in </span>stream {
+        <span class="kw">let </span>iterator = stream.into_iter();
+        <span class="kw">let </span><span class="kw-2">mut </span>entries = Vec::with_capacity(iterator.size_hint().<span class="number">0 </span>+ <span class="number">1</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>next_index_after_last_group = <span class="number">0</span>;
+        <span class="kw">for </span>tt <span class="kw">in </span>iterator {
             <span class="kw">match </span>tt {
-                TokenTree::Ident(sym) =&gt; {
-                    entries.push(Entry::Ident(sym));
+                TokenTree::Ident(ident) =&gt; {
+                    entries.push(Entry::Ident(ident));
                 }
-                TokenTree::Punct(op) =&gt; {
-                    entries.push(Entry::Punct(op));
+                TokenTree::Punct(punct) =&gt; {
+                    entries.push(Entry::Punct(punct));
                 }
-                TokenTree::Literal(l) =&gt; {
-                    entries.push(Entry::Literal(l));
+                TokenTree::Literal(literal) =&gt; {
+                    entries.push(Entry::Literal(literal));
                 }
-                TokenTree::Group(g) =&gt; {
-                    <span class="comment">// Record the index of the interesting entry, and store an
-                    // `End(null)` there temporarily.
-                    </span>groups.push((entries.len(), g));
-                    entries.push(Entry::End(ptr::null()));
+                TokenTree::Group(group) =&gt; {
+                    <span class="comment">// We cannot fill in a real `End` pointer until `entries` is
+                    // finished growing and getting potentially reallocated.
+                    // Instead, we temporarily coopt the spot where the end
+                    // pointer would go, and use it to string together an
+                    // intrusive linked list of all the Entry::Group entries in
+                    // the vector. Later after `entries` is done growing, we&#39;ll
+                    // traverse the linked list and fill in all the end
+                    // pointers with a correct value.
+                    </span><span class="kw">let </span>group_up =
+                        ptr::null::&lt;u8&gt;().wrapping_add(next_index_after_last_group) <span class="kw">as </span><span class="kw-2">*const </span>Entry;
+
+                    <span class="kw">let </span>inner = <span class="self">Self</span>::inner_new(group.stream(), group_up);
+                    entries.push(Entry::Group(group, inner));
+                    next_index_after_last_group = entries.len();
                 }
             }
         }
+
         <span class="comment">// Add an `End` entry to the end with a reference to the enclosing token
         // stream which was passed in.
         </span>entries.push(Entry::End(up));
@@ -503,20 +545,36 @@
         // pointer into it.
         </span><span class="kw">let </span>entries = entries.into_boxed_slice();
         <span class="kw">let </span>len = entries.len();
+
         <span class="comment">// Convert boxed slice into a pointer to the first element early, to
         // avoid invalidating pointers into this slice when we move the Box.
         // See https://github.com/rust-lang/unsafe-code-guidelines/issues/326
         </span><span class="kw">let </span>entries = Box::into_raw(entries) <span class="kw">as </span><span class="kw-2">*mut </span>Entry;
-        <span class="kw">for </span>(idx, group) <span class="kw">in </span>groups {
-            <span class="comment">// We know that this index refers to one of the temporary
-            // `End(null)` entries, and we know that the last entry is
-            // `End(up)`, so the next index is also valid.
-            </span><span class="kw">let </span>group_up = <span class="kw">unsafe </span>{ entries.add(idx + <span class="number">1</span>) };
 
-            <span class="comment">// The end entry stored at the end of this Entry::Group should
-            // point to the Entry which follows the Group in the list.
-            </span><span class="kw">let </span>inner = <span class="self">Self</span>::inner_new(group.stream(), group_up);
-            <span class="kw">unsafe </span>{ <span class="kw-2">*</span>entries.add(idx) = Entry::Group(group, inner) };
+        <span class="comment">// Traverse intrusive linked list of Entry::Group entries and fill in
+        // correct End pointers.
+        </span><span class="kw">while let </span><span class="prelude-val">Some</span>(idx) = next_index_after_last_group.checked_sub(<span class="number">1</span>) {
+            <span class="comment">// We know that idx refers to one of the Entry::Group entries, and
+            // that the very last entry is an Entry::End, so the next index
+            // after any group entry is a valid index.
+            </span><span class="kw">let </span>group_up = <span class="kw">unsafe </span>{ entries.add(next_index_after_last_group) };
+
+            <span class="comment">// Linked list only takes us to entries which are of type Group.
+            </span><span class="kw">let </span>token_buffer = <span class="kw">match unsafe </span>{ <span class="kw-2">&amp;*</span>entries.add(idx) } {
+                Entry::Group(_group, token_buffer) =&gt; token_buffer,
+                <span class="kw">_ </span>=&gt; <span class="kw">unsafe </span>{ hint::unreachable_unchecked() },
+            };
+
+            <span class="comment">// Last entry in any TokenBuffer is of type End.
+            </span><span class="kw">let </span>buffer_ptr = token_buffer.ptr <span class="kw">as </span><span class="kw-2">*mut </span>Entry;
+            <span class="kw">let </span>last_entry = <span class="kw">unsafe </span>{ <span class="kw-2">&amp;mut *</span>buffer_ptr.add(token_buffer.len - <span class="number">1</span>) };
+            <span class="kw">let </span>end_ptr_slot = <span class="kw">match </span>last_entry {
+                Entry::End(end_ptr_slot) =&gt; end_ptr_slot,
+                <span class="kw">_ </span>=&gt; <span class="kw">unsafe </span>{ hint::unreachable_unchecked() },
+            };
+
+            <span class="comment">// Step to next element in linked list.
+            </span>next_index_after_last_group = mem::replace(end_ptr_slot, group_up) <span class="kw">as </span>usize;
         }
 
         TokenBuffer { ptr: entries, len }
@@ -688,7 +746,9 @@
     </span><span class="kw">pub fn </span>punct(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(Punct, Cursor&lt;<span class="lifetime">&#39;a</span>&gt;)&gt; {
         <span class="self">self</span>.ignore_none();
         <span class="kw">match </span><span class="self">self</span>.entry() {
-            Entry::Punct(op) <span class="kw">if </span>op.as_char() != <span class="string">&#39;\&#39;&#39; </span>=&gt; <span class="prelude-val">Some</span>((op.clone(), <span class="kw">unsafe </span>{ <span class="self">self</span>.bump() })),
+            Entry::Punct(punct) <span class="kw">if </span>punct.as_char() != <span class="string">&#39;\&#39;&#39; </span>=&gt; {
+                <span class="prelude-val">Some</span>((punct.clone(), <span class="kw">unsafe </span>{ <span class="self">self</span>.bump() }))
+            }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
@@ -698,7 +758,7 @@
     </span><span class="kw">pub fn </span>literal(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(Literal, Cursor&lt;<span class="lifetime">&#39;a</span>&gt;)&gt; {
         <span class="self">self</span>.ignore_none();
         <span class="kw">match </span><span class="self">self</span>.entry() {
-            Entry::Literal(lit) =&gt; <span class="prelude-val">Some</span>((lit.clone(), <span class="kw">unsafe </span>{ <span class="self">self</span>.bump() })),
+            Entry::Literal(literal) =&gt; <span class="prelude-val">Some</span>((literal.clone(), <span class="kw">unsafe </span>{ <span class="self">self</span>.bump() })),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
@@ -708,12 +768,12 @@
     </span><span class="kw">pub fn </span>lifetime(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(Lifetime, Cursor&lt;<span class="lifetime">&#39;a</span>&gt;)&gt; {
         <span class="self">self</span>.ignore_none();
         <span class="kw">match </span><span class="self">self</span>.entry() {
-            Entry::Punct(op) <span class="kw">if </span>op.as_char() == <span class="string">&#39;\&#39;&#39; </span>&amp;&amp; op.spacing() == Spacing::Joint =&gt; {
+            Entry::Punct(punct) <span class="kw">if </span>punct.as_char() == <span class="string">&#39;\&#39;&#39; </span>&amp;&amp; punct.spacing() == Spacing::Joint =&gt; {
                 <span class="kw">let </span>next = <span class="kw">unsafe </span>{ <span class="self">self</span>.bump() };
                 <span class="kw">match </span>next.ident() {
                     <span class="prelude-val">Some</span>((ident, rest)) =&gt; {
                         <span class="kw">let </span>lifetime = Lifetime {
-                            apostrophe: op.span(),
+                            apostrophe: punct.span(),
                             ident,
                         };
                         <span class="prelude-val">Some</span>((lifetime, rest))
@@ -747,9 +807,9 @@
     </span><span class="kw">pub fn </span>token_tree(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(TokenTree, Cursor&lt;<span class="lifetime">&#39;a</span>&gt;)&gt; {
         <span class="kw">let </span>tree = <span class="kw">match </span><span class="self">self</span>.entry() {
             Entry::Group(group, <span class="kw">_</span>) =&gt; group.clone().into(),
-            Entry::Literal(lit) =&gt; lit.clone().into(),
+            Entry::Literal(literal) =&gt; literal.clone().into(),
             Entry::Ident(ident) =&gt; ident.clone().into(),
-            Entry::Punct(op) =&gt; op.clone().into(),
+            Entry::Punct(punct) =&gt; punct.clone().into(),
             Entry::End(..) =&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
         };
 
@@ -761,9 +821,9 @@
     </span><span class="kw">pub fn </span>span(<span class="self">self</span>) -&gt; Span {
         <span class="kw">match </span><span class="self">self</span>.entry() {
             Entry::Group(group, <span class="kw">_</span>) =&gt; group.span(),
-            Entry::Literal(l) =&gt; l.span(),
-            Entry::Ident(t) =&gt; t.span(),
-            Entry::Punct(o) =&gt; o.span(),
+            Entry::Literal(literal) =&gt; literal.span(),
+            Entry::Ident(ident) =&gt; ident.span(),
+            Entry::Punct(punct) =&gt; punct.span(),
             Entry::End(..) =&gt; Span::call_site(),
         }
     }
@@ -777,7 +837,7 @@
             Entry::End(..) =&gt; <span class="prelude-val">None</span>,
 
             <span class="comment">// Treat lifetimes as a single tt for the purposes of &#39;skip&#39;.
-            </span>Entry::Punct(op) <span class="kw">if </span>op.as_char() == <span class="string">&#39;\&#39;&#39; </span>&amp;&amp; op.spacing() == Spacing::Joint =&gt; {
+            </span>Entry::Punct(punct) <span class="kw">if </span>punct.as_char() == <span class="string">&#39;\&#39;&#39; </span>&amp;&amp; punct.spacing() == Spacing::Joint =&gt; {
                 <span class="kw">let </span>next = <span class="kw">unsafe </span>{ <span class="self">self</span>.bump() };
                 <span class="kw">match </span>next.entry() {
                     Entry::Ident(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="kw">unsafe </span>{ next.bump() }),
@@ -825,4 +885,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rustix-0.34.8/src/path/arg.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>arg.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rustix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rustix-0.35.9/src/path/arg.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>arg.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../rustix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../rustix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -961,38 +961,21 @@
 <span id="961">961</span>
 <span id="962">962</span>
 <span id="963">963</span>
-<span id="964">964</span>
-<span id="965">965</span>
-<span id="966">966</span>
-<span id="967">967</span>
-<span id="968">968</span>
-<span id="969">969</span>
-<span id="970">970</span>
-<span id="971">971</span>
-<span id="972">972</span>
-<span id="973">973</span>
-<span id="974">974</span>
-<span id="975">975</span>
-<span id="976">976</span>
-<span id="977">977</span>
-<span id="978">978</span>
-<span id="979">979</span>
-<span id="980">980</span>
-<span id="981">981</span>
-<span id="982">982</span>
-<span id="983">983</span>
-<span id="984">984</span>
-<span id="985">985</span>
-<span id="986">986</span>
-</pre><pre class="rust"><code><span class="doccomment">//! This module defines the `Arg` trait and implements it for several common
-//! string types.
+</pre><pre class="rust"><code><span class="doccomment">//! Convenient and efficient string argument passing.
+//!
+//! This module defines the `Arg` trait and implements it for several common
+//! string types. This allows users to pass any of these string types directly
+//! to rustix APIs with string arguments, and it allows rustix to implement
+//! NUL-termination without the need for copying where possible.
 
-</span><span class="kw">use </span><span class="kw">crate</span>::ffi::{ZStr, ZString};
+</span><span class="kw">use </span><span class="kw">crate</span>::ffi::{CStr, CString};
 <span class="kw">use </span><span class="kw">crate</span>::io;
 <span class="attribute">#[cfg(feature = <span class="string">&quot;itoa&quot;</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::path::DecInt;
 <span class="kw">use </span><span class="kw">crate</span>::path::SMALL_PATH_BUFFER_SIZE;
 <span class="kw">use </span>alloc::borrow::Cow;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;itoa&quot;</span>)]
+</span><span class="kw">use </span>alloc::borrow::ToOwned;
 <span class="kw">use </span>alloc::string::String;
 <span class="kw">use </span>alloc::vec::Vec;
 <span class="kw">use </span>core::str;
@@ -1021,22 +1004,26 @@
 /// # Example
 ///
 /// ```rust
-/// use rustix::ffi::ZStr;
+/// # #[cfg(any(feature = &quot;fs&quot;, feature = &quot;net&quot;))]
+/// use rustix::ffi::CStr;
 /// use rustix::io;
+/// # #[cfg(any(feature = &quot;fs&quot;, feature = &quot;net&quot;))]
 /// use rustix::path::Arg;
 ///
+/// # #[cfg(any(feature = &quot;fs&quot;, feature = &quot;net&quot;))]
 /// pub fn touch&lt;P: Arg&gt;(path: P) -&gt; io::Result&lt;()&gt; {
-///     let path = path.into_z_str()?;
+///     let path = path.into_c_str()?;
 ///     _touch(&amp;path)
 /// }
 ///
-/// fn _touch(path: &amp;ZStr) -&gt; io::Result&lt;()&gt; {
+/// # #[cfg(any(feature = &quot;fs&quot;, feature = &quot;net&quot;))]
+/// fn _touch(path: &amp;CStr) -&gt; io::Result&lt;()&gt; {
 ///     // implementation goes here
 ///     Ok(())
 /// }
 /// ```
 ///
-/// Users can then call `touch(&quot;foo&quot;)`, `touch(zstr!(&quot;foo&quot;))`,
+/// Users can then call `touch(&quot;foo&quot;)`, `touch(cstr!(&quot;foo&quot;))`,
 /// `touch(Path::new(&quot;foo&quot;))`, or many other things.
 ///
 /// [`AsRef`]: std::convert::AsRef
@@ -1048,49 +1035,20 @@
     /// str&gt;`.
     </span><span class="kw">fn </span>to_string_lossy(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Cow&lt;<span class="lifetime">&#39;_</span>, str&gt;;
 
-    <span class="doccomment">/// Returns a view of this string as a maybe-owned [`ZStr`].
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt;;
+    <span class="doccomment">/// Returns a view of this string as a maybe-owned [`CStr`].
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt;;
 
     <span class="doccomment">/// Consumes `self` and returns a view of this string as a maybe-owned
-    /// [`ZStr`].
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    /// [`CStr`].
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>;
 
-    <span class="doccomment">/// Runs a closure with `self` passed in as a `&amp;ZStr`.
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
-    <span class="kw">where
-        </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;;
-
-    <span class="doccomment">/// Returns a view of this string as a maybe-owned [`ZStr`].
-    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;rustc-dep-of-std&quot;</span>))]
-    #[inline]
-    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
-        <span class="self">self</span>.as_cow_z_str()
-    }
-
-    <span class="doccomment">/// Consumes `self` and returns a view of this string as a maybe-owned
-    /// [`ZStr`].
-    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;rustc-dep-of-std&quot;</span>))]
-    #[inline]
-    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
-    <span class="kw">where
-        </span><span class="self">Self</span>: <span class="lifetime">&#39;b </span>+ Sized,
-    {
-        <span class="self">self</span>.into_z_str()
-    }
-
-    <span class="doccomment">/// Runs a closure with `self` passed in as a `&amp;ZStr`.
-    </span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;rustc-dep-of-std&quot;</span>))]
-    #[inline]
+    <span class="doccomment">/// Runs a closure with `self` passed in as a `&amp;CStr`.
     </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
-    {
-        <span class="self">self</span>.into_with_z_str(f)
-    }
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;;
 }
 
 <span class="kw">impl </span>Arg <span class="kw">for </span><span class="kw-2">&amp;</span>str {
@@ -1105,29 +1063,29 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="kw-2">*</span><span class="self">self</span>).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>.as_bytes(), f)
+        with_c_str(<span class="self">self</span>.as_bytes(), f)
     }
 }
 
@@ -1143,27 +1101,27 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(String::as_str(<span class="self">self</span>).as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(String::as_str(<span class="self">self</span>)).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
-        <span class="self">self</span>.as_str().into_z_str()
+        <span class="self">self</span>.as_str().into_c_str()
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>.as_bytes(), f)
+        with_c_str(<span class="self">self</span>.as_bytes(), f)
     }
 }
 
@@ -1179,29 +1137,29 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_str()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        f(<span class="kw-2">&amp;</span>ZString::new(<span class="self">self</span>).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>)
+        f(<span class="kw-2">&amp;</span>CString::new(<span class="self">self</span>).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>)
     }
 }
 
@@ -1209,7 +1167,7 @@
 </span><span class="kw">impl </span>Arg <span class="kw">for </span><span class="kw-2">&amp;</span>OsStr {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        <span class="self">self</span>.to_str().ok_or(io::Error::INVAL)
+        <span class="self">self</span>.to_str().ok_or(io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1218,29 +1176,29 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_bytes()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_bytes()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>.as_bytes(), f)
+        with_c_str(<span class="self">self</span>.as_bytes(), f)
     }
 }
 
@@ -1248,7 +1206,7 @@
 </span><span class="kw">impl </span>Arg <span class="kw">for </span><span class="kw-2">&amp;</span>OsString {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        OsString::as_os_str(<span class="self">self</span>).to_str().ok_or(io::Error::INVAL)
+        OsString::as_os_str(<span class="self">self</span>).to_str().ok_or(io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1257,28 +1215,28 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(OsString::as_os_str(<span class="self">self</span>).as_bytes())
-                .map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(OsString::as_os_str(<span class="self">self</span>).as_bytes())
+                .map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
-        <span class="self">self</span>.as_os_str().into_z_str()
+        <span class="self">self</span>.as_os_str().into_c_str()
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>.as_bytes(), f)
+        with_c_str(<span class="self">self</span>.as_bytes(), f)
     }
 }
 
@@ -1286,7 +1244,7 @@
 </span><span class="kw">impl </span>Arg <span class="kw">for </span>OsString {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        <span class="self">self</span>.as_os_str().to_str().ok_or(io::Error::INVAL)
+        <span class="self">self</span>.as_os_str().to_str().ok_or(io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1295,29 +1253,29 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_bytes()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.into_vec()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.into_vec()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        f(<span class="kw-2">&amp;</span>ZString::new(<span class="self">self</span>.into_vec()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>)
+        f(<span class="kw-2">&amp;</span>CString::new(<span class="self">self</span>.into_vec()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>)
     }
 }
 
@@ -1325,7 +1283,7 @@
 </span><span class="kw">impl </span>Arg <span class="kw">for </span><span class="kw-2">&amp;</span>Path {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        <span class="self">self</span>.as_os_str().to_str().ok_or(io::Error::INVAL)
+        <span class="self">self</span>.as_os_str().to_str().ok_or(io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1334,29 +1292,29 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_os_str().as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_os_str().as_bytes()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_os_str().as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_os_str().as_bytes()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>.as_os_str().as_bytes(), f)
+        with_c_str(<span class="self">self</span>.as_os_str().as_bytes(), f)
     }
 }
 
@@ -1367,7 +1325,7 @@
         PathBuf::as_path(<span class="self">self</span>)
             .as_os_str()
             .to_str()
-            .ok_or(io::Error::INVAL)
+            .ok_or(io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1376,28 +1334,28 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(PathBuf::as_path(<span class="self">self</span>).as_os_str().as_bytes())
-                .map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(PathBuf::as_path(<span class="self">self</span>).as_os_str().as_bytes())
+                .map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
-        <span class="self">self</span>.as_path().into_z_str()
+        <span class="self">self</span>.as_path().into_c_str()
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>.as_os_str().as_bytes(), f)
+        with_c_str(<span class="self">self</span>.as_os_str().as_bytes(), f)
     }
 }
 
@@ -1405,7 +1363,7 @@
 </span><span class="kw">impl </span>Arg <span class="kw">for </span>PathBuf {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        <span class="self">self</span>.as_os_str().to_str().ok_or(io::Error::INVAL)
+        <span class="self">self</span>.as_os_str().to_str().ok_or(io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1414,53 +1372,53 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_os_str().as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_os_str().as_bytes()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.into_os_string().into_vec()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.into_os_string().into_vec()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
         f(
-            <span class="kw-2">&amp;</span>ZString::new(<span class="self">self</span>.into_os_string().into_vec())
-                .map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            <span class="kw-2">&amp;</span>CString::new(<span class="self">self</span>.into_os_string().into_vec())
+                .map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         )
     }
 }
 
-<span class="kw">impl </span>Arg <span class="kw">for </span><span class="kw-2">&amp;</span>ZStr {
+<span class="kw">impl </span>Arg <span class="kw">for </span><span class="kw-2">&amp;</span>CStr {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        <span class="self">self</span>.to_str().map_err(|_utf8_err| io::Error::INVAL)
+        <span class="self">self</span>.to_str().map_err(|_utf8_err| io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>to_string_lossy(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Cow&lt;<span class="lifetime">&#39;_</span>, str&gt; {
-        ZStr::to_string_lossy(<span class="self">self</span>)
+        CStr::to_string_lossy(<span class="self">self</span>)
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Borrowed(<span class="self">self</span>))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
@@ -1468,16 +1426,16 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
         f(<span class="self">self</span>)
     }
 }
 
-<span class="kw">impl </span>Arg <span class="kw">for </span><span class="kw-2">&amp;</span>ZString {
+<span class="kw">impl </span>Arg <span class="kw">for </span><span class="kw-2">&amp;</span>CString {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
         <span class="macro">unimplemented!</span>()
@@ -1489,12 +1447,12 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Borrowed(<span class="self">self</span>))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
@@ -1502,33 +1460,33 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
         f(<span class="self">self</span>)
     }
 }
 
-<span class="kw">impl </span>Arg <span class="kw">for </span>ZString {
+<span class="kw">impl </span>Arg <span class="kw">for </span>CString {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        <span class="self">self</span>.to_str().map_err(|_utf8_err| io::Error::INVAL)
+        <span class="self">self</span>.to_str().map_err(|_utf8_err| io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>to_string_lossy(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Cow&lt;<span class="lifetime">&#39;_</span>, str&gt; {
-        ZStr::to_string_lossy(<span class="self">self</span>)
+        CStr::to_string_lossy(<span class="self">self</span>)
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Borrowed(<span class="self">self</span>))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
@@ -1536,10 +1494,10 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
         f(<span class="kw-2">&amp;</span><span class="self">self</span>)
     }
@@ -1557,33 +1515,33 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_ref()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_ref()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
             <span class="kw">match </span><span class="self">self </span>{
-                Cow::Owned(s) =&gt; ZString::new(s),
-                Cow::Borrowed(s) =&gt; ZString::new(s),
+                Cow::Owned(s) =&gt; CString::new(s),
+                Cow::Borrowed(s) =&gt; CString::new(s),
             }
-            .map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            .map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>.as_bytes(), f)
+        with_c_str(<span class="self">self</span>.as_bytes(), f)
     }
 }
 
@@ -1591,7 +1549,7 @@
 </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Arg <span class="kw">for </span>Cow&lt;<span class="lifetime">&#39;a</span>, OsStr&gt; {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        (<span class="kw-2">**</span><span class="self">self</span>).to_str().ok_or(io::Error::INVAL)
+        (<span class="kw-2">**</span><span class="self">self</span>).to_str().ok_or(io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1600,55 +1558,55 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_bytes()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
             <span class="kw">match </span><span class="self">self </span>{
-                Cow::Owned(os) =&gt; ZString::new(os.into_vec()),
-                Cow::Borrowed(os) =&gt; ZString::new(os.as_bytes()),
+                Cow::Owned(os) =&gt; CString::new(os.into_vec()),
+                Cow::Borrowed(os) =&gt; CString::new(os.as_bytes()),
             }
-            .map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            .map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>.as_bytes(), f)
+        with_c_str(<span class="self">self</span>.as_bytes(), f)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Arg <span class="kw">for </span>Cow&lt;<span class="lifetime">&#39;a</span>, ZStr&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Arg <span class="kw">for </span>Cow&lt;<span class="lifetime">&#39;a</span>, CStr&gt; {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        <span class="self">self</span>.to_str().map_err(|_utf8_err| io::Error::INVAL)
+        <span class="self">self</span>.to_str().map_err(|_utf8_err| io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>to_string_lossy(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Cow&lt;<span class="lifetime">&#39;_</span>, str&gt; {
-        <span class="kw">let </span>borrow: <span class="kw-2">&amp;</span>ZStr = core::borrow::Borrow::borrow(<span class="self">self</span>);
+        <span class="kw">let </span>borrow: <span class="kw-2">&amp;</span>CStr = core::borrow::Borrow::borrow(<span class="self">self</span>);
         borrow.to_string_lossy()
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Borrowed(<span class="self">self</span>))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
@@ -1656,10 +1614,10 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
         f(<span class="kw-2">&amp;</span><span class="self">self</span>)
     }
@@ -1669,7 +1627,7 @@
 </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Arg <span class="kw">for </span>Component&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        <span class="self">self</span>.as_os_str().to_str().ok_or(io::Error::INVAL)
+        <span class="self">self</span>.as_os_str().to_str().ok_or(io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1678,29 +1636,29 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_os_str().as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_os_str().as_bytes()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_os_str().as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_os_str().as_bytes()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>.as_os_str().as_bytes(), f)
+        with_c_str(<span class="self">self</span>.as_os_str().as_bytes(), f)
     }
 }
 
@@ -1708,7 +1666,7 @@
 </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Arg <span class="kw">for </span>Components&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        <span class="self">self</span>.as_path().to_str().ok_or(io::Error::INVAL)
+        <span class="self">self</span>.as_path().to_str().ok_or(io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1717,31 +1675,31 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_path().as_os_str().as_bytes())
-                .map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_path().as_os_str().as_bytes())
+                .map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_path().as_os_str().as_bytes())
-                .map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_path().as_os_str().as_bytes())
+                .map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>.as_path().as_os_str().as_bytes(), f)
+        with_c_str(<span class="self">self</span>.as_path().as_os_str().as_bytes(), f)
     }
 }
 
@@ -1749,7 +1707,7 @@
 </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Arg <span class="kw">for </span>Iter&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        <span class="self">self</span>.as_path().to_str().ok_or(io::Error::INVAL)
+        <span class="self">self</span>.as_path().to_str().ok_or(io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1758,38 +1716,38 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_path().as_os_str().as_bytes())
-                .map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_path().as_os_str().as_bytes())
+                .map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_path().as_os_str().as_bytes())
-                .map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_path().as_os_str().as_bytes())
+                .map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>.as_path().as_os_str().as_bytes(), f)
+        with_c_str(<span class="self">self</span>.as_path().as_os_str().as_bytes(), f)
     }
 }
 
 <span class="kw">impl </span>Arg <span class="kw">for </span><span class="kw-2">&amp;</span>[u8] {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        str::from_utf8(<span class="self">self</span>).map_err(|_utf8_err| io::Error::INVAL)
+        str::from_utf8(<span class="self">self</span>).map_err(|_utf8_err| io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1798,36 +1756,36 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="kw-2">*</span><span class="self">self</span>).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="kw-2">*</span><span class="self">self</span>).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>, f)
+        with_c_str(<span class="self">self</span>, f)
     }
 }
 
 <span class="kw">impl </span>Arg <span class="kw">for </span><span class="kw-2">&amp;</span>Vec&lt;u8&gt; {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        str::from_utf8(<span class="self">self</span>).map_err(|_utf8_err| io::Error::INVAL)
+        str::from_utf8(<span class="self">self</span>).map_err(|_utf8_err| io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1836,36 +1794,36 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_slice()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_slice()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_slice()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_slice()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        with_z_str(<span class="self">self</span>, f)
+        with_c_str(<span class="self">self</span>, f)
     }
 }
 
 <span class="kw">impl </span>Arg <span class="kw">for </span>Vec&lt;u8&gt; {
     <span class="attribute">#[inline]
     </span><span class="kw">fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;<span class="kw-2">&amp;</span>str&gt; {
-        str::from_utf8(<span class="self">self</span>).map_err(|_utf8_err| io::Error::INVAL)
+        str::from_utf8(<span class="self">self</span>).map_err(|_utf8_err| io::Errno::INVAL)
     }
 
     <span class="attribute">#[inline]
@@ -1874,29 +1832,29 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_slice()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>.as_slice()).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
         <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
+            CString::new(<span class="self">self</span>).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>,
         ))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        f(<span class="kw-2">&amp;</span>ZString::new(<span class="self">self</span>).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>)
+        f(<span class="kw-2">&amp;</span>CString::new(<span class="self">self</span>).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>)
     }
 }
 
@@ -1913,37 +1871,33 @@
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>as_cow_z_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, ZStr&gt;&gt; {
-        <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
-        ))
+    </span><span class="kw">fn </span>as_cow_c_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;_</span>, CStr&gt;&gt; {
+        <span class="prelude-val">Ok</span>(Cow::Borrowed(<span class="self">self</span>.as_c_str()))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_z_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, ZStr&gt;&gt;
+    </span><span class="kw">fn </span>into_c_str&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="self">self</span>) -&gt; io::Result&lt;Cow&lt;<span class="lifetime">&#39;b</span>, CStr&gt;&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: <span class="lifetime">&#39;b</span>,
     {
-        <span class="prelude-val">Ok</span>(Cow::Owned(
-            ZString::new(<span class="self">self</span>.as_bytes()).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>,
-        ))
+        <span class="prelude-val">Ok</span>(Cow::Owned(<span class="self">self</span>.as_c_str().to_owned()))
     }
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>into_with_z_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
+    </span><span class="kw">fn </span>into_with_c_str&lt;T, F&gt;(<span class="self">self</span>, f: F) -&gt; io::Result&lt;T&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+        F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
     {
-        f(<span class="self">self</span>.as_z_str())
+        f(<span class="self">self</span>.as_c_str())
     }
 }
 
-<span class="doccomment">/// Runs a closure with `bytes` passed in as a `&amp;ZStr`.
+<span class="doccomment">/// Runs a closure with `bytes` passed in as a `&amp;CStr`.
 </span><span class="attribute">#[inline]
-</span><span class="kw">fn </span>with_z_str&lt;T, F&gt;(bytes: <span class="kw-2">&amp;</span>[u8], f: F) -&gt; io::Result&lt;T&gt;
+</span><span class="kw">fn </span>with_c_str&lt;T, F&gt;(bytes: <span class="kw-2">&amp;</span>[u8], f: F) -&gt; io::Result&lt;T&gt;
 <span class="kw">where
-    </span>F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+    </span>F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
 {
     <span class="comment">// Most paths are less than `SMALL_PATH_BUFFER_SIZE` long. The rest can go
     // through the dynamic allocation path. If you&#39;re opening many files in a
@@ -1953,22 +1907,22 @@
 
     // Test with &gt;= so that we have room for the trailing NUL.
     </span><span class="kw">if </span>bytes.len() &gt;= SMALL_PATH_BUFFER_SIZE {
-        <span class="kw">return </span>with_z_str_slow_path(bytes, f);
+        <span class="kw">return </span>with_c_str_slow_path(bytes, f);
     }
     <span class="kw">let </span><span class="kw-2">mut </span>buffer: [u8; SMALL_PATH_BUFFER_SIZE] = [<span class="number">0_u8</span>; SMALL_PATH_BUFFER_SIZE];
     <span class="comment">// Copy the bytes in; the buffer already has zeros for the trailing NUL.
     </span>buffer[..bytes.len()].copy_from_slice(bytes);
-    f(ZStr::from_bytes_with_nul(<span class="kw-2">&amp;</span>buffer[..=bytes.len()]).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>)
+    f(CStr::from_bytes_with_nul(<span class="kw-2">&amp;</span>buffer[..=bytes.len()]).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>)
 }
 
 <span class="doccomment">/// The slow path which handles any length. In theory OS&#39;s only support up
 /// to `PATH_MAX`, but we let the OS enforce that.
 </span><span class="attribute">#[cold]
-</span><span class="kw">fn </span>with_z_str_slow_path&lt;T, F&gt;(bytes: <span class="kw-2">&amp;</span>[u8], f: F) -&gt; io::Result&lt;T&gt;
+</span><span class="kw">fn </span>with_c_str_slow_path&lt;T, F&gt;(bytes: <span class="kw-2">&amp;</span>[u8], f: F) -&gt; io::Result&lt;T&gt;
 <span class="kw">where
-    </span>F: FnOnce(<span class="kw-2">&amp;</span>ZStr) -&gt; io::Result&lt;T&gt;,
+    </span>F: FnOnce(<span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;T&gt;,
 {
-    f(<span class="kw-2">&amp;</span>ZString::new(bytes).map_err(|_cstr_err| io::Error::INVAL)<span class="question-mark">?</span>)
+    f(<span class="kw-2">&amp;</span>CString::new(bytes).map_err(|_cstr_err| io::Errno::INVAL)<span class="question-mark">?</span>)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rustix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rustix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

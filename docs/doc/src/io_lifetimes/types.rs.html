@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/io-lifetimes-0.6.1/src/types.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../io_lifetimes/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../io_lifetimes/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../io_lifetimes/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/io-lifetimes-0.7.3/src/types.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../io_lifetimes/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../io_lifetimes/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../io_lifetimes/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -827,6 +827,71 @@
 <span id="827">827</span>
 <span id="828">828</span>
 <span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
+<span id="866">866</span>
+<span id="867">867</span>
+<span id="868">868</span>
+<span id="869">869</span>
+<span id="870">870</span>
+<span id="871">871</span>
+<span id="872">872</span>
+<span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
+<span id="885">885</span>
+<span id="886">886</span>
+<span id="887">887</span>
+<span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
+<span id="893">893</span>
+<span id="894">894</span>
 </pre><pre class="rust"><code><span class="kw">use </span>std::fmt;
 <span class="kw">use </span>std::marker::PhantomData;
 <span class="kw">use </span>std::mem::forget;
@@ -843,31 +908,24 @@
     },
 };
 <span class="attribute">#[cfg(all(windows, feature = <span class="string">&quot;close&quot;</span>))]
-</span><span class="kw">use </span>winapi::{
-    shared::minwindef::{BOOL, DWORD},
-    shared::ntdef::HANDLE,
-    um::handleapi::DuplicateHandle,
-    um::handleapi::SetHandleInformation,
-    um::handleapi::INVALID_HANDLE_VALUE,
-    um::processthreadsapi::GetCurrentProcess,
-    um::processthreadsapi::GetCurrentProcessId,
-    um::winbase::HANDLE_FLAG_INHERIT,
-    um::winnt::DUPLICATE_SAME_ACCESS,
-    um::winsock2::WSADuplicateSocketW,
-    um::winsock2::WSAGetLastError,
-    um::winsock2::WSASocketW,
-    um::winsock2::INVALID_SOCKET,
-    um::winsock2::SOCKET_ERROR,
-    um::winsock2::WSAEINVAL,
-    um::winsock2::WSAEPROTOTYPE,
-    um::winsock2::WSAPROTOCOL_INFOW,
-    um::winsock2::WSA_FLAG_NO_HANDLE_INHERIT,
-    um::winsock2::WSA_FLAG_OVERLAPPED,
+</span><span class="kw">use </span>{
+    windows_sys::Win32::Foundation::{
+        CloseHandle, DuplicateHandle, SetHandleInformation, BOOL, DUPLICATE_HANDLE_OPTIONS,
+        DUPLICATE_SAME_ACCESS, HANDLE, HANDLE_FLAG_INHERIT, INVALID_HANDLE_VALUE,
+    },
+    windows_sys::Win32::Networking::WinSock::{
+        closesocket, WSADuplicateSocketW, WSAGetLastError, WSASocketW, INVALID_SOCKET, SOCKET,
+        SOCKET_ERROR, WSAEINVAL, WSAEPROTOTYPE, WSAPROTOCOL_INFOW, WSA_FLAG_NO_HANDLE_INHERIT,
+        WSA_FLAG_OVERLAPPED,
+    },
+    windows_sys::Win32::System::Threading::{GetCurrentProcess, GetCurrentProcessId},
 };
 
-<span class="attribute">#[cfg(all(windows, not(feature = <span class="string">&quot;winapi&quot;</span>)))]
-</span><span class="kw">const </span>INVALID_HANDLE_VALUE: <span class="kw-2">*mut </span>core::ffi::c_void = !<span class="number">0 </span><span class="kw">as _</span>;
-<span class="attribute">#[cfg(all(windows, not(feature = <span class="string">&quot;winapi&quot;</span>)))]
+<span class="attribute">#[cfg(all(windows, not(feature = <span class="string">&quot;close&quot;</span>)))]
+</span><span class="kw">type </span>HANDLE = isize;
+<span class="attribute">#[cfg(all(windows, not(feature = <span class="string">&quot;close&quot;</span>)))]
+</span><span class="kw">const </span>INVALID_HANDLE_VALUE: HANDLE = !<span class="number">0 </span><span class="kw">as _</span>;
+<span class="attribute">#[cfg(all(windows, not(feature = <span class="string">&quot;close&quot;</span>)))]
 </span><span class="kw">const </span>INVALID_SOCKET: usize = !<span class="number">0 </span><span class="kw">as _</span>;
 
 <span class="doccomment">/// A borrowed file descriptor.
@@ -906,14 +964,17 @@
 /// so it can be used in FFI in places where a handle is passed as an argument,
 /// it is not captured or consumed, and it is never null.
 ///
-/// Note that it *may* have the value [`INVALID_HANDLE_VALUE`]. See [here] for
-/// the full story.
+/// Note that it *may* have the value `-1`, which in `BorrowedHandle` always
+/// represents a valid handle value, such as [the current process handle], and
+/// not `INVALID_HANDLE_VALUE`, despite the two having the same value. See
+/// [here] for the full story.
 ///
 /// This type&#39;s `.to_owned()` implementation returns another `BorrowedHandle`
 /// rather than an `OwnedHandle`. It just makes a trivial copy of the raw
 /// handle, which is then borrowed under the same lifetime.
 ///
 /// [here]: https://devblogs.microsoft.com/oldnewthing/20040302-00/?p=40443
+/// [the current process handle]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocess#remarks
 </span><span class="attribute">#[cfg(windows)]
 #[derive(Copy, Clone)]
 #[repr(transparent)]
@@ -976,9 +1037,18 @@
 
 <span class="attribute">#[cfg(any(unix, target_os = <span class="string">&quot;wasi&quot;</span>))]
 </span><span class="kw">impl </span>OwnedFd {
-    <span class="doccomment">/// Creates a new `OwnedFd` instance that shares the same underlying file handle
-    /// as the existing `OwnedFd` instance.
+    <span class="doccomment">/// Creates a new `OwnedFd` instance that shares the same underlying file
+    /// description as the existing `OwnedFd` instance.
     </span><span class="kw">pub fn </span>try_clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::io::Result&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">crate</span>::AsFd::as_fd(<span class="self">self</span>).try_clone_to_owned()
+    }
+}
+
+<span class="attribute">#[cfg(any(unix, target_os = <span class="string">&quot;wasi&quot;</span>))]
+</span><span class="kw">impl </span>BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt; {
+    <span class="doccomment">/// Creates a new `OwnedFd` instance that shares the same underlying file
+    /// description as the existing `BorrowedFd` instance.
+    </span><span class="kw">pub fn </span>try_clone_to_owned(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::io::Result&lt;OwnedFd&gt; {
         <span class="attribute">#[cfg(feature = <span class="string">&quot;close&quot;</span>)]
         </span>{
             <span class="attribute">#[cfg(unix)]
@@ -1001,7 +1071,7 @@
                     fd =&gt; fd,
                 };
 
-                <span class="prelude-val">Ok</span>(<span class="kw">unsafe </span>{ <span class="self">Self</span>::from_raw_fd(fd) })
+                <span class="prelude-val">Ok</span>(<span class="kw">unsafe </span>{ OwnedFd::from_raw_fd(fd) })
             }
 
             <span class="attribute">#[cfg(target_os = <span class="string">&quot;wasi&quot;</span>)]
@@ -1023,8 +1093,10 @@
 ///
 /// This closes the handle on drop.
 ///
-/// Note that it *may* have the value `INVALID_HANDLE_VALUE` (-1), which is
-/// sometimes a valid handle value. See [here] for the full story.
+/// Note that it *may* have the value `-1`, which in `OwnedHandle` always
+/// represents a valid handle value, such as [the current process handle], and
+/// not `INVALID_HANDLE_VALUE`, despite the two having the same value. See
+/// [here] for the full story.
 ///
 /// And, it *may* have the value `NULL` (0), which can occur when consoles are
 /// detached from processes, or when `windows_subsystem` is used.
@@ -1037,6 +1109,7 @@
 /// [`RegCloseKey`]: https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regclosekey
 ///
 /// [here]: https://devblogs.microsoft.com/oldnewthing/20040302-00/?p=40443
+/// [the current process handle]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocess#remarks
 </span><span class="attribute">#[cfg(windows)]
 #[repr(transparent)]
 </span><span class="kw">pub struct </span>OwnedHandle {
@@ -1045,9 +1118,18 @@
 
 <span class="attribute">#[cfg(windows)]
 </span><span class="kw">impl </span>OwnedHandle {
-    <span class="doccomment">/// Creates a new `OwnedHandle` instance that shares the same underlying file handle
-    /// as the existing `OwnedHandle` instance.
-    </span><span class="kw">pub fn </span>try_clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::io::Result&lt;OwnedHandle&gt; {
+    <span class="doccomment">/// Creates a new `OwnedHandle` instance that shares the same underlying
+    /// object as the existing `OwnedHandle` instance.
+    </span><span class="kw">pub fn </span>try_clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::io::Result&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">crate</span>::AsHandle::as_handle(<span class="self">self</span>).try_clone_to_owned()
+    }
+}
+
+<span class="attribute">#[cfg(windows)]
+</span><span class="kw">impl </span>BorrowedHandle&lt;<span class="lifetime">&#39;_</span>&gt; {
+    <span class="doccomment">/// Creates a new `OwnedHandle` instance that shares the same underlying
+    /// object as the existing `BorrowedHandle` instance.
+    </span><span class="kw">pub fn </span>try_clone_to_owned(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::io::Result&lt;OwnedHandle&gt; {
         <span class="attribute">#[cfg(feature = <span class="string">&quot;close&quot;</span>)]
         </span>{
             <span class="self">self</span>.duplicate(<span class="number">0</span>, <span class="bool-val">false</span>, DUPLICATE_SAME_ACCESS)
@@ -1064,16 +1146,16 @@
     <span class="attribute">#[cfg(feature = <span class="string">&quot;close&quot;</span>)]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>duplicate(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        access: DWORD,
+        access: u32,
         inherit: bool,
-        options: DWORD,
-    ) -&gt; std::io::Result&lt;<span class="self">Self</span>&gt; {
+        options: DUPLICATE_HANDLE_OPTIONS,
+    ) -&gt; std::io::Result&lt;OwnedHandle&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>ret = <span class="number">0 </span><span class="kw">as </span>HANDLE;
         <span class="kw">match unsafe </span>{
             <span class="kw">let </span>cur_proc = GetCurrentProcess();
             DuplicateHandle(
                 cur_proc,
-                <span class="self">self</span>.as_raw_handle(),
+                <span class="self">self</span>.as_raw_handle() <span class="kw">as </span>HANDLE,
                 cur_proc,
                 <span class="kw-2">&amp;mut </span>ret,
                 access,
@@ -1084,7 +1166,7 @@
             <span class="number">0 </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(std::io::Error::last_os_error()),
             <span class="kw">_ </span>=&gt; (),
         }
-        <span class="kw">unsafe </span>{ <span class="prelude-val">Ok</span>(<span class="self">Self</span>::from_raw_handle(ret)) }
+        <span class="kw">unsafe </span>{ <span class="prelude-val">Ok</span>(OwnedHandle::from_raw_handle(ret <span class="kw">as </span>RawHandle)) }
     }
 }
 
@@ -1115,9 +1197,38 @@
 
 <span class="attribute">#[cfg(windows)]
 </span><span class="kw">impl </span>OwnedSocket {
-    <span class="doccomment">/// Creates a new `OwnedSocket` instance that shares the same underlying socket
-    /// as the existing `OwnedSocket` instance.
+    <span class="doccomment">/// Creates a new `OwnedSocket` instance that shares the same underlying
+    /// object as the existing `OwnedSocket` instance.
     </span><span class="kw">pub fn </span>try_clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::io::Result&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">crate</span>::AsSocket::as_socket(<span class="self">self</span>).try_clone_to_owned()
+    }
+
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;close&quot;</span>)]
+    #[cfg(not(target_vendor = <span class="string">&quot;uwp&quot;</span>))]
+    </span><span class="kw">fn </span>set_no_inherit(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::io::Result&lt;()&gt; {
+        <span class="kw">match unsafe </span>{
+            SetHandleInformation(<span class="self">self</span>.as_raw_socket() <span class="kw">as </span>HANDLE, HANDLE_FLAG_INHERIT, <span class="number">0</span>)
+        } {
+            <span class="number">0 </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(std::io::Error::last_os_error()),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(()),
+        }
+    }
+
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;close&quot;</span>)]
+    #[cfg(target_vendor = <span class="string">&quot;uwp&quot;</span>)]
+    </span><span class="kw">fn </span>set_no_inherit(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::io::Result&lt;()&gt; {
+        <span class="prelude-val">Err</span>(io::Error::new_const(
+            std::io::ErrorKind::Unsupported,
+            <span class="kw-2">&amp;</span><span class="string">&quot;Unavailable on UWP&quot;</span>,
+        ))
+    }
+}
+
+<span class="attribute">#[cfg(windows)]
+</span><span class="kw">impl </span>BorrowedSocket&lt;<span class="lifetime">&#39;_</span>&gt; {
+    <span class="doccomment">/// Creates a new `OwnedSocket` instance that shares the same underlying
+    /// object as the existing `BorrowedSocket` instance.
+    </span><span class="kw">pub fn </span>try_clone_to_owned(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::io::Result&lt;OwnedSocket&gt; {
         <span class="attribute">#[cfg(feature = <span class="string">&quot;close&quot;</span>)]
         </span>{
             <span class="kw">let </span><span class="kw-2">mut </span>info = <span class="kw">unsafe </span>{ std::mem::zeroed::&lt;WSAPROTOCOL_INFOW&gt;() };
@@ -1179,26 +1290,6 @@
             <span class="macro">unreachable!</span>(<span class="string">&quot;try_clone called without the \&quot;close\&quot; feature in io-lifetimes&quot;</span>);
         }
     }
-
-    <span class="attribute">#[cfg(feature = <span class="string">&quot;close&quot;</span>)]
-    #[cfg(not(target_vendor = <span class="string">&quot;uwp&quot;</span>))]
-    </span><span class="kw">fn </span>set_no_inherit(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::io::Result&lt;()&gt; {
-        <span class="kw">match unsafe </span>{
-            SetHandleInformation(<span class="self">self</span>.as_raw_socket() <span class="kw">as </span>HANDLE, HANDLE_FLAG_INHERIT, <span class="number">0</span>)
-        } {
-            <span class="number">0 </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(std::io::Error::last_os_error()),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(()),
-        }
-    }
-
-    <span class="attribute">#[cfg(feature = <span class="string">&quot;close&quot;</span>)]
-    #[cfg(target_vendor = <span class="string">&quot;uwp&quot;</span>)]
-    </span><span class="kw">fn </span>set_no_inherit(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::io::Result&lt;()&gt; {
-        <span class="prelude-val">Err</span>(io::Error::new_const(
-            std::io::ErrorKind::Unsupported,
-            <span class="kw-2">&amp;</span><span class="string">&quot;Unavailable on UWP&quot;</span>,
-        ))
-    }
 }
 
 <span class="doccomment">/// FFI type for handles in return values or out parameters, where `INVALID_HANDLE_VALUE` is used
@@ -1211,11 +1302,10 @@
 /// `INVALID_HANDLE_VALUE`. This ensures that such FFI calls cannot start using the handle without
 /// checking for `INVALID_HANDLE_VALUE` first.
 ///
-/// This type concerns any value other than `INVALID_HANDLE_VALUE` to be valid, including `NULL`.
-/// This is because APIs that use `INVALID_HANDLE_VALUE` as their sentry value may return `NULL`
-/// under `windows_subsystem = &quot;windows&quot;` or other situations where I/O devices are detached.
+/// This type may hold any handle value that [`OwnedHandle`] may hold, except that when it holds
+/// `-1`, that value is interpreted to mean `INVALID_HANDLE_VALUE`.
 ///
-/// If this holds a valid handle, it will close the handle on drop.
+/// If holds a handle other than `INVALID_HANDLE_VALUE`, it will close the handle on drop.
 </span><span class="attribute">#[cfg(windows)]
 #[repr(transparent)]
 #[derive(Debug)]
@@ -1231,11 +1321,13 @@
 /// `NULL`. This ensures that such FFI calls cannot start using the handle without
 /// checking for `NULL` first.
 ///
-/// This type concerns any value other than `NULL` to be valid, including `INVALID_HANDLE_VALUE`.
-/// This is because APIs that use `NULL` as their sentry value don&#39;t treat `INVALID_HANDLE_VALUE`
-/// as special.
+/// This type may hold any handle value that [`OwnedHandle`] may hold. As with `OwnedHandle`, when
+/// it holds `-1`, that value is interpreted as a valid handle value, such as
+/// [the current process handle], and not `INVALID_HANDLE_VALUE`.
 ///
-/// If this holds a valid handle, it will close the handle on drop.
+/// If this holds a non-null handle, it will close the handle on drop.
+///
+/// [the current process handle]: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocess#remarks
 </span><span class="attribute">#[cfg(windows)]
 #[repr(transparent)]
 #[derive(Debug)]
@@ -1272,8 +1364,10 @@
     /// The resource pointed to by `raw` must remain open for the duration of
     /// the returned `BorrowedFd`, and it must not have the value `-1`.
     </span><span class="attribute">#[inline]
-    </span><span class="kw">pub unsafe fn </span>borrow_raw(fd: RawFd) -&gt; <span class="self">Self </span>{
-        <span class="macro">debug_assert_ne!</span>(fd, -<span class="number">1_i32 </span><span class="kw">as </span>RawFd);
+    </span><span class="kw">pub const unsafe fn </span>borrow_raw(fd: RawFd) -&gt; <span class="self">Self </span>{
+        <span class="attribute">#[cfg(panic_in_const_fn)]
+        </span><span class="macro">debug_assert!</span>(fd != -<span class="number">1_i32 </span><span class="kw">as </span>RawFd);
+
         <span class="self">Self </span>{
             fd,
             _phantom: PhantomData,
@@ -1287,11 +1381,18 @@
     ///
     /// # Safety
     ///
-    /// The resource pointed to by `raw` must remain open for the duration of
-    /// the returned `BorrowedHandle`, and it must not be null.
+    /// The resource pointed to by `handle` must be a valid open handle, it
+    /// must remain open for the duration of the returned `BorrowedHandle`.
+    ///
+    /// Note that it *may* have the value `INVALID_HANDLE_VALUE` (-1), which is
+    /// sometimes a valid handle value. See [here] for the full story.
+    ///
+    /// And, it *may* have the value `NULL` (0), which can occur when consoles are
+    /// detached from processes, or when `windows_subsystem` is used.
+    ///
+    /// [here]: https://devblogs.microsoft.com/oldnewthing/20040302-00/?p=40443
     </span><span class="attribute">#[inline]
-    </span><span class="kw">pub unsafe fn </span>borrow_raw(handle: RawHandle) -&gt; <span class="self">Self </span>{
-        <span class="macro">debug_assert!</span>(!handle.is_null());
+    </span><span class="kw">pub const unsafe fn </span>borrow_raw(handle: RawHandle) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             handle,
             _phantom: PhantomData,
@@ -1309,8 +1410,9 @@
     /// the returned `BorrowedSocket`, and it must not have the value
     /// [`INVALID_SOCKET`].
     </span><span class="attribute">#[inline]
-    </span><span class="kw">pub unsafe fn </span>borrow_raw(socket: RawSocket) -&gt; <span class="self">Self </span>{
-        <span class="macro">debug_assert_ne!</span>(socket, INVALID_SOCKET <span class="kw">as </span>RawSocket);
+    </span><span class="kw">pub const unsafe fn </span>borrow_raw(socket: RawSocket) -&gt; <span class="self">Self </span>{
+        <span class="attribute">#[cfg(panic_in_const_fn)]
+        </span><span class="macro">debug_assert!</span>(socket != INVALID_SOCKET <span class="kw">as </span>RawSocket);
         <span class="self">Self </span>{
             socket,
             _phantom: PhantomData,
@@ -1320,17 +1422,17 @@
 
 <span class="attribute">#[cfg(windows)]
 </span><span class="kw">impl </span>TryFrom&lt;HandleOrInvalid&gt; <span class="kw">for </span>OwnedHandle {
-    <span class="kw">type </span>Error = ();
+    <span class="kw">type </span>Error = InvalidHandleError;
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>try_from(handle_or_invalid: HandleOrInvalid) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ()&gt; {
+    </span><span class="kw">fn </span>try_from(handle_or_invalid: HandleOrInvalid) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, InvalidHandleError&gt; {
         <span class="kw">let </span>raw = handle_or_invalid.<span class="number">0</span>;
-        <span class="kw">if </span>raw == INVALID_HANDLE_VALUE {
+        <span class="kw">if </span>raw <span class="kw">as </span>HANDLE == INVALID_HANDLE_VALUE {
             <span class="comment">// Don&#39;t call `CloseHandle`; it&#39;d be harmless, except that it could
             // overwrite the `GetLastError` error.
             </span>forget(handle_or_invalid);
 
-            <span class="prelude-val">Err</span>(())
+            <span class="prelude-val">Err</span>(InvalidHandleError(()))
         } <span class="kw">else </span>{
             <span class="prelude-val">Ok</span>(OwnedHandle { handle: raw })
         }
@@ -1339,22 +1441,50 @@
 
 <span class="attribute">#[cfg(windows)]
 </span><span class="kw">impl </span>TryFrom&lt;HandleOrNull&gt; <span class="kw">for </span>OwnedHandle {
-    <span class="kw">type </span>Error = ();
+    <span class="kw">type </span>Error = NullHandleError;
 
     <span class="attribute">#[inline]
-    </span><span class="kw">fn </span>try_from(handle_or_null: HandleOrNull) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ()&gt; {
+    </span><span class="kw">fn </span>try_from(handle_or_null: HandleOrNull) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, NullHandleError&gt; {
         <span class="kw">let </span>raw = handle_or_null.<span class="number">0</span>;
         <span class="kw">if </span>raw.is_null() {
             <span class="comment">// Don&#39;t call `CloseHandle`; it&#39;d be harmless, except that it could
             // overwrite the `GetLastError` error.
             </span>forget(handle_or_null);
 
-            <span class="prelude-val">Err</span>(())
+            <span class="prelude-val">Err</span>(NullHandleError(()))
         } <span class="kw">else </span>{
             <span class="prelude-val">Ok</span>(OwnedHandle { handle: raw })
         }
     }
 }
+
+<span class="doccomment">/// This is the error type used by [`HandleOrNull`] when attempting to convert
+/// into a handle, to indicate that the value is null.
+</span><span class="attribute">#[derive(Debug, Clone, PartialEq, Eq)]
+</span><span class="kw">pub struct </span>NullHandleError(());
+
+<span class="kw">impl </span>fmt::Display <span class="kw">for </span>NullHandleError {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="string">&quot;A HandleOrNull could not be converted to a handle because it was null&quot;</span>.fmt(fmt)
+    }
+}
+
+<span class="kw">impl </span>std::error::Error <span class="kw">for </span>NullHandleError {}
+
+<span class="doccomment">/// This is the error type used by [`HandleOrInvalid`] when attempting to
+/// convert into a handle, to indicate that the value is
+/// `INVALID_HANDLE_VALUE`.
+</span><span class="attribute">#[derive(Debug, Clone, PartialEq, Eq)]
+</span><span class="kw">pub struct </span>InvalidHandleError(());
+
+<span class="kw">impl </span>fmt::Display <span class="kw">for </span>InvalidHandleError {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="string">&quot;A HandleOrInvalid could not be converted to a handle because it was INVALID_HANDLE_VALUE&quot;
+            </span>.fmt(fmt)
+    }
+}
+
+<span class="kw">impl </span>std::error::Error <span class="kw">for </span>InvalidHandleError {}
 
 <span class="attribute">#[cfg(any(unix, target_os = <span class="string">&quot;wasi&quot;</span>))]
 </span><span class="kw">impl </span>AsRawFd <span class="kw">for </span>BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt; {
@@ -1535,7 +1665,7 @@
     </span><span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="attribute">#[cfg(feature = <span class="string">&quot;close&quot;</span>)]
         </span><span class="kw">unsafe </span>{
-            <span class="kw">let _ </span>= winapi::um::handleapi::CloseHandle(<span class="self">self</span>.handle);
+            <span class="kw">let _ </span>= CloseHandle(<span class="self">self</span>.handle <span class="kw">as </span>HANDLE);
         }
 
         <span class="comment">// If the `close` feature is disabled, we expect users to avoid letting
@@ -1553,7 +1683,7 @@
     </span><span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="attribute">#[cfg(feature = <span class="string">&quot;close&quot;</span>)]
         </span><span class="kw">unsafe </span>{
-            <span class="kw">let _ </span>= winapi::um::handleapi::CloseHandle(<span class="self">self</span>.<span class="number">0</span>);
+            <span class="kw">let _ </span>= CloseHandle(<span class="self">self</span>.<span class="number">0 </span><span class="kw">as </span>HANDLE);
         }
 
         <span class="comment">// If the `close` feature is disabled, we expect users to avoid letting
@@ -1571,7 +1701,7 @@
     </span><span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="attribute">#[cfg(feature = <span class="string">&quot;close&quot;</span>)]
         </span><span class="kw">unsafe </span>{
-            <span class="kw">let _ </span>= winapi::um::handleapi::CloseHandle(<span class="self">self</span>.<span class="number">0</span>);
+            <span class="kw">let _ </span>= CloseHandle(<span class="self">self</span>.<span class="number">0 </span><span class="kw">as </span>HANDLE);
         }
 
         <span class="comment">// If the `close` feature is disabled, we expect users to avoid letting
@@ -1589,7 +1719,7 @@
     </span><span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="attribute">#[cfg(feature = <span class="string">&quot;close&quot;</span>)]
         </span><span class="kw">unsafe </span>{
-            <span class="kw">let _ </span>= winapi::um::winsock2::closesocket(<span class="self">self</span>.socket <span class="kw">as </span>winapi::um::winsock2::SOCKET);
+            <span class="kw">let _ </span>= closesocket(<span class="self">self</span>.socket <span class="kw">as </span>SOCKET);
         }
 
         <span class="comment">// If the `close` feature is disabled, we expect users to avoid letting
@@ -1657,4 +1787,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="io_lifetimes" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="io_lifetimes" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

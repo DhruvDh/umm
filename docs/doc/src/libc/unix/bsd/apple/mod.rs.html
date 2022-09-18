@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/libc-0.2.126/src/unix/bsd/apple/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../../../normalize.css"><link rel="stylesheet" href="../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../../../ayu.css" disabled><link rel="stylesheet" href="../../../../../dark.css" disabled><link rel="stylesheet" href="../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../storage.js"></script><script defer src="../../../../../source-script.js"></script><script defer src="../../../../../source-files.js"></script><script defer src="../../../../../main.js"></script><noscript><link rel="stylesheet" href="../../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../../libc/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../../../libc/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../../libc/index.html"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/libc-0.2.132/src/unix/bsd/apple/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../../../normalize.css"><link rel="stylesheet" href="../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../../../ayu.css" disabled><link rel="stylesheet" href="../../../../../dark.css" disabled><link rel="stylesheet" href="../../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../../storage.js"></script><script defer src="../../../../../source-script.js"></script><script defer src="../../../../../source-files.js"></script><script defer src="../../../../../main.js"></script><noscript><link rel="stylesheet" href="../../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../../libc/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../../../libc/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../../libc/index.html"><img class="rust-logo" src="../../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -5542,6 +5542,55 @@
 <span id="5542">5542</span>
 <span id="5543">5543</span>
 <span id="5544">5544</span>
+<span id="5545">5545</span>
+<span id="5546">5546</span>
+<span id="5547">5547</span>
+<span id="5548">5548</span>
+<span id="5549">5549</span>
+<span id="5550">5550</span>
+<span id="5551">5551</span>
+<span id="5552">5552</span>
+<span id="5553">5553</span>
+<span id="5554">5554</span>
+<span id="5555">5555</span>
+<span id="5556">5556</span>
+<span id="5557">5557</span>
+<span id="5558">5558</span>
+<span id="5559">5559</span>
+<span id="5560">5560</span>
+<span id="5561">5561</span>
+<span id="5562">5562</span>
+<span id="5563">5563</span>
+<span id="5564">5564</span>
+<span id="5565">5565</span>
+<span id="5566">5566</span>
+<span id="5567">5567</span>
+<span id="5568">5568</span>
+<span id="5569">5569</span>
+<span id="5570">5570</span>
+<span id="5571">5571</span>
+<span id="5572">5572</span>
+<span id="5573">5573</span>
+<span id="5574">5574</span>
+<span id="5575">5575</span>
+<span id="5576">5576</span>
+<span id="5577">5577</span>
+<span id="5578">5578</span>
+<span id="5579">5579</span>
+<span id="5580">5580</span>
+<span id="5581">5581</span>
+<span id="5582">5582</span>
+<span id="5583">5583</span>
+<span id="5584">5584</span>
+<span id="5585">5585</span>
+<span id="5586">5586</span>
+<span id="5587">5587</span>
+<span id="5588">5588</span>
+<span id="5589">5589</span>
+<span id="5590">5590</span>
+<span id="5591">5591</span>
+<span id="5592">5592</span>
+<span id="5593">5593</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Apple (ios/darwin)-specific definitions
 //!
 //! This covers *-apple-* triples currently
@@ -5597,6 +5646,8 @@
 <span class="kw">pub type </span>processor_flavor_t = ::c_int;
 <span class="kw">pub type </span>thread_flavor_t = natural_t;
 <span class="kw">pub type </span>thread_inspect_t = ::mach_port_t;
+<span class="kw">pub type </span>thread_act_t = ::mach_port_t;
+<span class="kw">pub type </span>thread_act_array_t = <span class="kw-2">*mut </span>::thread_act_t;
 <span class="kw">pub type </span>policy_t = ::c_int;
 <span class="kw">pub type </span>mach_vm_address_t = u64;
 <span class="kw">pub type </span>mach_vm_offset_t = u64;
@@ -5607,6 +5658,9 @@
 <span class="kw">pub type </span>memory_object_offset_t = ::c_ulonglong;
 <span class="kw">pub type </span>vm_inherit_t = ::c_uint;
 <span class="kw">pub type </span>vm_prot_t = ::c_int;
+
+<span class="kw">pub type </span>ledger_t = ::mach_port_t;
+<span class="kw">pub type </span>ledger_array_t = <span class="kw-2">*mut </span>::ledger_t;
 
 <span class="kw">pub type </span>iconv_t = <span class="kw-2">*mut </span>::c_void;
 
@@ -5665,6 +5719,7 @@
 <span class="kw">pub type </span>vm_statistics64_data_t = vm_statistics64;
 
 <span class="kw">pub type </span>task_t = ::mach_port_t;
+<span class="kw">pub type </span>task_inspect_t = ::mach_port_t;
 
 <span class="kw">pub type </span>sysdir_search_path_enumeration_state = ::c_uint;
 
@@ -6216,6 +6271,13 @@
         <span class="kw">pub </span>s_addr: ::in_addr_t,
     }
 
+    <span class="comment">// net/ndrv.h
+    </span><span class="kw">pub struct </span>sockaddr_ndrv {
+        <span class="kw">pub </span>snd_len: ::c_uchar,
+        <span class="kw">pub </span>snd_family: ::c_uchar,
+        <span class="kw">pub </span>snd_name: [::c_uchar; <span class="number">16</span>]      <span class="comment">// IFNAMSIZ from if.h
+    </span>}
+
     <span class="comment">// sys/socket.h
 
     </span><span class="kw">pub struct </span>sa_endpoints_t {
@@ -6582,7 +6644,8 @@
         <span class="kw">pub </span>f_fstypename: [::c_char; <span class="number">16</span>],
         <span class="kw">pub </span>f_mntonname: [::c_char; <span class="number">1024</span>],
         <span class="kw">pub </span>f_mntfromname: [::c_char; <span class="number">1024</span>],
-        <span class="kw">pub </span>f_reserved: [u32; <span class="number">8</span>],
+        <span class="kw">pub </span>f_flags_ext: u32,
+        <span class="kw">pub </span>f_reserved: [u32; <span class="number">7</span>],
     }
 
     <span class="kw">pub struct </span>dirent {
@@ -9010,6 +9073,7 @@
 <span class="kw">pub const </span>AF_IPX: ::c_int = <span class="number">23</span>;
 <span class="kw">pub const </span>AF_SIP: ::c_int = <span class="number">24</span>;
 <span class="kw">pub const </span>pseudo_AF_PIP: ::c_int = <span class="number">25</span>;
+<span class="kw">pub const </span>AF_NDRV: ::c_int = <span class="number">27</span>;
 <span class="kw">pub const </span>AF_ISDN: ::c_int = <span class="number">28</span>;
 <span class="kw">pub const </span>AF_E164: ::c_int = AF_ISDN;
 <span class="kw">pub const </span>pseudo_AF_KEY: ::c_int = <span class="number">29</span>;
@@ -9052,6 +9116,7 @@
 <span class="kw">pub const </span>PF_IPX: ::c_int = AF_IPX;
 <span class="kw">pub const </span>PF_RTIP: ::c_int = pseudo_AF_RTIP;
 <span class="kw">pub const </span>PF_PIP: ::c_int = pseudo_AF_PIP;
+<span class="kw">pub const </span>PF_NDRV: ::c_int = AF_NDRV;
 <span class="kw">pub const </span>PF_ISDN: ::c_int = AF_ISDN;
 <span class="kw">pub const </span>PF_KEY: ::c_int = pseudo_AF_KEY;
 <span class="kw">pub const </span>PF_INET6: ::c_int = AF_INET6;
@@ -9096,6 +9161,7 @@
 <span class="kw">pub const </span>IP_DROP_SOURCE_MEMBERSHIP: ::c_int = <span class="number">71</span>;
 <span class="kw">pub const </span>IP_BLOCK_SOURCE: ::c_int = <span class="number">72</span>;
 <span class="kw">pub const </span>IP_UNBLOCK_SOURCE: ::c_int = <span class="number">73</span>;
+<span class="kw">pub const </span>IPV6_BOUND_IF: ::c_int = <span class="number">125</span>;
 
 <span class="kw">pub const </span>TCP_NOPUSH: ::c_int = <span class="number">4</span>;
 <span class="kw">pub const </span>TCP_NOOPT: ::c_int = <span class="number">8</span>;
@@ -10216,6 +10282,16 @@
             <span class="kw">const </span>__DARWIN_ALIGNBYTES32: usize = ::mem::size_of::&lt;u32&gt;() - <span class="number">1</span>;
             p + __DARWIN_ALIGNBYTES32 &amp; !__DARWIN_ALIGNBYTES32
         }
+    } <span class="kw">else </span>{
+        <span class="kw">fn </span>__DARWIN_ALIGN32(p: usize) -&gt; usize {
+            <span class="kw">let </span>__DARWIN_ALIGNBYTES32: usize = ::mem::size_of::&lt;u32&gt;() - <span class="number">1</span>;
+            p + __DARWIN_ALIGNBYTES32 &amp; !__DARWIN_ALIGNBYTES32
+        }
+    }
+}
+
+<span class="macro">cfg_if! </span>{
+    <span class="kw">if </span><span class="attribute">#[cfg(libc_const_size_of)] </span>{
         <span class="kw">pub const </span>THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
             (::mem::size_of::&lt;thread_extended_policy_data_t&gt;() / ::mem::size_of::&lt;integer_t&gt;())
             <span class="kw">as </span>mach_msg_type_number_t;
@@ -10256,10 +10332,6 @@
             (::mem::size_of::&lt;vm_statistics64_data_t&gt;() / ::mem::size_of::&lt;integer_t&gt;())
             <span class="kw">as </span>mach_msg_type_number_t;
     } <span class="kw">else </span>{
-        <span class="kw">fn </span>__DARWIN_ALIGN32(p: usize) -&gt; usize {
-            <span class="kw">let </span>__DARWIN_ALIGNBYTES32: usize = ::mem::size_of::&lt;u32&gt;() - <span class="number">1</span>;
-            p + __DARWIN_ALIGNBYTES32 &amp; !__DARWIN_ALIGNBYTES32
-        }
         <span class="kw">pub const </span>THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t = <span class="number">1</span>;
         <span class="kw">pub const </span>THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t = <span class="number">4</span>;
         <span class="kw">pub const </span>THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t = <span class="number">1</span>;
@@ -10548,7 +10620,9 @@
         thread_info_out: thread_info_t,
         thread_info_outCnt: <span class="kw-2">*mut </span>mach_msg_type_number_t,
     ) -&gt; kern_return_t;
-    <span class="kw">pub fn </span>__error() -&gt; <span class="kw-2">*mut </span>::c_int;
+    <span class="attribute">#[cfg_attr(doc, doc(alias = <span class="string">&quot;__errno_location&quot;</span>))]
+    #[cfg_attr(doc, doc(alias = <span class="string">&quot;errno&quot;</span>))]
+    </span><span class="kw">pub fn </span>__error() -&gt; <span class="kw-2">*mut </span>::c_int;
     <span class="kw">pub fn </span>backtrace(buf: <span class="kw-2">*mut *mut </span>::c_void, sz: ::c_int) -&gt; ::c_int;
     <span class="kw">pub fn </span>backtrace_symbols(addrs: <span class="kw-2">*const *mut </span>::c_void, sz: ::c_int) -&gt; <span class="kw-2">*mut *mut </span>::c_char;
     <span class="kw">pub fn </span>backtrace_symbols_fd(addrs: <span class="kw-2">*const *mut </span>::c_void, sz: ::c_int, fd: ::c_int);
@@ -11024,6 +11098,19 @@
         task_info_out: task_info_t,
         task_info_count: <span class="kw-2">*mut </span>mach_msg_type_number_t,
     ) -&gt; ::kern_return_t;
+    <span class="kw">pub fn </span>task_create(
+        target_task: ::task_t,
+        ledgers: ::ledger_array_t,
+        ledgersCnt: ::mach_msg_type_number_t,
+        inherit_memory: ::boolean_t,
+        child_task: <span class="kw-2">*mut </span>::task_t,
+    ) -&gt; ::kern_return_t;
+    <span class="kw">pub fn </span>task_terminate(target_task: ::task_t) -&gt; ::kern_return_t;
+    <span class="kw">pub fn </span>task_threads(
+        target_task: ::task_inspect_t,
+        act_list: <span class="kw-2">*mut </span>::thread_act_array_t,
+        act_listCnt: <span class="kw-2">*mut </span>::mach_msg_type_number_t,
+    ) -&gt; ::kern_return_t;
     <span class="kw">pub fn </span>host_statistics(
         host_priv: host_t,
         flavor: host_flavor_t,
@@ -11052,12 +11139,23 @@
     <span class="kw">if </span><span class="attribute">#[cfg(target_os = <span class="string">&quot;macos&quot;</span>)] </span>{
         <span class="kw">extern </span><span class="string">&quot;C&quot; </span>{
             <span class="kw">pub fn </span>clock_settime(clock_id: ::clockid_t, tp: <span class="kw-2">*const </span>::timespec) -&gt; ::c_int;
+        }
+    }
+}
+<span class="macro">cfg_if! </span>{
+    <span class="kw">if </span><span class="attribute">#[cfg(any(target_os = <span class="string">&quot;macos&quot;</span>, target_os = <span class="string">&quot;ios&quot;</span>))] </span>{
+        <span class="kw">extern </span><span class="string">&quot;C&quot; </span>{
             <span class="kw">pub fn </span>memmem(
                 haystack: <span class="kw-2">*const </span>::c_void,
                 haystacklen: ::size_t,
                 needle: <span class="kw-2">*const </span>::c_void,
                 needlelen: ::size_t,
             ) -&gt; <span class="kw-2">*mut </span>::c_void;
+            <span class="kw">pub fn </span>task_set_info(target_task: ::task_t,
+                                 flavor: ::task_flavor_t,
+                                 task_info_in: ::task_info_t,
+                                 task_info_inCnt: ::mach_msg_type_number_t
+            ) -&gt; ::kern_return_t;
         }
     }
 }
@@ -11087,4 +11185,4 @@
     </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../../" data-current-crate="libc" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../../" data-current-crate="libc" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

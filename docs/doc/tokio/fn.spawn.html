@@ -65,7 +65,7 @@ exist between calls to <code>.await</code>.</p>
 }</code></pre></div>
 <p>This will <strong>not</strong> work:</p>
 
-<div class='information'><div class='tooltip compile_fail'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered compile_fail"><code><span class="kw">use </span>tokio::task;
+<div class="example-wrap compile_fail"><div class='tooltip'>ⓘ</div><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tokio::task;
 
 <span class="kw">use </span>std::rc::Rc;
 
@@ -87,4 +87,4 @@ exist between calls to <code>.await</code>.</p>
 an unfriendly compile error message similar to:</p>
 <div class="example-wrap"><pre class="language-text"><code>`[... some type ...]` cannot be sent between threads safely</code></pre></div>
 <p>or:</p>
-<div class="example-wrap"><pre class="language-text"><code>error[E0391]: cycle detected when processing `main`</code></pre></div></div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>
+<div class="example-wrap"><pre class="language-text"><code>error[E0391]: cycle detected when processing `main`</code></pre></div></div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="tokio" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>
