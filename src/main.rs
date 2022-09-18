@@ -274,64 +274,62 @@ fn options() -> Cmd {
     use bpaf::*;
 
     fn t() -> impl Parser<String> {
-        positional("TESTNAME").help("add explanation here plox")
+        positional("TESTNAME").help("Name of JUnit test to run")
     }
 
     // this should be positional_os and OsString....
     fn f() -> impl Parser<String> {
-        positional("FILENAME").help("add explanation here plox")
+        positional("FILENAME").help("Name of java file")
     }
 
     let run = construct!(Cmd::Run(f()))
         .to_options()
         .command("run")
-        .help("add explanation here plox");
+        .help("Run a java file with a main method");
 
     let check = construct!(Cmd::Check(f()))
         .to_options()
         .command("check")
-        .help("add explanation here plox");
+        .help("Check for syntax errors");
 
     let test = construct!(Cmd::Test(f(), t()))
         .to_options()
         .command("test")
-        .help("add explanation here plox");
+        .help("Run JUnit tests");
 
     let doc_check = construct!(Cmd::DocCheck(f()))
         .to_options()
         .command("dock-check")
-        .help("add explanation here plox");
+        .help("Check a file for missing javadoc");
 
     let grade = construct!(Cmd::Grade(f()))
         .to_options()
         .command("grade")
-        .help("add explanation here plox");
+        .help("Grade your work");
 
     let clean = pure(Cmd::Clean)
         .to_options()
         .command("clean")
-        .help("add explanation here plox");
+        .help("Cleans the build folder, library folder, and vscode settings");
 
     let info = pure(Cmd::Info)
         .to_options()
         .command("info")
-        .help("add explanation here plox");
+        .help("Prints a JSON description of the project as parsed");
 
     let update = pure(Cmd::Update)
         .to_options()
         .command("update")
-        .help("add explanation here plox");
+        .help("Update the umm command");
 
     let shell = pure(Cmd::Shell)
         .to_options()
         .command("shell")
-        .help("add explanation here plox");
+        .help("Open a REPL");
 
     let cmd = construct!([run, check, test, doc_check, grade, clean, info, update, shell])
         .fallback(Cmd::Shell);
 
-    //    let t = positional("TESTNAME").fallback(String::new());
-    //    let f = positional("FILENAME").fallback(String::new());
     cmd.to_options().descr("Build tool for novices").run()
 }
 
