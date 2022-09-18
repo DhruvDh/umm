@@ -2,12 +2,8 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use std::{
+    collections::HashMap,
     ffi::OsString,
-    fs::File,
-    io::{
-        Read,
-        Write,
-    },
     path::{
         Path,
         PathBuf,
@@ -19,6 +15,7 @@ use anyhow::{
     Result,
 };
 use glob::glob;
+use tokio::io::AsyncWriteExt;
 use which::which;
 
 use crate::constants::*;
@@ -108,58 +105,45 @@ pub fn sourcepath() -> Result<String> {
 }
 
 /// TODO: Add docs
-pub fn download(url: &str, path: &PathBuf, replace: bool) -> Result<()> {
+pub async fn download(url: &str, path: &PathBuf, replace: bool) -> Result<()> {
     if !replace && path.exists() {
         Ok(())
     } else {
-        let resp = ureq::get(url)
-            .call()
-            .context(format!("Failed to download {}", url))?;
-
-        let len = resp
-            .header("Content-Length")
-            .and_then(|s| s.parse::<usize>().ok())
-            .unwrap();
-
-        let mut bytes: Vec<u8> = Vec::with_capacity(len);
-
-        resp.into_reader()
-            .take(10_000_000)
-            .read_to_end(&mut bytes)
-            .context(format!(
-                "Failed to read response till the end while downloading file at {}",
-                url,
-            ))?;
+        let bytes = reqwest::get(url)
+            .await
+            .context(format!("Failed to download url: {url}"))?
+            .bytes()
+            .await
+            .context(format!("Failed to read response as bytes: {url}"))?;
 
         let name = path.file_name().unwrap().to_str().unwrap();
 
-        let mut file = File::create(path).context(format!("Failed to create file at {}", name))?;
+        let mut file = tokio::fs::File::create(path)
+            .await
+            .context(format!("Failed to create file at {}", name))?;
 
         file.write_all(&bytes)
+            .await
             .context(format!("Failed to write to file at {}", name))
     }
 }
 
 /// Download a URL and return response as string
-pub fn download_to_string(url: &str) -> Result<String> {
-    let resp = ureq::get(url)
-        .call()
-        .context(format!("Failed to download {}", url))?;
+pub async fn download_to_string(url: &str) -> Result<String> {
+    reqwest::get(url)
+        .await
+        .context(format!("Failed to download url: {url}"))?
+        .text()
+        .await
+        .context(format!("Failed to read response as text: {url}"))
+}
 
-    let len = resp
-        .header("Content-Length")
-        .and_then(|s| s.parse::<usize>().ok())
-        .unwrap_or(4096);
-
-    let mut bytes: Vec<u8> = Vec::with_capacity(len);
-
-    resp.into_reader()
-        .take(10_000_000)
-        .read_to_end(&mut bytes)
-        .context(format!(
-            "Failed to read response till the end while downloading file at {}",
-            url,
-        ))?;
-
-    Ok(String::from_utf8(bytes)?)
+/// Download a URL and return response as JSON
+pub async fn download_to_json(url: &str) -> Result<HashMap<String, String>> {
+    reqwest::get(url)
+        .await
+        .context(format!("Failed to download url: {url}"))?
+        .json()
+        .await
+        .context(format!("Failed to read response as json: {url}"))
 }

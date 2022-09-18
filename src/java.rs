@@ -18,6 +18,7 @@ use anyhow::{
     Result,
 };
 use colored::Colorize;
+use futures::stream::FuturesUnordered;
 use rhai::EvalAltResult;
 use serde::{
     Deserialize,
@@ -567,7 +568,6 @@ impl Project {
             sourcepath,
             root_dir: ROOT_DIR.display().to_string(),
         };
-
         proj.download_libraries_if_needed()?;
         proj.update_vscode_settings()?;
         proj.update_vscode_tasks()?;
@@ -602,7 +602,8 @@ impl Project {
         }
     }
 
-    /// Downloads certain libraries like JUnit if found in imports
+    /// Downloads certain libraries like JUnit if found in imports.
+    /// times out after 20 seconds.
     pub fn download_libraries_if_needed(&self) -> Result<()> {
         let need_junit = 'outer: {
             for file in self.files.iter() {
@@ -624,37 +625,73 @@ impl Project {
                 std::fs::create_dir(LIB_DIR.as_path()).unwrap();
             }
 
-            download(
-        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-platform-console-standalone-1.9.0-RC1.jar",
-        &LIB_DIR.join(JUNIT_PLATFORM),
-false    )?;
+            let rt = tokio::runtime::Runtime::new().unwrap();
 
-            download(
-                "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-4.13.2.jar",
-                &LIB_DIR.join("junit-4.13.2.jar"),
-                false,
-            )?;
+            rt.block_on(async {
+                let handle1 = rt.spawn(async {
+                    download(
+                    "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-platform-console-standalone-1.9.0-RC1.jar",
+                    &LIB_DIR.join(JUNIT_PLATFORM),
+                false
+                        )
+                        .await
+                });
 
-            download(
-                "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-1.9.5.jar",
-                &LIB_DIR.join("pitest.jar"),
-                false,
-            )?;
-            download(
-                "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-command-line-1.9.5.jar",
-                &LIB_DIR.join("pitest-command-line.jar"),
-                false,
-            )?;
-            download(
-                "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-entry-1.9.5.jar",
-                &LIB_DIR.join("pitest-entry.jar"),
-                false,
-            )?;
-            download(
-                "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-junit5-plugin-1.0.0.jar",
-                &LIB_DIR.join("pitest-junit5-plugin.jar"),
-                false,
-            )?;
+                let handle2 = rt.spawn(async {
+                    download(
+                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-4.13.2.jar",
+                        &LIB_DIR.join("junit-4.13.2.jar"),
+                        false,
+                    )
+                    .await
+                });
+
+                let handle3 = rt.spawn(async {
+                    download(
+                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-1.9.5.jar",
+                        &LIB_DIR.join("pitest.jar"),
+                        false,
+                    )
+                    .await
+                });
+
+                let handle4 = rt.spawn(async {
+                    download(
+                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-command-line-1.9.5.jar",
+                        &LIB_DIR.join("pitest-command-line.jar"),
+                        false,
+                    )
+                    .await
+                });
+
+                let handle5 = rt.spawn(async {
+                    download(
+                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-entry-1.9.5.jar",
+                        &LIB_DIR.join("pitest-entry.jar"),
+                        false,
+                    )
+                    .await
+                });
+
+                let handle6 = rt.spawn(async {
+                    download(
+                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-junit5-plugin-1.0.0.jar",
+                        &LIB_DIR.join("pitest-junit5-plugin.jar"),
+                        false,
+                    )
+                    .await
+                });
+
+                let handles = FuturesUnordered::new();
+                handles.push(handle1);
+                handles.push(handle2);
+                handles.push(handle3);
+                handles.push(handle4);
+                handles.push(handle5);
+                handles.push(handle6);
+
+                futures::future::try_join_all(handles).await
+            })?;
         }
         Ok(())
     }
@@ -882,7 +919,13 @@ false    )?;
             );
         }
 
-        let grading_json = download_to_string(GRADING_SCRIPTS_URL)?;
+        let grading_json = reqwest::blocking::get(GRADING_SCRIPTS_URL)
+            .context(format!("Failed to download url: {GRADING_SCRIPTS_URL}"))?
+            .text()
+            .context(format!(
+                "Failed to read response as text: {GRADING_SCRIPTS_URL}"
+            ))?;
+
         let grading_json: serde_json::Value = serde_json::from_str(&grading_json)?;
         let grading_json = grading_json
             .get(COURSE)

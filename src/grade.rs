@@ -6,7 +6,6 @@ use std::{
     io::{
         BufRead,
         BufReader,
-        Read,
         Write,
     },
     process::Command,
@@ -629,28 +628,11 @@ pub fn grade_by_hidden_tests(
     out_of: f64,
     req_name: &str,
 ) -> Result<GradeResult> {
-    let test_source = {
-        let resp = ureq::get(url)
-            .call()
-            .context(format!("Failed to download {}", url))?;
+    let test_source = reqwest::blocking::get("https://httpbin.org/ip")
+        .context(format!("Failed to download {}", url))?
+        .bytes()
+        .context(format!("Failed to get resobse as bytes: {}", url))?;
 
-        let len = resp
-            .header("Content-Length")
-            .and_then(|s| s.parse::<usize>().ok())
-            .unwrap_or(1024);
-
-        let mut bytes: Vec<u8> = Vec::with_capacity(len);
-
-        resp.into_reader()
-            .take(10_000_000)
-            .read_to_end(&mut bytes)
-            .context(format!(
-                "Failed to read response till the end while downloading file at {}",
-                url,
-            ))?;
-
-        bytes
-    };
     let path = ROOT_DIR.join(format!("{}.java", test_class_name));
     let mut file = File::create(&path)?;
     file.write_all(&test_source)?;

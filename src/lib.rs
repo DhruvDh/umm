@@ -43,7 +43,6 @@ use rhai::{
     EvalAltResult,
 };
 use umm_derive::generate_rhai_variant;
-use util::download_to_string;
 
 /// Defined for convenience
 type Dict = std::collections::HashMap<String, String>;
@@ -70,7 +69,12 @@ pub fn grade(assignment_name: &str) -> Result<()> {
 
     // println!("{}", engine.gen_fn_signatures(false).join("\n"));
 
-    let grading_scripts = download_to_string(GRADING_SCRIPTS_URL)?;
+    let grading_scripts = reqwest::blocking::get(GRADING_SCRIPTS_URL)
+        .context(format!("Cannot get url: {GRADING_SCRIPTS_URL}"))?
+        .text()
+        .context(format!(
+            "Could not parse the response from {GRADING_SCRIPTS_URL} to text."
+        ))?;
     let grading_scripts: serde_json::Value = serde_json::from_str(&grading_scripts)?;
     let script_url = grading_scripts
         .get(COURSE)
@@ -95,7 +99,12 @@ pub fn grade(assignment_name: &str) -> Result<()> {
         )
     })?;
 
-    let script = download_to_string(script_url)?;
+    let script = reqwest::blocking::get(script_url)
+        .context(format!("Cannot get url: {script_url}"))?
+        .text()
+        .context(format!(
+            "Could not parse the response from {script_url} to text."
+        ))?;
     // Run the script
     engine.run(&script)?;
 
