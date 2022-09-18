@@ -2,7 +2,6 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use std::{
-    io::Write,
     path::PathBuf,
     process::{
         Command,
@@ -18,12 +17,19 @@ use anyhow::{
     Result,
 };
 use colored::Colorize;
-use futures::stream::FuturesUnordered;
+use futures::{
+    future::{
+        join_all,
+        try_join_all,
+    },
+    stream::FuturesUnordered,
+};
 use rhai::EvalAltResult;
 use serde::{
     Deserialize,
     Serialize,
 };
+use tokio::io::AsyncWriteExt;
 use tree_sitter::{
     Query,
     QueryCursor,
@@ -544,8 +550,24 @@ impl Project {
         let mut files = vec![];
         let mut names = vec![];
 
-        for path in find_files("java", 15, &ROOT_DIR)? {
-            let file = File::new(path)?;
+        let rt = RUNTIME.handle().clone();
+        let handles = FuturesUnordered::new();
+
+        let results = rt.block_on(async {
+            let found_files = match find_files("java", 15, &ROOT_DIR) {
+                Ok(f) => f,
+                Err(e) => panic!("Could not find java files: {e}"),
+            };
+
+            for path in found_files {
+                handles.push(rt.spawn_blocking(|| File::new(path)))
+            }
+
+            join_all(handles).await
+        });
+
+        for result in results {
+            let file = result??;
             names.push(file.proper_name.clone());
             files.push(file);
         }
@@ -568,9 +590,26 @@ impl Project {
             sourcepath,
             root_dir: ROOT_DIR.display().to_string(),
         };
-        proj.download_libraries_if_needed()?;
-        proj.update_vscode_settings()?;
-        proj.update_vscode_tasks()?;
+
+        let _guard = rt.enter();
+        rt.block_on(async {
+            let handles = FuturesUnordered::new();
+            let (proj1, proj2, proj3) = (proj.clone(), proj.clone(), proj.clone());
+
+            handles.push(tokio::spawn(async move {
+                proj1.download_libraries_if_needed().await
+            }));
+            handles.push(tokio::spawn(
+                async move { proj2.update_vscode_settings().await },
+            ));
+            handles.push(tokio::spawn(
+                async move { proj3.update_vscode_tasks().await },
+            ));
+
+            try_join_all(handles).await
+        })?
+        .into_iter()
+        .collect::<Result<Vec<()>>>()?;
 
         Ok(proj)
     }
@@ -604,7 +643,7 @@ impl Project {
 
     /// Downloads certain libraries like JUnit if found in imports.
     /// times out after 20 seconds.
-    pub fn download_libraries_if_needed(&self) -> Result<()> {
+    pub async fn download_libraries_if_needed(&self) -> Result<()> {
         let need_junit = 'outer: {
             for file in self.files.iter() {
                 if let Some(imports) = &file.imports {
@@ -625,90 +664,89 @@ impl Project {
                 std::fs::create_dir(LIB_DIR.as_path()).unwrap();
             }
 
-            let rt = RUNTIME_HANDLE.handle().clone();
-
-            rt.block_on(async {
-                let handle1 = rt.spawn(async {
-                    download(
+            let handle1 = tokio::spawn(async {
+                download(
                     "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-platform-console-standalone-1.9.0-RC1.jar",
                     &LIB_DIR.join(JUNIT_PLATFORM),
                 false
                         )
                         .await
-                });
+            });
 
-                let handle2 = rt.spawn(async {
-                    download(
-                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-4.13.2.jar",
-                        &LIB_DIR.join("junit-4.13.2.jar"),
-                        false,
-                    )
-                    .await
-                });
+            let handle2 = tokio::spawn(async {
+                download(
+                    "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-4.13.2.jar",
+                    &LIB_DIR.join("junit-4.13.2.jar"),
+                    false,
+                )
+                .await
+            });
 
-                let handle3 = rt.spawn(async {
-                    download(
-                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-1.9.5.jar",
-                        &LIB_DIR.join("pitest.jar"),
-                        false,
-                    )
-                    .await
-                });
+            let handle3 = tokio::spawn(async {
+                download(
+                    "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-1.9.5.jar",
+                    &LIB_DIR.join("pitest.jar"),
+                    false,
+                )
+                .await
+            });
 
-                let handle4 = rt.spawn(async {
-                    download(
+            let handle4 = tokio::spawn(async {
+                download(
                         "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-command-line-1.9.5.jar",
                         &LIB_DIR.join("pitest-command-line.jar"),
                         false,
                     )
                     .await
-                });
+            });
 
-                let handle5 = rt.spawn(async {
-                    download(
-                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-entry-1.9.5.jar",
-                        &LIB_DIR.join("pitest-entry.jar"),
-                        false,
-                    )
-                    .await
-                });
+            let handle5 = tokio::spawn(async {
+                download(
+                    "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-entry-1.9.5.jar",
+                    &LIB_DIR.join("pitest-entry.jar"),
+                    false,
+                )
+                .await
+            });
 
-                let handle6 = rt.spawn(async {
-                    download(
+            let handle6 = tokio::spawn(async {
+                download(
                         "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-junit5-plugin-1.0.0.jar",
                         &LIB_DIR.join("pitest-junit5-plugin.jar"),
                         false,
                     )
                     .await
-                });
+            });
 
-                let handles = FuturesUnordered::new();
-                handles.push(handle1);
-                handles.push(handle2);
-                handles.push(handle3);
-                handles.push(handle4);
-                handles.push(handle5);
-                handles.push(handle6);
+            let handles = FuturesUnordered::new();
+            handles.push(handle1);
+            handles.push(handle2);
+            handles.push(handle3);
+            handles.push(handle4);
+            handles.push(handle5);
+            handles.push(handle6);
 
-                futures::future::try_join_all(handles).await
-            })?;
+            futures::future::try_join_all(handles).await?;
         }
         Ok(())
     }
 
     /// Creates a vscode settings.json file for the project.
-    pub fn update_vscode_settings(&self) -> Result<()> {
+    pub async fn update_vscode_settings(&self) -> Result<()> {
         // TODO: Move this to an init function that takes CONSTANTS into account
         if !ROOT_DIR.join(".vscode").as_path().is_dir() {
-            std::fs::create_dir(ROOT_DIR.join(".vscode").as_path()).unwrap();
+            tokio::fs::create_dir(ROOT_DIR.join(".vscode").as_path())
+                .await
+                .unwrap();
         }
 
         if !ROOT_DIR.join(".vscode/settings.json").as_path().exists() {
-            let mut file = std::fs::OpenOptions::new()
+            let mut file = tokio::fs::OpenOptions::new()
                 .write(true)
                 .truncate(true)
                 .create(true)
-                .open(ROOT_DIR.join(".vscode").join("settings.json").as_path())?;
+                .open(ROOT_DIR.join(".vscode").join("settings.json").as_path())
+                .await?;
 
             let settings = vscode::SettingsFile::builder()
                 .java_source_path(self.sourcepath.clone())
@@ -717,7 +755,8 @@ impl Project {
                 .umm_binary_path(umm_path())
                 .build();
 
-            write!(&mut file, "{}", serde_json::to_string_pretty(&settings)?)?;
+            file.write_all(serde_json::to_string_pretty(&settings)?.as_bytes())
+                .await?;
         }
 
         Ok(())
@@ -736,7 +775,7 @@ impl Project {
     }
 
     /// Writes a .vscode/tasks.json file for the project.
-    pub fn update_vscode_tasks(&self) -> Result<()> {
+    pub async fn update_vscode_tasks(&self) -> Result<()> {
         let mut tasks = Vec::new();
         let mut inputs = Vec::new();
 
@@ -918,9 +957,8 @@ impl Project {
                     .build(),
             );
         }
-        let rt = RUNTIME_HANDLE.handle().clone();
 
-        let resp = rt.block_on(async {
+        let resp = tokio::spawn(async {
             POSTGREST_CLIENT
                 .from("grading_scripts")
                 .eq("course", COURSE)
@@ -931,7 +969,9 @@ impl Project {
                 .text()
                 .await
                 .context("Could not get grading scripts")
-        });
+        })
+        .await?;
+
         let resp: serde_json::Value = serde_json::from_str(resp?.as_str())?;
 
         let mut keys = vec![];
@@ -984,21 +1024,25 @@ impl Project {
         );
 
         if !ROOT_DIR.join(".vscode").as_path().is_dir() {
-            std::fs::create_dir(ROOT_DIR.join(".vscode").as_path()).unwrap();
+            tokio::fs::create_dir(ROOT_DIR.join(".vscode").as_path())
+                .await
+                .unwrap();
         }
 
-        let mut file = std::fs::OpenOptions::new()
+        let mut file = tokio::fs::OpenOptions::new()
             .write(true)
             .truncate(true)
             .create(true)
-            .open(ROOT_DIR.join(".vscode").join("tasks.json").as_path())?;
+            .open(ROOT_DIR.join(".vscode").join("tasks.json").as_path())
+            .await?;
 
         let task_file = vscode::TasksFile::builder()
             .tasks(tasks)
             .inputs(inputs)
             .build();
 
-        write!(&mut file, "{}", serde_json::to_string_pretty(&task_file)?)?;
+        file.write_all(serde_json::to_string_pretty(&task_file)?.as_bytes())
+            .await?;
 
         Ok(())
     }

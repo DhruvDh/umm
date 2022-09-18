@@ -31,7 +31,7 @@ lazy_static! {
     pub static ref POSTGREST_CLIENT: Postgrest = Postgrest::new("https://uyancztmzjlekojeproj.supabase.co/rest/v1")
             .insert_header("apiKey", SUPABASE_KEY.clone());
     /// Runtime
-    pub static ref RUNTIME_HANDLE: tokio::runtime::Runtime = tokio::runtime::Runtime::new().unwrap();
+    pub static ref RUNTIME: tokio::runtime::Runtime = tokio::runtime::Runtime::new().unwrap();
 
 }
 

@@ -29,7 +29,7 @@ use constants::{
     LIB_DIR,
     POSTGREST_CLIENT,
     ROOT_DIR,
-    RUNTIME_HANDLE,
+    RUNTIME,
     TERM,
 };
 use grade::*;
@@ -71,7 +71,7 @@ pub fn grade(assignment_name: &str) -> Result<()> {
         .register_fn("grade_by_tests", grade_by_tests_script);
 
     // println!("{}", engine.gen_fn_signatures(false).join("\n"));
-    let rt = RUNTIME_HANDLE.handle().clone();
+    let rt = RUNTIME.handle().clone();
 
     let resp = rt.block_on(async {
         POSTGREST_CLIENT
