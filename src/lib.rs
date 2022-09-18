@@ -57,16 +57,16 @@ pub fn grade(assignment_name: &str) -> Result<()> {
         .register_type_with_name::<File>("JavaFile")
         .register_type_with_name::<Project>("JavaProject")
         .register_fn("show_results", show_result)
-        .register_result_fn("clean", clean_script)
-        .register_result_fn("new_project", Project::new_script)
-        .register_result_fn("identify", Project::identify_script)
-        .register_result_fn("check", File::check_script)
-        .register_result_fn("run", File::run_script)
-        .register_result_fn("test", File::test_script)
-        .register_result_fn("grade_docs", grade_docs_script)
-        .register_result_fn("grade_unit_tests", grade_unit_tests_script)
-        .register_result_fn("grade_by_hidden_tests", grade_by_hidden_tests_script)
-        .register_result_fn("grade_by_tests", grade_by_tests_script);
+        .register_fn("clean", clean_script)
+        .register_fn("new_project", Project::new_script)
+        .register_fn("identify", Project::identify_script)
+        .register_fn("check", File::check_script)
+        .register_fn("run", File::run_script)
+        .register_fn("test", File::test_script)
+        .register_fn("grade_docs", grade_docs_script)
+        .register_fn("grade_unit_tests", grade_unit_tests_script)
+        .register_fn("grade_by_hidden_tests", grade_by_hidden_tests_script)
+        .register_fn("grade_by_tests", grade_by_tests_script);
 
     // println!("{}", engine.gen_fn_signatures(false).join("\n"));
 
