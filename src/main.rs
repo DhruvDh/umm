@@ -260,55 +260,129 @@ fn shell() -> Result<()> {
     }
 }
 
-fn main() -> Result<()> {
-    let t: Parser<Option<String>> = positional("TESTNAME").optional();
-    let f: Parser<Option<String>> = positional("FILENAME").optional();
-    let cmd: Parser<Option<String>> = positional("COMMAND").optional();
-    let combined_parser = construct!(cmd, f, t);
+/// Enum to represent different commands
+#[derive(Debug, Clone)]
+enum Cmd {
+    /// Run a file
+    Run(String),
+    /// Check a file
+    Check(String),
+    /// Test a file
+    Test(String, Vec<String>),
+    /// Check a files documentation
+    DocCheck(String),
+    /// Grade a file
+    Grade(String),
+    /// Clean the project artifacts
+    Clean,
+    /// Print information about the project
+    Info,
+    /// Update the command
+    Update,
+    /// Start a REPL
+    Shell,
+}
 
-    let (cmd, f, t) = Info::default()
-        .descr("Build tool for novices")
-        .for_parser(combined_parser)
-        .run();
+/// Parse the command line arguments and return a `Cmd` enum
+fn options() -> Cmd {
+    use bpaf::*;
 
-    let c = cmd.clone().unwrap_or_default();
-    if c.as_str() == "clean" {
-        clean()?;
-        return Ok(());
+    /// parses test names
+    fn t() -> impl Parser<Vec<String>> {
+        positional("TESTNAME")
+            .help("Name of JUnit test to run")
+            .many()
     }
 
-    let project = java::Project::new()?;
-    let f = f.unwrap_or_default();
-    let t = t.unwrap_or_default();
+    /// parsers file name
+    fn f() -> impl Parser<String> {
+        positional("FILENAME").help("Name of java file")
+    }
 
+    let run = construct!(Cmd::Run(f()))
+        .to_options()
+        .command("run")
+        .help("Run a java file with a main method");
+
+    let check = construct!(Cmd::Check(f()))
+        .to_options()
+        .command("check")
+        .help("Check for syntax errors");
+
+    let test = construct!(Cmd::Test(f(), t()))
+        .to_options()
+        .command("test")
+        .help("Run JUnit tests");
+
+    let doc_check = construct!(Cmd::DocCheck(f()))
+        .to_options()
+        .command("dock-check")
+        .help("Check a file for missing javadoc");
+
+    let grade = construct!(Cmd::Grade(f()))
+        .to_options()
+        .command("grade")
+        .help("Grade your work");
+
+    let clean = pure(Cmd::Clean)
+        .to_options()
+        .command("clean")
+        .help("Cleans the build folder, library folder, and vscode settings");
+
+    let info = pure(Cmd::Info)
+        .to_options()
+        .command("info")
+        .help("Prints a JSON description of the project as parsed");
+
+    let update = pure(Cmd::Update)
+        .to_options()
+        .command("update")
+        .help("Update the umm command");
+
+    let shell = pure(Cmd::Shell)
+        .to_options()
+        .command("shell")
+        .help("Open a REPL");
+
+    let cmd = construct!([run, check, test, doc_check, grade, clean, info, update, shell])
+        .fallback(Cmd::Shell);
+
+    cmd.to_options().descr("Build tool for novices").run()
+}
+
+fn main() -> Result<()> {
+    let cmd = options();
+
+    let project = java::Project::new()?;
+
+    // TODO: move this to a separate method and call that method in shell()
     match cmd {
-        // TODO: move this to a separate method and call that method in shell()
-        Some(a) => match a.as_str() {
-            "run" => project.identify(f.as_str())?.run()?,
-            "check" => project.identify(f.as_str())?.check()?,
-            "test" => {
-                let out = if t.is_empty() {
-                    project.identify(f.as_str())?.test(vec![])?
-                } else {
-                    project.identify(f.as_str())?.test(vec![&t])?
-                };
-                println!("{}", out);
-            }
-            "doc-check" => {
-                let out = project.identify(f.as_str())?.doc_check()?;
-                println!("{}", out);
-            }
-            "grade" => grade(&f)?,
-            "info" => project.info()?,
-            "update" => {
-                match update() {
-                    Ok(_) => {}
-                    Err(e) => eprintln!("{}", e),
-                };
-            }
-            _ => eprintln!("{} is not a valid subcommand.", a),
-        },
-        None => shell()?,
+        Cmd::Run(f) => project.identify(f.as_str())?.run()?,
+        Cmd::Check(f) => project.identify(f.as_str())?.check()?,
+        Cmd::Test(f, t) => {
+            let out = if t.is_empty() {
+                project.identify(f.as_str())?.test(vec![])?
+            } else {
+                let t = t.iter().map(|i| i.as_str()).collect();
+                project.identify(f.as_str())?.test(t)?
+            };
+            println!("{}", out);
+        }
+        Cmd::DocCheck(f) => {
+            let out = project.identify(f.as_str())?.doc_check()?;
+            println!("{}", out);
+        }
+        Cmd::Grade(f) => grade(&f)?,
+        Cmd::Clean => clean()?,
+        Cmd::Info => project.info()?,
+        Cmd::Update => {
+            match update() {
+                Ok(_) => {}
+                Err(e) => eprintln!("{}", e),
+            };
+        }
+
+        Cmd::Shell => shell()?,
     };
 
     if BUILD_DIR.join(".vscode").exists() {
