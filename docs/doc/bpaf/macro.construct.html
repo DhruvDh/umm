@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Compose several parsers to produce a single result"><meta name="keywords" content="rust, rustlang, rust-lang, construct"><title>construct in bpaf - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../normalize.css"><link rel="stylesheet" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../ayu.css" disabled><link rel="stylesheet" href="../dark.css" disabled><link rel="stylesheet" href="../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../storage.js"></script><script defer src="sidebar-items.js"></script><script defer src="../main.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"></head><body class="rustdoc macro"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../bpaf/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../bpaf/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div></a><div class="sidebar-elems"><h2 class="location"><a href="index.html">In bpaf</a></h2></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../bpaf/index.html"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">Macro <a href="index.html">bpaf</a>::<wbr><a class="macro" href="#">construct</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/bpaf/lib.rs.html#84-128">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><div class="docblock item-decl"><div class="example-wrap"><pre class="rust macro"><code><span class="macro">macro_rules! </span>construct {
+    (<span class="macro-nonterminal">$con</span>:ident { $(<span class="macro-nonterminal">$tokens</span>:tt)* }) =&gt; { ... };
+    (<span class="macro-nonterminal">$con</span>:ident ( $(<span class="macro-nonterminal">$tokens</span>:tt)* )) =&gt; { ... };
+    (<span class="macro-nonterminal">$ns</span>:ident :: <span class="macro-nonterminal">$con</span>:ident { $(<span class="macro-nonterminal">$tokens</span>:tt)* }) =&gt; { ... };
+    (<span class="macro-nonterminal">$ns</span>:ident :: <span class="macro-nonterminal">$con</span>:ident ( $(<span class="macro-nonterminal">$tokens</span>:tt)* )) =&gt; { ... };
+    (<span class="macro-nonterminal">$first</span>:ident $(<span class="macro-nonterminal">$tokens</span>:tt)<span class="kw-2">*</span>) =&gt; { ... };
+    ([<span class="macro-nonterminal">$first</span>:ident $(<span class="macro-nonterminal">$tokens</span>:tt)<span class="kw-2">*</span>]) =&gt; { ... };
+    (@prepare <span class="macro-nonterminal">$ty</span>:tt [$(<span class="macro-nonterminal">$fields</span>:tt)<span class="kw-2">*</span>] <span class="macro-nonterminal">$field</span>:ident (), $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; { ... };
+    (@prepare <span class="macro-nonterminal">$ty</span>:tt [$(<span class="macro-nonterminal">$fields</span>:tt)<span class="kw-2">*</span>] <span class="macro-nonterminal">$field</span>:ident () $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; { ... };
+    (@prepare <span class="macro-nonterminal">$ty</span>:tt [$(<span class="macro-nonterminal">$fields</span>:tt)<span class="kw-2">*</span>] <span class="macro-nonterminal">$field</span>:ident, $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; { ... };
+    (@prepare <span class="macro-nonterminal">$ty</span>:tt [$(<span class="macro-nonterminal">$fields</span>:tt)<span class="kw-2">*</span>] <span class="macro-nonterminal">$field</span>:ident $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; { ... };
+    (@prepare [alt] [<span class="macro-nonterminal">$first</span>:ident $(<span class="macro-nonterminal">$fields</span>:ident)<span class="kw-2">*</span>]) =&gt; { ... };
+    (@prepare <span class="macro-nonterminal">$ty</span>:tt [$(<span class="macro-nonterminal">$fields</span>:tt)<span class="kw-2">*</span>]) =&gt; { ... };
+    (@make [named [<span class="macro-nonterminal">$con</span>:ident]] [$(<span class="macro-nonterminal">$fields</span>:ident)<span class="kw-2">*</span>]) =&gt; { ... };
+    (@make [pos [<span class="macro-nonterminal">$con</span>:ident]] [$(<span class="macro-nonterminal">$fields</span>:ident)<span class="kw-2">*</span>]) =&gt; { ... };
+    (@make [named [<span class="macro-nonterminal">$ns</span>:ident <span class="macro-nonterminal">$con</span>:ident]] [$(<span class="macro-nonterminal">$fields</span>:ident)<span class="kw-2">*</span>]) =&gt; { ... };
+    (@make [pos [<span class="macro-nonterminal">$ns</span>:ident <span class="macro-nonterminal">$con</span>:ident]] [$(<span class="macro-nonterminal">$fields</span>:ident)<span class="kw-2">*</span>]) =&gt; { ... };
+    (@make [pos] [$(<span class="macro-nonterminal">$fields</span>:ident)<span class="kw-2">*</span>]) =&gt; { ... };
+}</code></pre></div>
+</div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Compose several parsers to produce a single result</p>
+<p>Every parser must succeed in order to produce a result for
+sequential composition and only one parser needs to succeed
+for a parallel one (<code>construct!([a, b, c])</code>)</p>
+<p>Each parser must be present in a local scope and
+have the same name as struct field. Alternatively
+a parser can be present as a function producing a parser
+bpaf will call this function and use it’s result. Later
+option might be useful when single parser is used in
+several <code>construct!</code> macros</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>Res {
+    a: bool,
+    b: u32,
+}
+
+<span class="comment">// parser defined as a local variable
+</span><span class="kw">let </span>a: Parser&lt;bool&gt; = short(<span class="string">&#39;a&#39;</span>).switch();
+
+<span class="comment">// parser defined as a function
+</span><span class="kw">fn </span>b() -&gt; Parser&lt;u32&gt; { short(<span class="string">&#39;b&#39;</span>).argument(<span class="string">&quot;B&quot;</span>).from_str() }
+<span class="kw">let </span>res: Parser&lt;Res&gt; = <span class="macro">construct!</span>(Res { a, b() });</code></pre></div>
+<p><code>construct!</code> supports following representations:</p>
+<ul>
+<li>structs with unnamed fields:</li>
+</ul>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="macro">construct!</span>(Res(a, b))</code></pre></div>
+<ul>
+<li>structs with named fields:</li>
+</ul>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="macro">construct!</span>(Res {a, b})</code></pre></div>
+<ul>
+<li>enums with unnamed fields:</li>
+</ul>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="macro">construct!</span>(Ty::Res(a, b))</code></pre></div>
+<ul>
+<li>enums with named fields:</li>
+</ul>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="macro">construct!</span>(Ty::Res {a, b})</code></pre></div>
+<ul>
+<li>tuples:</li>
+</ul>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="macro">construct!</span>(a, b)</code></pre></div>
+<ul>
+<li>parallel composition, a equivalent of <code>a.or_else(b).or_else(c)</code></li>
+</ul>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="macro">construct!</span>([a, b, c])</code></pre></div>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="bpaf" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (84f0c3f79 2022-09-03)" ></div></body></html>

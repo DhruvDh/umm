@@ -5,7 +5,6 @@
 
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
-#![feature(label_break_value)]
 #![feature(iterator_try_collect)]
 
 /// A module defining a bunch of constant values to be used throughout
@@ -106,12 +105,20 @@ pub fn grade(assignment_name: &str) -> Result<()> {
 #[generate_rhai_variant]
 /// Deletes all java compiler artefacts
 pub fn clean() -> Result<()> {
-    std::fs::remove_dir_all(BUILD_DIR.as_path())
-        .with_context(|| format!("Could not delete {}", BUILD_DIR.display()))?;
-    std::fs::remove_dir_all(LIB_DIR.as_path())
-        .with_context(|| format!("Could not delete {}", LIB_DIR.display()))?;
-    std::fs::remove_dir_all(ROOT_DIR.join(".vscode").as_path())
-        .with_context(|| format!("Could not delete {}", ROOT_DIR.join(".vscode").display()))
+    if BUILD_DIR.as_path().exists() {
+        std::fs::remove_dir_all(BUILD_DIR.as_path())
+            .with_context(|| format!("Could not delete {}", BUILD_DIR.display()))?;
+    }
+    if LIB_DIR.as_path().exists() {
+        std::fs::remove_dir_all(LIB_DIR.as_path())
+            .with_context(|| format!("Could not delete {}", LIB_DIR.display()))?;
+    }
+    if ROOT_DIR.join(".vscode").as_path().exists() {
+        std::fs::remove_dir_all(ROOT_DIR.join(".vscode").as_path())
+            .with_context(|| format!("Could not delete {}", ROOT_DIR.join(".vscode").display()))?;
+    }
+
+    Ok(())
 }
 
 // TODO: replace std::Command with cmd_lib

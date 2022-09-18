@@ -33,7 +33,7 @@ use umm_derive::generate_rhai_variant;
 use crate::{
     constants::*,
     util::*,
-    vscode,
+    vscode::{self,},
     Dict,
 };
 
@@ -551,10 +551,14 @@ impl Project {
 
         let classpath = vec![LIB_DIR.join("*.jar").display().to_string()];
 
-        let sourcepath = vec![
+        let mut sourcepath = vec![
             SOURCE_DIR.join("").display().to_string(),
             TEST_DIR.join("").display().to_string(),
         ];
+
+        if !find_files("java", 0, &ROOT_DIR)?.is_empty() {
+            sourcepath.push(ROOT_DIR.join("").display().to_string());
+        }
 
         let proj = Self {
             files,
@@ -621,34 +625,33 @@ impl Project {
             }
 
             download(
-        "https://www.dropbox.com/s/ohy0yfd2pe6zded/junit-platform-console-standalone-1.9.0-RC1.jar?raw=1",
+        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-platform-console-standalone-1.9.0-RC1.jar",
         &LIB_DIR.join(JUNIT_PLATFORM),
 false    )?;
 
             download(
-                "https://www.dropbox.com/s/3t1oor0kp9ptd7d/junit-4.13.2.jar?raw=1",
+                "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-4.13.2.jar",
                 &LIB_DIR.join("junit-4.13.2.jar"),
                 false,
             )?;
 
-            // https://www.dropbox.com/s/e76zkejtre8k0be/junit-4.13.2.jar?dl=0
             download(
-                "https://www.dropbox.com/s/wed3ohk8pz4b7d0/pitest-1.7.4.jar?raw=true",
+                "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-1.9.5.jar",
                 &LIB_DIR.join("pitest.jar"),
                 false,
             )?;
             download(
-                "https://www.dropbox.com/s/vdmvnpwplih1whh/pitest-command-line-1.7.4.jar?raw=true",
+                "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-command-line-1.9.5.jar",
                 &LIB_DIR.join("pitest-command-line.jar"),
                 false,
             )?;
             download(
-                "https://www.dropbox.com/s/lrykjoz1od30ong/pitest-entry-1.7.4.jar?raw=true",
+                "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-entry-1.9.5.jar",
                 &LIB_DIR.join("pitest-entry.jar"),
                 false,
             )?;
             download(
-                "https://www.dropbox.com/s/uaqvgqkgcllyhbq/pitest-junit5-plugin-0.14.jar?raw=true",
+                "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-junit5-plugin-1.0.0.jar",
                 &LIB_DIR.join("pitest-junit5-plugin.jar"),
                 false,
             )?;
@@ -674,7 +677,9 @@ false    )?;
                 .java_source_path(self.sourcepath.clone())
                 .java_output_path(BUILD_DIR.join("").display().to_string())
                 .java_referenced_libs(self.classpath.clone())
+                .umm_binary_path(umm_path())
                 .build();
+
             write!(&mut file, "{}", serde_json::to_string_pretty(&settings)?)?;
         }
 
@@ -697,6 +702,15 @@ false    )?;
     pub fn update_vscode_tasks(&self) -> Result<()> {
         let mut tasks = Vec::new();
         let mut inputs = Vec::new();
+
+        let (default_depends_on, default_depends_order) = if umm_path() == "./umm" {
+            (
+                Some(vec!["Set umm to be executable".to_string()]),
+                Some(vscode::DependsOrder::Sequence),
+            )
+        } else {
+            (None, None)
+        };
 
         tasks.push(
             vscode::Task::builder()
@@ -727,6 +741,8 @@ false    )?;
                     .value("clean")
                     .quoting(vscode::ArgQuoting::Escape)
                     .build()])
+                .depends_on(default_depends_on.clone())
+                .depends_order(default_depends_order)
                 .build(),
         );
 
@@ -748,6 +764,8 @@ false    )?;
                                     .quoting(vscode::ArgQuoting::Escape)
                                     .build(),
                             ])
+                            .depends_on(default_depends_on.clone())
+                            .depends_order(default_depends_order)
                             .build(),
                     );
                 }
@@ -768,6 +786,8 @@ false    )?;
                                     .build(),
                             ])
                             .group("test".to_string())
+                            .depends_on(default_depends_on.clone())
+                            .depends_order(default_depends_order)
                             .build(),
                     );
 
@@ -814,6 +834,8 @@ false    )?;
                                     .build(),
                             ])
                             .group("test".to_string())
+                            .depends_on(default_depends_on.clone())
+                            .depends_order(default_depends_order)
                             .build(),
                     );
                 }
@@ -835,6 +857,8 @@ false    )?;
                             .quoting(vscode::ArgQuoting::Escape)
                             .build(),
                     ])
+                    .depends_on(default_depends_on.clone())
+                    .depends_order(default_depends_order)
                     .build(),
             );
             tasks.push(
@@ -852,6 +876,8 @@ false    )?;
                             .quoting(vscode::ArgQuoting::Escape)
                             .build(),
                     ])
+                    .depends_on(default_depends_on.clone())
+                    .depends_order(default_depends_order)
                     .build(),
             );
         }
@@ -907,6 +933,8 @@ false    )?;
                             .build(),
                     )
                     .build()]))
+                .depends_on(default_depends_on)
+                .depends_order(default_depends_order)
                 .build(),
         );
 

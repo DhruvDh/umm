@@ -1,0 +1,1 @@
+{"rustc":404060249356317868,"features":"[\"default\", \"std\"]","target":420884096879218681,"profile":9558588430697993077,"path":14109672950184255567,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"release/.fingerprint/strum-332e4975b8f605f8/dep-lib-strum"}}],"rustflags":["-Zshare-generics"],"metadata":11680211291368566339,"config":2202906307356721367,"compile_kind":0}

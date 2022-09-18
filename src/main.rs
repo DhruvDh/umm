@@ -18,13 +18,10 @@ use std::cmp::Ordering;
 
 use anyhow::{
     anyhow,
+    Context,
     Result,
 };
 use bpaf::*;
-use crossterm::event::{
-    KeyCode,
-    KeyModifiers,
-};
 use nu_ansi_term::{
     Color,
     Style,
@@ -38,6 +35,8 @@ use reedline::{
     Emacs,
     ExampleHighlighter,
     FileBackedHistory,
+    KeyCode,
+    KeyModifiers,
     Reedline,
     ReedlineEvent,
     ReedlineMenu,
@@ -46,6 +45,10 @@ use reedline::{
 use self_update::cargo_crate_version;
 use umm::{
     clean,
+    constants::{
+        BUILD_DIR,
+        LIB_DIR,
+    },
     grade,
     java::{
         self,
@@ -336,6 +339,12 @@ fn options() -> Cmd {
 fn main() -> Result<()> {
     let cmd = options();
 
+    let c = cmd.clone().unwrap_or_default();
+    if c.as_str() == "clean" {
+        clean()?;
+        return Ok(());
+    }
+
     let project = java::Project::new()?;
 
     // TODO: move this to a separate method and call that method in shell()
@@ -366,6 +375,21 @@ fn main() -> Result<()> {
 
         Cmd::Shell => shell()?,
     };
+
+    if BUILD_DIR.join(".vscode").exists() {
+        std::fs::remove_dir_all(BUILD_DIR.join(".vscode").as_path())
+            .with_context(|| format!("Could not delete {}", BUILD_DIR.join(".vscode").display()))?;
+    }
+
+    if BUILD_DIR.join(LIB_DIR.display().to_string()).exists() {
+        std::fs::remove_dir_all(BUILD_DIR.join(LIB_DIR.display().to_string()).as_path())
+            .with_context(|| {
+                format!(
+                    "Could not delete {}",
+                    BUILD_DIR.join(LIB_DIR.display().to_string()).display()
+                )
+            })?;
+    }
 
     Ok(())
 }

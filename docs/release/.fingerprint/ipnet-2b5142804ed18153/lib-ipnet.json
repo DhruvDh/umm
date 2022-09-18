@@ -1,0 +1,1 @@
+{"rustc":404060249356317868,"features":"[\"default\"]","target":104842410309210037,"profile":9558588430697993077,"path":10939405502661150122,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"release/.fingerprint/ipnet-2b5142804ed18153/dep-lib-ipnet"}}],"rustflags":["-Zshare-generics"],"metadata":18359272829728453201,"config":2202906307356721367,"compile_kind":0}

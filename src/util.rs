@@ -23,18 +23,27 @@ use which::which;
 
 use crate::constants::*;
 
-/// Finds an returns the path to javac binary
+/// Finds and returns the path to javac binary
 pub fn javac_path() -> Result<OsString> {
     which("javac")
         .map(PathBuf::into_os_string)
         .context("Cannot find a Java Compiler on path (javac)")
 }
 
-/// Finds an returns the path to java binary
+/// Finds and returns the path to java binary
 pub fn java_path() -> Result<OsString> {
     which("java")
         .map(PathBuf::into_os_string)
         .context("Cannot find a Java runtime on path (java)")
+}
+
+/// Finds and returns the path to umm
+/// If not found, returns "./umm"
+pub fn umm_path() -> String {
+    match which("umm") {
+        Ok(path) => path.display().to_string(),
+        Err(_) => "./umm".into(),
+    }
 }
 
 /// A glob utility function to find paths to files with certain extension

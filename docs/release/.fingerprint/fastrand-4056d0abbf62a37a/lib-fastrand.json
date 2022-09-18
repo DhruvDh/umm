@@ -1,0 +1,1 @@
+{"rustc":404060249356317868,"features":"[]","target":13666716094189885029,"profile":9558588430697993077,"path":6536110626052657650,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"release/.fingerprint/fastrand-4056d0abbf62a37a/dep-lib-fastrand"}}],"rustflags":["-Zshare-generics"],"metadata":10402231642546230285,"config":2202906307356721367,"compile_kind":0}
