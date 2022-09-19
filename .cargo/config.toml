@@ -1,5 +1,6 @@
 [build]
 rustdocflags = ["-Z", "unstable-options", "--enable-index-page"]
+rustflags = ["-C", "target-cpu=native"]
 
 [target.x86_64-pc-windows-msvc]
 rustflags = ["-C", "target-feature=+crt-static"]

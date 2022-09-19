@@ -49,9 +49,8 @@ type Dict = std::collections::HashMap<String, String>;
 
 /// Prints the result of grading
 pub fn grade(assignment_name: &str) -> Result<()> {
-    let assignment_name = assignment_name.to_string();
-    let assignment_name = assignment_name.replace(['\"', '\\'], "");
-    dbg!(&assignment_name);
+    let assignment_name = assignment_name.to_string().replace(['\"', '\\'], "");
+
     let mut engine = Engine::new();
     engine
         .register_type::<GradeResult>()
