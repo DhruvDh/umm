@@ -92,7 +92,7 @@ pub fn grade(assignment_name: &str) -> Result<()> {
     let resp = resp.as_object().unwrap();
 
     if let Some(message) = resp.get("message") {
-        anyhow::bail!("Error: {message}");
+        anyhow::bail!("Error for {assignment_name}: {message}");
     }
 
     let script_url = resp.get("url").unwrap().as_str().unwrap();
