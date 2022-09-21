@@ -536,6 +536,14 @@ impl File {
 
         Ok(results)
     }
+
+    pub fn path(&self) -> &PathBuf {
+        &self.path
+    }
+
+    pub fn package_name(&self) -> Option<&String> {
+        self.package_name.as_ref()
+    }
 }
 
 impl Project {

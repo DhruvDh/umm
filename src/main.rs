@@ -18,7 +18,6 @@ use std::cmp::Ordering;
 
 use anyhow::{
     anyhow,
-    Context,
     Result,
 };
 use bpaf::*;
@@ -43,16 +42,21 @@ use reedline::{
     Signal,
 };
 use self_update::cargo_crate_version;
+use tracing::{
+    metadata::LevelFilter,
+    Level,
+};
+use tracing_subscriber::{
+    fmt,
+    prelude::*,
+    util::SubscriberInitExt,
+};
 use umm::{
     clean,
-    constants::{
-        BUILD_DIR,
-        LIB_DIR,
-    },
     grade,
     java::{
-        self,
         FileType,
+        Project,
     },
 };
 
@@ -83,15 +87,17 @@ fn shell() -> Result<()> {
         "grade".into(),
         "check".into(),
         "doc-check".into(),
-        "grade".into(),
         "clean".into(),
+        "update".into(),
+        "check-health".into(),
+        "reset".into(),
         "info".into(),
         "clear".into(),
         "exit".into(),
         "history".into(),
     ];
 
-    let project = java::Project::new()?;
+    let mut project = Project::new()?;
 
     let mut test_methods = vec![];
     for file in project.files().iter() {
@@ -178,23 +184,20 @@ fn shell() -> Result<()> {
                 }
                 b if b.starts_with("run") => {
                     let b = b.replace("run ", "");
-                    let res = project.identify(b.as_str())?.run();
-                    if res.is_err() {
-                        eprintln!("{:?}", res);
+                    if let Err(e) = project.identify(b.as_str())?.run() {
+                        eprintln!("{e}");
                     }
                 }
                 b if b.starts_with("check") => {
                     let b = b.replace("check ", "");
-                    let res = project.identify(b.as_str())?.check();
-                    if res.is_err() {
-                        eprintln!("{:?}", res);
+                    if let Err(e) = project.identify(b.as_str())?.check() {
+                        eprintln!("{e}");
                     }
                 }
                 b if b.starts_with("doc-check") => {
                     let b = b.replace("doc-check ", "");
-                    let res = project.identify(b.as_str())?.doc_check();
-                    if res.is_err() {
-                        eprintln!("{:?}", res);
+                    if let Err(e) = project.identify(b.as_str())?.doc_check() {
+                        eprintln!("{e}");
                     }
                 }
                 b if test_methods.contains(&String::from(b)) => {
@@ -230,23 +233,35 @@ fn shell() -> Result<()> {
                 }
                 b if b.starts_with("grade") => {
                     let b = b.replace("grade", "");
-                    let res = grade(&b);
-                    if res.is_err() {
-                        eprintln!("{:?}", res);
+                    if let Err(e) = grade(&b) {
+                        eprintln!("{e}");
                     }
                 }
                 "clean" => {
-                    let res = clean();
-                    if res.is_err() {
-                        eprintln!("{:?}", res);
+                    if let Err(e) = clean() {
+                        eprintln!("{e}");
                     }
                 }
                 "info" => project.info()?,
                 "update" => {
-                    match update() {
-                        Ok(_) => {}
-                        Err(e) => eprintln!("{}", e),
-                    };
+                    if let Err(e) = update() {
+                        eprintln!("{e}");
+                    }
+                }
+                "checkhealth" => {
+                    if let Err(e) = project.check_health() {
+                        eprintln!("{e}");
+                    }
+                }
+                "reset" => {
+                    if let Err(e) = clean() {
+                        break Err(e);
+                    } else {
+                        match Project::new() {
+                            Ok(p) => project = p,
+                            Err(e) => break Err(e),
+                        };
+                    }
                 }
                 _ => {
                     println!("Don't know how to {:?}", buffer.trim());
@@ -279,14 +294,18 @@ enum Cmd {
     Info,
     /// Update the command
     Update,
+    /// Checks project health
+    CheckHealth,
+    /// Resets the project metadata, and redownloads libraries
+    Reset,
     /// Start a REPL
     Shell,
+    /// Exit the program
+    Exit,
 }
 
 /// Parse the command line arguments and return a `Cmd` enum
 fn options() -> Cmd {
-    use bpaf::*;
-
     /// parses test names
     fn t() -> impl Parser<Vec<String>> {
         positional("TESTNAME")
@@ -339,66 +358,92 @@ fn options() -> Cmd {
         .command("update")
         .help("Update the umm command");
 
+    let check_health = pure(Cmd::CheckHealth)
+        .to_options()
+        .command("check-health")
+        .help("Checks the health of the project");
+
+    let reset = pure(Cmd::Reset)
+        .to_options()
+        .command("reset")
+        .help("Reset the project metadata, and redownload libraries");
+
     let shell = pure(Cmd::Shell)
         .to_options()
         .command("shell")
         .help("Open a REPL");
 
-    let cmd = construct!([run, check, test, doc_check, grade, clean, info, update, shell])
-        .fallback(Cmd::Shell);
+    let exit = pure(Cmd::Exit)
+        .to_options()
+        .command("exit")
+        .help("Exit the program");
+
+    let cmd = construct!([
+        run,
+        check,
+        test,
+        doc_check,
+        grade,
+        clean,
+        info,
+        update,
+        check_health,
+        reset,
+        shell,
+        exit
+    ])
+    .fallback(Cmd::Shell);
 
     cmd.to_options().descr("Build tool for novices").run()
 }
 
 fn main() -> Result<()> {
-    let cmd = options();
+    let fmt = fmt::layer()
+        .without_time()
+        .with_file(false)
+        .with_line_number(false);
+    let filter_layer = LevelFilter::from_level(Level::INFO);
+    tracing_subscriber::registry()
+        .with(fmt)
+        .with(filter_layer)
+        .init();
 
-    let project = java::Project::new()?;
+    let cmd = options();
 
     // TODO: move this to a separate method and call that method in shell()
     match cmd {
-        Cmd::Run(f) => project.identify(f.as_str())?.run()?,
-        Cmd::Check(f) => project.identify(f.as_str())?.check()?,
+        Cmd::Run(f) => Project::new()?.identify(f.as_str())?.run()?,
+        Cmd::Check(f) => Project::new()?.identify(f.as_str())?.check()?,
         Cmd::Test(f, t) => {
             let out = if t.is_empty() {
-                project.identify(f.as_str())?.test(vec![])?
+                Project::new()?.identify(f.as_str())?.test(vec![])?
             } else {
                 let t = t.iter().map(|i| i.as_str()).collect();
-                project.identify(f.as_str())?.test(t)?
+                Project::new()?.identify(f.as_str())?.test(t)?
             };
             println!("{}", out);
         }
         Cmd::DocCheck(f) => {
-            let out = project.identify(f.as_str())?.doc_check()?;
+            let out = Project::new()?.identify(f.as_str())?.doc_check()?;
             println!("{}", out);
         }
         Cmd::Grade(f) => grade(&f)?,
         Cmd::Clean => clean()?,
-        Cmd::Info => project.info()?,
+        Cmd::Info => Project::new()?.info()?,
         Cmd::Update => {
             match update() {
                 Ok(_) => {}
-                Err(e) => eprintln!("{}", e),
+                Err(e) => eprintln!("{e}"),
             };
         }
-
+        Cmd::CheckHealth => Project::new()?.check_health()?,
+        Cmd::Reset => {
+            clean()?;
+            Project::new()?;
+        }
         Cmd::Shell => shell()?,
+        Cmd::Exit => {}
     };
-
-    if BUILD_DIR.join(".vscode").exists() {
-        std::fs::remove_dir_all(BUILD_DIR.join(".vscode").as_path())
-            .with_context(|| format!("Could not delete {}", BUILD_DIR.join(".vscode").display()))?;
-    }
-
-    if BUILD_DIR.join(LIB_DIR.display().to_string()).exists() {
-        std::fs::remove_dir_all(BUILD_DIR.join(LIB_DIR.display().to_string()).as_path())
-            .with_context(|| {
-                format!(
-                    "Could not delete {}",
-                    BUILD_DIR.join(LIB_DIR.display().to_string()).display()
-                )
-            })?;
-    }
 
     Ok(())
 }

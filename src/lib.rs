@@ -11,6 +11,8 @@
 pub mod constants;
 /// For all things related to grading
 pub mod grade;
+/// For all things releated to project health
+pub mod health;
 /// For discovering Java projects, analyzing them, and generating/executing
 /// build tasks
 pub mod java;
