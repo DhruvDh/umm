@@ -188,6 +188,11 @@ fn shell() -> Result<()> {
                         eprintln!("{e}");
                     }
                 }
+                "check-health" => {
+                    if let Err(e) = project.check_health() {
+                        eprintln!("{e}");
+                    }
+                }
                 b if b.starts_with("check") => {
                     let b = b.replace("check ", "");
                     if let Err(e) = project.identify(b.as_str())?.check() {
@@ -245,11 +250,6 @@ fn shell() -> Result<()> {
                 "info" => project.info()?,
                 "update" => {
                     if let Err(e) = update() {
-                        eprintln!("{e}");
-                    }
-                }
-                "checkhealth" => {
-                    if let Err(e) = project.check_health() {
                         eprintln!("{e}");
                     }
                 }

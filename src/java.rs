@@ -537,10 +537,12 @@ impl File {
         Ok(results)
     }
 
+    /// Get a reference to the file's path.
     pub fn path(&self) -> &PathBuf {
         &self.path
     }
 
+    /// Get a reference to the file's proper name.
     pub fn package_name(&self) -> Option<&String> {
         self.package_name.as_ref()
     }

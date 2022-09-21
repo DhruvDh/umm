@@ -1,37 +1,28 @@
-// TODO: check if java files are in the right place according to the package
 // TODO: make recommendations for the above
 
-// TODO: the following
-// if BUILD_DIR.join(".vscode").exists() {
-//     std::fs::remove_dir_all(BUILD_DIR.join(".vscode").as_path())
-//         .with_context(|| format!("Could not delete {}",
-// BUILD_DIR.join(".vscode").display()))?; }
-
-// if BUILD_DIR.join(LIB_DIR.display().to_string()).exists() {
-//     std::fs::remove_dir_all(BUILD_DIR.join(LIB_DIR.display().to_string()).
-// as_path())         .with_context(|| {
-//             format!(
-//                 "Could not delete {}",
-//                 BUILD_DIR.join(LIB_DIR.display().to_string()).display()
-//             )
-//         })?;
-// }
-
-use std::ops::Deref;
-
-use anyhow::Result;
+use anyhow::{
+    Context,
+    Result,
+};
 use futures::{
     future::try_join_all,
     stream::FuturesUnordered,
 };
-use tokio::fs::OpenOptions;
+use tokio::{
+    fs::OpenOptions,
+    task::JoinError,
+};
 use walkdir::WalkDir;
 
 use crate::{
     clean,
     constants::{
+        BUILD_DIR,
+        LIB_DIR,
         ROOT_DIR,
         RUNTIME,
+        SOURCE_DIR,
+        TEST_DIR,
     },
     java::{
         FileType,
@@ -61,13 +52,13 @@ impl Project {
                         match tokio::fs::metadata(path.clone()).await {
                             Ok(m) => {
                                 if m.len() == 0 {
-                                    tracing::warn!("File {} is empty", &path.display())
+                                    tracing::warn!("File {}\n\tis empty", &path.display())
                                 }
                                 if let Err(e) =
                                     OpenOptions::new().read(true).write(true).open(&path).await
                                 {
                                     tracing::warn!(
-                                        "File {} could not be opened (read + write): {}",
+                                        "File {}\n\tcould not be opened (read + write): {}",
                                         &path.display(),
                                         e
                                     )
@@ -90,7 +81,7 @@ impl Project {
 
                             if !output.status.success() {
                                 tracing::warn!(
-                                    "File {} is not a valid zip file: {}",
+                                    "File {}\n\tis not a valid zip file: {}",
                                     &path.display(),
                                     String::from_utf8_lossy(&output.stderr)
                                 )
@@ -106,27 +97,63 @@ impl Project {
         let handle2 = rt.spawn(async move {
             let files = project
                 .files()
-                .into_iter()
+                .iter()
                 .map(|file| {
                     let file = file.clone();
                     tokio::spawn(async move {
-                        match file.kind() {
-                            FileType::Test => {
-                                if &file
-                                    .path()
-                                    .parent()
-                                    .unwrap_or(&ROOT_DIR)
-                                    .to_string_lossy()
-                                    .to_string()
-                                    == file.package_name().unwrap_or(&".".to_string() {
-                                      
-                                    })
+                        if file.package_name().is_none() {
+                            tracing::warn!(
+                                "File {}\n\tdoesn't belong to any package",
+                                file.path().display()
+                            );
+                        } else {
+                            let expected_path = if let FileType::Test = file.kind() {
+                                TEST_DIR.join(file.package_name().unwrap())
+                            } else {
+                                SOURCE_DIR.join(file.package_name().unwrap())
+                            };
+                            if file.path().parent().unwrap_or(&ROOT_DIR) != expected_path.as_path()
+                            {
+                                tracing::warn!(
+                                    "File {}\n\tis in the wrong directory.\n\t\tExpected: \
+                                     {}\n\t\tFound: {}",
+                                    file.path().display(),
+                                    file.package_name().unwrap(),
+                                    file.path().parent().unwrap_or(&ROOT_DIR).to_string_lossy()
+                                );
                             }
-                        };
+                        }
                     })
                 })
-                .collect::<Vec<_>>();
+                .collect::<FuturesUnordered<_>>();
+            try_join_all(files).await
         });
+
+        rt.block_on(async {
+            if BUILD_DIR.join(".vscode").exists() {
+                tokio::fs::remove_dir_all(BUILD_DIR.join(".vscode").as_path())
+                    .await
+                    .with_context(|| {
+                        format!("Could not delete {}", BUILD_DIR.join(".vscode").display())
+                    })
+                    .unwrap();
+            }
+
+            if BUILD_DIR.join(LIB_DIR.display().to_string()).exists() {
+                tokio::fs::remove_dir_all(BUILD_DIR.join(LIB_DIR.display().to_string()).as_path())
+                    .await
+                    .with_context(|| {
+                        format!(
+                            "Could not delete {}",
+                            BUILD_DIR.join(LIB_DIR.display().to_string()).display()
+                        )
+                    })
+                    .unwrap();
+            }
+            try_join_all(vec![handle1, handle2]).await
+        })?
+        .into_iter()
+        .collect::<Result<Vec<Vec<()>>, JoinError>>()?;
 
         tracing::info!("If there are no warnings above, your project is healthy!");
         Ok(())
