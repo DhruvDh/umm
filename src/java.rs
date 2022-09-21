@@ -817,7 +817,6 @@ impl Project {
                 .depends_order(None)
                 .build(),
         );
-
         tasks.push(
             vscode::Task::builder()
                 .label("Clean library and target folders".to_string())
@@ -825,6 +824,48 @@ impl Project {
                 .command("${config:ummBinaryPath}")
                 .args(vec![vscode::Args::builder()
                     .value("clean")
+                    .quoting(vscode::ArgQuoting::Escape)
+                    .build()])
+                .depends_on(default_depends_on.clone())
+                .depends_order(default_depends_order)
+                .build(),
+        );
+
+        tasks.push(
+            vscode::Task::builder()
+                .label("Reset project metadata".into())
+                .r#type(vscode::Type::Shell)
+                .command("${config:ummBinaryPath}")
+                .args(vec![vscode::Args::builder()
+                    .value("reset")
+                    .quoting(vscode::ArgQuoting::Escape)
+                    .build()])
+                .depends_on(default_depends_on.clone())
+                .depends_order(default_depends_order)
+                .build(),
+        );
+
+        tasks.push(
+            vscode::Task::builder()
+                .label("Check health of the project".into())
+                .r#type(vscode::Type::Shell)
+                .command("${config:ummBinaryPath}")
+                .args(vec![vscode::Args::builder()
+                    .value("check-health")
+                    .quoting(vscode::ArgQuoting::Escape)
+                    .build()])
+                .depends_on(default_depends_on.clone())
+                .depends_order(default_depends_order)
+                .build(),
+        );
+
+        tasks.push(
+            vscode::Task::builder()
+                .label("Update umm executable".into())
+                .r#type(vscode::Type::Shell)
+                .command("${config:ummBinaryPath}")
+                .args(vec![vscode::Args::builder()
+                    .value("update")
                     .quoting(vscode::ArgQuoting::Escape)
                     .build()])
                 .depends_on(default_depends_on.clone())

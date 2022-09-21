@@ -118,7 +118,7 @@ impl Project {
                                     "File {}\n\tis in the wrong directory.\n\t\tExpected: \
                                      {}\n\t\tFound: {}",
                                     file.path().display(),
-                                    file.package_name().unwrap(),
+                                    expected_path.display(),
                                     file.path().parent().unwrap_or(&ROOT_DIR).to_string_lossy()
                                 );
                             }
@@ -150,7 +150,8 @@ impl Project {
                     })
                     .unwrap();
             }
-            try_join_all(vec![handle1, handle2]).await
+            let handles = FuturesUnordered::from_iter(vec![handle1, handle2]);
+            try_join_all(handles).await
         })?
         .into_iter()
         .collect::<Result<Vec<Vec<()>>, JoinError>>()?;
