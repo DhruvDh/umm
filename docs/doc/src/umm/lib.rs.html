@@ -140,6 +140,7 @@
 <span id="140">140</span>
 <span id="141">141</span>
 <span id="142">142</span>
+<span id="143">143</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # umm
 //!
 //! A scriptable build tool/grader/test runner for Java projects that don&#39;t use
@@ -153,6 +154,8 @@
 </span><span class="kw">pub mod </span>constants;
 <span class="doccomment">/// For all things related to grading
 </span><span class="kw">pub mod </span>grade;
+<span class="doccomment">/// For all things releated to project health
+</span><span class="kw">pub mod </span>health;
 <span class="doccomment">/// For discovering Java projects, analyzing them, and generating/executing
 /// build tasks
 </span><span class="kw">pub mod </span>java;
@@ -171,7 +174,7 @@
     LIB_DIR,
     POSTGREST_CLIENT,
     ROOT_DIR,
-    RUNTIME_HANDLE,
+    RUNTIME,
     TERM,
 };
 <span class="kw">use </span>grade::<span class="kw-2">*</span>;
@@ -191,9 +194,8 @@
 
 <span class="doccomment">/// Prints the result of grading
 </span><span class="kw">pub fn </span>grade(assignment_name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-    <span class="kw">let </span>assignment_name = assignment_name.to_string();
-    <span class="kw">let </span>assignment_name = assignment_name.replace([<span class="string">&#39;\&quot;&#39;</span>, <span class="string">&#39;\\&#39;</span>], <span class="string">&quot;&quot;</span>);
-    <span class="macro">dbg!</span>(<span class="kw-2">&amp;</span>assignment_name);
+    <span class="kw">let </span>assignment_name = assignment_name.to_string().replace([<span class="string">&#39;\&quot;&#39;</span>, <span class="string">&#39;\\&#39;</span>], <span class="string">&quot;&quot;</span>);
+
     <span class="kw">let </span><span class="kw-2">mut </span>engine = Engine::new();
     engine
         .register_type::&lt;GradeResult&gt;()
@@ -213,7 +215,7 @@
         .register_fn(<span class="string">&quot;grade_by_tests&quot;</span>, grade_by_tests_script);
 
     <span class="comment">// println!(&quot;{}&quot;, engine.gen_fn_signatures(false).join(&quot;\n&quot;));
-    </span><span class="kw">let </span>rt = RUNTIME_HANDLE.handle().clone();
+    </span><span class="kw">let </span>rt = RUNTIME.handle().clone();
 
     <span class="kw">let </span>resp = rt.block_on(<span class="kw">async </span>{
         POSTGREST_CLIENT
@@ -235,7 +237,7 @@
     <span class="kw">let </span>resp = resp.as_object().unwrap();
 
     <span class="kw">if let </span><span class="prelude-val">Some</span>(message) = resp.get(<span class="string">&quot;message&quot;</span>) {
-        <span class="macro">anyhow::bail!</span>(<span class="string">&quot;Error: {message}&quot;</span>);
+        <span class="macro">anyhow::bail!</span>(<span class="string">&quot;Error for {assignment_name}: {message}&quot;</span>);
     }
 
     <span class="kw">let </span>script_url = resp.get(<span class="string">&quot;url&quot;</span>).unwrap().as_str().unwrap();

@@ -162,7 +162,7 @@
     </span><span class="kw">pub static </span><span class="kw-2">ref </span>POSTGREST_CLIENT: Postgrest = Postgrest::new(<span class="string">&quot;https://uyancztmzjlekojeproj.supabase.co/rest/v1&quot;</span>)
             .insert_header(<span class="string">&quot;apiKey&quot;</span>, SUPABASE_KEY.clone());
     <span class="doccomment">/// Runtime
-    </span><span class="kw">pub static </span><span class="kw-2">ref </span>RUNTIME_HANDLE: tokio::runtime::Runtime = tokio::runtime::Runtime::new().unwrap();
+    </span><span class="kw">pub static </span><span class="kw-2">ref </span>RUNTIME: tokio::runtime::Runtime = tokio::runtime::Runtime::new().unwrap();
 
 }
 
