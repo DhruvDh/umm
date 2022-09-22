@@ -628,7 +628,7 @@ pub fn grade_by_hidden_tests(
     out_of: f64,
     req_name: &str,
 ) -> Result<GradeResult> {
-    let test_source = reqwest::blocking::get("https://httpbin.org/ip")
+    let test_source = reqwest::blocking::get(url)
         .context(format!("Failed to download {}", url))?
         .bytes()
         .context(format!("Failed to get resobse as bytes: {}", url))?;
