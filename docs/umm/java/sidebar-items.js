@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["FileType","Types of Java files -"]],"struct":[["File","Struct representing a java file"],["Parser","A struct that wraps a tree-sitter parser object and source code"],["Project","Struct representing a Java project. Any index `i` in any collection in this struct always refers to the same JavaFile."]]});

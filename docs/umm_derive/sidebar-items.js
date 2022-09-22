@@ -1,1 +1,0 @@
-initSidebarItems({"attr":[["generate_rhai_variant","Generates a version of a fallible function (that uses anyhow Result) that returns an EvalAltResult instead."]]});

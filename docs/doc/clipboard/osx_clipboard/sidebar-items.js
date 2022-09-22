@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":[["class",""]],"struct":[["OSXClipboardContext",""]]};

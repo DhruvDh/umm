@@ -1,1 +1,0 @@
-{"rustc":404060249356317868,"features":"[\"default\"]","target":7112745982619283648,"profile":9558588430697993077,"path":2019952241319677899,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"release/.fingerprint/bitflags-fa52d9af9c842817/dep-lib-bitflags"}}],"rustflags":["-Zshare-generics"],"metadata":14564035643000669268,"config":2202906307356721367,"compile_kind":0}
