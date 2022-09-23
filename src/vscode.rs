@@ -60,6 +60,8 @@ pub enum DependsOrder {
 /// Struct for VSCode task's presentation.
 #[derive(Serialize, Deserialize, TypedBuilder)]
 #[serde(rename_all = "camelCase")]
+#[builder(doc)]
+#[builder(field_defaults(default, setter(into)))]
 pub struct Presentation {
     /// Controls whether the Integrated Terminal panel is brought to front.
     /// Valid values are:
@@ -69,7 +71,6 @@ pub struct Presentation {
     ///   (`kb(workbench.action.terminal.toggleTerminal)`).
     /// * `silent` - The terminal panel is brought to front only if the output
     ///   is not scanned for errors and warnings.
-    #[builder(default, setter(into))]
     #[serde(skip_serializing_if = "Option::is_none")]
     reveal:             Option<String>,
     /// Controls whether the Problems panel is revealed when running this task
@@ -79,22 +80,18 @@ pub struct Presentation {
     ///   * `onProblem` - Only reveals the Problems panel if a problem is found.
     ///   * `never` - Never reveals the Problems panel when this task is
     ///     executed.
-    #[builder(default, setter(into))]
     #[serde(skip_serializing_if = "Option::is_none")]
     reveal_problems:    Option<String>,
     /// Controls whether the terminal is taking input focus or not. Default is
     /// `false`.
-    #[builder(default, setter(into))]
     #[serde(skip_serializing_if = "Option::is_none")]
     focus:              Option<bool>,
     /// Controls whether the executed command is echoed in the terminal. Default
     /// is `true`.
-    #[builder(default, setter(into))]
     #[serde(skip_serializing_if = "Option::is_none")]
     echo:               Option<bool>,
     /// Controls whether to show the "Terminal will be reused by tasks, press
     /// any key to close it" message.
-    #[builder(default, setter(into))]
     #[serde(skip_serializing_if = "Option::is_none")]
     show_reuse_message: Option<bool>,
     /// Controls whether the terminal instance is shared between task runs.
@@ -105,24 +102,20 @@ pub struct Presentation {
     ///     task is executed again, the terminal is reused. However, the output
     ///     of a different task is presented in a different terminal.
     ///   * `new` - Every execution of that task is using a new clean terminal.
-    #[builder(default, setter(into))]
     #[serde(skip_serializing_if = "Option::is_none")]
     panel:              Option<String>,
     /// Controls whether the terminal is cleared before this task is run.
     /// Default is `false`.
-    #[builder(default, setter(into))]
     #[serde(skip_serializing_if = "Option::is_none")]
     clear:              Option<bool>,
     /// Controls whether the terminal the task runs in is closed when the task
     /// exits.
 
-    #[builder(default, setter(into))]
     #[serde(skip_serializing_if = "Option::is_none")]
     close:              Option<bool>,
     /// Controls whether the task is executed in a specific terminal group using
     /// split panes. Tasks in the same group (specified by a string value) will
     /// use split terminals to present instead of a new terminal panel.
-    #[builder(default, setter(into))]
     #[serde(skip_serializing_if = "Option::is_none")]
     group:              Option<bool>,
 }
@@ -137,8 +130,8 @@ pub struct ProblemMatcher {
     ///  * `openDocuments` - Only applied to open documents.
     /// * `closedDocuments` - Only applied to closed documents.
     /// * `allDocuments` - Applied to all documents.
-    #[builder(default, setter(into))]
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default, setter(into))]
     apply_to:      Option<String>,
     /// Patterns to track the begin and end of a matcher active on a background
     /// task.

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":[["nop_clipboard",""],["osx_clipboard",""]],"trait":[["ClipboardProvider","Trait for clipboard access"]],"type":[["ClipboardContext",""]]};

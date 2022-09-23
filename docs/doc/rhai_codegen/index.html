@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="This crate contains procedural macros to make creating Rhai plugin modules much easier."><meta name="keywords" content="rust, rustlang, rust-lang, rhai_codegen"><title>rhai_codegen - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../normalize.css"><link rel="stylesheet" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../ayu.css" disabled><link rel="stylesheet" href="../dark.css" disabled><link rel="stylesheet" href="../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../storage.js"></script><script defer src="../crates.js"></script><script defer src="../main.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../rhai_codegen/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../rhai_codegen/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div></a><h2 class="location"><a href="#">Crate rhai_codegen</a></h2><div class="sidebar-elems"><div class="block"><ul><li class="version">Version 1.4.2</li><li><a id="all-types" href="all.html">All Items</a></li></ul></div><section><div class="block"><ul><li><a href="#macros">Macros</a></li><li><a href="#attributes">Attribute Macros</a></li></ul></div></section></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../rhai_codegen/index.html"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">rhai_codegen</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/rhai_codegen/lib.rs.html#1-409">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>This crate contains procedural macros to make creating Rhai plugin modules much easier.</p>
+<h2 id="export-an-entire-rust-module-to-a-rhai-module"><a href="#export-an-entire-rust-module-to-a-rhai-module">Export an Entire Rust Module to a Rhai <code>Module</code></a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>rhai::{EvalAltResult, FLOAT};
+<span class="kw">use </span>rhai::plugin::<span class="kw-2">*</span>;
+<span class="kw">use </span>rhai::module_resolvers::<span class="kw-2">*</span>;
+
+<span class="attribute">#[export_module]
+</span><span class="kw">mod </span>advanced_math {
+    <span class="kw">pub const </span>MYSTIC_NUMBER: FLOAT = <span class="number">42.0</span>;
+
+    <span class="kw">pub fn </span>euclidean_distance(x1: FLOAT, y1: FLOAT, x2: FLOAT, y2: FLOAT) -&gt; FLOAT {
+        ((y2 - y1).abs().powf(<span class="number">2.0</span>) + (x2 -x1).abs().powf(<span class="number">2.0</span>)).sqrt()
+    }
+}
+
+<span class="kw">let </span><span class="kw-2">mut </span>engine = Engine::new();
+<span class="kw">let </span>m = <span class="macro">exported_module!</span>(advanced_math);
+<span class="kw">let </span><span class="kw-2">mut </span>r = StaticModuleResolver::new();
+r.insert(<span class="string">&quot;Math::Advanced&quot;</span>, m);
+engine.set_module_resolver(r);
+
+<span class="macro">assert_eq!</span>(engine.eval::&lt;FLOAT&gt;(
+    <span class="string">r#&quot;
+        import &quot;Math::Advanced&quot; as math;
+        math::euclidean_distance(0.0, 1.0, 0.0, math::MYSTIC_NUMBER)
+    &quot;#</span>)<span class="question-mark">?</span>, <span class="number">41.0</span>);</code></pre></div>
+<h2 id="register-a-rust-function-with-a-rhai-module"><a href="#register-a-rust-function-with-a-rhai-module">Register a Rust Function with a Rhai <code>Module</code></a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>rhai::{EvalAltResult, FLOAT, Module};
+<span class="kw">use </span>rhai::plugin::<span class="kw-2">*</span>;
+<span class="kw">use </span>rhai::module_resolvers::<span class="kw-2">*</span>;
+
+<span class="attribute">#[export_fn]
+</span><span class="kw">fn </span>distance_function(x1: FLOAT, y1: FLOAT, x2: FLOAT, y2: FLOAT) -&gt; FLOAT {
+    ((y2 - y1).abs().powf(<span class="number">2.0</span>) + (x2 -x1).abs().powf(<span class="number">2.0</span>)).sqrt()
+}
+
+<span class="kw">let </span><span class="kw-2">mut </span>engine = Engine::new();
+engine.register_fn(<span class="string">&quot;get_mystic_number&quot;</span>, || <span class="number">42.0 </span><span class="kw">as </span>FLOAT);
+<span class="kw">let </span><span class="kw-2">mut </span>m = Module::new();
+<span class="macro">set_exported_fn!</span>(m, <span class="string">&quot;euclidean_distance&quot;</span>, distance_function);
+<span class="kw">let </span><span class="kw-2">mut </span>r = StaticModuleResolver::new();
+r.insert(<span class="string">&quot;Math::Advanced&quot;</span>, m);
+engine.set_module_resolver(r);
+
+<span class="macro">assert_eq!</span>(engine.eval::&lt;FLOAT&gt;(
+    <span class="string">r#&quot;
+        import &quot;Math::Advanced&quot; as math;
+        math::euclidean_distance(0.0, 1.0, 0.0, get_mystic_number())
+    &quot;#</span>)<span class="question-mark">?</span>, <span class="number">41.0</span>);</code></pre></div>
+<h2 id="register-a-plugin-function-with-an-engine"><a href="#register-a-plugin-function-with-an-engine">Register a Plugin Function with an <code>Engine</code></a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>rhai::{EvalAltResult, FLOAT, Module};
+<span class="kw">use </span>rhai::plugin::<span class="kw-2">*</span>;
+<span class="kw">use </span>rhai::module_resolvers::<span class="kw-2">*</span>;
+
+<span class="attribute">#[export_fn]
+</span><span class="kw">pub fn </span>distance_function(x1: FLOAT, y1: FLOAT, x2: FLOAT, y2: FLOAT) -&gt; FLOAT {
+    ((y2 - y1).abs().powf(<span class="number">2.0</span>) + (x2 -x1).abs().powf(<span class="number">2.0</span>)).sqrt()
+}
+
+<span class="kw">let </span><span class="kw-2">mut </span>engine = Engine::new();
+engine.register_fn(<span class="string">&quot;get_mystic_number&quot;</span>, || { <span class="number">42 </span><span class="kw">as </span>FLOAT });
+<span class="macro">register_exported_fn!</span>(engine, <span class="string">&quot;euclidean_distance&quot;</span>, distance_function);
+
+<span class="macro">assert_eq!</span>(engine.eval::&lt;FLOAT&gt;(
+        <span class="string">&quot;euclidean_distance(0.0, 1.0, 0.0, get_mystic_number())&quot;
+    </span>)<span class="question-mark">?</span>, <span class="number">41.0</span>);</code></pre></div>
+</div></details><h2 id="macros" class="small-section-header"><a href="#macros">Macros</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.combine_with_exported_module.html" title="rhai_codegen::combine_with_exported_module macro">combine_with_exported_module</a></div><div class="item-right docblock-short">Macro to combine a <em>plugin module</em> into an existing module.</div></div><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.exported_module.html" title="rhai_codegen::exported_module macro">exported_module</a></div><div class="item-right docblock-short">Macro to generate a Rhai <code>Module</code> from a <em>plugin module</em> defined via <a href="attr.export_module.html" title="export_module"><code>#[export_module]</code></a>.</div></div><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.register_exported_fn.html" title="rhai_codegen::register_exported_fn macro">register_exported_fn</a></div><div class="item-right docblock-short">Macro to register a <em>plugin function</em> (defined via <a href="attr.export_fn.html" title="export_fn"><code>#[export_fn]</code></a>) into an <code>Engine</code>.</div></div><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.set_exported_fn.html" title="rhai_codegen::set_exported_fn macro">set_exported_fn</a></div><div class="item-right docblock-short">Macro to register a <em>plugin function</em> into a Rhai <code>Module</code>.</div></div><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.set_exported_global_fn.html" title="rhai_codegen::set_exported_global_fn macro">set_exported_global_fn</a></div><div class="item-right docblock-short">Macro to register a <em>plugin function</em> into a Rhai <code>Module</code> and expose it globally.</div></div></div><h2 id="attributes" class="small-section-header"><a href="#attributes">Attribute Macros</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="attr" href="attr.export_fn.html" title="rhai_codegen::export_fn attr">export_fn</a></div><div class="item-right docblock-short">Attribute, when put on a Rust function, turns it into a <em>plugin function</em>.</div></div><div class="item-row"><div class="item-left module-item"><a class="attr" href="attr.export_module.html" title="rhai_codegen::export_module attr">export_module</a></div><div class="item-right docblock-short">Attribute, when put on a Rust module, turns it into a <em>plugin module</em>.</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="rhai_codegen" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (98ad6a551 2022-09-17)" ></div></body></html>

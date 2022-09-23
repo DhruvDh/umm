@@ -291,7 +291,7 @@ impl File {
     /// flag.
     ///
     /// The method simply returns the output produced by javac as a String.
-    /// There is a ['parse_diag method'][fn@crate::grade::parser::parse_diag]
+    /// There is a ['parse_diag method'][fn@crate::parsers::parser::parse_diag]
     /// that can parse these to yield useful information.
     pub fn doc_check(&self) -> Result<String> {
         let child = Command::new(javac_path()?)
@@ -411,7 +411,7 @@ impl File {
     /// tests.
     ///
     /// Returns the output from JUnit as a string. There are parsers in
-    /// ['grade module'][crate::grade::parser] that helps parse this output.
+    /// ['parsers module'][crate::parsers::parser] that helps parse this output.
     ///
     /// * `tests`: list of strings (or types that implement
     /// Into<String>) meant to represent test method names,

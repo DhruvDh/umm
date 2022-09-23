@@ -32,7 +32,7 @@ let req_1 = grade_by_tests(
 
 let req_2 = grade_by_hidden_tests(
     "https://ummfiles.fra1.digitaloceanspaces.com/grading_scripts/projects/shoppinglist/ShoppingListHiddenArrayListTest.java",
-    "Shopping.ShoppingListHiddenArrayListTest",
+    "ShoppingListHiddenArrayListTest",
     30.0,
     "Hidden Tests",
 );

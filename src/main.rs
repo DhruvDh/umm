@@ -392,7 +392,7 @@ fn options() -> Cmd {
         shell,
         exit
     ])
-    .fallback(Cmd::Shell);
+    .fallback(Cmd::Exit);
 
     cmd.to_options().descr("Build tool for novices").run()
 }

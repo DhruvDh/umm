@@ -20,6 +20,8 @@ pub mod java;
 pub mod util;
 /// For structs and enums related to VSCode Tasks
 pub mod vscode;
+/// For all parsers used
+pub mod parsers;
 
 use anyhow::{
     Context,
