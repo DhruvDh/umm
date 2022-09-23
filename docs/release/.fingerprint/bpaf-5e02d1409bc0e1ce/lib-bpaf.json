@@ -1,1 +1,0 @@
-{"rustc":5983390951557239653,"features":"[]","target":17259132905691383640,"profile":13582651484598843882,"path":11609512095737398217,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"release/.fingerprint/bpaf-5e02d1409bc0e1ce/dep-lib-bpaf"}}],"rustflags":["-C","target-cpu=native"],"metadata":5007654346695129722,"config":2202906307356721367,"compile_kind":0}
