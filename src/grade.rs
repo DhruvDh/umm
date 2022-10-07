@@ -176,7 +176,7 @@ pub fn grade_docs(
         Table::new(diags)
             .with(Header(format!("Check javadoc for {}", files.join(", "))))
             .with(Footer(format!("-{} due to {} nits", penalty, num_diags)))
-            .with(Modify::new(Row(1..)).with(MaxWidth::wrapping(36)))
+            .with(Modify::new(Row(1..)).with(MaxWidth::wrapping(24)))
             .with(Modify::new(Full).with(Alignment::center_horizontal()))
             .with(tabled::Style::modern())
     );
@@ -518,7 +518,7 @@ pub fn show_result(results: Array) {
         Table::new(results)
             .with(Header("Grading Overview"))
             .with(Footer(format!("Total: {:.2}/{:.2}", grade, out_of)))
-            .with(Modify::new(Row(1..)).with(MaxWidth::wrapping(36)))
+            .with(Modify::new(Row(1..)).with(MaxWidth::wrapping(24)))
             .with(Modify::new(Full).with(Alignment::center_horizontal()))
             .with(tabled::Style::modern())
     );
