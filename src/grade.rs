@@ -368,6 +368,8 @@ pub fn grade_unit_tests(
             "test_reports",
             "--failWhenNoMutations",
             "true",
+            "--threads",
+            "4",
             "--targetClasses",
             target_class.join(",").as_str(),
             "--targetTests",
@@ -408,7 +410,7 @@ pub fn grade_unit_tests(
 
             match parse_result {
                 Ok(r) => {
-                    if r.result != "KILLED" {
+                    if r.result == "SURVIVED" {
                         // TODO: figure out if not_killed is required
                         // if r.test_method != "None" {
                         //     not_killed += 1;
