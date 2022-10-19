@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
+    - uses: rui314/setup-mold@v1
+      with:
+        mold-version: 1.6.0
     - uses: actions/checkout@v2
     - name: Build
       run: |
