@@ -26,14 +26,14 @@ let req_1 = grade_by_tests(
         "Shopping.ShoppingListArrayListTest#testIsEmpty",
     ],
     project,
-    30.0,
+    1.5,
     "Student-written Tests",
 );
 
 let req_2 = grade_by_hidden_tests(
     "https://ummfiles.fra1.digitaloceanspaces.com/grading_scripts/projects/shoppinglist/ShoppingListHiddenArrayListTest.java",
     "ShoppingListHiddenArrayListTest",
-    30.0,
+    1.5,
     "Hidden Tests",
 );
 
