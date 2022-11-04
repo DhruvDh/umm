@@ -21,7 +21,10 @@ use rhai::{
     Dynamic,
     EvalAltResult,
 };
-use serde::{Serialize, Deserialize};
+use serde::{
+    Deserialize,
+    Serialize,
+};
 use tabled::{
     display::ExpandedDisplay,
     Alignment,
@@ -43,10 +46,11 @@ use crate::{
         SOURCE_DIR,
     },
     java::Project,
+    parsers::parser,
     util::{
         classpath,
         java_path,
-    }, parsers::parser,
+    },
 };
 
 #[derive(Tabled, Clone)]
@@ -397,7 +401,7 @@ pub fn grade_unit_tests(
 
     if child.status.success() {
         std::fs::create_dir_all("test_reports")?;
-        let file = File::open(&ROOT_DIR.join("test_reports").join("mutations.csv"))
+        let file = File::open(ROOT_DIR.join("test_reports").join("mutations.csv"))
             .context("Could not read ./test_reports/mutations.csv file".to_string())?;
         let reader = BufReader::new(file);
         let mut diags = vec![];
