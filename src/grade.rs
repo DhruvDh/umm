@@ -128,68 +128,76 @@ pub struct MutationDiagnostic {
     test_file_name:   String,
 }
 
-#[generate_rhai_variant]
-/// Grades documentation by using the -Xdoclint javac flag.
-/// Scans javac output for generated warnings and grades accordingly.
-/// TODO: have customizable grade penalties
-///
-/// * `files`: list of files to check documentation for.
-/// * `project`: reference to the Project object the files belong to
-/// * `out_of`: maximum possible grade
-/// * `req_name`: display name for requirement to use while displaying grade
-///   result
-pub fn grade_docs(
-    files: Array,
-    project: Project,
-    out_of: i64,
-    req_name: &str,
-) -> Result<GradeResult> {
-    let mut diags = vec![];
-    let files: Vec<String> = files
-        .iter()
-        .map(|f| match f.clone().into_string() {
-            Ok(n) => Ok(n),
-            Err(e) => Err(anyhow!(
-                "files array has something that's not a string: {}",
-                e
-            )),
-        })
-        .try_collect()?;
-    let out_of: u32 = out_of.try_into()?;
-    for name in &files {
-        let file = project.identify(name)?;
-        let output = file.doc_check()?;
-        for line in output.lines() {
-            let result = parser::parse_diag(line);
-            match result {
-                Ok(res) => {
-                    if file.file_name() == res.file_name {
-                        diags.push(res);
+#[derive(TypedBuilder)]
+/// A struct representing arguements to grade_docs function
+pub struct GradeDocs<'a> {
+    /// * `project`: the project to grade
+    pub project:  Project,
+    /// * `files`: the files to grade
+    pub files:    Array,
+    /// * `out_of`: the total points for the requirement
+    pub out_of:   u32,
+    /// * `req_name`: the name of the requirement
+    pub req_name: &'a str,
+    #[builder(default = Some(3), setter(strip_option))]
+    /// * `penalty`: the penalty to apply for each instance of a violation.
+    ///   Optional, default is 3
+    pub penalty:  Option<u32>,
+}
+
+impl GradeDocs<'_> {
+    /// Grades documentation by using the -Xdoclint javac flag.
+    /// Scans javac output for generated warnings and grades accordingly.
+    #[generate_rhai_variant]
+    pub fn grade_docs(self) -> Result<GradeResult> {
+        let mut diags = vec![];
+        let files: Vec<String> = self
+            .files
+            .iter()
+            .map(|f| match f.clone().into_string() {
+                Ok(n) => Ok(n),
+                Err(e) => Err(anyhow!(
+                    "files array has something that's not a string: {}",
+                    e
+                )),
+            })
+            .try_collect()?;
+        let out_of: u32 = self.out_of;
+        for name in &files {
+            let file = self.project.identify(name)?;
+            let output = file.doc_check()?;
+            for line in output.lines() {
+                let result = parser::parse_diag(line);
+                match result {
+                    Ok(res) => {
+                        if file.file_name() == res.file_name {
+                            diags.push(res);
+                        }
                     }
+                    Err(_) => continue,
                 }
-                Err(_) => continue,
             }
         }
+
+        let penalty = diags.len() as u32 * self.penalty.unwrap_or(3);
+        let grade = out_of.saturating_sub(penalty);
+        let num_diags = diags.len();
+        eprintln!(
+            "{}",
+            Table::new(diags)
+                .with(Header(format!("Check javadoc for {}", files.join(", "))))
+                .with(Footer(format!("-{} due to {} nits", penalty, num_diags)))
+                .with(Modify::new(Row(1..)).with(MaxWidth::wrapping(24)))
+                .with(Modify::new(Full).with(Alignment::center_horizontal()))
+                .with(tabled::Style::modern())
+        );
+
+        Ok(GradeResult {
+            Requirement: self.req_name.to_string(),
+            Grade:       format!("{}/{}", grade, out_of),
+            Reason:      String::from("See above."),
+        })
     }
-
-    let penalty = diags.len() as u32 * 3;
-    let grade = out_of.saturating_sub(penalty);
-    let num_diags = diags.len();
-    eprintln!(
-        "{}",
-        Table::new(diags)
-            .with(Header(format!("Check javadoc for {}", files.join(", "))))
-            .with(Footer(format!("-{} due to {} nits", penalty, num_diags)))
-            .with(Modify::new(Row(1..)).with(MaxWidth::wrapping(24)))
-            .with(Modify::new(Full).with(Alignment::center_horizontal()))
-            .with(tabled::Style::modern())
-    );
-
-    Ok(GradeResult {
-        Requirement: req_name.to_string(),
-        Grade:       format!("{}/{}", grade, out_of),
-        Reason:      String::from("See above."),
-    })
 }
 
 #[generate_rhai_variant]
@@ -508,7 +516,7 @@ pub fn grade_by_hidden_tests(
 /// Print grade result
 ///
 /// * `results`: array of GradeResults to print in a table.
-pub fn show_result(results: Array) {
+pub fn show_result(results: Array, pass: bool) {
     let results: Vec<GradeResult> = results
         .iter()
         .map(|f| f.clone().cast::<GradeResult>())
@@ -529,5 +537,6 @@ pub fn show_result(results: Array) {
             .with(tabled::Style::modern())
     );
 
-    println!("p;{}", grade as isize);
+    let pass = if pass { "p" } else { "f" };
+    println!("{pass};{}", grade as isize);
 }
