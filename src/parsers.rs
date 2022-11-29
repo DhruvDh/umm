@@ -1,6 +1,6 @@
 use crate::grade::{
-  MutationDiagnostic,
-  JavacDiagnostic
+    JavacDiagnostic,
+    MutationDiagnostic,
 };
 
 peg::parser! {
@@ -95,7 +95,7 @@ peg::parser! {
             {
                 let p = std::path::PathBuf::from(p);
             let name = p.file_name().expect("Could not parse path to file in javac error/warning");
-            
+
             JavacDiagnostic::builder()
                 .path(format!(".{}", p.display()))
                 .file_name(name.to_string_lossy().to_string())

@@ -16,12 +16,12 @@ pub mod health;
 /// For discovering Java projects, analyzing them, and generating/executing
 /// build tasks
 pub mod java;
+/// For all parsers used
+pub mod parsers;
 /// Utility functions for convenience
 pub mod util;
 /// For structs and enums related to VSCode Tasks
 pub mod vscode;
-/// For all parsers used
-pub mod parsers;
 
 use anyhow::{
     Context,
@@ -68,10 +68,10 @@ pub fn grade(assignment_name: &str) -> Result<()> {
         .register_fn("check", File::check_script)
         .register_fn("run", File::run_script)
         .register_fn("test", File::test_script)
-        .register_fn("grade_docs", grade_docs_script)
-        .register_fn("grade_unit_tests", grade_unit_tests_script)
-        .register_fn("grade_by_hidden_tests", grade_by_hidden_tests_script)
-        .register_fn("grade_by_tests", grade_by_tests_script);
+        .build_type::<DocsGrader>()
+        .build_type::<ByUnitTestGrader>()
+        .build_type::<UnitTestGrader>()
+        .build_type::<ByHiddenTestGrader>();
 
     // println!("{}", engine.gen_fn_signatures(false).join("\n"));
     let rt = RUNTIME.handle().clone();

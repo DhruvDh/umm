@@ -78,7 +78,7 @@ pub struct File {
     kind:         FileType,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 /// Struct representing a Java project.
 /// Any index `i` in any collection in this struct always refers to the same
 /// JavaFile.
