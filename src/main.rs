@@ -318,6 +318,11 @@ fn options() -> Cmd {
         positional("FILENAME").help("Name of java file")
     }
 
+    /// parses Assignment name or path to grading script file
+    fn g() -> impl Parser<String> {
+        positional("NAME/PATH").help("Name of assignment in database or path to grading script")
+    }
+
     let run = construct!(Cmd::Run(f()))
         .to_options()
         .command("run")
@@ -338,7 +343,7 @@ fn options() -> Cmd {
         .command("dock-check")
         .help("Check a file for missing javadoc");
 
-    let grade = construct!(Cmd::Grade(f()))
+    let grade = construct!(Cmd::Grade(g()))
         .to_options()
         .command("grade")
         .help("Grade your work");
@@ -427,7 +432,7 @@ fn main() -> Result<()> {
             let out = Project::new()?.identify(f.as_str())?.doc_check()?;
             println!("{}", out);
         }
-        Cmd::Grade(f) => grade(&f)?,
+        Cmd::Grade(g) => grade(&g)?,
         Cmd::Clean => clean()?,
         Cmd::Info => Project::new()?.info()?,
         Cmd::Update => {

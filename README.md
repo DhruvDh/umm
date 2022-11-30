@@ -32,105 +32,83 @@ Also allows for running auto-grading scripts based on [Rhai](https://rhai.rs/boo
 ### Sample grading script
 
 ```rust
-// ╭───────────────────────────────────────────────────╮
-// │      to run this script install binary and -      │
-// │      `umm grade "Sample Assignment"               │           
-// ╰───────────────────────────────────────────────────╯
-
-
 let project = new_project();
 
-let req_1 = {
-    // initializes the grader with default values
-    let req = new_docs_grader();
-    
-    // initializes the grader according to the given values
-    req.project = project;
-    req.files = ["pyramid_scheme.LinkedTree"];
-    req.out_of = 10.0;
-    req.req_name = "1";
-    req.penalty = 3.0;
-    
-    // runs the grader and returns a `GradeResult`
-    // `req_1` will be set to the GradeResult
-    req.run()
-};
+let req_1 = new_docs_grader()
+    .project(project)
+    .files(["pyramid_scheme.LinkedTree"])
+    .out_of(10.0)
+    .req_name("1")
+    .penalty(3.0)
+    .run();
 
-let req_2 = {
-    let req = new_by_unit_test_grader();
-    
-    req.project = project;
-    req.test_files = ["pyramid_scheme.LinkedTreeTest"];
-    req.expected_tests = [
+let req_2 = new_by_unit_test_grader()
+    .project(project)
+    .test_files(["pyramid_scheme.LinkedTreeTest"])
+    .expected_tests([
         "pyramid_scheme.LinkedTreeTest#testGetRootElement",
         "pyramid_scheme.LinkedTreeTest#testAddChild",
         "pyramid_scheme.LinkedTreeTest#testFindNode",
         "pyramid_scheme.LinkedTreeTest#testContains",
         "pyramid_scheme.LinkedTreeTest#testSize",
-    ];
-    req.out_of = 20.0;
-    req.req_name = "2";
+    ])
+    .out_of(20.0)
+    .req_name("2")
+    .run();
 
-    req.run()
-};
+let req_3 = new_unit_test_grader()
+    .req_name("2")
+    .out_of(20.0)
+    .target_test(["pyramid_scheme.LinkedTreeTest"])
+    .target_class(["pyramid_scheme.LinkedTree"])
+    .excluded_methods([])
+    .avoid_calls_to([])
+    .run();
 
-let req_3 = {
-    let req = new_unit_test_grader();
+let req_4 = new_docs_grader()
+    .project(project)
+    .files(["pyramid_scheme.PyramidScheme"])
+    .out_of(10.0)
+    .req_name("3")
+    .penalty(3.0)
+    .run();
 
-    req.req_name = "2";
-    req.out_of = 20.0;
-    req.target_test = ["pyramid_scheme.LinkedTreeTest"];
-    req.target_class = ["pyramid_scheme.LinkedTree"];
-    // empty array is already the default value, but still
-    req.excluded_methods = [];
-    req.avoid_calls_to = [];
-
-    req.run()
-};
-
-let req_4 = {
-    let req = new_docs_grader();
-
-    req.project = project;
-    req.files = ["pyramid_scheme.PyramidScheme"];
-    req.out_of = 10.0;
-    req.req_name = "3";
-    req.penalty = 3.0;
-
-    req.run()
-};
-
-let req_5 = {
-    let req = new_by_unit_test_grader();
-
-    req.project = project;
-    req.test_files = ["pyramid_scheme.PyramidSchemeTest"];
-    req.expected_tests = [
+let req_5 = new_by_unit_test_grader()
+    .project(project)
+    .test_files(["pyramid_scheme.PyramidSchemeTest"])
+    .expected_tests([
         "pyramid_scheme.PyramidSchemeTest#testWhoBenefits",
         "pyramid_scheme.PyramidSchemeTest#testAddChild",
         "pyramid_scheme.PyramidSchemeTest#testInitiateCollapse",
-    ];
-    req.out_of = 30.0;
-    req.req_name = "3";
+    ])
+    .out_of(30.0)
+    .req_name("3")
+    .run();
 
-    req.run()
-};
+let req_6 = new_by_hidden_test_grader()
+    .url("https://www.dropbox.com/s/47jd1jru1f1i0cc/ABCTest.java?raw=1")
+    .test_class_name("ABCTest")
+    .out_of(30.0)
+    .req_name("4")
+    .run();
 
-let req_6 = {
-    let req = new_by_hidden_test_grader();
-
-    req.url = "https://www.dropbox.com/s/47jd1jru1f1i0cc/ABCTest.java?raw=1";
-    req.test_class_name = "ABCTest";
-    req.out_of = 30.0;
-    req.req_name = "4";
-
-    req.run()
-};
+let reqs = [req_1, req_2, req_3, req_4, req_5, req_6];
 
 // arguements: 
 // - array of grade results
-// - boolean for pass/fail
-show_results([req_1, req_2, req_3, req_4, req_5, req_6], true);
+show_results(reqs);
+
+let total = 0.0;
+let out_of = 0.0;
+for req in reqs {
+    total = total + req.grade();
+    out_of = out_of + req.out_of();
+}
+if total > (0.6 * out_of) {
+    print(total + ";p")
+} else {
+    print(total + ";f")
+}
 ```
 ### Output 
 

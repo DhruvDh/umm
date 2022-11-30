@@ -52,12 +52,9 @@ use umm_derive::generate_rhai_variant;
 type Dict = std::collections::HashMap<String, String>;
 
 /// Prints the result of grading
-pub fn grade(assignment_name: &str) -> Result<()> {
-    let assignment_name = assignment_name.to_string().replace(['\"', '\\'], "");
-
+pub fn grade(name_or_path: &str) -> Result<()> {
     let mut engine = Engine::new();
     engine
-        .register_type::<GradeResult>()
         .register_type_with_name::<FileType>("JavaFileType")
         .register_type_with_name::<File>("JavaFile")
         .register_type_with_name::<Project>("JavaProject")
@@ -71,42 +68,51 @@ pub fn grade(assignment_name: &str) -> Result<()> {
         .build_type::<DocsGrader>()
         .build_type::<ByUnitTestGrader>()
         .build_type::<UnitTestGrader>()
-        .build_type::<ByHiddenTestGrader>();
+        .build_type::<ByHiddenTestGrader>()
+        .build_type::<Grade>()
+        .build_type::<GradeResult>();
 
     // println!("{}", engine.gen_fn_signatures(false).join("\n"));
-    let rt = RUNTIME.handle().clone();
+    let script = match std::fs::read_to_string(name_or_path) {
+        Ok(s) => s,
+        Err(_) => {
+            let assignment_name = name_or_path.to_string().replace(['\"', '\\'], "");
+            let rt = RUNTIME.handle().clone();
 
-    let resp = rt.block_on(async {
-        POSTGREST_CLIENT
-            .from("grading_scripts")
-            .eq("course", COURSE)
-            .eq("term", TERM)
-            .eq("assignment", &assignment_name)
-            .select("url")
-            .single()
-            .execute()
-            .await?
-            .text()
-            .await
-            .context(format!(
-                "Could not get grading script for {assignment_name}"
-            ))
-    });
-    let resp: serde_json::Value = serde_json::from_str(resp?.as_str())?;
-    let resp = resp.as_object().unwrap();
+            let resp = rt.block_on(async {
+                POSTGREST_CLIENT
+                    .from("grading_scripts")
+                    .eq("course", COURSE)
+                    .eq("term", TERM)
+                    .eq("assignment", &assignment_name)
+                    .select("url")
+                    .single()
+                    .execute()
+                    .await?
+                    .text()
+                    .await
+                    .context(format!(
+                        "Could not get grading script for {assignment_name}"
+                    ))
+            });
+            let resp: serde_json::Value = serde_json::from_str(resp?.as_str())?;
+            let resp = resp.as_object().unwrap();
 
-    if let Some(message) = resp.get("message") {
-        anyhow::bail!("Error for {assignment_name}: {message}");
-    }
+            if let Some(message) = resp.get("message") {
+                anyhow::bail!("Error for {assignment_name}: {message}");
+            }
 
-    let script_url = resp.get("url").unwrap().as_str().unwrap();
+            let script_url = resp.get("url").unwrap().as_str().unwrap();
 
-    let script = reqwest::blocking::get(script_url)
-        .context(format!("Cannot get url: {script_url}"))?
-        .text()
-        .context(format!(
-            "Could not parse the response from {script_url} to text."
-        ))?;
+            reqwest::blocking::get(script_url)
+                .context(format!("Cannot get url: {script_url}"))?
+                .text()
+                .context(format!(
+                    "Could not parse the response from {script_url} to text."
+                ))?
+        }
+    };
+
     // Run the script
     engine.run(&script)?;
 
