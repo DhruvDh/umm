@@ -880,8 +880,7 @@ pub fn show_result(results: Array) {
         .collect();
 
     let (grade, out_of) = results.iter().fold((0f64, 0f64), |acc, r| {
-        let (g, o) = (r.grade.grade, r.grade.out_of);
-        (acc.0 + g, acc.1 + o)
+        (acc.0 + r.grade.grade, acc.1 + r.grade.out_of)
     });
 
     eprintln!(

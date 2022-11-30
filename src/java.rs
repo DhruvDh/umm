@@ -407,14 +407,14 @@ impl File {
 
     #[generate_rhai_variant]
     /// A utility method that takes a list of strings (or types that implement
-    /// Into<String>) meant to represent test method names, and runs those
+    /// `Into<String>`) meant to represent test method names, and runs those
     /// tests.
     ///
     /// Returns the output from JUnit as a string. There are parsers in
     /// ['parsers module'][crate::parsers::parser] that helps parse this output.
     ///
     /// * `tests`: list of strings (or types that implement
-    /// Into<String>) meant to represent test method names,
+    /// `Into<String>`) meant to represent test method names,
     pub fn test(&self, tests: Vec<&str>) -> Result<String> {
         self.check()?;
         let tests = {

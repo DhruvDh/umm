@@ -1,0 +1,12 @@
+cargo:rerun-if-changed=no_atomic.rs
+cargo:rerun-if-env-changed=CARGO_ENCODED_RUSTFLAGS
+cargo:rerun-if-env-changed=RUSTFLAGS
+cargo:rerun-if-env-changed=CARGO_BUILD_RUSTFLAGS
+cargo:rerun-if-env-changed=CARGO_TARGET_AARCH64_APPLE_DARWIN_RUSTFLAGS
+cargo:rustc-cfg=portable_atomic_stronger_failure_ordering
+cargo:rustc-cfg=portable_atomic_nightly
+cargo:rustc-cfg=portable_atomic_new_atomic_intrinsics
+cargo:rustc-cfg=portable_atomic_unstable_strict_provenance_atomic_ptr
+cargo:rustc-cfg=portable_atomic_llvm15
+cargo:rustc-cfg=portable_atomic_target_feature="lse"
+cargo:rustc-cfg=portable_atomic_target_feature="lse2"
