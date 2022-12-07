@@ -171,8 +171,7 @@ impl Parser {
                     .with_context(|| {
                         format!(
                             "Cannot match query result indices with source code for capture name: \
-                             {}.",
-                            name
+                             {name}."
                         )
                     })?;
 
@@ -432,7 +431,7 @@ impl File {
 
         let tests = tests
             .iter()
-            .map(|s| format!("-m{}", s))
+            .map(|s| format!("-m{s}"))
             .collect::<Vec<String>>();
         let methods: Vec<&str> = tests.iter().map(String::as_str).collect();
 
@@ -524,8 +523,7 @@ impl File {
                     .with_context(|| {
                         format!(
                             "Cannot match query result indices with source code for capture name: \
-                             {}.",
-                            name
+                             {name}."
                         )
                     })?;
 

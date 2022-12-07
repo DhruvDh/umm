@@ -206,7 +206,7 @@ fn shell() -> Result<()> {
                     }
                 }
                 b if test_methods.contains(&String::from(b)) => {
-                    eprintln!("Try test <FILENAME> {} instead.", b);
+                    eprintln!("Try test <FILENAME> {b} instead.");
                 }
                 b if b.starts_with("test ") => {
                     let b = b.replace("test ", "");
@@ -232,8 +232,8 @@ fn shell() -> Result<()> {
                     };
 
                     match res {
-                        Ok(out) => println!("{}", out),
-                        Err(e) => eprintln!("{:?}", e),
+                        Ok(out) => println!("{out}"),
+                        Err(e) => eprintln!("{e:?}"),
                     };
                 }
                 b if b.starts_with("grade") => {
@@ -426,11 +426,11 @@ fn main() -> Result<()> {
                 let t = t.iter().map(|i| i.as_str()).collect();
                 Project::new()?.identify(f.as_str())?.test(t)?
             };
-            println!("{}", out);
+            println!("{out}");
         }
         Cmd::DocCheck(f) => {
             let out = Project::new()?.identify(f.as_str())?.doc_check()?;
-            println!("{}", out);
+            println!("{out}");
         }
         Cmd::Grade(g) => grade(&g)?,
         Cmd::Clean => clean()?,

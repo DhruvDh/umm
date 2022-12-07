@@ -346,7 +346,7 @@ impl DocsGrader {
             "{}",
             Table::new(diags)
                 .with(Header(format!("Check javadoc for {}", files.join(", "))))
-                .with(Footer(format!("-{} due to {} nits", penalty, num_diags)))
+                .with(Footer(format!("-{penalty} due to {num_diags} nits")))
                 .with(Modify::new(Row(1..)).with(MaxWidth::wrapping(24)))
                 .with(Modify::new(Full).with(Alignment::center_horizontal()))
                 .with(tabled::Style::modern())
@@ -483,14 +483,14 @@ impl ByUnitTestGrader {
             for expected in &expected_tests {
                 let n = expected.split_once('#').unwrap().1;
                 if !actual_tests.contains(expected) {
-                    reasons.push(format!("- {} not found.", n));
+                    reasons.push(format!("- {n} not found."));
                 }
             }
 
             for actual in &actual_tests {
                 let n = actual.split_once('#').unwrap().1;
                 if !expected_tests.contains(actual) {
-                    reasons.push(format!("- Unexpected test called {}", n));
+                    reasons.push(format!("- Unexpected test called {n}"));
                 }
             }
         }
@@ -530,7 +530,7 @@ impl ByUnitTestGrader {
             Ok(GradeResult {
                 requirement: req_name,
                 grade:       Grade::new(grade, out_of),
-                reason:      format!("- {}/{} tests passing.", num_tests_passed, num_tests_total),
+                reason:      format!("- {num_tests_passed}/{num_tests_total} tests passing."),
             })
         }
     }
@@ -744,7 +744,7 @@ impl UnitTestGrader {
             Ok(GradeResult {
                 requirement: req_name,
                 grade:       Grade::new((out_of as u32).saturating_sub(penalty).into(), out_of),
-                reason:      format!("-{} Penalty due to surviving muations", penalty),
+                reason:      format!("-{penalty} Penalty due to surviving muations"),
             })
         } else {
             let output = [
@@ -752,7 +752,7 @@ impl UnitTestGrader {
                 String::from_utf8(child.stdout)?,
             ]
             .concat();
-            eprintln!("{}", output);
+            eprintln!("{output}");
             Ok(GradeResult {
                 requirement: req_name,
                 grade:       Grade::new(0.0, out_of),
@@ -833,11 +833,11 @@ impl ByHiddenTestGrader {
         let req_name = self.req_name();
 
         let test_source = reqwest::blocking::get(&url)
-            .context(format!("Failed to download {}", url))?
+            .context(format!("Failed to download {url}"))?
             .bytes()
-            .context(format!("Failed to get resobse as bytes: {}", url))?;
+            .context(format!("Failed to get resobse as bytes: {url}"))?;
 
-        let path = ROOT_DIR.join(format!("{}.java", test_class_name));
+        let path = ROOT_DIR.join(format!("{test_class_name}.java"));
         let mut file = File::create(&path)?;
         file.write_all(&test_source)?;
 
@@ -887,7 +887,7 @@ pub fn show_result(results: Array) {
         "{}",
         Table::new(results)
             .with(Header("Grading Overview"))
-            .with(Footer(format!("Total: {:.2}/{:.2}", grade, out_of)))
+            .with(Footer(format!("Total: {grade:.2}/{out_of:.2}")))
             .with(Modify::new(Row(1..)).with(MaxWidth::wrapping(24)))
             .with(Modify::new(Full).with(Alignment::center_horizontal()))
             .with(tabled::Style::modern())
