@@ -34,6 +34,8 @@ Also allows for running auto-grading scripts based on [Rhai](https://rhai.rs/boo
 Rhai is a lightweight embeddable scripting language meant to make it easy to use your Rust-written structs, their methods, and your functions dynamically without the need for recompilation.
 
 Here are some structs (classes) to help you get going -
+> **This is an in-progress draft.**
+> 
 > `method_name(arguement_types) -> return_type`
 
 - `JavaProject` - Struct representing a Java project.
@@ -53,7 +55,6 @@ Here are some structs (classes) to help you get going -
   - `file_name() -> String` - returns the name of the file.
   - `path() -> String` - returns the relative path to the file as a string.
   - `test_methods() -> Array` - Can be called on JUnit test files. It returns an Array of test_method names discovered in the file.
-
   ```
 
 ### Sample grading script
