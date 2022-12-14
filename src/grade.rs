@@ -76,7 +76,7 @@ impl Grade {
         }
     }
 
-    #[generate_rhai_variant(Impl)]
+    #[generate_rhai_variant(Impl, Fallible)]
     /// Creates a new grade from a string -
     /// * `grade_string` - A string in the format `grade/out_of`, eg. `10/20`
     pub fn grade_from_string(grade_string: String) -> Result<Grade> {
@@ -303,7 +303,7 @@ impl DocsGrader {
 
     /// Grades documentation by using the -Xdoclint javac flag.
     /// Scans javac output for generated warnings and grades accordingly.
-    #[generate_rhai_variant]
+    #[generate_rhai_variant(Fallible)]
     pub fn grade_docs(self) -> Result<GradeResult> {
         let mut diags = vec![];
         let files: Vec<String> = self
@@ -434,7 +434,7 @@ impl ByUnitTestGrader {
         self
     }
 
-    #[generate_rhai_variant]
+    #[generate_rhai_variant(Fallible)]
     /// Grades by running tests, and reports how many tests pass.
     /// Final grade is the same percentage of maximum grade as the number of
     /// tests passing.
@@ -620,7 +620,7 @@ impl UnitTestGrader {
         self
     }
 
-    #[generate_rhai_variant]
+    #[generate_rhai_variant(Fallible)]
     /// Runs mutation tests using ![Pitest](http://pitest.org/) to grade unit tests written by students.
     pub fn grade_unit_tests(&mut self) -> Result<GradeResult> {
         let req_name = self.get_req_name();
@@ -823,7 +823,7 @@ impl ByHiddenTestGrader {
         self
     }
 
-    #[generate_rhai_variant]
+    #[generate_rhai_variant(Fallible)]
     /// Grades using hidden tests. Test file is downloaded, ran, and then
     /// cleaned up before returning.
     pub fn grade_by_hidden_tests(&mut self) -> Result<GradeResult> {

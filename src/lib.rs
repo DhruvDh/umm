@@ -40,6 +40,7 @@ use grade::*;
 use java::{
     File,
     FileType,
+    Parser,
     Project,
 };
 use rhai::{
@@ -56,21 +57,17 @@ pub fn grade(name_or_path: &str) -> Result<()> {
     let mut engine = Engine::new();
     engine
         .register_type_with_name::<FileType>("JavaFileType")
-        .register_type_with_name::<File>("JavaFile")
-        .register_type_with_name::<Project>("JavaProject")
-        .register_fn("show_results", show_result)
-        .register_fn("clean", clean_script)
-        .register_fn("new_project", Project::new_script)
-        .register_fn("identify", Project::identify_script)
-        .register_fn("check", File::check_script)
-        .register_fn("run", File::run_script)
-        .register_fn("test", File::test_script)
         .build_type::<DocsGrader>()
         .build_type::<ByUnitTestGrader>()
         .build_type::<UnitTestGrader>()
         .build_type::<ByHiddenTestGrader>()
         .build_type::<Grade>()
-        .build_type::<GradeResult>();
+        .build_type::<GradeResult>()
+        .build_type::<Parser>()
+        .build_type::<File>()
+        .build_type::<Project>()
+        .register_fn("clean", clean_script)
+        .register_fn("show_results", show_result);
 
     // println!("{}", engine.gen_fn_signatures(false).join("\n"));
     let script = match std::fs::read_to_string(name_or_path) {
@@ -119,7 +116,7 @@ pub fn grade(name_or_path: &str) -> Result<()> {
     Ok(())
 }
 
-#[generate_rhai_variant]
+#[generate_rhai_variant(Fallible)]
 /// Deletes all java compiler artefacts
 pub fn clean() -> Result<()> {
     if BUILD_DIR.as_path().exists() {

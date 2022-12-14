@@ -6,7 +6,10 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use proc_macro::TokenStream;
-use proc_macro_error::proc_macro_error;
+use proc_macro_error::{
+    abort,
+    proc_macro_error,
+};
 use quote::{
     format_ident,
     quote,
@@ -82,30 +85,84 @@ pub fn generate_rhai_variant(attr: TokenStream, input: TokenStream) -> TokenStre
 
         let output = output.replace("-> ", "").replace(' ', "");
 
-        if &output == "Result<()>" {
-            quote!(-> Result<(), Box<EvalAltResult>>)
-        } else if output.starts_with("Result<") {
-            if output.replace("Result<", "").starts_with("Vec<") {
-                let inner_type = format_ident!(
-                    "{}",
-                    output
-                        .replace("Result<", "")
-                        .replace("Vec<", "")
-                        .replace('>', "")
-                );
+        let make_return_type = |inner_type: quote::__private::TokenStream,
+                                result: (String, String, String)| {
+            let (first, second, _) = result;
 
-                quote! {-> Result<Vec<#inner_type>, Box<EvalAltResult>>}
+            if first == "Result" {
+                let second = format_ident!("{}", second);
+                quote! {-> Result<#second<#inner_type>, Box<EvalAltResult>> }
             } else {
-                let inner_type =
-                    format_ident!("{}", output.replace("Result<", "").replace('>', ""));
-
-                quote! {-> Result<#inner_type, Box<EvalAltResult>>}
+                quote!(-> Result<#inner_type, Box<EvalAltResult>> )
             }
+        };
+
+        let nested_level_0 = |inner_type: &str, result: (String, String, String)| {
+            if inner_type == "()" {
+                make_return_type(quote! {()}, result)
+            } else if result.2 == "HashMap" {
+                let inner_type = inner_type.split(',').collect::<Vec<_>>();
+                let left = format_ident!("{}", inner_type[0]);
+                let right = format_ident!("{}", inner_type[1]);
+
+                make_return_type(quote! {HashMap<#left, #right>}, result)
+            } else {
+                let third = format_ident!("{}", result.2);
+                let inner_type = format_ident!("{}", inner_type);
+                make_return_type(quote! {#third<#inner_type>}, result)
+            }
+        };
+
+        let nested_level_1 = |output: &str, result: (String, String, String)| {
+            if output.starts_with("Vec<") {
+                let result = (result.0, result.1, String::from("Vec"));
+                let inner_type = output.replacen("Vec<", "", 1).replacen('>', "", 1);
+                nested_level_0(&inner_type, result)
+            } else if output.starts_with("HashMap<") {
+                let result = (result.0, result.1, String::from("HashMap"));
+                let inner_type = output.replacen("HashMap<", "", 1).replacen('>', "", 1);
+                nested_level_0(&inner_type, result)
+            } else {
+                abort!(output, "Second level type must be Vec or HashMap");
+            }
+        };
+
+        let nested_level_2 = |inner_type: &str, result: (String, String, String)| {
+            if inner_type.starts_with("Result<") {
+                let result = (result.0, String::from("Result"), result.2);
+                nested_level_1(
+                    &inner_type.replacen("Result<", "", 1).replacen('>', "", 1),
+                    result,
+                )
+            } else if inner_type.starts_with("Vec<") {
+                let result = (result.0, String::from("Vec"), result.2);
+                nested_level_1(
+                    &inner_type.replacen("Vec<", "", 1).replacen('>', "", 1),
+                    result,
+                )
+            } else {
+                abort!(inner_type, "Third level type must be Result or Vec");
+            }
+        };
+
+        if output.ends_with(">>>") {
+            let output = output.replacen("Result<", "", 1).replacen(">>>", "", 1);
+            let result = (String::from("Result"), String::new(), String::new());
+            nested_level_2(&output, result)
+        } else if output.ends_with(">>") {
+            let result = (String::new(), String::from("Result"), String::new());
+            nested_level_1(&output, result)
+        } else if output.ends_with('>') {
+            let inner_type = output.replacen("Result<", "", 1).replacen('>', "", 1);
+            nested_level_0(
+                &inner_type,
+                (String::new(), String::new(), String::from("Result")),
+            )
         } else {
-            quote! {}
+            abort!(output, "Fallible functions must return an anyhow::Result");
         }
     } else {
-        input.sig.output.into_token_stream()
+        quote! { input.sig.output.into_token_stream().to_string() }
     };
 
     let match_expr = if is_impl_self_fn {
