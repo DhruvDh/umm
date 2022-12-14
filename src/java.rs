@@ -541,6 +541,11 @@ impl File {
         self.test_methods.clone()
     }
 
+    /// Get a reference to the file's test methods.
+    pub fn test_methods_mut_script(&mut self) -> Array {
+        self.test_methods().iter().map(|s| s.into()).collect()
+    }
+
     /// treesitter query for this file
     pub fn query(&self, q: &str) -> Result<Vec<Dict>> {
         self.parser.query(q)
@@ -563,6 +568,11 @@ impl File {
     /// Get a reference to the file's path.
     pub fn path(&self) -> &PathBuf {
         &self.path
+    }
+
+    /// Get a reference to the file's path.
+    pub fn path_mut_script(&mut self) -> String {
+        self.path.display().to_string()
     }
 
     /// Get a reference to the file's proper name.
@@ -589,10 +599,10 @@ impl CustomType for File {
             .with_fn("test", File::test_mut_script)
             .with_fn("kind", File::kind)
             .with_fn("file_name", File::file_name)
-            .with_fn("test_methods", File::test_methods)
+            .with_fn("test_methods", File::test_methods_mut_script)
             .with_fn("query", File::query_mut_script)
             .with_fn("package_name", File::package_name)
-            .with_fn("path", File::path)
+            .with_fn("path", File::path_mut_script)
             .with_fn("parser", File::parser);
     }
 }

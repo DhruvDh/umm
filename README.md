@@ -5,7 +5,7 @@
   - [Documentation](#documentation)
   - [Installation](#installation)
   - [Auto-grading](#auto-grading)
-    - [Sample grading script](#sample-grading-script)
+    - [Introduction](#introduction-1)
     - [Output](#output)
   - [License](#license)
 
@@ -28,6 +28,33 @@ Once you are done, just type `cargo install --git=https://github.com/DhruvDh/umm
 ## Auto-grading
 
 Also allows for running auto-grading scripts based on [Rhai](https://rhai.rs/book/about/index.html).
+
+### Introduction
+
+Rhai is a lightweight embeddable scripting language meant to make it easy to use your Rust-written structs, their methods, and your functions dynamically without the need for recompilation.
+
+Here are some structs (classes) to help you get going -
+> `method_name(arguement_types) -> return_type`
+
+- `JavaProject` - Struct representing a Java project.
+  - `new_java_project() -> JavaProject` - initializes a java project by discovering files in the source path directory. Also downloads jar files if needed.
+  - `identify(String) -> JavaFile`  -  attempts to identify the correct file from the project from a partial or fully formed name as expected by a java compiler. Returns a `JavaFile` of the identified file in the project.
+  - `files() -> Array` - returns an array of `JavaFiles` discovered in the project
+  - `info()` - prints a minified JSON representation of all the files in the project
+
+- `JavaFile` - a file in the discovered project representing any class, interface, or test.
+  - `new_java_file() -> JavaFile` - a constructor, is not meant to be used inside a script. `JavaFile`s should be discovered by the project.
+  - `check()` - checks for compiler errors, and reports them on stdout/stderr. Also ensures a corresponding `.class` file is present in the target directory after a `check()` completes.
+  - `doc_check() -> String` - asks javac for documentation lints using the `-Xdoclint` flag. Returns compiler output as a String. There is a parser that can help parse this output which is not currently exposed.
+  - `run()` - runs the file, and prints output to stdout/stderr.
+  - `query(String) -> Array` -> accepts a Treesitter query as a string (use backticks for multiline strings), and returns an Array of [Object Maps](https://rhai.rs/book/language/object-maps.html) (dictionary). Each element of the array represents one match, and each object map contains captured variable names as the key, and captured values as the value.
+  - `test(Array) -> String` - Can be called on JUnit test files. It takes in an Array of strings representing test method names. These test methods must exist within this test file. Returns output from JUnit as a string.
+  - `kind() -> JavaFileType` - returns the kind of file (Class, Interface, ClassWithMain, Test)
+  - `file_name() -> String` - returns the name of the file.
+  - `path() -> String` - returns the relative path to the file as a string.
+  - `test_methods() -> Array` - Can be called on JUnit test files. It returns an Array of test_method names discovered in the file.
+
+  ```
 
 ### Sample grading script
 
