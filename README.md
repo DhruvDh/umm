@@ -93,6 +93,22 @@ let req_6 = new_by_hidden_test_grader()
     .run();
 
 let reqs = [req_1, req_2, req_3, req_4, req_5, req_6];
+
+// arguements: 
+// - array of grade results
+show_results(reqs);
+
+let total = 0.0;
+let out_of = 0.0;
+for req in reqs {
+    total = total + req.grade();
+    out_of = out_of + req.out_of();
+}
+if total > (0.6 * out_of) {
+    print(total + ";p")
+} else {
+    print(total + ";f")
+}
 ```
 ### Output 
 
@@ -201,7 +217,7 @@ See http://pitest.org for more details.
 │                 Total: 0.00/120.00                  │
 └─────────────────────────────────────────────────────┴
 
-p;0
+f;0
 ```
 ## License
 
