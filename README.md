@@ -6,6 +6,7 @@
   - [Installation](#installation)
   - [Auto-grading](#auto-grading)
     - [Introduction](#introduction-1)
+    - [Sample grading script](#sample-grading-script)
     - [Output](#output)
   - [License](#license)
 
@@ -55,9 +56,35 @@ Here are some structs (classes) to help you get going -
   - `file_name() -> String` - returns the name of the file.
   - `path() -> String` - returns the relative path to the file as a string.
   - `test_methods() -> Array` - Can be called on JUnit test files. It returns an Array of test_method names discovered in the file.
-  ```
+
+- `JavaParser` - a wrapper around a treesitter parser. There should not be a need to use this, most of the time what you want to do is call `query()` on a `JavaFile`.
+  - `new_java_parser()` - a constructor, not meant to be used inside a script. It is ideal if you use `JavaFile`'s `query()`.
+  - `code() -> String` - returns the source code the parser is working with.
+  - `set_code(String)` - a setter for the source code the parser is working with.
+  - `query(String) -> Vec<Dict>` - Currently this method returns a value that cannot be used inside a rhai script, please use `JavaFile`'s `query(String)` instead.
+
+- `Grade` - A struct representing a grade.
+  - `new_grade(float, float) -> Grade` - takes the actual grade received, and the maximum grade as floating point numbers, and returns a `Grade`.
+  - `from_string(String) -> Grade` - takes a string in this format - `"80/100"` and returns a new `Grade`.
+  - `grade() -> float` - a getter for the grade recieved.
+  - `grade(float)` - a setter for the grade received.
+  - `out_of() -> float` - a getter for the maximum grade.
+  - `out_of(float)` a setter for the maximum grade.
+  - `to_string()` - returns the grade in this format as a string - `"80/100"`.
 
 ### Sample grading script
+
+This script is a sample. The script uses several graders, each with its specific function, to evaluate the project and assign a grade.
+
+The first grader, `new_docs_grader()`, is used to evaluate the project's documentation. It takes the project as input, as well as a list of files to be graded, and assigns a grade out of 10 points, with a penalty of 3 points for poor documentation.
+
+The second grader, `new_by_unit_test_grader()`, is used to evaluate the project's unit tests. It takes the project, a list of test files, and a list of expected tests as input, and assigns a grade out of 20 points.
+
+The third grader, `new_unit_test_grader()`, is also used to evaluate the project's unit tests. It takes different inputs than the second grader, such as the names of the target test and class, and a list of excluded methods and avoided calls. It also assigns a grade out of 20 points.
+
+The fourth and fifth graders are similar to the first and second graders but are used to evaluate a different set of files and tests.
+
+The sixth grader, `new_by_hidden_test_grader()`, is used to evaluate the project's performance on hidden tests. It takes the URL of the hidden test files, the name of the test class, and the requirements it is grading and assigns a grade out of 30 points.
 
 ```rust
 let project = new_java_project();
