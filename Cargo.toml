@@ -1,9 +1,11 @@
+cargo-features = ["profile-rustflags"]
+
 [workspace]
 members = ["umm_derive"]
 
 [package]
 name = "umm"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 default-run = "umm"
 license = "MIT"
@@ -24,9 +26,6 @@ colored = "2.0.0"
 serde = { version = "1.0.136", features = ["derive"] }
 serde_json = "1.0.79"
 tabled = "0.5.0"
-nu-ansi-term = "0.46.0"
-reedline = { version = "0.11.0", features = ["clipboard", "system_clipboard"] }
-crossterm = "0.25.0"
 rhai = { version = "1.10.0", features = ["metadata", "decimal", "sync"] }
 self_update = { version = "0.32.0", features = ["rustls"] }
 typed-builder = "0.11.0"

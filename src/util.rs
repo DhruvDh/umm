@@ -55,7 +55,7 @@ pub fn find_files(extension: &str, search_depth: i8, root_dir: &Path) -> Result<
         root_dir.push("**");
     }
 
-    root_dir.push(format!("*.{}", extension));
+    root_dir.push(format!("*.{extension}"));
     let root_dir = root_dir
         .to_str()
         .context("Could not convert root_dir to string")?;
@@ -120,11 +120,11 @@ pub async fn download(url: &str, path: &PathBuf, replace: bool) -> Result<()> {
 
         let mut file = tokio::fs::File::create(path)
             .await
-            .context(format!("Failed to create file at {}", name))?;
+            .context(format!("Failed to create file at {name}"))?;
 
         file.write_all(&bytes)
             .await
-            .context(format!("Failed to write to file at {}", name))
+            .context(format!("Failed to write to file at {name}"))
     }
 }
 

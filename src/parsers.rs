@@ -1,6 +1,6 @@
 use crate::grade::{
-  MutationDiagnostic,
-  JavacDiagnostic
+    JavacDiagnostic,
+    MutationDiagnostic,
 };
 
 peg::parser! {
@@ -70,7 +70,7 @@ peg::parser! {
               path_separator()?
               p:(word() ++ path_separator())
               whitespace()?
-            { p.iter().fold(String::new(), |acc, w| format!("{}/{}", acc, w)) }
+            { p.iter().fold(String::new(), |acc, w| format!("{acc}/{w}")) }
 
         /// matches line numbers (colon followed by numbers, eg. :23)
         rule line_number() -> u32
@@ -95,13 +95,13 @@ peg::parser! {
             {
                 let p = std::path::PathBuf::from(p);
             let name = p.file_name().expect("Could not parse path to file in javac error/warning");
-            
+
             JavacDiagnostic::builder()
                 .path(format!(".{}", p.display()))
                 .file_name(name.to_string_lossy().to_string())
                 .line_number(l)
                 .is_error(d)
-                .message(if d { format!("Error: {}", m) } else { m })
+                .message(if d { format!("Error: {m}") } else { m })
                 .build()
             }
 
@@ -135,7 +135,7 @@ peg::parser! {
               test_method:mutation_test_examined_path()?
               whitespace()?
                 {
-                let test = test_method.unwrap_or_else(|| panic!("Had trouble parsing last column for mutation at {}#{}:{}", source_file_name, source_method, line_no));
+                let test = test_method.unwrap_or_else(|| panic!("Had trouble parsing last column for mutation at {source_file_name}#{source_method}:{line_no}"));
                 let mut test_file_name;
                 let mut test_method;
 
@@ -145,7 +145,7 @@ peg::parser! {
                                 .unwrap()
                                 .to_string()
                                 .split_once(splitter)
-                                .unwrap_or_else(|| panic!("had trouble parsing test_file_class for mutation at {}#{}:{}", source_file_name, source_method, line_no))
+                                .unwrap_or_else(|| panic!("had trouble parsing test_file_class for mutation at {source_file_name}#{source_method}:{line_no}"))
                                 .1
                                 .replace(']', "");
 
@@ -154,7 +154,7 @@ peg::parser! {
                                     .unwrap()
                                     .to_string()
                                     .split_once(splitter)
-                                    .unwrap_or_else(|| panic!("Had trouble parsing test_file_method for mutation at {}#{}:{}", source_file_name, source_method, line_no))
+                                    .unwrap_or_else(|| panic!("Had trouble parsing test_file_method for mutation at {source_file_name}#{source_method}:{line_no}"))
                                     .1
                                     .replace("()]", "");
                 } else {

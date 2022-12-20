@@ -2,6 +2,7 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use std::{
+    fmt::Formatter,
     path::PathBuf,
     process::{
         Command,
@@ -24,7 +25,13 @@ use futures::{
     },
     stream::FuturesUnordered,
 };
-use rhai::EvalAltResult;
+use rhai::Array;
+// Allowed because CustomType is not deprecated, just volatile
+#[allow(deprecated)]
+use rhai::{
+    CustomType,
+    EvalAltResult,
+};
 use serde::{
     Deserialize,
     Serialize,
@@ -76,9 +83,12 @@ pub struct File {
     test_methods: Vec<String>,
     /// Name of tests methods in this file, colored using terminal color codes.
     kind:         FileType,
+    #[serde(skip)]
+    /// The parser for this file
+    parser:       Parser,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 /// Struct representing a Java project.
 /// Any index `i` in any collection in this struct always refers to the same
 /// JavaFile.
@@ -95,21 +105,44 @@ pub struct Project {
     root_dir:   String,
 }
 
+#[derive(Clone)]
 /// A struct that wraps a tree-sitter parser object and source code
 ///
 /// TODO: The source code should not be in here, extract it out
 pub struct Parser {
     /// the source code being parsed
-    code:    String,
-    /// the tree-sitter parser object
-    _parser: tree_sitter::Parser,
+    code:  String,
     /// the parse tree
-    _tree:   Tree,
+    _tree: Option<Tree>,
     /// the tree-sitter java grammar language
-    lang:    tree_sitter::Language,
+    lang:  tree_sitter::Language,
+}
+
+impl Default for Parser {
+    fn default() -> Self {
+        let mut parser = tree_sitter::Parser::new();
+        let code = String::new();
+        parser
+            .set_language(*JAVA_TS_LANG)
+            .expect("Error loading Java grammar");
+        let tree = parser.parse(code, None);
+
+        Self {
+            code:  String::new(),
+            _tree: tree,
+            lang:  *JAVA_TS_LANG,
+        }
+    }
+}
+
+impl std::fmt::Debug for Parser {
+    fn fmt(&self, _: &mut Formatter<'_>) -> std::fmt::Result {
+        Ok(())
+    }
 }
 
 impl Parser {
+    #[generate_rhai_variant(Impl, Fallible)]
     /// Returns a new parser object
     ///
     /// * `source_code`: the source code to be parsed
@@ -126,23 +159,37 @@ impl Parser {
 
         Ok(Self {
             code: source_code,
-            _parser: parser,
-            _tree: tree,
+            _tree: Some(tree),
             lang,
         })
     }
 
+    /// A getter for parser's source code
+    pub fn code(&mut self) -> String {
+        self.code.clone()
+    }
+
+    /// A setter for parser's source code
+    pub fn set_code(&mut self, code: String) {
+        self.code = code;
+    }
+
+    #[generate_rhai_variant(Fallible, Mut)]
     /// Applies a tree sitter query and returns the result as a collection of
     /// HashMaps
     ///
     /// * `q`: the tree-sitter query to be applied
     pub fn query(&self, q: &str) -> Result<Vec<Dict>> {
         let mut results = vec![];
+        let tree = self
+            ._tree
+            .as_ref()
+            .context("Treesitter could not parse code")?;
 
         let query = Query::new(self.lang, q).unwrap();
 
         let mut cursor = QueryCursor::new();
-        let matches = cursor.matches(&query, self._tree.root_node(), self.code.as_bytes());
+        let matches = cursor.matches(&query, tree.root_node(), self.code.as_bytes());
         let capture_names = query.capture_names();
 
         for m in matches {
@@ -171,8 +218,7 @@ impl Parser {
                     .with_context(|| {
                         format!(
                             "Cannot match query result indices with source code for capture name: \
-                             {}.",
-                            name
+                             {name}."
                         )
                     })?;
 
@@ -185,8 +231,21 @@ impl Parser {
     }
 }
 
+// Allowed because CustomType is not deprecated, just volatile
+#[allow(deprecated)]
+impl CustomType for Parser {
+    fn build(mut builder: rhai::TypeBuilder<Self>) {
+        builder
+            .with_name("JavaParser")
+            .with_fn("new_java_parser", Parser::new_script)
+            .with_fn("code", Parser::code)
+            .with_fn("set_code", Parser::set_code)
+            .with_fn("query", Parser::query_mut_script);
+    }
+}
+
 impl File {
-    #[generate_rhai_variant(Impl)]
+    #[generate_rhai_variant(Impl, Fallible)]
     /// Creates a new `File` from `path`
     ///
     /// * `path`: the path to read and try to create a File instance for.
@@ -283,10 +342,11 @@ impl File {
             test_methods,
             kind,
             proper_name,
+            parser,
         })
     }
 
-    #[generate_rhai_variant]
+    #[generate_rhai_variant(Fallible, Mut)]
     /// Utility method to ask javac for documentation lints using the -Xdoclint
     /// flag.
     ///
@@ -321,7 +381,7 @@ impl File {
         Ok(output)
     }
 
-    #[generate_rhai_variant]
+    #[generate_rhai_variant(Fallible, Mut)]
     /// Utility method to check for syntax errors using javac flag.
     /// TODO: instead of printing javac output, return it.
     /// TODO: have all such methods have generated versions that display output
@@ -369,7 +429,7 @@ impl File {
         Ok(())
     }
 
-    #[generate_rhai_variant]
+    #[generate_rhai_variant(Fallible, Mut)]
     /// Utility method to run a java file that has a main method.
     /// TODO: instead of printing javac output, return it.
     /// TODO: have all such methods have generated versions that display output
@@ -405,16 +465,16 @@ impl File {
         Ok(())
     }
 
-    #[generate_rhai_variant]
+    #[generate_rhai_variant(Fallible, Mut)]
     /// A utility method that takes a list of strings (or types that implement
-    /// Into<String>) meant to represent test method names, and runs those
+    /// `Into<String>`) meant to represent test method names, and runs those
     /// tests.
     ///
     /// Returns the output from JUnit as a string. There are parsers in
     /// ['parsers module'][crate::parsers::parser] that helps parse this output.
     ///
     /// * `tests`: list of strings (or types that implement
-    /// Into<String>) meant to represent test method names,
+    /// `Into<String>`) meant to represent test method names,
     pub fn test(&self, tests: Vec<&str>) -> Result<String> {
         self.check()?;
         let tests = {
@@ -432,7 +492,7 @@ impl File {
 
         let tests = tests
             .iter()
-            .map(|s| format!("-m{}", s))
+            .map(|s| format!("-m{s}"))
             .collect::<Vec<String>>();
         let methods: Vec<&str> = tests.iter().map(String::as_str).collect();
 
@@ -481,60 +541,28 @@ impl File {
         self.test_methods.clone()
     }
 
-    #[generate_rhai_variant]
+    /// Get a reference to the file's test methods.
+    pub fn test_methods_mut_script(&mut self) -> Array {
+        self.test_methods().iter().map(|s| s.into()).collect()
+    }
+
     /// treesitter query for this file
     pub fn query(&self, q: &str) -> Result<Vec<Dict>> {
-        let parser = {
-            let source_code = std::fs::read_to_string(&self.path)
-                .with_context(|| format!("Could not read file: {:?}", &self.path))?;
-            Parser::new(source_code, *JAVA_TS_LANG)?
-        };
+        self.parser.query(q)
+    }
 
-        let mut results = vec![];
-
-        let query = Query::new(parser.lang, q).unwrap();
-
-        let mut cursor = QueryCursor::new();
-        let matches = cursor.matches(&query, parser._tree.root_node(), parser.code.as_bytes());
-        let capture_names = query.capture_names();
-
-        for m in matches {
-            let mut result = Dict::new();
-
-            for name in capture_names {
-                let index = query.capture_index_for_name(name);
-                let index = match index {
-                    Some(i) => i,
-                    None => bail!(
-                        "Error while querying source code. Capture name: {} has no index \
-                         associated.",
-                        name
-                    ),
-                };
-
-                let value = m.captures.iter().find(|c| c.index == index);
-                let value = match value {
-                    Some(v) => v,
-                    None => continue,
-                };
-
-                let value = value
-                    .node
-                    .utf8_text(parser.code.as_bytes())
-                    .with_context(|| {
-                        format!(
-                            "Cannot match query result indices with source code for capture name: \
-                             {}.",
-                            name
-                        )
-                    })?;
-
-                result.insert(name.clone(), value.to_string());
+    /// treesitter query for this file
+    pub fn query_mut_script(&mut self, q: &str) -> Result<Array, Box<EvalAltResult>> {
+        match self.parser.query(q) {
+            Ok(v) => {
+                let mut arr = Array::new();
+                for d in v {
+                    arr.push(d.into());
+                }
+                Ok(arr)
             }
-            results.push(result);
+            Err(e) => Err(format!("Failed to query file: {e}").into()),
         }
-
-        Ok(results)
     }
 
     /// Get a reference to the file's path.
@@ -542,14 +570,45 @@ impl File {
         &self.path
     }
 
+    /// Get a reference to the file's path.
+    pub fn path_mut_script(&mut self) -> String {
+        self.path.display().to_string()
+    }
+
     /// Get a reference to the file's proper name.
     pub fn package_name(&self) -> Option<&String> {
         self.package_name.as_ref()
     }
+
+    /// Get a reference to the file's parser.
+    pub fn parser(&self) -> Parser {
+        self.parser.clone()
+    }
+}
+
+// Allowed because CustomType is not deprecated, just volatile
+#[allow(deprecated)]
+impl CustomType for File {
+    fn build(mut builder: rhai::TypeBuilder<Self>) {
+        builder
+            .with_name("JavaFile")
+            .with_fn("new_java_file", File::new_script)
+            .with_fn("check", File::check_mut_script)
+            .with_fn("doc_check", File::doc_check_mut_script)
+            .with_fn("run", File::run_mut_script)
+            .with_fn("test", File::test_mut_script)
+            .with_fn("kind", File::kind)
+            .with_fn("file_name", File::file_name)
+            .with_fn("test_methods", File::test_methods_mut_script)
+            .with_fn("query", File::query_mut_script)
+            .with_fn("package_name", File::package_name)
+            .with_fn("path", File::path_mut_script)
+            .with_fn("parser", File::parser);
+    }
 }
 
 impl Project {
-    #[generate_rhai_variant(Impl)]
+    #[generate_rhai_variant(Impl, Fallible)]
     /// Initializes a Project, by discovering java files in the
     /// [struct@UMM_DIR] directory. Also downloads some `jar`
     /// files required for unit testing and mutation testing.
@@ -624,7 +683,7 @@ impl Project {
         Ok(proj)
     }
 
-    #[generate_rhai_variant]
+    #[generate_rhai_variant(Impl, Mut, Fallible)]
     /// Attempts to identiy the correct file from the project from a partial or
     /// fully formed name as expected by a java compiler.
     ///
@@ -773,11 +832,11 @@ impl Project {
     }
 
     /// Get a reference to the project's files.
-    #[must_use]
     pub fn files(&self) -> &[File] {
         self.files.as_ref()
     }
 
+    #[generate_rhai_variant(Fallible)]
     /// Prints project struct as a json
     pub fn info(&self) -> Result<()> {
         println!("{}", serde_json::to_string(&self)?);
@@ -1096,5 +1155,18 @@ impl Project {
             .await?;
 
         Ok(())
+    }
+}
+
+// Allowed because CustomType is not deprecated, just volatile
+#[allow(deprecated)]
+impl CustomType for Project {
+    fn build(mut builder: rhai::TypeBuilder<Self>) {
+        builder
+            .with_name("JavaProject")
+            .with_fn("new_java_project", Project::new_script)
+            .with_fn("identify", Project::identify_mut_script)
+            .with_fn("files", Project::files)
+            .with_fn("info", Project::info_script);
     }
 }
