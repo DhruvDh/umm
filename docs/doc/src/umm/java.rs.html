@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/java.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>java.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-bf4c5e264196f176.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-a21928845c7a186a.css"><link rel="stylesheet" disabled href="../../static.files/dark-90fc67ff25a42f29.css"><link rel="stylesheet" disabled href="../../static.files/ayu-d75a8bbde915b8ed.css"><script id="default-settings" ></script><script src="../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../static.files/source-script-5cf2e01a42cc9858.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-458bffc4c06ccf37.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../umm/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/java.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>java.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-9def1262ebc682c9.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-ebce58d0a40c3431.css"><link rel="stylesheet" disabled href="../../static.files/dark-f23faae4a2daf9a6.css"><link rel="stylesheet" disabled href="../../static.files/ayu-94f39d4346842c1e.css"><script id="default-settings" ></script><script src="../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../static.files/source-script-5cf2e01a42cc9858.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-c55e1eb52e1886b4.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../umm/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1098,10 +1098,83 @@
 <a href="#1098" id="1098">1098</a>
 <a href="#1099" id="1099">1099</a>
 <a href="#1100" id="1100">1100</a>
+<a href="#1101" id="1101">1101</a>
+<a href="#1102" id="1102">1102</a>
+<a href="#1103" id="1103">1103</a>
+<a href="#1104" id="1104">1104</a>
+<a href="#1105" id="1105">1105</a>
+<a href="#1106" id="1106">1106</a>
+<a href="#1107" id="1107">1107</a>
+<a href="#1108" id="1108">1108</a>
+<a href="#1109" id="1109">1109</a>
+<a href="#1110" id="1110">1110</a>
+<a href="#1111" id="1111">1111</a>
+<a href="#1112" id="1112">1112</a>
+<a href="#1113" id="1113">1113</a>
+<a href="#1114" id="1114">1114</a>
+<a href="#1115" id="1115">1115</a>
+<a href="#1116" id="1116">1116</a>
+<a href="#1117" id="1117">1117</a>
+<a href="#1118" id="1118">1118</a>
+<a href="#1119" id="1119">1119</a>
+<a href="#1120" id="1120">1120</a>
+<a href="#1121" id="1121">1121</a>
+<a href="#1122" id="1122">1122</a>
+<a href="#1123" id="1123">1123</a>
+<a href="#1124" id="1124">1124</a>
+<a href="#1125" id="1125">1125</a>
+<a href="#1126" id="1126">1126</a>
+<a href="#1127" id="1127">1127</a>
+<a href="#1128" id="1128">1128</a>
+<a href="#1129" id="1129">1129</a>
+<a href="#1130" id="1130">1130</a>
+<a href="#1131" id="1131">1131</a>
+<a href="#1132" id="1132">1132</a>
+<a href="#1133" id="1133">1133</a>
+<a href="#1134" id="1134">1134</a>
+<a href="#1135" id="1135">1135</a>
+<a href="#1136" id="1136">1136</a>
+<a href="#1137" id="1137">1137</a>
+<a href="#1138" id="1138">1138</a>
+<a href="#1139" id="1139">1139</a>
+<a href="#1140" id="1140">1140</a>
+<a href="#1141" id="1141">1141</a>
+<a href="#1142" id="1142">1142</a>
+<a href="#1143" id="1143">1143</a>
+<a href="#1144" id="1144">1144</a>
+<a href="#1145" id="1145">1145</a>
+<a href="#1146" id="1146">1146</a>
+<a href="#1147" id="1147">1147</a>
+<a href="#1148" id="1148">1148</a>
+<a href="#1149" id="1149">1149</a>
+<a href="#1150" id="1150">1150</a>
+<a href="#1151" id="1151">1151</a>
+<a href="#1152" id="1152">1152</a>
+<a href="#1153" id="1153">1153</a>
+<a href="#1154" id="1154">1154</a>
+<a href="#1155" id="1155">1155</a>
+<a href="#1156" id="1156">1156</a>
+<a href="#1157" id="1157">1157</a>
+<a href="#1158" id="1158">1158</a>
+<a href="#1159" id="1159">1159</a>
+<a href="#1160" id="1160">1160</a>
+<a href="#1161" id="1161">1161</a>
+<a href="#1162" id="1162">1162</a>
+<a href="#1163" id="1163">1163</a>
+<a href="#1164" id="1164">1164</a>
+<a href="#1165" id="1165">1165</a>
+<a href="#1166" id="1166">1166</a>
+<a href="#1167" id="1167">1167</a>
+<a href="#1168" id="1168">1168</a>
+<a href="#1169" id="1169">1169</a>
+<a href="#1170" id="1170">1170</a>
+<a href="#1171" id="1171">1171</a>
+<a href="#1172" id="1172">1172</a>
 </pre><pre class="rust"><code><span class="attr">#![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
 </span><span class="kw">use </span>std::{
+    fmt::Formatter,
     path::PathBuf,
     process::{
         Command,
@@ -1124,7 +1197,13 @@
     },
     stream::FuturesUnordered,
 };
-<span class="kw">use </span>rhai::EvalAltResult;
+<span class="kw">use </span>rhai::Array;
+<span class="comment">// Allowed because CustomType is not deprecated, just volatile
+</span><span class="attr">#[allow(deprecated)]
+</span><span class="kw">use </span>rhai::{
+    CustomType,
+    EvalAltResult,
+};
 <span class="kw">use </span>serde::{
     Deserialize,
     Serialize,
@@ -1176,6 +1255,9 @@
     </span>test_methods: Vec&lt;String&gt;,
     <span class="doccomment">/// Name of tests methods in this file, colored using terminal color codes.
     </span>kind:         FileType,
+    <span class="attr">#[serde(skip)]
+    </span><span class="doccomment">/// The parser for this file
+    </span>parser:       Parser,
 }
 
 <span class="attr">#[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -1195,22 +1277,45 @@
     </span>root_dir:   String,
 }
 
-<span class="doccomment">/// A struct that wraps a tree-sitter parser object and source code
+<span class="attr">#[derive(Clone)]
+</span><span class="doccomment">/// A struct that wraps a tree-sitter parser object and source code
 ///
 /// TODO: The source code should not be in here, extract it out
 </span><span class="kw">pub struct </span>Parser {
     <span class="doccomment">/// the source code being parsed
-    </span>code:    String,
-    <span class="doccomment">/// the tree-sitter parser object
-    </span>_parser: tree_sitter::Parser,
+    </span>code:  String,
     <span class="doccomment">/// the parse tree
-    </span>_tree:   Tree,
+    </span>_tree: <span class="prelude-ty">Option</span>&lt;Tree&gt;,
     <span class="doccomment">/// the tree-sitter java grammar language
-    </span>lang:    tree_sitter::Language,
+    </span>lang:  tree_sitter::Language,
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>Parser {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>parser = tree_sitter::Parser::new();
+        <span class="kw">let </span>code = String::new();
+        parser
+            .set_language(<span class="kw-2">*</span>JAVA_TS_LANG)
+            .expect(<span class="string">&quot;Error loading Java grammar&quot;</span>);
+        <span class="kw">let </span>tree = parser.parse(code, <span class="prelude-val">None</span>);
+
+        <span class="self">Self </span>{
+            code:  String::new(),
+            _tree: tree,
+            lang:  <span class="kw-2">*</span>JAVA_TS_LANG,
+        }
+    }
+}
+
+<span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span>Parser {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="prelude-val">Ok</span>(())
+    }
 }
 
 <span class="kw">impl </span>Parser {
-    <span class="doccomment">/// Returns a new parser object
+    <span class="attr">#[generate_rhai_variant(Impl, Fallible)]
+    </span><span class="doccomment">/// Returns a new parser object
     ///
     /// * `source_code`: the source code to be parsed
     /// * `lang`: the tree-sitter grammar to use
@@ -1226,23 +1331,37 @@
 
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             code: source_code,
-            _parser: parser,
-            _tree: tree,
+            _tree: <span class="prelude-val">Some</span>(tree),
             lang,
         })
     }
 
-    <span class="doccomment">/// Applies a tree sitter query and returns the result as a collection of
+    <span class="doccomment">/// A getter for parser&#39;s source code
+    </span><span class="kw">pub fn </span>code(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; String {
+        <span class="self">self</span>.code.clone()
+    }
+
+    <span class="doccomment">/// A setter for parser&#39;s source code
+    </span><span class="kw">pub fn </span>set_code(<span class="kw-2">&amp;mut </span><span class="self">self</span>, code: String) {
+        <span class="self">self</span>.code = code;
+    }
+
+    <span class="attr">#[generate_rhai_variant(Fallible, Mut)]
+    </span><span class="doccomment">/// Applies a tree sitter query and returns the result as a collection of
     /// HashMaps
     ///
     /// * `q`: the tree-sitter query to be applied
     </span><span class="kw">pub fn </span>query(<span class="kw-2">&amp;</span><span class="self">self</span>, q: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Dict&gt;&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>results = <span class="macro">vec!</span>[];
+        <span class="kw">let </span>tree = <span class="self">self
+            </span>._tree
+            .as_ref()
+            .context(<span class="string">&quot;Treesitter could not parse code&quot;</span>)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>query = Query::new(<span class="self">self</span>.lang, q).unwrap();
 
         <span class="kw">let </span><span class="kw-2">mut </span>cursor = QueryCursor::new();
-        <span class="kw">let </span>matches = cursor.matches(<span class="kw-2">&amp;</span>query, <span class="self">self</span>._tree.root_node(), <span class="self">self</span>.code.as_bytes());
+        <span class="kw">let </span>matches = cursor.matches(<span class="kw-2">&amp;</span>query, tree.root_node(), <span class="self">self</span>.code.as_bytes());
         <span class="kw">let </span>capture_names = query.capture_names();
 
         <span class="kw">for </span>m <span class="kw">in </span>matches {
@@ -1271,9 +1390,8 @@
                     .with_context(|| {
                         <span class="macro">format!</span>(
                             <span class="string">&quot;Cannot match query result indices with source code for capture name: \
-                             {}.&quot;</span>,
-                            name
-                        )
+                             {name}.&quot;
+                        </span>)
                     })<span class="question-mark">?</span>;
 
                 result.insert(name.clone(), value.to_string());
@@ -1285,8 +1403,21 @@
     }
 }
 
+<span class="comment">// Allowed because CustomType is not deprecated, just volatile
+</span><span class="attr">#[allow(deprecated)]
+</span><span class="kw">impl </span>CustomType <span class="kw">for </span>Parser {
+    <span class="kw">fn </span>build(<span class="kw-2">mut </span>builder: rhai::TypeBuilder&lt;<span class="self">Self</span>&gt;) {
+        builder
+            .with_name(<span class="string">&quot;JavaParser&quot;</span>)
+            .with_fn(<span class="string">&quot;new_java_parser&quot;</span>, Parser::new_script)
+            .with_fn(<span class="string">&quot;code&quot;</span>, Parser::code)
+            .with_fn(<span class="string">&quot;set_code&quot;</span>, Parser::set_code)
+            .with_fn(<span class="string">&quot;query&quot;</span>, Parser::query_mut_script);
+    }
+}
+
 <span class="kw">impl </span>File {
-    <span class="attr">#[generate_rhai_variant(Impl)]
+    <span class="attr">#[generate_rhai_variant(Impl, Fallible)]
     </span><span class="doccomment">/// Creates a new `File` from `path`
     ///
     /// * `path`: the path to read and try to create a File instance for.
@@ -1383,10 +1514,11 @@
             test_methods,
             kind,
             proper_name,
+            parser,
         })
     }
 
-    <span class="attr">#[generate_rhai_variant]
+    <span class="attr">#[generate_rhai_variant(Fallible, Mut)]
     </span><span class="doccomment">/// Utility method to ask javac for documentation lints using the -Xdoclint
     /// flag.
     ///
@@ -1421,7 +1553,7 @@
         <span class="prelude-val">Ok</span>(output)
     }
 
-    <span class="attr">#[generate_rhai_variant]
+    <span class="attr">#[generate_rhai_variant(Fallible, Mut)]
     </span><span class="doccomment">/// Utility method to check for syntax errors using javac flag.
     /// TODO: instead of printing javac output, return it.
     /// TODO: have all such methods have generated versions that display output
@@ -1469,7 +1601,7 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="attr">#[generate_rhai_variant]
+    <span class="attr">#[generate_rhai_variant(Fallible, Mut)]
     </span><span class="doccomment">/// Utility method to run a java file that has a main method.
     /// TODO: instead of printing javac output, return it.
     /// TODO: have all such methods have generated versions that display output
@@ -1505,7 +1637,7 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="attr">#[generate_rhai_variant]
+    <span class="attr">#[generate_rhai_variant(Fallible, Mut)]
     </span><span class="doccomment">/// A utility method that takes a list of strings (or types that implement
     /// `Into&lt;String&gt;`) meant to represent test method names, and runs those
     /// tests.
@@ -1532,7 +1664,7 @@
 
         <span class="kw">let </span>tests = tests
             .iter()
-            .map(|s| <span class="macro">format!</span>(<span class="string">&quot;-m{}&quot;</span>, s))
+            .map(|s| <span class="macro">format!</span>(<span class="string">&quot;-m{s}&quot;</span>))
             .collect::&lt;Vec&lt;String&gt;&gt;();
         <span class="kw">let </span>methods: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = tests.iter().map(String::as_str).collect();
 
@@ -1581,60 +1713,28 @@
         <span class="self">self</span>.test_methods.clone()
     }
 
-    <span class="attr">#[generate_rhai_variant]
-    </span><span class="doccomment">/// treesitter query for this file
+    <span class="doccomment">/// Get a reference to the file&#39;s test methods.
+    </span><span class="kw">pub fn </span>test_methods_mut_script(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; Array {
+        <span class="self">self</span>.test_methods().iter().map(|s| s.into()).collect()
+    }
+
+    <span class="doccomment">/// treesitter query for this file
     </span><span class="kw">pub fn </span>query(<span class="kw-2">&amp;</span><span class="self">self</span>, q: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Dict&gt;&gt; {
-        <span class="kw">let </span>parser = {
-            <span class="kw">let </span>source_code = std::fs::read_to_string(<span class="kw-2">&amp;</span><span class="self">self</span>.path)
-                .with_context(|| <span class="macro">format!</span>(<span class="string">&quot;Could not read file: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.path))<span class="question-mark">?</span>;
-            Parser::new(source_code, <span class="kw-2">*</span>JAVA_TS_LANG)<span class="question-mark">?
-        </span>};
+        <span class="self">self</span>.parser.query(q)
+    }
 
-        <span class="kw">let </span><span class="kw-2">mut </span>results = <span class="macro">vec!</span>[];
-
-        <span class="kw">let </span>query = Query::new(parser.lang, q).unwrap();
-
-        <span class="kw">let </span><span class="kw-2">mut </span>cursor = QueryCursor::new();
-        <span class="kw">let </span>matches = cursor.matches(<span class="kw-2">&amp;</span>query, parser._tree.root_node(), parser.code.as_bytes());
-        <span class="kw">let </span>capture_names = query.capture_names();
-
-        <span class="kw">for </span>m <span class="kw">in </span>matches {
-            <span class="kw">let </span><span class="kw-2">mut </span>result = Dict::new();
-
-            <span class="kw">for </span>name <span class="kw">in </span>capture_names {
-                <span class="kw">let </span>index = query.capture_index_for_name(name);
-                <span class="kw">let </span>index = <span class="kw">match </span>index {
-                    <span class="prelude-val">Some</span>(i) =&gt; i,
-                    <span class="prelude-val">None </span>=&gt; <span class="macro">bail!</span>(
-                        <span class="string">&quot;Error while querying source code. Capture name: {} has no index \
-                         associated.&quot;</span>,
-                        name
-                    ),
-                };
-
-                <span class="kw">let </span>value = m.captures.iter().find(|c| c.index == index);
-                <span class="kw">let </span>value = <span class="kw">match </span>value {
-                    <span class="prelude-val">Some</span>(v) =&gt; v,
-                    <span class="prelude-val">None </span>=&gt; <span class="kw">continue</span>,
-                };
-
-                <span class="kw">let </span>value = value
-                    .node
-                    .utf8_text(parser.code.as_bytes())
-                    .with_context(|| {
-                        <span class="macro">format!</span>(
-                            <span class="string">&quot;Cannot match query result indices with source code for capture name: \
-                             {}.&quot;</span>,
-                            name
-                        )
-                    })<span class="question-mark">?</span>;
-
-                result.insert(name.clone(), value.to_string());
+    <span class="doccomment">/// treesitter query for this file
+    </span><span class="kw">pub fn </span>query_mut_script(<span class="kw-2">&amp;mut </span><span class="self">self</span>, q: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Array, Box&lt;EvalAltResult&gt;&gt; {
+        <span class="kw">match </span><span class="self">self</span>.parser.query(q) {
+            <span class="prelude-val">Ok</span>(v) =&gt; {
+                <span class="kw">let </span><span class="kw-2">mut </span>arr = Array::new();
+                <span class="kw">for </span>d <span class="kw">in </span>v {
+                    arr.push(d.into());
+                }
+                <span class="prelude-val">Ok</span>(arr)
             }
-            results.push(result);
+            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Failed to query file: {e}&quot;</span>).into()),
         }
-
-        <span class="prelude-val">Ok</span>(results)
     }
 
     <span class="doccomment">/// Get a reference to the file&#39;s path.
@@ -1642,14 +1742,45 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>.path
     }
 
+    <span class="doccomment">/// Get a reference to the file&#39;s path.
+    </span><span class="kw">pub fn </span>path_mut_script(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; String {
+        <span class="self">self</span>.path.display().to_string()
+    }
+
     <span class="doccomment">/// Get a reference to the file&#39;s proper name.
     </span><span class="kw">pub fn </span>package_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>String&gt; {
         <span class="self">self</span>.package_name.as_ref()
     }
+
+    <span class="doccomment">/// Get a reference to the file&#39;s parser.
+    </span><span class="kw">pub fn </span>parser(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Parser {
+        <span class="self">self</span>.parser.clone()
+    }
+}
+
+<span class="comment">// Allowed because CustomType is not deprecated, just volatile
+</span><span class="attr">#[allow(deprecated)]
+</span><span class="kw">impl </span>CustomType <span class="kw">for </span>File {
+    <span class="kw">fn </span>build(<span class="kw-2">mut </span>builder: rhai::TypeBuilder&lt;<span class="self">Self</span>&gt;) {
+        builder
+            .with_name(<span class="string">&quot;JavaFile&quot;</span>)
+            .with_fn(<span class="string">&quot;new_java_file&quot;</span>, File::new_script)
+            .with_fn(<span class="string">&quot;check&quot;</span>, File::check_mut_script)
+            .with_fn(<span class="string">&quot;doc_check&quot;</span>, File::doc_check_mut_script)
+            .with_fn(<span class="string">&quot;run&quot;</span>, File::run_mut_script)
+            .with_fn(<span class="string">&quot;test&quot;</span>, File::test_mut_script)
+            .with_fn(<span class="string">&quot;kind&quot;</span>, File::kind)
+            .with_fn(<span class="string">&quot;file_name&quot;</span>, File::file_name)
+            .with_fn(<span class="string">&quot;test_methods&quot;</span>, File::test_methods_mut_script)
+            .with_fn(<span class="string">&quot;query&quot;</span>, File::query_mut_script)
+            .with_fn(<span class="string">&quot;package_name&quot;</span>, File::package_name)
+            .with_fn(<span class="string">&quot;path&quot;</span>, File::path_mut_script)
+            .with_fn(<span class="string">&quot;parser&quot;</span>, File::parser);
+    }
 }
 
 <span class="kw">impl </span>Project {
-    <span class="attr">#[generate_rhai_variant(Impl)]
+    <span class="attr">#[generate_rhai_variant(Impl, Fallible)]
     </span><span class="doccomment">/// Initializes a Project, by discovering java files in the
     /// [struct@UMM_DIR] directory. Also downloads some `jar`
     /// files required for unit testing and mutation testing.
@@ -1724,7 +1855,7 @@
         <span class="prelude-val">Ok</span>(proj)
     }
 
-    <span class="attr">#[generate_rhai_variant]
+    <span class="attr">#[generate_rhai_variant(Impl, Mut, Fallible)]
     </span><span class="doccomment">/// Attempts to identiy the correct file from the project from a partial or
     /// fully formed name as expected by a java compiler.
     ///
@@ -1873,12 +2004,12 @@
     }
 
     <span class="doccomment">/// Get a reference to the project&#39;s files.
-    </span><span class="attr">#[must_use]
     </span><span class="kw">pub fn </span>files(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[File] {
         <span class="self">self</span>.files.as_ref()
     }
 
-    <span class="doccomment">/// Prints project struct as a json
+    <span class="attr">#[generate_rhai_variant(Fallible)]
+    </span><span class="doccomment">/// Prints project struct as a json
     </span><span class="kw">pub fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, serde_json::to_string(<span class="kw-2">&amp;</span><span class="self">self</span>)<span class="question-mark">?</span>);
         <span class="prelude-val">Ok</span>(())
@@ -2198,5 +2329,18 @@
         <span class="prelude-val">Ok</span>(())
     }
 }
+
+<span class="comment">// Allowed because CustomType is not deprecated, just volatile
+</span><span class="attr">#[allow(deprecated)]
+</span><span class="kw">impl </span>CustomType <span class="kw">for </span>Project {
+    <span class="kw">fn </span>build(<span class="kw-2">mut </span>builder: rhai::TypeBuilder&lt;<span class="self">Self</span>&gt;) {
+        builder
+            .with_name(<span class="string">&quot;JavaProject&quot;</span>)
+            .with_fn(<span class="string">&quot;new_java_project&quot;</span>, Project::new_script)
+            .with_fn(<span class="string">&quot;identify&quot;</span>, Project::identify_mut_script)
+            .with_fn(<span class="string">&quot;files&quot;</span>, Project::files)
+            .with_fn(<span class="string">&quot;info&quot;</span>, Project::info_script);
+    }
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="umm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.0-nightly (b3bc6bf31 2022-11-24)" data-search-js="search-df80cc3cb87b6482.js" data-settings-js="settings-7e1cf5cc683233f7.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="umm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.0-nightly (37d7de337 2022-12-12)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>
