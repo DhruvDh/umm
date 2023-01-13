@@ -16,6 +16,7 @@
 
 use anyhow::Result;
 use bpaf::*;
+use dotenvy::dotenv;
 use self_update::cargo_crate_version;
 use tracing::{
     metadata::LevelFilter,
@@ -169,6 +170,8 @@ fn options() -> Cmd {
 }
 
 fn main() -> Result<()> {
+    dotenv().ok();
+
     let fmt = fmt::layer()
         .without_time()
         .with_file(false)

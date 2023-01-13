@@ -36,6 +36,8 @@ futures = "0.3.24"
 tracing = "0.1.36"
 tracing-subscriber = "0.3.15"
 walkdir = "2.3.2"
+dotenvy = "0.15.6"
+fieri = "0.4.0"
 
 [profile.release]
 lto = "fat"
