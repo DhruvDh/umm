@@ -195,6 +195,13 @@ fn main() -> Result<()> {
                 let t = t.iter().map(|i| i.as_str()).collect();
                 Project::new()?.identify(f.as_str())?.test(t)?
             };
+
+            let out = [
+                String::from_utf8(out.stderr)?,
+                String::from_utf8(out.stdout)?,
+            ]
+            .concat();
+
             println!("{out}");
         }
         Cmd::DocCheck(f) => {

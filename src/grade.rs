@@ -3,7 +3,10 @@
 
 use std::{
     fmt::Display,
-    fs::File,
+    fs::{
+        self,
+        File,
+    },
     io::{
         BufRead,
         BufReader,
@@ -17,6 +20,7 @@ use anyhow::{
     Context,
     Result,
 };
+use fieri::completion::CompletionParamBuilder;
 #[allow(deprecated)]
 use rhai::{
     Array,
@@ -45,7 +49,9 @@ use umm_derive::generate_rhai_variant;
 
 use crate::{
     constants::{
+        OPENAI_CLIENT,
         ROOT_DIR,
+        RUNTIME,
         SOURCE_DIR,
     },
     java::Project,
@@ -505,27 +511,96 @@ impl ByUnitTestGrader {
         } else {
             let mut num_tests_passed = 0.0;
             let mut num_tests_total = 0.0;
+            let rt = RUNTIME.handle().clone();
+            let mut feedback = fs::read_to_string("FEEDBACK").unwrap_or_default();
+
             for test_file in test_files {
                 let res = project.identify(test_file.as_str())?.test(Vec::new())?;
+                let mut current_tests_passed = 0.0;
+                let mut current_tests_total = 0.0;
+
+                let res = [
+                    String::from_utf8(res.stderr)?,
+                    String::from_utf8(res.stdout)?,
+                ]
+                .concat();
 
                 for line in res.lines() {
                     let parse_result =
                         parser::num_tests_passed(line).context("While parsing Junit summary table");
                     if let Ok(n) = parse_result {
-                        num_tests_passed = n as f64;
+                        current_tests_passed = n as f64;
                     }
                     let parse_result =
                         parser::num_tests_found(line).context("While parsing Junit summary table");
                     if let Ok(n) = parse_result {
-                        num_tests_total = n as f64;
+                        current_tests_total = n as f64;
                     }
                 }
+
+                if current_tests_passed < current_tests_total {
+                    let mut res = res.clone();
+                    res.truncate(4800);
+                    res = format!("```\n{res}\n```");
+
+                    let prompt = format!(
+                        "{res}\n\n> The above is an JUnit test failure message for a programming \
+                         lab for introductory computer science students.  To help explain the \
+                         issue to the students, we provide the following feedback (in Markdown) \
+                         -\n## About unit tests in `{test_file}`:"
+                    );
+
+                    let params = CompletionParamBuilder::new("text-davinci-003")
+                        .prompt(prompt)
+                        .max_tokens(1500)
+                        .temperature(0.7)
+                        .top_p(1.0)
+                        .frequency_penalty(0.0)
+                        .presence_penalty(0.0)
+                        .build()?;
+
+                    let resp = rt.block_on(async {
+                        // TODO: record entire JSON in daxtabase
+                        fieri::completion::create(&OPENAI_CLIENT, &params).await
+                    })?;
+
+                    match resp.choices().get(0) {
+                        Some(choice) => {
+                            if choice.text().is_empty() {
+                                feedback.push_str("No feedback available.");
+                            } else {
+                                let choice = choice.text();
+                                feedback.push_str(
+                                    format!("\n## About unit tests in `{test_file}`:\n{choice}")
+                                        .as_str(),
+                                );
+                            }
+                        }
+                        None => {
+                            feedback.push_str("No feedback available.");
+                        }
+                    }
+                }
+
+                num_tests_passed += current_tests_passed;
+                num_tests_total += current_tests_total;
             }
             let grade = if num_tests_total != 0.0 {
                 (num_tests_passed / num_tests_total) * out_of
             } else {
                 0.0
             };
+
+            let warning = "> Do note that the above feedback is machine generated, it may not \
+                           always be correct. If it doesn't make sense to you refer to the actual \
+                           error message below. Also not that you can scroll up to see the entire \
+                           error message below.";
+            feedback.push_str("\n\n");
+            feedback.push_str(warning);
+            feedback.push_str("\n----------");
+
+            fs::write("FEEDBACK", feedback.trim())
+                .context("Something went wrong writing FEEDBACK file.")?;
 
             Ok(GradeResult {
                 requirement: req_name,

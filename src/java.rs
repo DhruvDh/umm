@@ -6,6 +6,7 @@ use std::{
     path::PathBuf,
     process::{
         Command,
+        Output,
         Stdio,
     },
 };
@@ -475,7 +476,7 @@ impl File {
     ///
     /// * `tests`: list of strings (or types that implement
     /// `Into<String>`) meant to represent test method names,
-    pub fn test(&self, tests: Vec<&str>) -> Result<String> {
+    pub fn test(&self, tests: Vec<&str>) -> Result<Output> {
         self.check()?;
         let tests = {
             let mut new_tests = Vec::<String>::new();
@@ -496,7 +497,7 @@ impl File {
             .collect::<Vec<String>>();
         let methods: Vec<&str> = tests.iter().map(String::as_str).collect();
 
-        let child = Command::new(java_path()?)
+        Command::new(java_path()?)
             // .stdin(Stdio::inherit())
             // .stdout(Stdio::inherit())
             // .stderr(Stdio::inherit())
@@ -506,6 +507,9 @@ impl File {
                         "-jar",
                         LIB_DIR.join(JUNIT_PLATFORM).as_path().to_str().unwrap(),
                         "--disable-banner",
+                        "--disable-ansi-colors",
+                        "--details-theme=unicode",
+                        "--single-color",
                         "-cp",
                         &classpath()?,
                     ]
@@ -515,15 +519,7 @@ impl File {
                 .concat(),
             )
             .output()
-            .context("Could not issue java command to run the tests for some reason.")?;
-
-        let output = [
-            String::from_utf8(child.stderr)?,
-            String::from_utf8(child.stdout)?,
-        ]
-        .concat();
-
-        Ok(output)
+            .context("Could not issue java command to run the tests for some reason.")
     }
 
     /// Get a reference to the file's kind.

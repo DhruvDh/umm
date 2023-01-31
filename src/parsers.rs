@@ -15,19 +15,19 @@ peg::parser! {
 
         /// matches the keyword "tests successful"
         rule successful_tests()
-            = "tests successful"
+            = " tests successful"
 
         /// matches the keyword "tests found"
         rule found_tests()
-            = "tests found"
+            = " tests found"
 
         /// parses and returns the number of tests passed
         pub rule num_tests_passed() -> u32
-            = "[" whitespace()? l:number() whitespace()? successful_tests() whitespace()? "]" { l }
+            = "[" whitespace()? l:number() successful_tests() whitespace()? "]" { l }
 
         /// parses and returns the number of tests found
         pub rule num_tests_found() -> u32
-            = "[" whitespace()? l:number() whitespace()? found_tests() whitespace()? "]" { l }
+            = "[" whitespace()? l:number() found_tests() whitespace()? "]" { l }
 
         /// matches any path separator, hopefully cross-platform
         rule path_separator() =
