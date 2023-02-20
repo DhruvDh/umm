@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":[["toggle_flag","Pick last passed value between two different flags"],["verbose_and_quiet_by_number","`--verbose` and `--quiet` flags with results encoded as number"],["verbose_by_slice","`--verbose` and `--quiet` flags with results choosen from a slice of values"]]};
