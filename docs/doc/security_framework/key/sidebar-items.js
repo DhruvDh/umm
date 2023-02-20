@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["SecKey","A type representing an encryption key."]]};
+window.SIDEBAR_ITEMS = {"struct":["SecKey"]};

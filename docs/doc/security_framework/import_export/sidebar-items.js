@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["ImportedIdentity","Information about an imported identity."],["Pkcs12ImportOptions","A builder type to import an identity from PKCS#12 formatted data."]]};
+window.SIDEBAR_ITEMS = {"struct":["ImportedIdentity","Pkcs12ImportOptions"]};

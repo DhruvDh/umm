@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["SecAccessGetTypeID",""]]};
+window.SIDEBAR_ITEMS = {"fn":["SecAccessGetTypeID"]};

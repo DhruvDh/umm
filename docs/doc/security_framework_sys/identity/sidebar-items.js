@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["SecIdentityCopyCertificate",""],["SecIdentityCopyPrivateKey",""],["SecIdentityCreateWithCertificate",""],["SecIdentityGetTypeID",""]]};
+window.SIDEBAR_ITEMS = {"fn":["SecIdentityCopyCertificate","SecIdentityCopyPrivateKey","SecIdentityCreateWithCertificate","SecIdentityGetTypeID"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Builder","QueryBuilder struct"],["Postgrest",""]]};
+window.SIDEBAR_ITEMS = {"struct":["Builder","Postgrest"]};

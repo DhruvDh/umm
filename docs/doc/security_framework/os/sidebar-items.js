@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":[["macos","OSX specific extensions."]]};
+window.SIDEBAR_ITEMS = {"mod":["macos"]};

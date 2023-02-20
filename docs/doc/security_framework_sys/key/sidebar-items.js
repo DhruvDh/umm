@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["SecKeyCreateFromData",""],["SecKeyGetTypeID",""]]};
+window.SIDEBAR_ITEMS = {"fn":["SecKeyCreateFromData","SecKeyGetTypeID"]};

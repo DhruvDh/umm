@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"static":[["kSecOIDX509V1SignatureAlgorithm",""]]};
+window.SIDEBAR_ITEMS = {"static":["kSecOIDX509V1SignatureAlgorithm"]};

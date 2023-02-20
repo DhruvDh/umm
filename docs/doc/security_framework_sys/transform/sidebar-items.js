@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["SecTransformExecute",""],["SecTransformGetTypeID",""],["SecTransformSetAttribute",""]],"static":[["kSecTransformInputAttributeName",""]],"type":[["SecTransformRef",""]]};
+window.SIDEBAR_ITEMS = {"fn":["SecTransformExecute","SecTransformGetTypeID","SecTransformSetAttribute"],"static":["kSecTransformInputAttributeName"],"type":["SecTransformRef"]};

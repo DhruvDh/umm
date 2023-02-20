@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/reqwest-0.11.11/src/async_impl/client.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>client.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9def1262ebc682c9.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-ebce58d0a40c3431.css"><link rel="stylesheet" disabled href="../../../static.files/dark-f23faae4a2daf9a6.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-94f39d4346842c1e.css"><script id="default-settings" ></script><script src="../../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../../static.files/source-script-5cf2e01a42cc9858.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-c55e1eb52e1886b4.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../reqwest/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/reqwest-0.11.13/src/async_impl/client.rs`."><title>client.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-1def573a4779b29b.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../reqwest/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2072,6 +2072,64 @@
 <a href="#2072" id="2072">2072</a>
 <a href="#2073" id="2073">2073</a>
 <a href="#2074" id="2074">2074</a>
+<a href="#2075" id="2075">2075</a>
+<a href="#2076" id="2076">2076</a>
+<a href="#2077" id="2077">2077</a>
+<a href="#2078" id="2078">2078</a>
+<a href="#2079" id="2079">2079</a>
+<a href="#2080" id="2080">2080</a>
+<a href="#2081" id="2081">2081</a>
+<a href="#2082" id="2082">2082</a>
+<a href="#2083" id="2083">2083</a>
+<a href="#2084" id="2084">2084</a>
+<a href="#2085" id="2085">2085</a>
+<a href="#2086" id="2086">2086</a>
+<a href="#2087" id="2087">2087</a>
+<a href="#2088" id="2088">2088</a>
+<a href="#2089" id="2089">2089</a>
+<a href="#2090" id="2090">2090</a>
+<a href="#2091" id="2091">2091</a>
+<a href="#2092" id="2092">2092</a>
+<a href="#2093" id="2093">2093</a>
+<a href="#2094" id="2094">2094</a>
+<a href="#2095" id="2095">2095</a>
+<a href="#2096" id="2096">2096</a>
+<a href="#2097" id="2097">2097</a>
+<a href="#2098" id="2098">2098</a>
+<a href="#2099" id="2099">2099</a>
+<a href="#2100" id="2100">2100</a>
+<a href="#2101" id="2101">2101</a>
+<a href="#2102" id="2102">2102</a>
+<a href="#2103" id="2103">2103</a>
+<a href="#2104" id="2104">2104</a>
+<a href="#2105" id="2105">2105</a>
+<a href="#2106" id="2106">2106</a>
+<a href="#2107" id="2107">2107</a>
+<a href="#2108" id="2108">2108</a>
+<a href="#2109" id="2109">2109</a>
+<a href="#2110" id="2110">2110</a>
+<a href="#2111" id="2111">2111</a>
+<a href="#2112" id="2112">2112</a>
+<a href="#2113" id="2113">2113</a>
+<a href="#2114" id="2114">2114</a>
+<a href="#2115" id="2115">2115</a>
+<a href="#2116" id="2116">2116</a>
+<a href="#2117" id="2117">2117</a>
+<a href="#2118" id="2118">2118</a>
+<a href="#2119" id="2119">2119</a>
+<a href="#2120" id="2120">2120</a>
+<a href="#2121" id="2121">2121</a>
+<a href="#2122" id="2122">2122</a>
+<a href="#2123" id="2123">2123</a>
+<a href="#2124" id="2124">2124</a>
+<a href="#2125" id="2125">2125</a>
+<a href="#2126" id="2126">2126</a>
+<a href="#2127" id="2127">2127</a>
+<a href="#2128" id="2128">2128</a>
+<a href="#2129" id="2129">2129</a>
+<a href="#2130" id="2130">2130</a>
+<a href="#2131" id="2131">2131</a>
+<a href="#2132" id="2132">2132</a>
 </pre><pre class="rust"><code><span class="attr">#[cfg(any(feature = <span class="string">&quot;native-tls&quot;</span>, feature = <span class="string">&quot;__rustls&quot;</span>,))]
 </span><span class="kw">use </span>std::any::Any;
 <span class="kw">use </span>std::net::IpAddr;
@@ -2087,7 +2145,7 @@
 };
 <span class="kw">use </span>http::uri::Scheme;
 <span class="kw">use </span>http::Uri;
-<span class="kw">use </span>hyper::client::ResponseFuture;
+<span class="kw">use </span>hyper::client::{HttpConnector, ResponseFuture};
 <span class="attr">#[cfg(feature = <span class="string">&quot;native-tls-crate&quot;</span>)]
 </span><span class="kw">use </span>native_tls_crate::TlsConnector;
 <span class="kw">use </span>pin_project_lite::pin_project;
@@ -2102,9 +2160,12 @@
 <span class="kw">use </span><span class="kw">super</span>::request::{Request, RequestBuilder};
 <span class="kw">use </span><span class="kw">super</span>::response::Response;
 <span class="kw">use </span><span class="kw">super</span>::Body;
-<span class="kw">use </span><span class="kw">crate</span>::connect::{Connector, HttpConnector};
+<span class="kw">use </span><span class="kw">crate</span>::connect::Connector;
 <span class="attr">#[cfg(feature = <span class="string">&quot;cookies&quot;</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::cookie;
+<span class="attr">#[cfg(feature = <span class="string">&quot;trust-dns&quot;</span>)]
+</span><span class="kw">use </span><span class="kw">crate</span>::dns::trust_dns::TrustDnsResolver;
+<span class="kw">use </span><span class="kw">crate</span>::dns::{gai::GaiResolver, DnsResolverWithOverrides, DynResolver, Resolve};
 <span class="kw">use </span><span class="kw">crate</span>::error;
 <span class="kw">use </span><span class="kw">crate</span>::into_url::{expect_uri, try_uri};
 <span class="kw">use </span><span class="kw">crate</span>::redirect::{<span class="self">self</span>, remove_sensitive_headers};
@@ -2154,6 +2215,8 @@
     </span>hostname_verification: bool,
     <span class="attr">#[cfg(feature = <span class="string">&quot;__tls&quot;</span>)]
     </span>certs_verification: bool,
+    <span class="attr">#[cfg(feature = <span class="string">&quot;__tls&quot;</span>)]
+    </span>tls_sni: bool,
     connect_timeout: <span class="prelude-ty">Option</span>&lt;Duration&gt;,
     connection_verbose: bool,
     pool_idle_timeout: <span class="prelude-ty">Option</span>&lt;Duration&gt;,
@@ -2194,7 +2257,8 @@
     trust_dns: bool,
     error: <span class="prelude-ty">Option</span>&lt;<span class="kw">crate</span>::Error&gt;,
     https_only: bool,
-    dns_overrides: HashMap&lt;String, SocketAddr&gt;,
+    dns_overrides: HashMap&lt;String, Vec&lt;SocketAddr&gt;&gt;,
+    dns_resolver: <span class="prelude-ty">Option</span>&lt;Arc&lt;<span class="kw">dyn </span>Resolve&gt;&gt;,
 }
 
 <span class="kw">impl </span>Default <span class="kw">for </span>ClientBuilder {
@@ -2220,6 +2284,8 @@
                 </span>hostname_verification: <span class="bool-val">true</span>,
                 <span class="attr">#[cfg(feature = <span class="string">&quot;__tls&quot;</span>)]
                 </span>certs_verification: <span class="bool-val">true</span>,
+                <span class="attr">#[cfg(feature = <span class="string">&quot;__tls&quot;</span>)]
+                </span>tls_sni: <span class="bool-val">true</span>,
                 connect_timeout: <span class="prelude-val">None</span>,
                 connection_verbose: <span class="bool-val">false</span>,
                 pool_idle_timeout: <span class="prelude-val">Some</span>(Duration::from_secs(<span class="number">90</span>)),
@@ -2262,6 +2328,7 @@
                 </span>cookie_store: <span class="prelude-val">None</span>,
                 https_only: <span class="bool-val">false</span>,
                 dns_overrides: HashMap::new(),
+                dns_resolver: <span class="prelude-val">None</span>,
             },
         }
     }
@@ -2291,25 +2358,23 @@
                 headers.get(USER_AGENT).cloned()
             }
 
-            <span class="kw">let </span>http = <span class="kw">match </span>config.trust_dns {
-                <span class="bool-val">false </span>=&gt; {
-                    <span class="kw">if </span>config.dns_overrides.is_empty() {
-                        HttpConnector::new_gai()
-                    } <span class="kw">else </span>{
-                        HttpConnector::new_gai_with_overrides(config.dns_overrides)
-                    }
-                }
+            <span class="kw">let </span><span class="kw-2">mut </span>resolver: Arc&lt;<span class="kw">dyn </span>Resolve&gt; = <span class="kw">match </span>config.trust_dns {
+                <span class="bool-val">false </span>=&gt; Arc::new(GaiResolver::new()),
                 <span class="attr">#[cfg(feature = <span class="string">&quot;trust-dns&quot;</span>)]
-                </span><span class="bool-val">true </span>=&gt; {
-                    <span class="kw">if </span>config.dns_overrides.is_empty() {
-                        HttpConnector::new_trust_dns()<span class="question-mark">?
-                    </span>} <span class="kw">else </span>{
-                        HttpConnector::new_trust_dns_with_overrides(config.dns_overrides)<span class="question-mark">?
-                    </span>}
-                }
+                </span><span class="bool-val">true </span>=&gt; Arc::new(TrustDnsResolver::new().map_err(<span class="kw">crate</span>::error::builder)<span class="question-mark">?</span>),
                 <span class="attr">#[cfg(not(feature = <span class="string">&quot;trust-dns&quot;</span>))]
                 </span><span class="bool-val">true </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;trust-dns shouldn&#39;t be enabled unless the feature is&quot;</span>),
             };
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(dns_resolver) = config.dns_resolver {
+                resolver = dns_resolver;
+            }
+            <span class="kw">if </span>!config.dns_overrides.is_empty() {
+                resolver = Arc::new(DnsResolverWithOverrides::new(
+                    resolver,
+                    config.dns_overrides,
+                ));
+            }
+            <span class="kw">let </span>http = HttpConnector::new_with_resolver(DynResolver::new(resolver));
 
             <span class="attr">#[cfg(feature = <span class="string">&quot;__tls&quot;</span>)]
             </span><span class="kw">match </span>config.tls {
@@ -2338,6 +2403,8 @@
                     }
 
                     tls.danger_accept_invalid_certs(!config.certs_verification);
+
+                    tls.use_sni(config.tls_sni);
 
                     tls.disable_built_in_roots(!config.tls_built_in_root_certs);
 
@@ -2499,6 +2566,8 @@
                         tls.dangerous()
                             .set_certificate_verifier(Arc::new(NoVerifier));
                     }
+
+                    tls.enable_sni = config.tls_sni;
 
                     <span class="comment">// ALPN protocol
                     </span><span class="kw">match </span>config.http_version_pref {
@@ -3211,6 +3280,28 @@
         <span class="self">self
     </span>}
 
+    <span class="doccomment">/// Controls the use of TLS server name indication.
+    ///
+    /// Defaults to `true`.
+    ///
+    /// # Optional
+    ///
+    /// This requires the optional `default-tls`, `native-tls`, or `rustls-tls(-...)`
+    /// feature to be enabled.
+    </span><span class="attr">#[cfg(feature = <span class="string">&quot;__tls&quot;</span>)]
+    #[cfg_attr(
+        docsrs,
+        doc(cfg(any(
+            feature = <span class="string">&quot;default-tls&quot;</span>,
+            feature = <span class="string">&quot;native-tls&quot;</span>,
+            feature = <span class="string">&quot;rustls-tls&quot;
+        </span>)))
+    )]
+    </span><span class="kw">pub fn </span>tls_sni(<span class="kw-2">mut </span><span class="self">self</span>, tls_sni: bool) -&gt; ClientBuilder {
+        <span class="self">self</span>.config.tls_sni = tls_sni;
+        <span class="self">self
+    </span>}
+
     <span class="doccomment">/// Set the minimum required TLS version for connections.
     ///
     /// By default the TLS backend&#39;s own default is used.
@@ -3388,7 +3479,7 @@
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// Override DNS resolution for specific domains to particular IP addresses.
+    <span class="doccomment">/// Override DNS resolution for specific domains to a particular IP address.
     ///
     /// Warning
     ///
@@ -3396,8 +3487,32 @@
     /// traffic to a particular port you must include this port in the URL
     /// itself, any port in the overridden addr will be ignored and traffic sent
     /// to the conventional port for the given scheme (e.g. 80 for http).
-    </span><span class="kw">pub fn </span>resolve(<span class="kw-2">mut </span><span class="self">self</span>, domain: <span class="kw-2">&amp;</span>str, addr: SocketAddr) -&gt; ClientBuilder {
-        <span class="self">self</span>.config.dns_overrides.insert(domain.to_string(), addr);
+    </span><span class="kw">pub fn </span>resolve(<span class="self">self</span>, domain: <span class="kw-2">&amp;</span>str, addr: SocketAddr) -&gt; ClientBuilder {
+        <span class="self">self</span>.resolve_to_addrs(domain, <span class="kw-2">&amp;</span>[addr])
+    }
+
+    <span class="doccomment">/// Override DNS resolution for specific domains to particular IP addresses.
+    ///
+    /// Warning
+    ///
+    /// Since the DNS protocol has no notion of ports, if you wish to send
+    /// traffic to a particular port you must include this port in the URL
+    /// itself, any port in the overridden addresses will be ignored and traffic sent
+    /// to the conventional port for the given scheme (e.g. 80 for http).
+    </span><span class="kw">pub fn </span>resolve_to_addrs(<span class="kw-2">mut </span><span class="self">self</span>, domain: <span class="kw-2">&amp;</span>str, addrs: <span class="kw-2">&amp;</span>[SocketAddr]) -&gt; ClientBuilder {
+        <span class="self">self</span>.config
+            .dns_overrides
+            .insert(domain.to_string(), addrs.to_vec());
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Override the DNS resolver implementation.
+    ///
+    /// Pass an `Arc` wrapping a trait object implementing `Resolve`.
+    /// Overrides for specific names passed to `resolve` and `resolve_to_addrs` will
+    /// still be applied on top of this resolver.
+    </span><span class="kw">pub fn </span>dns_resolver&lt;R: Resolve + <span class="lifetime">&#39;static</span>&gt;(<span class="kw-2">mut </span><span class="self">self</span>, resolver: Arc&lt;R&gt;) -&gt; ClientBuilder {
+        <span class="self">self</span>.config.dns_resolver = <span class="prelude-val">Some</span>(resolver <span class="kw">as _</span>);
         <span class="self">self
     </span>}
 }
@@ -3753,6 +3868,8 @@
             <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>max_tls_version) = <span class="self">self</span>.max_tls_version {
                 f.field(<span class="string">&quot;max_tls_version&quot;</span>, max_tls_version);
             }
+
+            f.field(<span class="string">&quot;tls_sni&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.tls_sni);
         }
 
         <span class="attr">#[cfg(all(feature = <span class="string">&quot;native-tls-crate&quot;</span>, feature = <span class="string">&quot;__rustls&quot;</span>))]
@@ -4088,7 +4205,6 @@
                 }
             }
 
-            <span class="macro">debug!</span>(<span class="string">&quot;response &#39;{}&#39; for {}&quot;</span>, res.status(), <span class="self">self</span>.url);
             <span class="kw">let </span>res = Response::new(
                 res,
                 <span class="self">self</span>.url.clone(),
@@ -4147,4 +4263,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="reqwest" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.0-nightly (37d7de337 2022-12-12)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="reqwest" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (9aa5c24b7 2023-02-17)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

@@ -1,25 +1,25 @@
-; ModuleID = 'probe5.99f3440b-cgu.0'
-source_filename = "probe5.99f3440b-cgu.0"
+; ModuleID = 'probe5.2b5c8283-cgu.0'
+source_filename = "probe5.2b5c8283-cgu.0"
 target datalayout = "e-m:o-i64:64-i128:128-n32:64-S128"
 target triple = "arm64-apple-macosx11.0.0"
 
-@alloc3 = private unnamed_addr constant <{ [75 x i8] }> <{ [75 x i8] c"/rustc/37d7de337903a558dbeb1e82c844fe915ab8ff25/library/core/src/num/mod.rs" }>, align 1
-@alloc4 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc3, [16 x i8] c"K\00\00\00\00\00\00\00\99\03\00\00\05\00\00\00" }>, align 8
+@alloc3 = private unnamed_addr constant <{ [75 x i8] }> <{ [75 x i8] c"/rustc/9aa5c24b7d763fb98d998819571128ff2eb8a3ca/library/core/src/num/mod.rs" }>, align 1
+@alloc4 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc3, [16 x i8] c"K\00\00\00\00\00\00\00\8D\03\00\00\05\00\00\00" }>, align 8
 @str.0 = internal constant [25 x i8] c"attempt to divide by zero"
 
 ; probe5::probe
 ; Function Attrs: uwtable
-define void @_ZN6probe55probe17h3776890b393474d8E() unnamed_addr #0 {
+define void @_ZN6probe55probe17h291ee83021f8e653E() unnamed_addr #0 {
 start:
   %0 = call i1 @llvm.expect.i1(i1 false, i1 false)
-  br i1 %0, label %panic.i, label %"_ZN4core3num21_$LT$impl$u20$u32$GT$10div_euclid17hd7feb6ce6b004890E.exit"
+  br i1 %0, label %panic.i, label %"_ZN4core3num21_$LT$impl$u20$u32$GT$10div_euclid17h6e84112578ad3287E.exit"
 
 panic.i:                                          ; preds = %start
 ; call core::panicking::panic
-  call void @_ZN4core9panicking5panic17h30b014022a4b5f2fE(ptr align 1 @str.0, i64 25, ptr align 8 @alloc4) #3
+  call void @_ZN4core9panicking5panic17h5811a4b0b9502c12E(ptr align 1 @str.0, i64 25, ptr align 8 @alloc4) #3
   unreachable
 
-"_ZN4core3num21_$LT$impl$u20$u32$GT$10div_euclid17hd7feb6ce6b004890E.exit": ; preds = %start
+"_ZN4core3num21_$LT$impl$u20$u32$GT$10div_euclid17h6e84112578ad3287E.exit": ; preds = %start
   ret void
 }
 
@@ -28,11 +28,11 @@ declare i1 @llvm.expect.i1(i1, i1) #1
 
 ; core::panicking::panic
 ; Function Attrs: cold noinline noreturn uwtable
-declare void @_ZN4core9panicking5panic17h30b014022a4b5f2fE(ptr align 1, i64, ptr align 8) unnamed_addr #2
+declare void @_ZN4core9panicking5panic17h5811a4b0b9502c12E(ptr align 1, i64, ptr align 8) unnamed_addr #2
 
-attributes #0 = { uwtable "frame-pointer"="non-leaf" "target-cpu"="apple-a14" "target-features"="+v8a" }
+attributes #0 = { uwtable "frame-pointer"="non-leaf" "target-cpu"="apple-a14" }
 attributes #1 = { nocallback nofree nosync nounwind readnone willreturn }
-attributes #2 = { cold noinline noreturn uwtable "frame-pointer"="non-leaf" "target-cpu"="apple-a14" "target-features"="+v8a" }
+attributes #2 = { cold noinline noreturn uwtable "frame-pointer"="non-leaf" "target-cpu"="apple-a14" }
 attributes #3 = { noreturn }
 
 !llvm.module.flags = !{!0}
