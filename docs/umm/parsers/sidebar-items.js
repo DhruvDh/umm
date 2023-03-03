@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":[["parser","includes some useful grammars for parsing JUNit/javac/pitest outputs."]]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":[["Color","Available standard ANSI colors for use with `OwoColorize::color` or `OwoColorize::on_color`"]],"mod":[["control","A couple of functions to enable and disable coloring similarly to `colored`"]]};

@@ -1,1 +1,1 @@
-{"rustc_vv":"rustc 1.68.0-nightly (37d7de337 2022-12-12)\nbinary: rustc\ncommit-hash: 37d7de337903a558dbeb1e82c844fe915ab8ff25\ncommit-date: 2022-12-12\nhost: aarch64-apple-darwin\nrelease: 1.68.0-nightly\nLLVM version: 15.0.6\n"}
+{"rustc_vv":"rustc 1.69.0-nightly (9aa5c24b7 2023-02-17)\nbinary: rustc\ncommit-hash: 9aa5c24b7d763fb98d998819571128ff2eb8a3ca\ncommit-date: 2023-02-17\nhost: aarch64-apple-darwin\nrelease: 1.69.0-nightly\nLLVM version: 15.0.7\n"}

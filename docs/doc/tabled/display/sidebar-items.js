@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":[["ExpandedDisplay","ExpandedDisplay display data in a ‘expanded display mode’ from postgress. It may be usefull for a large data sets with a lot of fields."]]};
