@@ -147,14 +147,3 @@ pub async fn download_to_json(url: &str) -> Result<HashMap<String, String>> {
         .await
         .context(format!("Failed to read response as json: {url}"))
 }
-
-/// Counts ChatGPT tokens
-pub fn count_tokens_chatgpt(text: &str) -> Result<i32> {
-    tiktoken_rs::tiktoken::cl100k_base()
-        .map(|bpe| bpe.encode_with_special_tokens(text).len() as i32)
-}
-
-/// Counts text-davinci-003 tokens
-pub fn count_tokens_davinci(text: &str) -> Result<i32> {
-    tiktoken_rs::tiktoken::p50k_base().map(|bpe| bpe.encode_with_special_tokens(text).len() as i32)
-}

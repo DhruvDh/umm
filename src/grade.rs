@@ -520,7 +520,11 @@ impl ByUnitTestGrader {
             let mut num_tests_passed = 0.0;
             let mut num_tests_total = 0.0;
             let rt = RUNTIME.handle().clone();
+
             let mut feedback = fs::read_to_string("FEEDBACK").unwrap_or_default();
+            if !feedback.trim().is_empty() {
+                feedback.push_str("\n---\n");
+            }
 
             for test_file in test_files {
                 let res = project.identify(test_file.as_str())?.test(Vec::new())?;
@@ -561,13 +565,9 @@ impl ByUnitTestGrader {
                          (method/variable names) and snippets of code.\n- If you are unsure, \
                          refer the students to Human teaching assistants.\n- The student will \
                          share autograder output for their lab, assume that the student is stuck \
-                         and needs help.";
-
-                    let max_tokens = 4096
-                        - count_tokens_chatgpt(&format!(
-                            "<|im_start|>system\n{system_message}<|im_end|><|im_start|>Student\\
-                             n{user_message}<|im_end|>",
-                        ))?;
+                         and needs help.\n- Two kinds of feedback are preferred -\n\t- A list of \
+                         pointed questions whose answer will help the student make progress.\n\t- \
+                         A sequence of steps the student can take to make progress.";
 
                     let messages = vec![
                         ChatCompletionMessage {
@@ -582,13 +582,14 @@ impl ByUnitTestGrader {
                         },
                     ];
 
-                    if max_tokens <= 0 {
-                        bail!("Prompt too long for OpenAI API ({max_tokens} tokens)");
-                    }
-
                     let resp = rt.block_on(async {
                         // TODO: record entire JSON in daxtabase
                         ChatCompletion::builder(ModelID::Gpt3_5Turbo, messages.clone())
+                            .temperature(0.51)
+                            .top_p(0.96)
+                            .n(1)
+                            .frequency_penalty(0.0)
+                            .presence_penalty(0.0)
                             .create()
                             .await
                             .expect("1. Something went wrong while using OpenAI api")
@@ -598,20 +599,17 @@ impl ByUnitTestGrader {
                     match resp.choices.first() {
                         Some(choice) => {
                             if choice.message.content.is_empty() {
-                                feedback.push_str("No feedback available.");
+                                feedback.push_str("\n> No feedback available.\n");
                             } else {
                                 let choice = choice.message.content.clone();
                                 feedback.push_str(
-                                    format!(
-                                        "\n## About unit tests in
-                    `{test_file}`:\n{choice}"
-                                    )
-                                    .as_str(),
+                                    format!("\n## About unit tests in `{test_file}`\n\n{choice}\n")
+                                        .as_str(),
                                 );
                             }
                         }
                         None => {
-                            feedback.push_str("No feedback available.");
+                            feedback.push_str("\n> No feedback available.\n");
                         }
                     }
                 }
@@ -625,15 +623,7 @@ impl ByUnitTestGrader {
                 0.0
             };
 
-            let warning = "> Do note that the above feedback is machine generated, it may not \
-                           always be correct. If it doesn't make sense to you refer to the actual \
-                           error message below. Also not that you can scroll up to see the entire \
-                           error message below.";
-            feedback.push_str("\n\n");
-            feedback.push_str(warning);
-            feedback.push_str("\n---");
-
-            fs::write("FEEDBACK", feedback.trim())
+            fs::write("FEEDBACK", feedback)
                 .context("Something went wrong writing FEEDBACK file.")?;
 
             Ok(GradeResult {
