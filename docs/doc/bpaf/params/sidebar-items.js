@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["any","command","env","long","positional","short"],"struct":["NamedArg","ParseAny","ParseArgument","ParseCommand","ParsePositional"]};

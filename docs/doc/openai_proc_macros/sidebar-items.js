@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"macro":["generate_model_id_enum"]};

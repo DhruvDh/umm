@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["FIELDS","VARIANTS"],"enum":["FileType","__Field"],"opaque":[""],"struct":["File","Parser","Project","__FieldVisitor","__Visitor"]};

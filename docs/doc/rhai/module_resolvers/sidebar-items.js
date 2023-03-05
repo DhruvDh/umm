@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DummyModuleResolver","FileModuleResolver","ModuleResolversCollection","StaticModuleResolver"],"trait":["ModuleResolver"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["DenseDFA","SparseDFA"],"mod":["dense","sparse"],"struct":["Regex"],"trait":["DFA","StateID"]};

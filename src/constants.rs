@@ -32,8 +32,6 @@ lazy_static! {
     pub static ref SUPABASE_KEY: String = env::var("SUPABASE_KEY").expect("No SUPABASE_KEY found");
     /// OpenAI api key
     pub static ref OPENAI_KEY: String = env::var("OPENAI_KEY").expect("No OPENAI_KEY found");
-    ///OpenAI api client
-    pub static ref OPENAI_CLIENT: fieri::Client = fieri::Client::new(OPENAI_KEY.clone());
     /// PostGrest client
     pub static ref POSTGREST_CLIENT: Postgrest = Postgrest::new("https://uyancztmzjlekojeproj.supabase.co/rest/v1")
             .insert_header("apiKey", SUPABASE_KEY.clone());

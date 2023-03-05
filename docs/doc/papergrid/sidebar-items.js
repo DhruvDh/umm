@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["DEFAULT_CELL_STYLE"],"enum":["AlignmentHorizontal","AlignmentVertical","Entity"],"fn":["string_width"],"struct":["Border","Grid","Indent","Settings","SplitLine","Style"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ArithmeticPackage","BasicArrayPackage","BasicBlobPackage","BasicFnPackage","BasicIteratorPackage","BasicMapPackage","BasicMathPackage","BasicStringPackage","BasicTimePackage","BitFieldPackage","CorePackage","LanguageCorePackage","LogicPackage","MoreStringPackage","StandardPackage"],"trait":["Package"]};

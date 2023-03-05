@@ -17,10 +17,18 @@ use std::{
 
 use anyhow::{
     anyhow,
+    bail,
     Context,
     Result,
 };
-use fieri::completion::CompletionParamBuilder;
+use openai::{
+    chat::{
+        ChatCompletion,
+        ChatCompletionMessage,
+        ChatCompletionMessageRole,
+    },
+    models::ModelID,
+};
 #[allow(deprecated)]
 use rhai::{
     Array,
@@ -49,7 +57,6 @@ use umm_derive::generate_rhai_variant;
 
 use crate::{
     constants::{
-        OPENAI_CLIENT,
         ROOT_DIR,
         RUNTIME,
         SOURCE_DIR,
@@ -58,6 +65,7 @@ use crate::{
     parsers::parser,
     util::{
         classpath,
+        count_tokens_chatgpt,
         java_path,
     },
 };
@@ -539,40 +547,66 @@ impl ByUnitTestGrader {
                 }
 
                 if current_tests_passed < current_tests_total {
-                    let mut res = res.clone();
-                    res.truncate(4800);
-                    res = format!("```\n{res}\n```");
+                    let mut user_message = res.clone();
+                    user_message.truncate(4830);
+                    user_message = format!("```\n{res}\n```");
 
-                    let prompt = format!(
-                        "{res}\n\n> The above is an JUnit test failure message for a programming \
-                         lab for introductory computer science students.  To help explain the \
-                         issue to the students, we provide the following feedback (in Markdown) \
-                         -\n## About unit tests in `{test_file}`:"
-                    );
+                    let system_message =
+                        "- You are an AI teaching assistant at UNC, Charlotte for students in \
+                         introductory Java programming courses.\n- Your responses show up as \
+                         feedback when students hit `Check Answer` in CodingRooms, an online IDE \
+                         used for programming labs.\n- You always try to be as helpful as \
+                         possible but do not offer solutions or fixes directly.\n- You always \
+                         answer in Markdown, and use code blocks for all identifiers \
+                         (method/variable names) and snippets of code.\n- If you are unsure, \
+                         refer the students to Human teaching assistants.\n- The student will \
+                         share autograder output for their lab, assume that the student is stuck \
+                         and needs help.";
 
-                    let params = CompletionParamBuilder::new("text-davinci-003")
-                        .prompt(prompt)
-                        .max_tokens(1500)
-                        .temperature(0.7)
-                        .top_p(1.0)
-                        .frequency_penalty(0.0)
-                        .presence_penalty(0.0)
-                        .build()?;
+                    let max_tokens = 4096
+                        - count_tokens_chatgpt(&format!(
+                            "<|im_start|>system\n{system_message}<|im_end|><|im_start|>Student\\
+                             n{user_message}<|im_end|>",
+                        ))?;
+
+                    let messages = vec![
+                        ChatCompletionMessage {
+                            role:    ChatCompletionMessageRole::System,
+                            content: system_message.into(),
+                            name:    None,
+                        },
+                        ChatCompletionMessage {
+                            role:    ChatCompletionMessageRole::User,
+                            content: user_message,
+                            name:    Some("Student".into()),
+                        },
+                    ];
+
+                    if max_tokens <= 0 {
+                        bail!("Prompt too long for OpenAI API ({max_tokens} tokens)");
+                    }
 
                     let resp = rt.block_on(async {
                         // TODO: record entire JSON in daxtabase
-                        fieri::completion::create(&OPENAI_CLIENT, &params).await
-                    })?;
+                        ChatCompletion::builder(ModelID::Gpt3_5Turbo, messages.clone())
+                            .create()
+                            .await
+                            .expect("1. Something went wrong while using OpenAI api")
+                            .expect("2. Something went wrong while using OpenAI api")
+                    });
 
-                    match resp.choices().get(0) {
+                    match resp.choices.first() {
                         Some(choice) => {
-                            if choice.text().is_empty() {
+                            if choice.message.content.is_empty() {
                                 feedback.push_str("No feedback available.");
                             } else {
-                                let choice = choice.text();
+                                let choice = choice.message.content.clone();
                                 feedback.push_str(
-                                    format!("\n## About unit tests in `{test_file}`:\n{choice}")
-                                        .as_str(),
+                                    format!(
+                                        "\n## About unit tests in
+                    `{test_file}`:\n{choice}"
+                                    )
+                                    .as_str(),
                                 );
                             }
                         }
@@ -597,7 +631,7 @@ impl ByUnitTestGrader {
                            error message below.";
             feedback.push_str("\n\n");
             feedback.push_str(warning);
-            feedback.push_str("\n----------");
+            feedback.push_str("\n---");
 
             fs::write("FEEDBACK", feedback.trim())
                 .context("Something went wrong writing FEEDBACK file.")?;

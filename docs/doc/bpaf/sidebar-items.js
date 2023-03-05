@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ParseFailure"],"fn":["any","command","env","fail","long","positional","pure","pure_with","short"],"macro":["construct"],"mod":["params","parsers"],"struct":["Args","OptionParser"],"trait":["Parser"]};

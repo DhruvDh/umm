@@ -1,0 +1,12 @@
+/Users/dhruvdh/Dropbox/documents/ITSC 2214/oof/umm/./docs/release/deps/quick_xml-cf9ab2aae6d7b0ae.rmeta: /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/lib.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/errors.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/escapei.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/events/mod.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/events/attributes.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/reader.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/utils.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/writer.rs
+
+/Users/dhruvdh/Dropbox/documents/ITSC 2214/oof/umm/./docs/release/deps/quick_xml-cf9ab2aae6d7b0ae.d: /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/lib.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/errors.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/escapei.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/events/mod.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/events/attributes.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/reader.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/utils.rs /Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/writer.rs
+
+/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/lib.rs:
+/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/errors.rs:
+/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/escapei.rs:
+/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/events/mod.rs:
+/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/events/attributes.rs:
+/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/reader.rs:
+/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/utils.rs:
+/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/quick-xml-0.23.1/src/writer.rs:

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["BASE_URL"],"enum":["ApiResponse"],"macro":["authorization"],"struct":["OpenAiError"]};

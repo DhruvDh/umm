@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["GRAMMAR","HIGHLIGHT_QUERY","NODE_TYPES","TAGGING_QUERY"],"fn":["language"]};
