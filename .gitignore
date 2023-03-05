@@ -3,6 +3,7 @@ history.txt
 .idea
 grading/**/**/*.java
 .env
+.envrc
 
 # Added by cargo
 
