@@ -17,7 +17,6 @@ use std::{
 
 use anyhow::{
     anyhow,
-    bail,
     Context,
     Result,
 };
@@ -561,12 +560,15 @@ impl ByUnitTestGrader {
                          used for programming labs.\n- You always try to be as helpful as \
                          possible but do not offer solutions or fixes directly.\n- You always \
                          answer in Markdown, and use code blocks for all identifiers \
-                         (method/variable names) and snippets of code.\n- If you are unsure, \
-                         refer the students to Human teaching assistants.\n- The student will \
-                         share autograder output for their lab, assume that the student is stuck \
-                         and needs help.\n- Two kinds of feedback are preferred -\n\t- A list of \
-                         pointed questions whose answer will help the student make progress.\n\t- \
-                         A sequence of steps the student can take to make progress.";
+                         (method/variable/class names) and snippets of code.\n- If you are \
+                         unsure, refer the students to Human teaching assistants.\n- A sequence \
+                         of steps, and reasoning behind them, which a student can undertake to \
+                         resolve issues and make progress is very desireable.\n - In case of many \
+                         test failures or compiler errors, guide the student on one or two high \
+                         priority issues that will help the student make progress.\n - Your \
+                         primary objective is to help the student learn and make progress.\n- The \
+                         student will share autograder output for their lab, assume that the \
+                         student is stuck and needs help.";
 
                     let messages = vec![
                         ChatCompletionMessage {
@@ -933,7 +935,7 @@ impl ByHiddenTestGrader {
         let test_source = reqwest::blocking::get(&url)
             .context(format!("Failed to download {url}"))?
             .bytes()
-            .context(format!("Failed to get resobse as bytes: {url}"))?;
+            .context(format!("Failed to get response as bytes: {url}"))?;
 
         let path = ROOT_DIR.join(format!("{test_class_name}.java"));
         let mut file = File::create(&path)?;
