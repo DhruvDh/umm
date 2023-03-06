@@ -159,10 +159,11 @@ for req in reqs {
     total = total + req.grade();
     out_of = out_of + req.out_of();
 }
-if total > (0.6 * out_of) {
-    print(total + ";p")
+
+if total > (0.7 * out_of) {
+    print("p;" + total.to_int())
 } else {
-    print(total + ";f")
+    print("np")
 }
 ```
 ### Output 
