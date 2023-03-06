@@ -65,7 +65,6 @@ use crate::{
     parsers::parser,
     util::{
         classpath,
-        count_tokens_chatgpt,
         java_path,
     },
 };

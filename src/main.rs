@@ -113,7 +113,7 @@ fn options() -> Cmd {
 
     let doc_check = construct!(Cmd::DocCheck(f()))
         .to_options()
-        .command("dock-check")
+        .command("doc-check")
         .help("Check a file for missing javadoc");
 
     let grade = construct!(Cmd::Grade(g()))
