@@ -1087,7 +1087,7 @@ pub fn show_result(results: Array) {
 #[generate_rhai_variant(Fallible)]
 /// Generates a FEEDBACK file after prompting ChatGPT for feedback.
 pub fn generate_feedback(results: Array) -> Result<()> {
-    if env::var("OPENAI_KEY").is_err() {
+    if env::var("OPENAI_API_KEY").is_err() {
         return Ok(()); // skip if no key
     }
 
