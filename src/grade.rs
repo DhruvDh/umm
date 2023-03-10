@@ -847,29 +847,98 @@ impl UnitTestGrader {
             }
             let penalty = diags.len() as u32 * 4;
             eprintln!("Ran mutation tests for {} -", target_test.join(", "));
-            eprintln!("{}", ExpandedDisplay::new(diags));
+            let num_diags = diags.len();
             eprintln!("Problematic mutation test failures printed about.");
+
+            let prompt = if num_diags > 0 {
+                let mut feedback = ExpandedDisplay::new(diags).to_string();
+                eprintln!("{feedback}");
+
+                feedback.truncate(6000);
+
+                Some(vec![
+                    ChatCompletionRequestMessage {
+                        role:    Role::System,
+                        content: SYSTEM_MESSAGE.to_string(),
+                        name:    None,
+                    },
+                    ChatCompletionRequestMessage {
+                        role:    Role::User,
+                        content: feedback,
+                        name:    Some("Student".into()),
+                    },
+                    ChatCompletionRequestMessage {
+                        role:    Role::System,
+                        content: format!(
+                            "> **Note**:\n\t- The autograder is running PiTest mutation testing. \
+                             Target test is {test}, and target class is {class}.\n\t- Assume the \
+                             student is new to mutation testing and does not understand the \
+                             autograder output for mutation testing.\n\t- Sharing examples of \
+                             what each mutators do is prefered.\n\t-  If you are unsure what a \
+                             mutator does ask students to read the 'List of Mutators' document.",
+                            test = target_test.join(", "),
+                            class = target_class.join(", ")
+                        ),
+                        name:    None,
+                    },
+                ])
+            } else {
+                None
+            };
 
             Ok(GradeResult {
                 requirement: req_name,
-                grade:       Grade::new((out_of as u32).saturating_sub(penalty).into(), out_of),
-                reason:      format!("-{penalty} Penalty due to surviving muations"),
-                prompt:      None, // TODO: PROMPT
+                grade: Grade::new((out_of as u32).saturating_sub(penalty).into(), out_of),
+                reason: format!("-{penalty} Penalty due to surviving muations"),
+                prompt,
             })
         } else {
-            let output = [
+            let mut output = [
                 String::from_utf8(child.stderr)?,
                 String::from_utf8(child.stdout)?,
             ]
             .concat();
             eprintln!("{output}");
+            output.truncate(6000);
+
+            let prompt = if !output.is_empty() {
+                Some(vec![
+                    ChatCompletionRequestMessage {
+                        role:    Role::System,
+                        content: SYSTEM_MESSAGE.to_string(),
+                        name:    None,
+                    },
+                    ChatCompletionRequestMessage {
+                        role:    Role::User,
+                        content: output,
+                        name:    Some("Student".into()),
+                    },
+                    ChatCompletionRequestMessage {
+                        role:    Role::System,
+                        content: format!(
+                            "> **Note**:\n\t- The autograder is running PiTest mutation testing. \
+                             Target test is {test}, and target class is {class}.\n\t- Assume the \
+                             student is new to mutation testing and does not understand the \
+                             autograder output for mutation testing.\n\t- Mutation testing can \
+                             only run when all tests are passing, if no mutations are shown \
+                             please explain why to the student and ask them to first ensure the \
+                             tests pass.",
+                            test = target_test.join(", "),
+                            class = target_class.join(", ")
+                        ),
+                        name:    None,
+                    },
+                ])
+            } else {
+                None
+            };
             Ok(GradeResult {
                 requirement: req_name,
                 grade:       Grade::new(0.0, out_of),
                 reason:      String::from(
                     "Something went wrong while running mutation tests, skipping.",
                 ),
-                prompt:      None, // TODO: PROMPT
+                prompt,
             })
         }
     }
