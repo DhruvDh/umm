@@ -30,10 +30,6 @@ lazy_static! {
     pub static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
     /// Supabase public api key
     pub static ref SUPABASE_KEY: String = env::var("SUPABASE_KEY").expect("No SUPABASE_KEY found");
-    /// OpenAI API key
-    pub static ref OPENAI_KEY: String = env::var("OPENAI_KEY").expect("No OPENAI_KEY found");
-    /// OpenAI Client
-    pub static ref OPENAI_CLIENT: async_openai::Client = async_openai::Client::new();
     /// PostGrest client
     pub static ref POSTGREST_CLIENT: Postgrest = Postgrest::new("https://uyancztmzjlekojeproj.supabase.co/rest/v1")
             .insert_header("apiKey", SUPABASE_KEY.clone());

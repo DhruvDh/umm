@@ -2,6 +2,7 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use std::{
+    env,
     fmt::Display,
     fs::{
         self,
@@ -58,7 +59,6 @@ use umm_derive::generate_rhai_variant;
 
 use crate::{
     constants::{
-        OPENAI_CLIENT,
         ROOT_DIR,
         RUNTIME,
         SOURCE_DIR,
@@ -934,8 +934,8 @@ impl UnitTestGrader {
             };
             Ok(GradeResult {
                 requirement: req_name,
-                grade:       Grade::new(0.0, out_of),
-                reason:      String::from(
+                grade: Grade::new(0.0, out_of),
+                reason: String::from(
                     "Something went wrong while running mutation tests, skipping.",
                 ),
                 prompt,
@@ -1087,12 +1087,15 @@ pub fn show_result(results: Array) {
 #[generate_rhai_variant(Fallible)]
 /// Generates a FEEDBACK file after prompting ChatGPT for feedback.
 pub fn generate_feedback(results: Array) -> Result<()> {
+    if env::var("OPENAI_KEY").is_err() {
+        return Ok(()); // skip if no key
+    }
+
     let array = results.clone();
     let now = std::time::Instant::now();
     let rt = RUNTIME.handle().clone();
     let mut handles = vec![];
     let mut names = vec![];
-
     let mut feedback = String::new();
 
     let results: Vec<GradeResult> = results
@@ -1118,7 +1121,9 @@ pub fn generate_feedback(results: Array) -> Result<()> {
             .model("gpt-3.5-turbo-0301")
             .build()?;
 
-        handles.push(rt.spawn(async move { OPENAI_CLIENT.chat().create(request).await }));
+        handles.push(
+            rt.spawn(async move { async_openai::Client::new().chat().create(request).await }),
+        );
     }
 
     let handles = FuturesUnordered::from_iter(handles);
