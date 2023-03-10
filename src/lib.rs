@@ -67,7 +67,8 @@ pub fn grade(name_or_path: &str) -> Result<()> {
         .build_type::<File>()
         .build_type::<Project>()
         .register_fn("clean", clean_script)
-        .register_fn("show_results", show_result);
+        .register_fn("show_results", show_result)
+        .register_fn("generate_feedback", generate_feedback_script);
 
     // println!("{}", engine.gen_fn_signatures(false).join("\n"));
     let script = match std::fs::read_to_string(name_or_path) {

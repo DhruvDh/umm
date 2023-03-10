@@ -20,13 +20,14 @@ use anyhow::{
     Context,
     Result,
 };
-use openai::{
-    chat::{
-        ChatCompletion,
-        ChatCompletionMessage,
-        ChatCompletionMessageRole,
-    },
-    models::ModelID,
+use async_openai::types::{
+    ChatCompletionRequestMessage,
+    CreateChatCompletionRequestArgs,
+    Role,
+};
+use futures::{
+    future::try_join_all,
+    stream::FuturesUnordered,
 };
 #[allow(deprecated)]
 use rhai::{
@@ -41,24 +42,27 @@ use serde::{
 };
 use tabled::{
     display::ExpandedDisplay,
+    object::{
+        Rows,
+        Segment,
+    },
     Alignment,
-    Footer,
-    Full,
-    Header,
-    MaxWidth,
     Modify,
-    Row,
-    Table,
+    Panel,
+    TableIteratorExt,
     Tabled,
+    Width,
 };
 use typed_builder::TypedBuilder;
 use umm_derive::generate_rhai_variant;
 
 use crate::{
     constants::{
+        OPENAI_CLIENT,
         ROOT_DIR,
         RUNTIME,
         SOURCE_DIR,
+        SYSTEM_MESSAGE,
     },
     java::Project,
     parsers::parser,
@@ -131,15 +135,18 @@ impl Display for Grade {
 #[derive(Tabled, Clone, Default)]
 /// A struct to store grading results and display them
 pub struct GradeResult {
-    #[header("Requirement")]
+    #[tabled(rename = "Requirement")]
     /// * `requirement`: refers to Requirement ID
     requirement: String,
-    #[header("Grade")]
+    #[tabled(rename = "Grade")]
     /// * `grade`: grade received for above Requirement
     grade:       Grade,
-    #[header("Reason")]
+    #[tabled(rename = "Reason")]
     /// * `reason`: the reason for penalties applied, if any
     reason:      String,
+    #[tabled(skip)]
+    /// * `prompt`: the prompt for the AI TA
+    prompt:      Option<Vec<ChatCompletionRequestMessage>>,
 }
 
 impl GradeResult {
@@ -186,6 +193,17 @@ impl GradeResult {
         self.grade = self.grade.set_out_of(out_of);
         self
     }
+
+    /// a getter for the prompt
+    pub fn prompt(&mut self) -> Option<Vec<ChatCompletionRequestMessage>> {
+        self.prompt.clone()
+    }
+
+    /// a setter for the prompt
+    pub fn set_prompt(mut self, prompt: Option<Vec<ChatCompletionRequestMessage>>) -> Self {
+        self.prompt = prompt;
+        self
+    }
 }
 
 #[derive(Tabled, Serialize, Deserialize, TypedBuilder)]
@@ -195,20 +213,20 @@ impl GradeResult {
 /// TODO: figure out if the dead code fields are actually needed
 pub struct JavacDiagnostic {
     /// * `path`: path to the file diagnostic is referring to
-    #[header("File")]
+    #[tabled(rename = "File")]
     path:        String,
     /// * `file_name`: name of the file the diagnostic is about
-    #[header(hidden = true)]
+    #[tabled(skip)]
     file_name:   String,
     /// * `line_number`: line number
-    #[header("Line")]
+    #[tabled(rename = "Line")]
     line_number: u32,
     /// * `is_error`: boolean value, is true if error or false if the diagnostic
     ///   is a warning
-    #[header(hidden = true)]
+    #[tabled(skip)]
     is_error:    bool,
     /// * `message`: the diagnostic message
-    #[header("Message")]
+    #[tabled(rename = "Message")]
     message:     String,
 }
 
@@ -219,25 +237,25 @@ pub struct JavacDiagnostic {
 /// TODO: figure out if the dead code fields are actually needed
 pub struct MutationDiagnostic {
     /// * `mutator`: name of the mutator in question
-    #[header("Mutation type")]
+    #[tabled(rename = "Mutation type")]
     mutator:          String,
     /// * `source_method`: name of the source method being mutated
-    #[header("Source method mutated")]
+    #[tabled(rename = "Source method mutated")]
     source_method:    String,
     /// * `line_number`: source line number where mutation occured
-    #[header("Line no. of mutation")]
+    #[tabled(rename = "Line no. of mutation")]
     line_number:      u32,
     /// * `test_method`: name of the test examined
-    #[header("Test examined")]
+    #[tabled(rename = "Test examined")]
     test_method:      String,
     /// * `result`: result of mutation testing
-    #[header("Result")]
+    #[tabled(rename = "Result")]
     result:           String,
     /// * `source_file_name`: name of the source file
-    #[header(hidden = true)]
+    #[tabled(skip)]
     source_file_name: String,
     /// * `test_file_name`: name of the test file
-    #[header(hidden = true)]
+    #[tabled(skip)]
     test_file_name:   String,
 }
 
@@ -330,9 +348,11 @@ impl DocsGrader {
             })
             .try_collect()?;
         let out_of = self.out_of;
+        let mut outputs = vec![];
         for name in &files {
             let file = self.project.identify(name)?;
             let output = file.doc_check()?;
+            outputs.push(output.clone());
             for line in output.lines() {
                 let result = parser::parse_diag(line);
                 match result {
@@ -356,18 +376,61 @@ impl DocsGrader {
         let num_diags = diags.len();
         eprintln!(
             "{}",
-            Table::new(diags)
-                .with(Header(format!("Check javadoc for {}", files.join(", "))))
-                .with(Footer(format!("-{penalty} due to {num_diags} nits")))
-                .with(Modify::new(Row(1..)).with(MaxWidth::wrapping(24)))
-                .with(Modify::new(Full).with(Alignment::center_horizontal()))
+            diags
+                .table()
+                .with(Panel::header(format!(
+                    "Check javadoc for {}",
+                    files.join(", ")
+                )))
+                .with(Panel::footer(format!("-{penalty} due to {num_diags} nits")))
+                .with(Modify::new(Rows::new(1..)).with(Width::wrap(24).keep_words()))
+                .with(
+                    Modify::new(Rows::first())
+                        .with(Alignment::center())
+                        .with(Alignment::center_vertical()),
+                )
+                .with(
+                    Modify::new(Rows::last())
+                        .with(Alignment::center())
+                        .with(Alignment::center_vertical()),
+                )
                 .with(tabled::Style::modern())
         );
 
+        let prompt = if num_diags > 0 {
+            let mut outputs = outputs.join("\n\n---\n\n");
+            outputs.truncate(6000);
+            Some(vec![
+                ChatCompletionRequestMessage {
+                    role:    Role::System,
+                    content: SYSTEM_MESSAGE.to_string(),
+                    name:    None,
+                },
+                ChatCompletionRequestMessage {
+                    role:    Role::User,
+                    content: outputs,
+                    name:    Some("Student".into()),
+                },
+                ChatCompletionRequestMessage {
+                    role:    Role::System,
+                    content: "> **Note**:\n\t- The student is sharing errors and warning \
+                              generated when linting JavaDoc documentation using `javac \
+                              -Xdoclint` flag.\n\t- Sometimes JavaDoc cannot be linted due to \
+                              compiler errors and the compiler errors are shared instead.\n\t- \
+                              Assume student doesn't understand JavaDoc syntax and is working \
+                              with it for the first time."
+                        .to_string(),
+                    name:    None,
+                },
+            ])
+        } else {
+            None
+        };
         Ok(GradeResult {
             requirement: self.req_name,
-            grade:       Grade::new(grade, out_of),
-            reason:      String::from("See above."),
+            grade: Grade::new(grade, out_of),
+            reason: String::from("See above."),
+            prompt,
         })
     }
 }
@@ -513,16 +576,12 @@ impl ByUnitTestGrader {
                 requirement: req_name,
                 grade:       Grade::new(0.0, out_of),
                 reason:      reasons.join("\n"),
+                prompt:      None, // TODO: PROMPT
             })
         } else {
             let mut num_tests_passed = 0.0;
             let mut num_tests_total = 0.0;
-            let rt = RUNTIME.handle().clone();
-
-            let mut feedback = fs::read_to_string("FEEDBACK").unwrap_or_default();
-            if !feedback.trim().is_empty() {
-                feedback.push_str("\n---\n");
-            }
+            let mut messages = vec![];
 
             for test_file in test_files {
                 let res = project.identify(test_file.as_str())?.test(Vec::new())?;
@@ -550,69 +609,21 @@ impl ByUnitTestGrader {
 
                 if current_tests_passed < current_tests_total {
                     let mut user_message = res.clone();
-                    user_message.truncate(4830);
+                    user_message.truncate(6000);
                     user_message = format!("```\n{res}\n```");
 
-                    let system_message =
-                        "- You are an AI teaching assistant at UNC, Charlotte for students in \
-                         introductory Java programming courses.\n- Your responses show up as \
-                         feedback when students hit `Check Answer` in CodingRooms, an online IDE \
-                         used for programming labs.\n- You always try to be as helpful as \
-                         possible but do not offer solutions or fixes directly.\n- You always \
-                         answer in Markdown, and use code blocks for all identifiers \
-                         (method/variable/class names) and snippets of code.\n- If you are \
-                         unsure, refer the students to Human teaching assistants.\n- A sequence \
-                         of steps, and reasoning behind them, which a student can undertake to \
-                         resolve issues and make progress is very desireable.\n - In case of many \
-                         test failures or compiler errors, guide the student on one or two high \
-                         priority issues that will help the student make progress.\n - Your \
-                         primary objective is to help the student learn and make progress.\n- The \
-                         student will share autograder output for their lab, assume that the \
-                         student is stuck and needs help.";
-
-                    let messages = vec![
-                        ChatCompletionMessage {
-                            role:    ChatCompletionMessageRole::System,
-                            content: system_message.into(),
+                    messages = vec![
+                        ChatCompletionRequestMessage {
+                            role:    Role::System,
+                            content: SYSTEM_MESSAGE.to_string(),
                             name:    None,
                         },
-                        ChatCompletionMessage {
-                            role:    ChatCompletionMessageRole::User,
+                        ChatCompletionRequestMessage {
+                            role:    Role::User,
                             content: user_message,
                             name:    Some("Student".into()),
                         },
                     ];
-
-                    let resp = rt.block_on(async {
-                        // TODO: record entire JSON in daxtabase
-                        ChatCompletion::builder(ModelID::Gpt3_5Turbo, messages.clone())
-                            .temperature(0.51)
-                            .top_p(0.96)
-                            .n(1)
-                            .frequency_penalty(0.0)
-                            .presence_penalty(0.0)
-                            .create()
-                            .await
-                            .expect("1. Something went wrong while using OpenAI api")
-                            .expect("2. Something went wrong while using OpenAI api")
-                    });
-
-                    match resp.choices.first() {
-                        Some(choice) => {
-                            if choice.message.content.is_empty() {
-                                feedback.push_str("\n> No feedback available.\n");
-                            } else {
-                                let choice = choice.message.content.clone();
-                                feedback.push_str(
-                                    format!("\n## About unit tests in `{test_file}`\n\n{choice}\n")
-                                        .as_str(),
-                                );
-                            }
-                        }
-                        None => {
-                            feedback.push_str("\n> No feedback available.\n");
-                        }
-                    }
                 }
 
                 num_tests_passed += current_tests_passed;
@@ -624,13 +635,11 @@ impl ByUnitTestGrader {
                 0.0
             };
 
-            fs::write("FEEDBACK", feedback)
-                .context("Something went wrong writing FEEDBACK file.")?;
-
             Ok(GradeResult {
                 requirement: req_name,
                 grade:       Grade::new(grade, out_of),
                 reason:      format!("- {num_tests_passed}/{num_tests_total} tests passing."),
+                prompt:      Some(messages),
             })
         }
     }
@@ -845,6 +854,7 @@ impl UnitTestGrader {
                 requirement: req_name,
                 grade:       Grade::new((out_of as u32).saturating_sub(penalty).into(), out_of),
                 reason:      format!("-{penalty} Penalty due to surviving muations"),
+                prompt:      None, // TODO: PROMPT
             })
         } else {
             let output = [
@@ -859,6 +869,7 @@ impl UnitTestGrader {
                 reason:      String::from(
                     "Something went wrong while running mutation tests, skipping.",
                 ),
+                prompt:      None, // TODO: PROMPT
             })
         }
     }
@@ -982,16 +993,115 @@ pub fn show_result(results: Array) {
     let (grade, out_of) = results.iter().fold((0f64, 0f64), |acc, r| {
         (acc.0 + r.grade.grade, acc.1 + r.grade.out_of)
     });
-
+    // TODO: print out coding rooms result
     eprintln!(
         "{}",
-        Table::new(results)
-            .with(Header("Grading Overview"))
-            .with(Footer(format!("Total: {grade:.2}/{out_of:.2}")))
-            .with(Modify::new(Row(1..)).with(MaxWidth::wrapping(24)))
-            .with(Modify::new(Full).with(Alignment::center_horizontal()))
+        results
+            .table()
+            .with(Panel::header("Grading Overview"))
+            .with(Panel::footer(format!("Total: {grade:.2}/{out_of:.2}")))
+            .with(Modify::new(Rows::new(1..)).with(Width::wrap(24).keep_words()))
+            .with(
+                Modify::new(Rows::first())
+                    .with(Alignment::center())
+                    .with(Alignment::center_vertical()),
+            )
+            .with(
+                Modify::new(Rows::last())
+                    .with(Alignment::center())
+                    .with(Alignment::center_vertical()),
+            )
             .with(tabled::Style::modern())
     );
+}
+
+#[generate_rhai_variant(Fallible)]
+/// Generates a FEEDBACK file after prompting ChatGPT for feedback.
+pub fn generate_feedback(results: Array) -> Result<()> {
+    let array = results.clone();
+    let now = std::time::Instant::now();
+    let rt = RUNTIME.handle().clone();
+    let mut handles = vec![];
+    let mut names = vec![];
+
+    let mut feedback = String::new();
+
+    let results: Vec<GradeResult> = results
+        .iter()
+        .map(|f| f.clone().cast::<GradeResult>())
+        .collect();
+
+    for res in results {
+        let mut res = res.clone();
+
+        if res.prompt().is_none() {
+            continue;
+        }
+
+        names.push(res.requirement());
+        let request = CreateChatCompletionRequestArgs::default()
+            .temperature(0.51)
+            .top_p(0.96)
+            .n(1)
+            .frequency_penalty(0.0)
+            .presence_penalty(0.0)
+            .messages(res.prompt().unwrap())
+            .model("gpt-3.5-turbo-0301")
+            .build()?;
+
+        handles.push(rt.spawn(async move { OPENAI_CLIENT.chat().create(request).await }));
+    }
+
+    let handles = FuturesUnordered::from_iter(handles);
+    let responses = rt.block_on(async { try_join_all(handles).await });
+
+    match responses {
+        Ok(responses) => {
+            for (resp, name) in responses.into_iter().zip(names.iter()) {
+                let resp = resp?;
+                let content = match resp.choices.first() {
+                    Some(choice) => {
+                        if choice.message.content.is_empty() {
+                            "\n> No feedback available (Reason: response content was emtpy).\n"
+                                .into()
+                        } else {
+                            choice.message.content.clone()
+                        }
+                    }
+                    None => {
+                        "\n> No feedback available (Reason: response returned no choices).\n".into()
+                    }
+                };
+
+                feedback.push_str(format!("\n## {name}\n\n{content}\n\n---\n").as_str());
+            }
+        }
+        Err(e) => {
+            feedback.push_str(&format!("\n> Error: {}\n", e));
+        }
+    }
+    let results: Vec<GradeResult> = array
+        .iter()
+        .map(|f| f.clone().cast::<GradeResult>())
+        .collect();
+
+    let results = results
+        .table()
+        .with(Modify::new(Rows::new(1..)).with(Width::wrap(24).keep_words()))
+        .with(
+            Modify::new(Segment::all())
+                .with(Alignment::center())
+                .with(Alignment::center_vertical()),
+        )
+        .with(tabled::Style::markdown())
+        .to_string();
+
+    feedback.push_str(&format!("\n## Grading Overview\n\n{results}\n"));
+
+    fs::write("FEEDBACK", feedback).context("Something went wrong writing FEEDBACK file.")?;
+
+    eprintln!("Generated FEEDBACK in {}ms", now.elapsed().as_millis());
+    Ok(())
 }
 
 // Allowed because CustomType is volatile, not deprecated

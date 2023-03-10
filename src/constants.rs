@@ -30,13 +30,32 @@ lazy_static! {
     pub static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
     /// Supabase public api key
     pub static ref SUPABASE_KEY: String = env::var("SUPABASE_KEY").expect("No SUPABASE_KEY found");
-    /// OpenAI api key
+    /// OpenAI API key
     pub static ref OPENAI_KEY: String = env::var("OPENAI_KEY").expect("No OPENAI_KEY found");
+    /// OpenAI Client
+    pub static ref OPENAI_CLIENT: async_openai::Client = async_openai::Client::new();
     /// PostGrest client
     pub static ref POSTGREST_CLIENT: Postgrest = Postgrest::new("https://uyancztmzjlekojeproj.supabase.co/rest/v1")
             .insert_header("apiKey", SUPABASE_KEY.clone());
     /// Runtime
     pub static ref RUNTIME: tokio::runtime::Runtime = tokio::runtime::Runtime::new().unwrap();
+    /// ChatGPT System Message
+    pub static ref SYSTEM_MESSAGE: String =
+             "- You are an AI teaching assistant at UNC, Charlotte for students in introductory \
+             Java programming courses.\n- Your responses show up as feedback when students hit \
+             `Check Answer` in CodingRooms, an online IDE used for programming labs.\n- You \
+             always try to be as helpful as possible but do not offer solutions or fixes \
+             directly.\n- You always answer in Markdown, and use code blocks for all identifiers \
+             (method/variable/class names) and snippets of code.\n- If you are unsure, refer the \
+             students to human teaching assistants.\n- A sequence of steps, and reasoning behind \
+             them, which a student can undertake to resolve issues and make progress is very \
+             desireable.\n - In case of many test failures or compiler errors, guide the student \
+             on one or two high priority issues that will help the student make progress.\n - \
+             Your primary objective is to help the student learn and make progress.\n- The \
+             student will share autograder output for their lab, assume that the student is stuck \
+             and needs help.\n- Do not explain the same issue multiple times, instead ask the \
+             student to refer to earlier explanation."
+        .into();
 
 }
 
