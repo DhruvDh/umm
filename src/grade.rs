@@ -1111,6 +1111,11 @@ pub fn generate_feedback(results: Array) -> Result<()> {
 
     for res in results.iter().map(|f| f.clone().cast::<GradeResult>()) {
         let mut res = res.clone();
+
+        if res.grade.grade == res.grade.out_of {
+            continue;
+        }
+
         let id = uuid::Uuid::new_v4().to_string();
         let body = PromptRow {
             id:               id.clone(),
@@ -1134,22 +1139,24 @@ pub fn generate_feedback(results: Array) -> Result<()> {
         }));
     }
 
-    let handles = FuturesUnordered::from_iter(handles);
-    rt.block_on(async { try_join_all(handles).await })?
-        .into_iter()
-        .collect::<Result<Vec<Response>, Error>>()?;
+    if !handles.is_empty() {
+        let handles = FuturesUnordered::from_iter(handles);
+        rt.block_on(async { try_join_all(handles).await })?
+            .into_iter()
+            .collect::<Result<Vec<Response>, Error>>()?;
 
-    let mut feedback = String::new();
+        let mut feedback = String::new();
 
-    for (name, id) in names.into_iter().zip(ids.into_iter()) {
-        let link = format!("https://feedback.dhruvdh.com/{id}");
-        feedback = format!(
-            "{feedback}\n- For explanation and feedback on `{name}` (refer rubric), please see \
-             [this link.]({link})"
-        );
+        for (name, id) in names.into_iter().zip(ids.into_iter()) {
+            let link = format!("https://feedback.dhruvdh.com/{id}");
+            feedback = format!(
+                "{feedback}\n- For explanation and feedback on `{name}` (refer rubric), please \
+                 see [this link.]({link})"
+            );
+        }
+
+        fs::write("FEEDBACK", feedback).context("Something went wrong writing FEEDBACK file.")?;
     }
-
-    fs::write("FEEDBACK", feedback).context("Something went wrong writing FEEDBACK file.")?;
 
     Ok(())
 }
