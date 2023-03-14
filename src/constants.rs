@@ -50,7 +50,7 @@ lazy_static! {
              Your primary objective is to help the student learn and make progress.\n- The \
              student will share autograder output for their lab, assume that the student is stuck \
              and needs help.\n- Do not explain the same issue multiple times, instead ask the \
-             student to refer to earlier explanation."
+             student to refer to earlier explanation.\n- Assume student is new to Java."
         .into();
 
 }
