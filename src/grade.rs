@@ -1112,31 +1112,29 @@ pub fn generate_feedback(results: Array) -> Result<()> {
     for res in results.iter().map(|f| f.clone().cast::<GradeResult>()) {
         let mut res = res.clone();
 
-        if res.grade.grade == res.grade.out_of {
-            continue;
+        if res.grade.grade < res.grade.out_of {
+            let id = uuid::Uuid::new_v4().to_string();
+            let body = PromptRow {
+                id:               id.clone(),
+                messages:         res.prompt(),
+                requirement_name: res.requirement(),
+                reason:           res.reason(),
+                grade:            res.grade.to_string(),
+                status:           "not_started".into(),
+            };
+
+            let messages = serde_json::to_string(&body)?;
+
+            names.push(res.requirement());
+            ids.push(id);
+            handles.push(rt.spawn(async {
+                POSTGREST_CLIENT
+                    .from("prompts")
+                    .insert(messages)
+                    .execute()
+                    .await
+            }));
         }
-
-        let id = uuid::Uuid::new_v4().to_string();
-        let body = PromptRow {
-            id:               id.clone(),
-            messages:         res.prompt(),
-            requirement_name: res.requirement(),
-            reason:           res.reason(),
-            grade:            res.grade.to_string(),
-            status:           "not_started".into(),
-        };
-
-        let messages = serde_json::to_string(&body)?;
-
-        names.push(res.requirement());
-        ids.push(id);
-        handles.push(rt.spawn(async {
-            POSTGREST_CLIENT
-                .from("prompts")
-                .insert(messages)
-                .execute()
-                .await
-        }));
     }
 
     if !handles.is_empty() {
