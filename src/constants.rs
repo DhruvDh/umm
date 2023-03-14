@@ -29,7 +29,7 @@ lazy_static! {
     /// Reference to treesitter language struct
     pub static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
     /// Supabase public api key
-    pub static ref SUPABASE_KEY: String = env::var("SUPABASE_KEY").expect("No SUPABASE_KEY found");
+    pub static ref SUPABASE_KEY: String = String::from("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5YW5jenRtempsZWtvamVwcm9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjA4NDA1NzgsImV4cCI6MTk3NjQxNjU3OH0.yMvOYM0AM61v6MRsHUSgO0BPrQHTde2AiKzE0b4H4lo");
     /// PostGrest client
     pub static ref POSTGREST_CLIENT: Postgrest = Postgrest::new("https://uyancztmzjlekojeproj.supabase.co/rest/v1")
             .insert_header("apiKey", SUPABASE_KEY.clone());
