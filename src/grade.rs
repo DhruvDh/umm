@@ -1139,7 +1139,6 @@ pub fn generate_feedback(results: Array) -> Result<()> {
         .block_on(async { try_join_all(handles).await })?
         .into_iter()
         .collect::<Result<Vec<Response>, Error>>()?;
-    dbg!(response);
 
     let mut feedback = String::new();
 

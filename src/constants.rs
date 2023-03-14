@@ -1,10 +1,7 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-use std::{
-    env,
-    path::PathBuf,
-};
+use std::path::PathBuf;
 
 use lazy_static::lazy_static;
 use postgrest::Postgrest;
