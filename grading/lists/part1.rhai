@@ -48,3 +48,5 @@ if total > (0.7 * out_of) {
 } else {
     print(total + ";f")
 }
+
+generate_feedback(reqs);

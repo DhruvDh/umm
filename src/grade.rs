@@ -1135,8 +1135,7 @@ pub fn generate_feedback(results: Array) -> Result<()> {
     }
 
     let handles = FuturesUnordered::from_iter(handles);
-    let response = rt
-        .block_on(async { try_join_all(handles).await })?
+    rt.block_on(async { try_join_all(handles).await })?
         .into_iter()
         .collect::<Result<Vec<Response>, Error>>()?;
 
@@ -1145,7 +1144,7 @@ pub fn generate_feedback(results: Array) -> Result<()> {
     for (name, id) in names.into_iter().zip(ids.into_iter()) {
         let link = format!("https://feedback.dhruvdh.com/{id}");
         feedback = format!(
-            "{feedback}\n- For explanation and feedback on {name} (refer rubric), please see \
+            "{feedback}\n- For explanation and feedback on `{name}` (refer rubric), please see \
              [this link.]({link})"
         );
     }
