@@ -2,7 +2,6 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use std::{
-    env,
     fmt::Display,
     fs::{
         self,
@@ -23,12 +22,15 @@ use anyhow::{
 };
 use async_openai::types::{
     ChatCompletionRequestMessage,
-    CreateChatCompletionRequestArgs,
     Role,
 };
 use futures::{
     future::try_join_all,
     stream::FuturesUnordered,
+};
+use reqwest::{
+    Error,
+    Response,
 };
 #[allow(deprecated)]
 use rhai::{
@@ -43,10 +45,7 @@ use serde::{
 };
 use tabled::{
     display::ExpandedDisplay,
-    object::{
-        Rows,
-        Segment,
-    },
+    object::Rows,
     Alignment,
     Modify,
     Panel,
@@ -59,6 +58,7 @@ use umm_derive::generate_rhai_variant;
 
 use crate::{
     constants::{
+        POSTGREST_CLIENT,
         ROOT_DIR,
         RUNTIME,
         SOURCE_DIR,
@@ -404,7 +404,7 @@ impl DocsGrader {
                 ChatCompletionRequestMessage {
                     role:    Role::System,
                     content: SYSTEM_MESSAGE.to_string(),
-                    name:    None,
+                    name:    Some("Instructor".into()),
                 },
                 ChatCompletionRequestMessage {
                     role:    Role::User,
@@ -420,7 +420,7 @@ impl DocsGrader {
                               Assume student doesn't understand JavaDoc syntax and is working \
                               with it for the first time."
                         .to_string(),
-                    name:    None,
+                    name:    Some("Instructor".into()),
                 },
             ])
         } else {
@@ -616,7 +616,7 @@ impl ByUnitTestGrader {
                         ChatCompletionRequestMessage {
                             role:    Role::System,
                             content: SYSTEM_MESSAGE.to_string(),
-                            name:    None,
+                            name:    Some("Instructor".into()),
                         },
                         ChatCompletionRequestMessage {
                             role:    Role::User,
@@ -860,7 +860,7 @@ impl UnitTestGrader {
                     ChatCompletionRequestMessage {
                         role:    Role::System,
                         content: SYSTEM_MESSAGE.to_string(),
-                        name:    None,
+                        name:    Some("Instructor".into()),
                     },
                     ChatCompletionRequestMessage {
                         role:    Role::User,
@@ -879,7 +879,7 @@ impl UnitTestGrader {
                             test = target_test.join(", "),
                             class = target_class.join(", ")
                         ),
-                        name:    None,
+                        name:    Some("Instructor".into()),
                     },
                 ])
             } else {
@@ -906,7 +906,7 @@ impl UnitTestGrader {
                     ChatCompletionRequestMessage {
                         role:    Role::System,
                         content: SYSTEM_MESSAGE.to_string(),
-                        name:    None,
+                        name:    Some("Instructor".into()),
                     },
                     ChatCompletionRequestMessage {
                         role:    Role::User,
@@ -926,7 +926,7 @@ impl UnitTestGrader {
                             test = target_test.join(", "),
                             class = target_class.join(", ")
                         ),
-                        name:    None,
+                        name:    Some("Instructor".into()),
                     },
                 ])
             } else {
@@ -1084,97 +1084,83 @@ pub fn show_result(results: Array) {
     );
 }
 
+/// Schema for `prompts` table
+#[derive(Serialize)]
+pub struct PromptRow {
+    /// UUID of data entry
+    id:               String,
+    /// ChatGPT message prompt
+    messages:         Option<Vec<ChatCompletionRequestMessage>>,
+    /// Name of the autograder requirement
+    requirement_name: String,
+    /// Reasons for penalty
+    reason:           String,
+    /// Grade/out_of as a string
+    grade:            String,
+    /// Status of prompt response generation - not_started, started, compeleted
+    status:           String,
+}
+
 #[generate_rhai_variant(Fallible)]
 /// Generates a FEEDBACK file after prompting ChatGPT for feedback.
 pub fn generate_feedback(results: Array) -> Result<()> {
-    if env::var("OPENAI_API_KEY").is_err() {
-        return Ok(()); // skip if no key
-    }
-
-    let array = results.clone();
-    let now = std::time::Instant::now();
     let rt = RUNTIME.handle().clone();
     let mut handles = vec![];
     let mut names = vec![];
-    let mut feedback = String::new();
+    let mut ids = vec![];
 
-    let results: Vec<GradeResult> = results
-        .iter()
-        .map(|f| f.clone().cast::<GradeResult>())
-        .collect();
-
-    for res in results {
+    for res in results.iter().map(|f| f.clone().cast::<GradeResult>()) {
         let mut res = res.clone();
 
-        if res.prompt().is_none() {
-            continue;
-        }
+        if res.grade.grade < res.grade.out_of {
+            let id = uuid::Uuid::new_v4().to_string();
+            let body = PromptRow {
+                id:               id.clone(),
+                messages:         res.prompt(),
+                requirement_name: res.requirement(),
+                reason:           res.reason(),
+                grade:            res.grade.to_string(),
+                status:           "not_started".into(),
+            };
 
-        names.push(res.requirement());
-        let request = CreateChatCompletionRequestArgs::default()
-            .temperature(0.51)
-            .top_p(0.96)
-            .n(1)
-            .frequency_penalty(0.0)
-            .presence_penalty(0.0)
-            .messages(res.prompt().unwrap())
-            .model("gpt-3.5-turbo-0301")
-            .build()?;
+            let messages = serde_json::to_string(&body)?;
 
-        handles.push(
-            rt.spawn(async move { async_openai::Client::new().chat().create(request).await }),
-        );
-    }
-
-    let handles = FuturesUnordered::from_iter(handles);
-    let responses = rt.block_on(try_join_all(handles));
-
-    match responses {
-        Ok(responses) => {
-            for (resp, name) in responses.into_iter().zip(names.iter()) {
-                let resp = resp?;
-                let content = match resp.choices.first() {
-                    Some(choice) => {
-                        if choice.message.content.is_empty() {
-                            "\n> No feedback available (Reason: response content was emtpy).\n"
-                                .into()
-                        } else {
-                            choice.message.content.clone()
-                        }
-                    }
-                    None => {
-                        "\n> No feedback available (Reason: response returned no choices).\n".into()
-                    }
-                };
-
-                feedback.push_str(format!("\n## {name}\n\n{content}\n\n---\n").as_str());
-            }
-        }
-        Err(e) => {
-            feedback.push_str(&format!("\n> Error: {}\n", e));
+            names.push(res.requirement());
+            ids.push(id);
+            handles.push(rt.spawn(async {
+                POSTGREST_CLIENT
+                    .from("prompts")
+                    .insert(messages)
+                    .execute()
+                    .await
+            }));
         }
     }
-    let results: Vec<GradeResult> = array
-        .iter()
-        .map(|f| f.clone().cast::<GradeResult>())
-        .collect();
 
-    let results = results
-        .table()
-        .with(Modify::new(Rows::new(1..)).with(Width::wrap(24).keep_words()))
-        .with(
-            Modify::new(Segment::all())
-                .with(Alignment::center())
-                .with(Alignment::center_vertical()),
+    if !handles.is_empty() {
+        let handles = FuturesUnordered::from_iter(handles);
+        rt.block_on(async { try_join_all(handles).await })?
+            .into_iter()
+            .collect::<Result<Vec<Response>, Error>>()?;
+
+        let mut feedback = String::new();
+
+        for (name, id) in names.into_iter().zip(ids.into_iter()) {
+            feedback = format!(
+                "{feedback}\n- For explanation and feedback on `{name}` (refer rubric), please \
+                 see [this link.](\"https://feedback.dhruvdh.com/{id}\")",
+            );
+        }
+
+        fs::write("FEEDBACK", feedback).context("Something went wrong writing FEEDBACK file.")?;
+    } else {
+        fs::write(
+            "FEEDBACK",
+            "Feedback cannot currently be generated for submissions without penalty.",
         )
-        .with(tabled::Style::markdown())
-        .to_string();
+        .context("Something went wrong writing FEEDBACK file.")?;
+    }
 
-    feedback.push_str(&format!("\n## Grading Overview\n\n{results}\n"));
-
-    fs::write("FEEDBACK", feedback).context("Something went wrong writing FEEDBACK file.")?;
-
-    eprintln!("Generated FEEDBACK in {}ms", now.elapsed().as_millis());
     Ok(())
 }
 

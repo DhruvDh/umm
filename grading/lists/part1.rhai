@@ -16,24 +16,15 @@ let req_2 = new_by_unit_test_grader()
     .req_name("ArrayList Unit Tests")
     .run();
 
-let req_3 = new_unit_test_grader()
-    .req_name("ArrayListTest Mutation Testing")
-    .out_of(0.0)
-    .target_test(["DataStructures.ArrayListTest"])
-    .target_class(["DataStructures.ArrayList"])
-    .excluded_methods([])
-    .avoid_calls_to([])
-    .run();
-
-let req_4 = new_by_hidden_test_grader()
-    .url("https://www.dropbox.com/s/0rqscj23uveffcw/ArrayListTest.java?raw=1")
-    .test_class_name("ArrayListTestHidden")
+let req_3 = new_by_hidden_test_grader()
+    .url("https://ummfiles.fra1.digitaloceanspaces.com/grading_scripts%2Flists%2FArrayListHiddenTest.java")
+    .test_class_name("ArrayListHiddenTest")
     .out_of(180.0)
     .req_name("ArrayList Hidden Tests")
     .run();
 
 
-let reqs = [req_1, req_2, req_3, req_4];
+let reqs = [req_1, req_2, req_3];
 
 show_results(reqs);
 
@@ -43,8 +34,13 @@ for req in reqs {
     total = total + req.grade();
     out_of = out_of + req.out_of();
 }
+
 if total > (0.7 * out_of) {
-    print(total + ";p")
+    print("p;" + total.to_int())
 } else {
-    print(total + ";f")
+    print("np")
+}
+
+if (total != out_of) {
+    generate_feedback(reqs);
 }

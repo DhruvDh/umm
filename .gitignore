@@ -4,6 +4,8 @@ history.txt
 grading/**/**/*.java
 .env
 .envrc
+docs/release/build
+docs/release/deps
 
 # Added by cargo
 

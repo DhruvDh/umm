@@ -28,4 +28,6 @@ if total > (0.7 * out_of) {
     print("np")
 }
 
-generate_feedback([req_1, req_2]);
+if (total != out_of) {
+    generate_feedback([req_1, req_2]);
+}
