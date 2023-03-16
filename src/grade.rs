@@ -516,7 +516,7 @@ impl ByUnitTestGrader {
     pub fn grade_by_tests(self) -> Result<GradeResult> {
         let test_files = self.test_files;
         let expected_tests = self.expected_tests;
-        let project = self.project;
+        let project = self.project.clone();
         let out_of = self.out_of;
         let req_name = self.req_name;
 
@@ -616,6 +616,11 @@ impl ByUnitTestGrader {
                         ChatCompletionRequestMessage {
                             role:    Role::System,
                             content: SYSTEM_MESSAGE.to_string(),
+                            name:    Some("Instructor".into()),
+                        },
+                        ChatCompletionRequestMessage {
+                            role:    Role::System,
+                            content: self.project.describe(),
                             name:    Some("Instructor".into()),
                         },
                         ChatCompletionRequestMessage {

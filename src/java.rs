@@ -87,6 +87,8 @@ pub struct File {
     #[serde(skip)]
     /// The parser for this file
     parser:       Parser,
+    /// Conscise description of the file
+    description:  String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -334,6 +336,33 @@ impl File {
             kind
         };
 
+        let description = match kind {
+            FileType::Interface => {
+                let res = parser
+                    .query(INTERFACE_DESCRIPTION_QUERY)
+                    .unwrap_or_default()
+                    .first()
+                    .unwrap_or(&Dict::new())
+                    .get("res")
+                    .unwrap_or(&"Could not parse contents".to_string())
+                    .to_string();
+
+                format!("- Interface: `{}`:\n\n```{res}```", &proper_name)
+            }
+            _ => {
+                let res = parser
+                    .query(CLASS_DESCRIPTION_QUERY)
+                    .unwrap_or_default()
+                    .first()
+                    .unwrap_or(&Dict::new())
+                    .get("res")
+                    .unwrap_or(&"Could not parse contents".to_string())
+                    .to_string();
+
+                format!("- Class: `{}`:\n\n```{res}```", &proper_name)
+            }
+        };
+
         Ok(Self {
             path: path.to_owned(),
             file_name: path.file_name().unwrap().to_str().unwrap().to_string(),
@@ -344,6 +373,7 @@ impl File {
             kind,
             proper_name,
             parser,
+            description,
         })
     }
 
@@ -580,6 +610,11 @@ impl File {
     pub fn parser(&self) -> Parser {
         self.parser.clone()
     }
+
+    /// Get a reference to the file's description.
+    pub fn description(&self) -> String {
+        self.description.clone()
+    }
 }
 
 // Allowed because CustomType is not deprecated, just volatile
@@ -780,13 +815,8 @@ impl Project {
                     .await
             });
 
-            let handles = FuturesUnordered::new();
-            handles.push(handle1);
-            handles.push(handle2);
-            handles.push(handle3);
-            handles.push(handle4);
-            handles.push(handle5);
-            handles.push(handle6);
+            let handles =
+                FuturesUnordered::from_iter([handle1, handle2, handle3, handle4, handle5, handle6]);
 
             futures::future::try_join_all(handles).await?;
         }
@@ -834,6 +864,23 @@ impl Project {
     pub fn info(&self) -> Result<()> {
         println!("{}", serde_json::to_string(&self)?);
         Ok(())
+    }
+
+    /// Returns a short summary of the project, it's files, their fields and
+    /// methods.
+    pub fn describe(&self) -> String {
+        let mut result = String::new();
+        result.push_str(
+            "> What follows is a summary of the student's submission's files, their fields and \
+             methods generated via treesitter queries.\n\n",
+        );
+
+        for f in self.files.iter() {
+            result.push_str(f.description().as_str());
+            result.push_str("\n\n");
+        }
+
+        result
     }
 
     /// Writes a .vscode/tasks.json file for the project.
