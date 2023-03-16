@@ -659,16 +659,13 @@ impl Project {
         let _guard = rt.enter();
         rt.block_on(async {
             let handles = FuturesUnordered::new();
-            let (proj1, proj2, proj3) = (proj.clone(), proj.clone(), proj.clone());
+            let (proj1, proj2) = (proj.clone(), proj.clone());
 
             handles.push(tokio::spawn(async move {
                 proj1.download_libraries_if_needed().await
             }));
             handles.push(tokio::spawn(
                 async move { proj2.update_vscode_settings().await },
-            ));
-            handles.push(tokio::spawn(
-                async move { proj3.update_vscode_tasks().await },
             ));
 
             try_join_all(handles).await

@@ -1127,7 +1127,7 @@ pub fn generate_feedback(results: Array) -> Result<()> {
     }
 
     let handles = FuturesUnordered::from_iter(handles);
-    let responses = rt.block_on(async { try_join_all(handles).await });
+    let responses = rt.block_on(try_join_all(handles));
 
     match responses {
         Ok(responses) => {
