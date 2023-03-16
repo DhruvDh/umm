@@ -46,8 +46,7 @@ lazy_static! {
              on one or two high priority issues that will help the student make progress.\n - \
              Your primary objective is to help the student learn and make progress.\n- The \
              student will share autograder output for their lab, assume that the student is stuck \
-             and needs help.\n- Do not explain the same issue multiple times, instead ask the \
-             student to refer to earlier explanation.\n- Assume student is new to Java."
+             and needs help.\n- Do not explain the same issue multiple times, ask the to refer to previous explanations.\n- Assume student is new to Java.\n - When addressing a specific issue quote the compiler error, stack trace, or test failure message verbatim in a code block."
         .into();
 
 }
