@@ -1146,14 +1146,19 @@ pub fn generate_feedback(results: Array) -> Result<()> {
         let mut feedback = String::new();
 
         for (name, id) in names.into_iter().zip(ids.into_iter()) {
-            let link = format!("https://feedback.dhruvdh.com/{id}");
             feedback = format!(
                 "{feedback}\n- For explanation and feedback on `{name}` (refer rubric), please \
-                 see [this link.]({link})"
+                 see [this link.](\"https://feedback.dhruvdh.com/{id}\")",
             );
         }
 
         fs::write("FEEDBACK", feedback).context("Something went wrong writing FEEDBACK file.")?;
+    } else {
+        fs::write(
+            "FEEDBACK",
+            "Feedback cannot currently be generated for submissions without penalty.",
+        )
+        .context("Something went wrong writing FEEDBACK file.")?;
     }
 
     Ok(())
