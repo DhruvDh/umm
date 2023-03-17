@@ -1153,7 +1153,7 @@ pub fn generate_feedback(results: Array) -> Result<()> {
         for (name, id) in names.into_iter().zip(ids.into_iter()) {
             feedback = format!(
                 "{feedback}\n- For explanation and feedback on `{name}` (refer rubric), please \
-                 see [this link.](\"https://feedback.dhruvdh.com/{id}\")",
+                 see [this link.](https://feedback.dhruvdh.com/{id})",
             );
         }
 
