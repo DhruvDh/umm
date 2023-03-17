@@ -1,8 +1,2 @@
 [build]
 rustdocflags = ["-Z", "unstable-options", "--enable-index-page"]
-
-[target.x86_64-pc-windows-msvc]
-rustflags = ["-C", "target-feature=+crt-s1tatic"]
-
-# [profile.dev]
-# rustflags = ["-Z", "macro-backtrace"]

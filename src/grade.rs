@@ -516,7 +516,7 @@ impl ByUnitTestGrader {
     pub fn grade_by_tests(self) -> Result<GradeResult> {
         let test_files = self.test_files;
         let expected_tests = self.expected_tests;
-        let project = self.project;
+        let project = self.project.clone();
         let out_of = self.out_of;
         let req_name = self.req_name;
 
@@ -616,6 +616,11 @@ impl ByUnitTestGrader {
                         ChatCompletionRequestMessage {
                             role:    Role::System,
                             content: SYSTEM_MESSAGE.to_string(),
+                            name:    Some("Instructor".into()),
+                        },
+                        ChatCompletionRequestMessage {
+                            role:    Role::System,
+                            content: self.project.describe(),
                             name:    Some("Instructor".into()),
                         },
                         ChatCompletionRequestMessage {
@@ -1146,14 +1151,19 @@ pub fn generate_feedback(results: Array) -> Result<()> {
         let mut feedback = String::new();
 
         for (name, id) in names.into_iter().zip(ids.into_iter()) {
-            let link = format!("https://feedback.dhruvdh.com/{id}");
             feedback = format!(
                 "{feedback}\n- For explanation and feedback on `{name}` (refer rubric), please \
-                 see [this link.]({link})"
+                 see [this link.](\"https://feedback.dhruvdh.com/{id}\")",
             );
         }
 
         fs::write("FEEDBACK", feedback).context("Something went wrong writing FEEDBACK file.")?;
+    } else {
+        fs::write(
+            "FEEDBACK",
+            "Feedback cannot currently be generated for submissions without penalty.",
+        )
+        .context("Something went wrong writing FEEDBACK file.")?;
     }
 
     Ok(())

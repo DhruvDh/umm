@@ -46,8 +46,7 @@ lazy_static! {
              on one or two high priority issues that will help the student make progress.\n - \
              Your primary objective is to help the student learn and make progress.\n- The \
              student will share autograder output for their lab, assume that the student is stuck \
-             and needs help.\n- Do not explain the same issue multiple times, instead ask the \
-             student to refer to earlier explanation.\n- Assume student is new to Java."
+             and needs help.\n- Do not explain the same issue multiple times, ask the to refer to previous explanations.\n- Assume student is new to Java.\n - When addressing a specific issue quote the compiler error, stack trace, or test failure message verbatim in a code block."
         .into();
 
 }
@@ -144,5 +143,70 @@ pub const MAIN_METHOD_QUERY: &str = r#"
     (#eq? @return_type "void")
     (#eq? @para_type "String")
     (#eq? @dim "[]")
+)
+"#;
+
+/// Tree-sitter query that returns class declarations and field names, comments.
+/// Only returning class identifier is required, all else are optionally
+/// returned, if found.
+/// * `res`: class, fields, methods declaration
+pub const CLASS_DESCRIPTION_QUERY: &str = r#"
+(program
+  (block_comment)*
+  (line_comment)*
+  (class_declaration 
+  (identifier) @res
+  (type_parameters)* @res
+  (super_interfaces)* @res
+      (class_body
+          ((block_comment)*
+          (line_comment)*
+          (field_declaration) @res)* 
+          ((block_comment)*
+          (line_comment)*
+          (constructor_declaration
+			(modifiers)* @res
+			(identifier) @res
+            (formal_parameters)* @res
+			))*
+          (method_declaration
+          	(modifiers)* @res
+            (marker_annotation)* @res
+            ((type_identifier)*
+             (boolean_type)* 
+		     (void_type)* 
+			 (array_type)*
+             (integral_type)*
+             (floating_point_type)*) @res
+            (identifier) @res
+		    (formal_parameters) @res
+            (throws)* @res
+            )
+      )
+	)
+)
+"#;
+
+/// Tree-sitter query that returns interface declarations and method names,
+/// comments. Only returning interface identifier is required, all else are
+/// optionally returned, if found.
+/// * `res`: interface, constants, methods declaration
+pub const INTERFACE_DESCRIPTION_QUERY: &str = r#"
+(program
+  (block_comment)*
+  (line_comment)*
+  (interface_declaration 
+  (identifier) @res
+  (type_parameters)* @res
+  (extends_interfaces)* @res
+      (interface_body
+          ((block_comment)*
+          (line_comment)*
+          (constant_declaration) @res)* 
+          ((block_comment)*
+          (line_comment)*
+          (method_declaration) @res)*
+      )
+	)
 )
 "#;
