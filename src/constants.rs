@@ -155,32 +155,33 @@ pub const CLASS_DESCRIPTION_QUERY: &str = r#"
   (block_comment)*
   (line_comment)*
   (class_declaration 
-  (identifier) @res
-  (type_parameters)* @res
-  (super_interfaces)* @res
+  (identifier) @className
+  (type_parameters)* @typeParameters
+  (super_interfaces)* @interfaces
       (class_body
           ((block_comment)*
           (line_comment)*
-          (field_declaration) @res)* 
+          (field_declaration)  @field)*
           ((block_comment)*
           (line_comment)*
           (constructor_declaration
-			(modifiers)* @res
-			(identifier) @res
-            (formal_parameters)* @res
+			(modifiers)* @consModifier
+			(identifier) @consIdentifier
+            (formal_parameters)* @consParameters
 			))*
           (method_declaration
-          	(modifiers)* @res
-            (marker_annotation)* @res
+          	(modifiers)* @methodModifier
+            (marker_annotation)* @markerAnnotation
             ((type_identifier)*
+             (generic_type)*
              (boolean_type)* 
 		     (void_type)* 
 			 (array_type)*
              (integral_type)*
-             (floating_point_type)*) @res
-            (identifier) @res
-		    (formal_parameters) @res
-            (throws)* @res
+             (floating_point_type)*) @methodReturnType
+            (identifier) @methodIdentifier
+		    (formal_parameters) @methodParameters
+            (throws)* @methodThrows
             )
       )
 	)

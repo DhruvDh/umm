@@ -872,12 +872,14 @@ impl Project {
         let mut result = String::new();
         result.push_str(
             "> What follows is a summary of the student's submission's files, their fields and \
-             methods generated via treesitter queries.\n\n",
+             methods generated via treesitter queries (Work in progress feature, incomplete \
+             information is presented).\n\n",
         );
 
         for f in self.files.iter() {
-            result.push_str(f.description().as_str());
-            result.push_str("\n\n");
+            result.push_str("- ");
+            result.push_str(f.proper_name.as_str());
+            result.push('\n');
         }
 
         result
