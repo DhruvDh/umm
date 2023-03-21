@@ -1157,7 +1157,8 @@ pub fn generate_feedback(results: Array) -> Result<()> {
             );
         }
 
-        fs::write("FEEDBACK", feedback).context("Something went wrong writing FEEDBACK file.")?;
+        fs::write("FEEDBACK", &feedback).context("Something went wrong writing FEEDBACK file.")?;
+        eprintln!("{}", &feedback);
     } else {
         fs::write(
             "FEEDBACK",
