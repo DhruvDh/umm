@@ -383,11 +383,11 @@ impl File {
                     "- Interface: `{proper_name} {parameters} {extends}`:\n"
                 ));
                 if !consts.trim().is_empty() {
-                    result.push(String::from("\n\tConstants:\n"));
+                    result.push(String::from("\t- Constants:"));
                     result.push(consts);
                 }
                 if !methods.trim().is_empty() {
-                    result.push(String::from("\n\tMethods:\n"));
+                    result.push(String::from("\t- Methods:"));
                     result.push(methods);
                 }
 
@@ -467,15 +467,15 @@ impl File {
                     "- Class: `{proper_name} {parameters} {implements}`:\n"
                 ));
                 if !fields.trim().is_empty() {
-                    result.push(String::from("\n\tFields:\n"));
+                    result.push(String::from("\t- Fields:"));
                     result.push(fields);
                 }
                 if !constructors.trim().is_empty() {
-                    result.push(String::from("\n\tConstructors:\n"));
+                    result.push(String::from("\t- Constructors:"));
                     result.push(constructors);
                 }
                 if !methods.trim().is_empty() {
-                    result.push(String::from("\n\tMethods:\n"));
+                    result.push(String::from("\t- Methods:"));
                     result.push(methods);
                 }
 
