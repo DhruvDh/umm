@@ -624,6 +624,11 @@ impl ByUnitTestGrader {
                             name:    Some("Instructor".into()),
                         },
                         ChatCompletionRequestMessage {
+                            role:    Role::System,
+                            content: self.project.describe(),
+                            name:    Some("Instructor".into()),
+                        },
+                        ChatCompletionRequestMessage {
                             role:    Role::User,
                             content: user_message,
                             name:    Some("Student".into()),
@@ -743,6 +748,7 @@ impl UnitTestGrader {
         let target_class = self.get_target_class();
         let excluded_methods = self.get_excluded_methods();
         let avoid_calls_to = self.get_avoid_calls_to();
+        let project = Project::new()?;
 
         eprintln!("Running Mutation tests -");
         let target_test: Vec<String> = target_test
@@ -868,6 +874,11 @@ impl UnitTestGrader {
                         name:    Some("Instructor".into()),
                     },
                     ChatCompletionRequestMessage {
+                        role:    Role::System,
+                        content: project.describe(),
+                        name:    Some("Instructor".into()),
+                    },
+                    ChatCompletionRequestMessage {
                         role:    Role::User,
                         content: feedback,
                         name:    Some("Student".into()),
@@ -911,6 +922,11 @@ impl UnitTestGrader {
                     ChatCompletionRequestMessage {
                         role:    Role::System,
                         content: SYSTEM_MESSAGE.to_string(),
+                        name:    Some("Instructor".into()),
+                    },
+                    ChatCompletionRequestMessage {
+                        role:    Role::System,
+                        content: project.describe(),
                         name:    Some("Instructor".into()),
                     },
                     ChatCompletionRequestMessage {

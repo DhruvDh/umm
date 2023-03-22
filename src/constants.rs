@@ -63,151 +63,61 @@ pub const JUNIT_PLATFORM: &str = "junit-platform-console-standalone-1.9.0-RC1.ja
 /// Tree-sitter query that returns imports made
 /// * `path`: java name of the import as it appears in the source code.
 /// * `asterisk`: true if the import path ends in an asterisk
-pub const IMPORT_QUERY: &str = r#"
-(import_declaration 
-    (
-        [	
-        	(scoped_identifier) @path           	
-        	(identifier) @path
-        ]
-        (asterisk)? @asterisk
-    )
-)
-"#;
+pub const IMPORT_QUERY: &str = include_str!("queries/import.scm");
 
 /// Tree-sitter query that returns name of the package
 /// * `name`: name of the package
-pub const PACKAGE_QUERY: &str = r#"
-(package_declaration 
-    (identifier) @name
-)
-"#;
+pub const PACKAGE_QUERY: &str = include_str!("queries/package.scm");
 
 /// Tree-sitter query that returns name of the class
 /// * `name`: name of the class
-pub const CLASSNAME_QUERY: &str = r#"
-(
-    class_declaration
-    name: (identifier) @name
-)
-"#;
+pub const CLASSNAME_QUERY: &str = include_str!("queries/class_name.scm");
 
 /// Tree-sitter query that returns name of the interface
 /// * `name`: name of the interface
-pub const INTERFACENAME_QUERY: &str = r#"
-(
-    interface_declaration
-    name: (identifier) @name
-)
-"#;
+pub const INTERFACENAME_QUERY: &str = include_str!("queries/interface_name.scm");
 
 /// Tree-sitter query that returns name of the JUnit `@Test` annotated methods
 /// * `name`: name of the test method
-pub const TEST_ANNOTATION_QUERY: &str = r#"
-(method_declaration
-	(modifiers
-        (annotation
-            name: (identifier) @annotation
-            arguments: (annotation_argument_list)
-        )
-    )
-    name: (identifier) @name
-)
-
-(method_declaration
-	(modifiers
-	(marker_annotation
-    	name: (identifier) @annotation)
-    )
-    name: (identifier) @name
-    (#eq? @annotation "Test")
-)
-"#;
+pub const TEST_ANNOTATION_QUERY: &str = include_str!("queries/test_annotation.scm");
 
 /// Tree-sitter query to check the existence of a main method.
-pub const MAIN_METHOD_QUERY: &str = r#"
-(method_declaration
-	(modifiers) @modifier
-    type: (void_type) @return_type
-    name: (identifier) @name
-    parameters: (formal_parameters
-      (formal_parameter
-          type: (array_type
-          	element: (type_identifier) @para_type
-            dimensions: (dimensions) @dim
-          )
-          name: (identifier) @para_name
-      )
-    )
-    (#eq? @name "main")
-    (#eq? @return_type "void")
-    (#eq? @para_type "String")
-    (#eq? @dim "[]")
-)
-"#;
+pub const MAIN_METHOD_QUERY: &str = include_str!("queries/main_method.scm");
 
-/// Tree-sitter query that returns class declarations and field names, comments.
-/// Only returning class identifier is required, all else are optionally
-/// returned, if found.
-/// * `res`: class, fields, methods declaration
-pub const CLASS_DESCRIPTION_QUERY: &str = r#"
-(program
-  (block_comment)*
-  (line_comment)*
-  (class_declaration 
-  (identifier) @className
-  (type_parameters)* @typeParameters
-  (super_interfaces)* @interfaces
-      (class_body
-          ((block_comment)*
-          (line_comment)*
-          (field_declaration)  @field)*
-          ((block_comment)*
-          (line_comment)*
-          (constructor_declaration
-			(modifiers)* @consModifier
-			(identifier) @consIdentifier
-            (formal_parameters)* @consParameters
-			))*
-          (method_declaration
-          	(modifiers)* @methodModifier
-            (marker_annotation)* @markerAnnotation
-            ((type_identifier)*
-             (generic_type)*
-             (boolean_type)* 
-		     (void_type)* 
-			 (array_type)*
-             (integral_type)*
-             (floating_point_type)*) @methodReturnType
-            (identifier) @methodIdentifier
-		    (formal_parameters) @methodParameters
-            (throws)* @methodThrows
-            )
-      )
-	)
-)
-"#;
+/// Tree-sitter query that returns class declaration statements
+/// * `className`: class name
+/// * `typeParameters`: type parameters
+/// * `interfaces`: interfaces
+pub const CLASS_DECLARATION_QUERY: &str = include_str!("queries/class_declaration.scm");
 
-/// Tree-sitter query that returns interface declarations and method names,
-/// comments. Only returning interface identifier is required, all else are
-/// optionally returned, if found.
-/// * `res`: interface, constants, methods declaration
-pub const INTERFACE_DESCRIPTION_QUERY: &str = r#"
-(program
-  (block_comment)*
-  (line_comment)*
-  (interface_declaration 
-  (identifier) @res
-  (type_parameters)* @res
-  (extends_interfaces)* @res
-      (interface_body
-          ((block_comment)*
-          (line_comment)*
-          (constant_declaration) @res)* 
-          ((block_comment)*
-          (line_comment)*
-          (method_declaration) @res)*
-      )
-	)
-)
-"#;
+/// * `field`: entire field declaration
+pub const CLASS_FIELDS_QUERY: &str = include_str!("queries/class_fields.scm");
+
+/// Tree-sitter query that returns class constructor signatures
+/// * `modifier`: constructor modifiers
+/// * `identifier`: constructor identifier
+/// * `parameters`: constructor parameters
+pub const CLASS_CONSTRUCTOR_QUERY: &str = include_str!("queries/class_constructors.scm");
+
+/// Tree-sitter query that returns class method signatures
+/// * `modifier`: method modifiers
+/// * `annotation`: method annotations
+/// * `returnType`: method return type
+/// * `identifier`: method identifier
+/// * `parameters`: method parameters
+/// * `throws`: method throws
+pub const CLASS_METHOD_QUERY: &str = include_str!("queries/class_methods.scm");
+
+/// Tree-sitter query that returns interface declaration statements
+/// * `identifier`: interface name
+/// * `parameters`: type parameters
+/// * `extends`: extends interfaces
+pub const INTERFACE_DECLARATION_QUERY: &str = include_str!("queries/interface_declaration.scm");
+
+/// Tree-sitter query that returns interface constants
+/// * `constant`: entire constant declaration
+pub const INTERFACE_CONSTANTS_QUERY: &str = include_str!("queries/interface_constants.scm");
+
+/// Tree-sitter query that returns interface methods signatures
+/// * `signature`: entire method signature
+pub const INTERFACE_METHODS_QUERY: &str = include_str!("queries/interface_methods.scm");

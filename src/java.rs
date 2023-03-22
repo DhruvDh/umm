@@ -338,28 +338,104 @@ impl File {
 
         let description = match kind {
             FileType::Interface => {
-                let res = parser
-                    .query(INTERFACE_DESCRIPTION_QUERY)
-                    .unwrap_or_default()
-                    .first()
-                    .unwrap_or(&Dict::new())
-                    .get("res")
-                    .unwrap_or(&"Could not parse contents".to_string())
-                    .to_string();
+                let empty_dict = Dict::new();
+                let empty = String::new();
+                let not_found = String::from("[NOT FOUND]");
 
-                format!("- Interface: `{}`:\n\n```{res}```", &proper_name)
+                let query_result = parser
+                    .query(INTERFACE_DECLARATION_QUERY)
+                    .unwrap_or_default();
+                let declaration = query_result.first().unwrap_or(&empty_dict);
+
+                let name = declaration.get("identifier").unwrap_or(&not_found);
+                let parameters = declaration.get("parameters").unwrap_or(&empty);
+                let extends = declaration.get("extends").unwrap_or(&empty);
+
+                let consts = parser
+                    .query(INTERFACE_CONSTANTS_QUERY)
+                    .unwrap_or_default()
+                    .iter()
+                    .map(|c| {
+                        let name = c.get("constant").unwrap_or(&not_found);
+                        format!("\t\t- `{}`", name)
+                    })
+                    .collect::<Vec<String>>()
+                    .join("\n");
+
+                let methods = parser
+                    .query(INTERFACE_METHODS_QUERY)
+                    .unwrap_or_default()
+                    .iter()
+                    .map(|m| {
+                        let sig = m.get("signature").unwrap_or(&not_found);
+                        format!("\t\t- `{}`", sig)
+                    })
+                    .collect::<Vec<String>>()
+                    .join("\n");
+
+                let methods = if methods.trim().is_empty() {
+                    String::from("\t\t[NOT FOUND]")
+                } else {
+                    methods
+                };
+
+                #[rustfmt::skip]
+                format!(
+                    "- Interface: \
+                     `{name} {parameters} {extends}`:\n\n\tConstants:\n{consts}\n\n\tMethods:\n{methods}"
+                )
             }
             _ => {
-                let res = parser
-                    .query(CLASS_DESCRIPTION_QUERY)
-                    .unwrap_or_default()
-                    .first()
-                    .unwrap_or(&Dict::new())
-                    .get("res")
-                    .unwrap_or(&"Could not parse contents".to_string())
-                    .to_string();
+                let empty_dict = Dict::new();
+                let empty = String::new();
+                let not_found = String::from("[NOT FOUND]");
 
-                format!("- Class: `{}`:\n\n```{res}```", &proper_name)
+                let query_result = parser.query(CLASS_DECLARATION_QUERY).unwrap_or_default();
+                let declaration = query_result.first().unwrap_or(&empty_dict);
+
+                let name = declaration.get("className").unwrap_or(&not_found);
+                let parameters = declaration.get("typeParameters").unwrap_or(&empty);
+                let implements = declaration.get("interfaces").unwrap_or(&empty);
+
+                let fields = parser
+                    .query(CLASS_FIELDS_QUERY)
+                    .unwrap_or_default()
+                    .iter()
+                    .map(|f| {
+                        let field = f.get("field").unwrap_or(&not_found);
+                        format!("\t\t- `{}`", field)
+                    })
+                    .collect::<Vec<String>>()
+                    .join("\n");
+
+                let methods = parser
+                    .query(CLASS_METHOD_QUERY)
+                    .unwrap_or_default()
+                    .iter()
+                    .map(|m| {
+                        let modifier = m.get("modifier").unwrap_or(&empty);
+                        let annotation = m.get("annotation").unwrap_or(&empty);
+                        let return_type = m.get("returnType").unwrap_or(&not_found);
+                        let identifier = m.get("identifier").unwrap_or(&not_found);
+                        let parameters = m.get("parameters").unwrap_or(&empty);
+                        let throws = m.get("throws").unwrap_or(&empty);
+
+                        if identifier.as_str() == not_found.as_str() {
+                            "\t\t- [NOT FOUND]".to_string()
+                        } else {
+                            format!(
+                                "\t\t- `{annotation} {modifier} {return_type} {identifier} \
+                                 {parameters} {throws}`",
+                            )
+                        }
+                    })
+                    .collect::<Vec<String>>()
+                    .join("\n");
+
+                format!(
+                    "- Class: `{name} {parameters} \
+                     {implements}`:\n\n\tFields:\n{fields}\n\n\tMethods:\n{methods}"
+                )
             }
         };
 
@@ -875,14 +951,12 @@ impl Project {
         let mut result = String::new();
         result.push_str(
             "> What follows is a summary of the student's submission's files, their fields and \
-             methods generated via treesitter queries (Work in progress feature, incomplete \
-             information is presented).\n\n",
+             methods generated via treesitter queries.\n\n",
         );
 
         for f in self.files.iter() {
-            result.push_str("- ");
-            result.push_str(f.proper_name.as_str());
-            result.push('\n');
+            result.push_str(f.description().as_str());
+            result.push_str("\n\n");
         }
 
         result

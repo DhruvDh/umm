@@ -6,6 +6,7 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 #![feature(iterator_try_collect)]
+#![feature(stmt_expr_attributes)]
 
 /// A module defining a bunch of constant values to be used throughout
 pub mod constants;
