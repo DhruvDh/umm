@@ -1164,15 +1164,17 @@ pub fn generate_feedback(results: Array) -> Result<()> {
             .into_iter()
             .collect::<Result<Vec<Response>, Error>>()?;
 
-        let mut feedback = String::new();
+        let mut feedback = vec![];
+        feedback.push("## Understanding Your Autograder Results".to_string());
 
         for (name, id) in names.into_iter().zip(ids.into_iter()) {
-            feedback = format!(
-                "{feedback}\n- For explanation and feedback on `{name}` (refer rubric), please \
+            feedback.push(format!(
+                "- For explanation and feedback on `{name}` (refer rubric), please \
                  see this link - https://feedback.dhruvdh.com/{id}",
-            );
+            ));
         }
 
+        let feedback = feedback.join("\n");
         fs::write("FEEDBACK", &feedback).context("Something went wrong writing FEEDBACK file.")?;
         eprintln!("{}", &feedback);
     } else {
