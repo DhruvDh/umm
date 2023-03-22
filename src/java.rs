@@ -378,11 +378,20 @@ impl File {
                     methods
                 };
 
-                #[rustfmt::skip]
-                format!(
-                    "- Interface: \
-                     `{proper_name} {parameters} {extends}`:\n\n\tConstants:\n{consts}\n\n\tMethods:\n{methods}"
-                )
+                let mut result = vec![];
+                result.push(format!(
+                    "- Interface: `{proper_name} {parameters} {extends}`:\n"
+                ));
+                if !consts.trim().is_empty() {
+                    result.push(String::from("\n\tConstants:\n"));
+                    result.push(consts);
+                }
+                if !methods.trim().is_empty() {
+                    result.push(String::from("\n\tMethods:\n"));
+                    result.push(methods);
+                }
+
+                result.join("\n")
             }
             _ => {
                 let empty_dict = Dict::new();
@@ -430,10 +439,47 @@ impl File {
                     .collect::<Vec<String>>()
                     .join("\n");
 
-                format!(
-                    "- Class: `{proper_name} {parameters} \
-                     {implements}`:\n\n\tFields:\n{fields}\n\n\tMethods:\n{methods}",
-                )
+                let constructors = parser
+                    .query(CLASS_CONSTRUCTOR_QUERY)
+                    .unwrap_or_default()
+                    .iter()
+                    .map(|m| {
+                        let modifier = m.get("modifier").unwrap_or(&empty);
+                        let annotation = m.get("annotation").unwrap_or(&empty);
+                        let identifier = m.get("identifier").unwrap_or(&not_found);
+                        let parameters = m.get("parameters").unwrap_or(&empty);
+                        let throws = m.get("throws").unwrap_or(&empty);
+
+                        if identifier.as_str() == not_found.as_str() {
+                            "\t\t- [NOT FOUND]".to_string()
+                        } else {
+                            format!(
+                                "\t\t- `{annotation} {modifier} {identifier} {parameters} \
+                                 {throws}`",
+                            )
+                        }
+                    })
+                    .collect::<Vec<String>>()
+                    .join("\n");
+
+                let mut result = vec![];
+                result.push(format!(
+                    "- Class: `{proper_name} {parameters} {implements}`:\n"
+                ));
+                if !fields.trim().is_empty() {
+                    result.push(String::from("\n\tFields:\n"));
+                    result.push(fields);
+                }
+                if !constructors.trim().is_empty() {
+                    result.push(String::from("\n\tConstructors:\n"));
+                    result.push(constructors);
+                }
+                if !methods.trim().is_empty() {
+                    result.push(String::from("\n\tMethods:\n"));
+                    result.push(methods);
+                }
+
+                result.join("\n")
             }
         };
 

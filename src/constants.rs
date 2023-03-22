@@ -81,8 +81,10 @@ pub const CLASS_FIELDS_QUERY: &str = include_str!("queries/class_fields.scm");
 
 /// Tree-sitter query that returns class constructor signatures
 /// * `modifier`: constructor modifiers
+/// * `annotation`: constructor annotations
 /// * `identifier`: constructor identifier
 /// * `parameters`: constructor parameters
+/// * `throws`: constructor throws
 pub const CLASS_CONSTRUCTOR_QUERY: &str = include_str!("queries/class_constructors.scm");
 
 /// Tree-sitter query that returns class method signatures

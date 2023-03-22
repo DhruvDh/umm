@@ -413,13 +413,7 @@ impl DocsGrader {
                 },
                 ChatCompletionRequestMessage {
                     role:    Role::System,
-                    content: "> **Note**:\n\t- The student is sharing errors and warning \
-                              generated when linting JavaDoc documentation using `javac \
-                              -Xdoclint` flag.\n\t- Sometimes JavaDoc cannot be linted due to \
-                              compiler errors and the compiler errors are shared instead.\n\t- \
-                              Assume student doesn't understand JavaDoc syntax and is working \
-                              with it for the first time."
-                        .to_string(),
+                    content: include_str!("prompts/javadoc.md").to_string(),
                     name:    Some("Instructor".into()),
                 },
             ])
@@ -616,11 +610,6 @@ impl ByUnitTestGrader {
                         ChatCompletionRequestMessage {
                             role:    Role::System,
                             content: SYSTEM_MESSAGE.to_string(),
-                            name:    Some("Instructor".into()),
-                        },
-                        ChatCompletionRequestMessage {
-                            role:    Role::System,
-                            content: self.project.describe(),
                             name:    Some("Instructor".into()),
                         },
                         ChatCompletionRequestMessage {
@@ -886,12 +875,7 @@ impl UnitTestGrader {
                     ChatCompletionRequestMessage {
                         role:    Role::System,
                         content: format!(
-                            "> **Note**:\n\t- The autograder is running PiTest mutation testing. \
-                             Target test is {test}, and target class is {class}.\n\t- Assume the \
-                             student is new to mutation testing and does not understand the \
-                             autograder output for mutation testing.\n\t- Sharing examples of \
-                             what each mutators do is prefered.\n\t-  If you are unsure what a \
-                             mutator does ask students to read the 'List of Mutators' document.",
+                            include_str!("prompts/mutation_testing.md"),
                             test = target_test.join(", "),
                             class = target_class.join(", ")
                         ),
@@ -937,13 +921,7 @@ impl UnitTestGrader {
                     ChatCompletionRequestMessage {
                         role:    Role::System,
                         content: format!(
-                            "> **Note**:\n\t- The autograder is running PiTest mutation testing. \
-                             Target test is {test}, and target class is {class}.\n\t- Assume the \
-                             student is new to mutation testing and does not understand the \
-                             autograder output for mutation testing.\n\t- Mutation testing can \
-                             only run when all tests are passing, if no mutations are shown \
-                             please explain why to the student and ask them to first ensure the \
-                             tests pass.",
+                            include_str!("prompts/mutation_testing_2.md"),
                             test = target_test.join(", "),
                             class = target_class.join(", ")
                         ),
@@ -1165,7 +1143,7 @@ pub fn generate_feedback(results: Array) -> Result<()> {
             .collect::<Result<Vec<Response>, Error>>()?;
 
         let mut feedback = vec![];
-        feedback.push("## Understanding Your Autograder Results".to_string());
+        feedback.push("## Understanding Your Autograder Results\n".to_string());
 
         for (name, id) in names.into_iter().zip(ids.into_iter()) {
             feedback.push(format!(
