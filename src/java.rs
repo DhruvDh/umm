@@ -347,7 +347,6 @@ impl File {
                     .unwrap_or_default();
                 let declaration = query_result.first().unwrap_or(&empty_dict);
 
-                let name = declaration.get("identifier").unwrap_or(&not_found);
                 let parameters = declaration.get("parameters").unwrap_or(&empty);
                 let extends = declaration.get("extends").unwrap_or(&empty);
 
@@ -382,7 +381,7 @@ impl File {
                 #[rustfmt::skip]
                 format!(
                     "- Interface: \
-                     `{name} {parameters} {extends}`:\n\n\tConstants:\n{consts}\n\n\tMethods:\n{methods}"
+                     `{proper_name} {parameters} {extends}`:\n\n\tConstants:\n{consts}\n\n\tMethods:\n{methods}"
                 )
             }
             _ => {
@@ -393,7 +392,6 @@ impl File {
                 let query_result = parser.query(CLASS_DECLARATION_QUERY).unwrap_or_default();
                 let declaration = query_result.first().unwrap_or(&empty_dict);
 
-                let name = declaration.get("className").unwrap_or(&not_found);
                 let parameters = declaration.get("typeParameters").unwrap_or(&empty);
                 let implements = declaration.get("interfaces").unwrap_or(&empty);
 
@@ -433,8 +431,8 @@ impl File {
                     .join("\n");
 
                 format!(
-                    "- Class: `{name} {parameters} \
-                     {implements}`:\n\n\tFields:\n{fields}\n\n\tMethods:\n{methods}"
+                    "- Class: `{proper_name} {parameters} \
+                     {implements}`:\n\n\tFields:\n{fields}\n\n\tMethods:\n{methods}",
                 )
             }
         };
