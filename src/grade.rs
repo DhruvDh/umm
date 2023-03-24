@@ -1307,11 +1307,6 @@ pub fn generate_feedback(results: Array) -> Result<()> {
 
             let messages = serde_json::to_string(&body)?;
 
-            fs::write(
-                format!("prompt_{}", body.requirement_name),
-                format!("{:#?}", body.messages),
-            )?;
-
             names.push(res.requirement());
             ids.push(id);
             handles.push(rt.spawn(async {
