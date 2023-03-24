@@ -43,6 +43,9 @@ pub const TERM: &str = "Fall 2022";
 /// Current course. TODO: Move this to init script
 pub const COURSE: &str = "ITSC 2214";
 
+/// Prompt truncation length
+pub const PROMPT_TRUNCATE: usize = 6000;
+
 /// file name for JUnit platform console standard jar
 pub const JUNIT_PLATFORM: &str = "junit-platform-console-standalone-1.9.0-RC1.jar";
 

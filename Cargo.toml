@@ -23,7 +23,6 @@ peg = "0.8.1"
 tree-sitter = "0.20.9"
 # tree-sitter-java = { git = "https://github.com/tree-sitter/tree-sitter-java.git", rev = "39a11c8330d0b2ad75310456c378396785f79a4e" }
 tree-sitter-java = "0.20.0"
-colored = "2.0.0"
 serde = { version = "1.0.152", features = ["derive"] }
 serde_json = "1.0.94"
 tabled = "0.10.0"
@@ -38,8 +37,9 @@ tracing = "0.1.37"
 tracing-subscriber = "0.3.16"
 walkdir = "2.3.2"
 dotenvy = "0.15.6"
-async-openai = "0.9.2"
+async-openai = "0.10.0"
 uuid = { version = "1.3.0", features = ["std", "v4"] }
+snailquote = "0.3.1"
 
 
 [profile.release]

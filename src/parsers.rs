@@ -1,5 +1,6 @@
 use crate::grade::{
     JavacDiagnostic,
+    LineRef,
     MutationDiagnostic,
 };
 
@@ -177,5 +178,48 @@ peg::parser! {
                     .result(result)
                     .build()
             }
+
+            /// Parses a word in a JUnit stacktrace
+            rule junit_stacktrace_word() -> String
+                = whitespace()?
+                w:[
+                    'a'..='z' |
+                    'A'..='Z' |
+                    '0'..='9' |
+                    '-' | '.' | ' ' |
+                    '[' | ']' | '/' |
+                    '>' | '=' | '$'
+                ]+
+                whitespace()?
+            { w.iter().collect::<String>() }
+
+            /// Parses a filename from a JUnit stacktrace
+            rule junit_stacktrace_filename() -> String
+                = whitespace()?
+                w:[
+                    'a'..='z' |
+                    'A'..='Z' |
+                    '0'..='9' |
+                    '-' | '_' | '$'
+                ]+
+                ".java:"
+                whitespace()?
+            { w.iter().collect::<String>() }
+
+
+            /// Parses a LineRef from a JUnit stacktrace
+            pub rule junit_stacktrace_line_ref() -> LineRef
+                = whitespace()?
+                junit_stacktrace_word()*
+                whitespace()?
+                "("
+                c:junit_stacktrace_filename()
+                d:number()
+                whitespace()?
+                ")"
+                whitespace()?
+                {
+                    LineRef { line_number: d, file_name: c }
+                }
     }
 }

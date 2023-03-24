@@ -186,8 +186,30 @@ fn main() -> Result<()> {
 
     // TODO: move this to a separate method and call that method in shell()
     match cmd {
-        Cmd::Run(f) => Project::new()?.identify(f.as_str())?.run()?,
-        Cmd::Check(f) => Project::new()?.identify(f.as_str())?.check()?,
+        Cmd::Run(f) => {
+            match Project::new()?.identify(f.as_str())?.run() {
+                Ok(out) => {
+                    let out = [
+                        String::from_utf8(out.stderr)?,
+                        String::from_utf8(out.stdout)?,
+                    ]
+                    .concat();
+
+                    println!("{out}");
+                }
+                Err(e) => {
+                    eprintln!("{:#?}", e);
+                }
+            };
+        }
+        Cmd::Check(f) => match Project::new()?.identify(f.as_str())?.check() {
+            Ok(out) => {
+                println!("{out}");
+            }
+            Err(e) => {
+                eprintln!("{:#?}", e);
+            }
+        },
         Cmd::Test(f, t) => {
             let out = if t.is_empty() {
                 Project::new()?.identify(f.as_str())?.test(vec![])?

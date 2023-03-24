@@ -2,6 +2,7 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use std::{
+    collections::HashSet,
     fmt::Display,
     fs::{
         self,
@@ -43,6 +44,7 @@ use serde::{
     Deserialize,
     Serialize,
 };
+use snailquote::unescape;
 use tabled::{
     display::ExpandedDisplay,
     object::Rows,
@@ -59,18 +61,31 @@ use umm_derive::generate_rhai_variant;
 use crate::{
     constants::{
         POSTGREST_CLIENT,
+        PROMPT_TRUNCATE,
         ROOT_DIR,
         RUNTIME,
         SOURCE_DIR,
         SYSTEM_MESSAGE,
     },
-    java::Project,
+    java::{
+        FileType,
+        Project,
+    },
     parsers::parser,
     util::{
         classpath,
         java_path,
     },
 };
+
+#[derive(Debug, Hash, PartialEq, Eq)]
+/// A struct representing a line in a stack trace
+pub struct LineRef {
+    /// The line number
+    pub line_number: u32,
+    /// The file name
+    pub file_name:   String,
+}
 
 #[derive(Clone, Default)]
 /// A struct representing a grade
@@ -206,11 +221,10 @@ impl GradeResult {
     }
 }
 
-#[derive(Tabled, Serialize, Deserialize, TypedBuilder)]
+#[derive(Tabled, Serialize, Deserialize, TypedBuilder, Clone, Debug)]
 #[builder(field_defaults(setter(into)))]
 #[builder(doc)]
 /// A struct representing a javac diagnostic message
-/// TODO: figure out if the dead code fields are actually needed
 pub struct JavacDiagnostic {
     /// * `path`: path to the file diagnostic is referring to
     #[tabled(rename = "File")]
@@ -230,11 +244,20 @@ pub struct JavacDiagnostic {
     message:     String,
 }
 
-#[derive(Tabled, Serialize, Deserialize, TypedBuilder)]
+impl From<JavacDiagnostic> for LineRef {
+    /// Converts a JavacDiagnostic to a LineRef
+    fn from(val: JavacDiagnostic) -> Self {
+        LineRef {
+            file_name:   val.file_name,
+            line_number: val.line_number,
+        }
+    }
+}
+
+#[derive(Tabled, Serialize, Deserialize, TypedBuilder, Clone)]
 #[builder(field_defaults(setter(into)))]
 #[builder(doc)]
 /// A struct representing a PIT diagnostic message
-/// TODO: figure out if the dead code fields are actually needed
 pub struct MutationDiagnostic {
     /// * `mutator`: name of the mutator in question
     #[tabled(rename = "Mutation type")]
@@ -257,6 +280,78 @@ pub struct MutationDiagnostic {
     /// * `test_file_name`: name of the test file
     #[tabled(skip)]
     test_file_name:   String,
+}
+
+impl From<MutationDiagnostic> for LineRef {
+    /// Converts a MutationDiagnostic to a LineRef
+    fn from(val: MutationDiagnostic) -> Self {
+        LineRef {
+            file_name:   val.source_file_name,
+            line_number: val.line_number,
+        }
+    }
+}
+
+/// Returns a ChatCompletionRequestMessage with the given line references that
+/// include contextual lines of code from the source
+///
+/// * `line_refs`: a vector of LineRef objects
+pub fn get_source_context<T: Into<LineRef>>(
+    line_refs: Vec<T>,
+    proj: Project,
+) -> Result<ChatCompletionRequestMessage> {
+    let mut line_refs = line_refs
+        .into_iter()
+        .map(|x| x.into())
+        .collect::<HashSet<LineRef>>()
+        .into_iter()
+        .collect::<Vec<LineRef>>();
+
+    line_refs.sort_by(|lhs, rhs| {
+        lhs.file_name
+            .cmp(&rhs.file_name)
+            .then(lhs.line_number.cmp(&rhs.line_number))
+    });
+
+    let mut context = Vec::new();
+    context.push("Here are some relevant lines of code my submission:\n".to_string());
+    let end_ticks = "```".to_string();
+
+    for re in &line_refs {
+        if let Ok(file) = proj.identify(&re.file_name) {
+            let start = match file.kind() {
+                FileType::Test => re.line_number.saturating_sub(6) as usize,
+                _ => re.line_number.saturating_sub(3) as usize,
+            };
+
+            context.push(format!(
+                "- Lines {} to {} from {} -\n```",
+                start,
+                start + 6,
+                re.file_name
+            ));
+            context.append(
+                &mut file
+                    .parser()
+                    .code()
+                    .lines()
+                    .skip(start)
+                    .filter(|line| !line.trim().is_empty())
+                    .take(6)
+                    .map(|x| x.to_string().replace("\\\\", "\\").replace("\\\"", "\""))
+                    .collect::<Vec<String>>(),
+            );
+            context.push(end_ticks.clone());
+        }
+    }
+    let mut context = context.join("\n");
+    context.truncate(PROMPT_TRUNCATE);
+
+    Ok(ChatCompletionRequestMessage {
+        role:    Role::User,
+        content: context,
+        name:    Some(String::from("Student")),
+    })
 }
 
 #[derive(Clone, Default)]
@@ -336,6 +431,7 @@ impl DocsGrader {
     #[generate_rhai_variant(Fallible)]
     pub fn grade_docs(self) -> Result<GradeResult> {
         let mut diags = vec![];
+        let mut all_diags = vec![];
         let files: Vec<String> = self
             .files
             .iter()
@@ -358,8 +454,9 @@ impl DocsGrader {
                 match result {
                     Ok(res) => {
                         if file.file_name() == res.file_name {
-                            diags.push(res);
+                            diags.push(res.clone());
                         }
+                        all_diags.push(res);
                     }
                     Err(_) => continue,
                 }
@@ -397,9 +494,11 @@ impl DocsGrader {
                 .with(tabled::Style::modern())
         );
 
+        let context = get_source_context(all_diags, self.project)?;
+
         let prompt = if num_diags > 0 {
             let mut outputs = outputs.join("\n\n---\n\n");
-            outputs.truncate(6000);
+            outputs.truncate(PROMPT_TRUNCATE);
             Some(vec![
                 ChatCompletionRequestMessage {
                     role:    Role::System,
@@ -411,6 +510,7 @@ impl DocsGrader {
                     content: outputs,
                     name:    Some("Student".into()),
                 },
+                context,
                 ChatCompletionRequestMessage {
                     role:    Role::System,
                     content: include_str!("prompts/javadoc.md").to_string(),
@@ -566,11 +666,29 @@ impl ByUnitTestGrader {
 
         if !reasons.is_empty() {
             reasons.push("Tests will not be run until above is fixed.".into());
+            let reasons = reasons.join("\n");
+            let messages = vec![
+                ChatCompletionRequestMessage {
+                    role:    Role::System,
+                    content: SYSTEM_MESSAGE.to_string(),
+                    name:    Some("Instructor".into()),
+                },
+                ChatCompletionRequestMessage {
+                    role:    Role::System,
+                    content: self.project.describe(),
+                    name:    Some("Instructor".into()),
+                },
+                ChatCompletionRequestMessage {
+                    role:    Role::User,
+                    content: reasons.clone(),
+                    name:    Some("Student".into()),
+                },
+            ];
             Ok(GradeResult {
                 requirement: req_name,
                 grade:       Grade::new(0.0, out_of),
-                reason:      reasons.join("\n"),
-                prompt:      None, // TODO: PROMPT
+                reason:      reasons,
+                prompt:      Some(messages),
             })
         } else {
             let mut num_tests_passed = 0.0;
@@ -578,15 +696,54 @@ impl ByUnitTestGrader {
             let mut messages = vec![];
 
             for test_file in test_files {
-                let res = project.identify(test_file.as_str())?.test(Vec::new())?;
+                let res = match project.identify(test_file.as_str())?.test(Vec::new()) {
+                    Ok(res) => [
+                        String::from_utf8(res.stderr)?,
+                        String::from_utf8(res.stdout)?,
+                    ]
+                    .concat(),
+                    Err(e) => {
+                        let errors = match e.source() {
+                            Some(e) => unescape(&format!("{:#?}", e)).unwrap(),
+                            None => String::new(),
+                        };
+                        let mut all_diags = vec![];
+
+                        for line in errors.lines() {
+                            if let Ok(diag) = parser::parse_diag(line) {
+                                all_diags.push(diag);
+                            }
+                        }
+                        let context = get_source_context(all_diags, self.project.clone())?;
+
+                        let messages = vec![
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: SYSTEM_MESSAGE.to_string(),
+                                name:    Some("Instructor".into()),
+                            },
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: self.project.describe(),
+                                name:    Some("Instructor".into()),
+                            },
+                            ChatCompletionRequestMessage {
+                                role:    Role::User,
+                                content: format!("```\n{:#?}```", e),
+                                name:    Some("Student".into()),
+                            },
+                            context,
+                        ];
+                        return Ok(GradeResult {
+                            requirement: req_name,
+                            grade:       Grade::new(0.0, out_of),
+                            reason:      "Error running tests.".to_string(),
+                            prompt:      Some(messages),
+                        });
+                    }
+                };
                 let mut current_tests_passed = 0.0;
                 let mut current_tests_total = 0.0;
-
-                let res = [
-                    String::from_utf8(res.stderr)?,
-                    String::from_utf8(res.stdout)?,
-                ]
-                .concat();
 
                 for line in res.lines() {
                     let parse_result =
@@ -602,9 +759,37 @@ impl ByUnitTestGrader {
                 }
 
                 if current_tests_passed < current_tests_total {
-                    let mut user_message = res.clone();
-                    user_message.truncate(6000);
-                    user_message = format!("```\n{res}\n```");
+                    let user_message = res.clone();
+                    let mut all_diags = vec![];
+                    let mut new_user_message = Vec::new();
+
+                    for line in user_message.lines() {
+                        if line.contains("MethodSource") {
+                            continue;
+                        }
+
+                        if line.contains("Test run finished after") {
+                            break;
+                        }
+
+                        if let Ok(diag) = parser::junit_stacktrace_line_ref(line) {
+                            if project.identify(&diag.file_name).is_ok() {
+                                new_user_message.push(
+                                    line.replace("\\\\", "\\").replace("\\\"", "\"").to_string(),
+                                );
+                            }
+                            all_diags.push(diag);
+                        } else {
+                            new_user_message
+                                .push(line.replace("\\\\", "\\").replace("\\\"", "\"").to_string());
+                        }
+                    }
+
+                    let context = get_source_context(all_diags, self.project.clone())?;
+
+                    let mut user_message = new_user_message.join("\n");
+                    user_message.truncate(PROMPT_TRUNCATE);
+                    user_message = format!("```\n{user_message}\n```");
 
                     messages = vec![
                         ChatCompletionRequestMessage {
@@ -622,6 +807,7 @@ impl ByUnitTestGrader {
                             content: user_message,
                             name:    Some("Student".into()),
                         },
+                        context,
                     ];
                 }
 
@@ -823,8 +1009,7 @@ impl UnitTestGrader {
                 .context("Could not read ./test_reports/mutations.csv file".to_string())?;
             let reader = BufReader::new(file);
             let mut diags = vec![];
-            // TODO: figure out if not_killed is required
-            // let mut not_killed = 0;
+
             for line in reader.lines() {
                 let line = line?;
                 let parse_result = parser::mutation_report_row(&line)
@@ -833,10 +1018,6 @@ impl UnitTestGrader {
                 match parse_result {
                     Ok(r) => {
                         if r.result == "SURVIVED" {
-                            // TODO: figure out if not_killed is required
-                            // if r.test_method != "None" {
-                            //     not_killed += 1;
-                            // }
                             diags.push(r);
                         }
                     }
@@ -851,10 +1032,12 @@ impl UnitTestGrader {
             eprintln!("Problematic mutation test failures printed about.");
 
             let prompt = if num_diags > 0 {
+                let context = get_source_context(diags.clone(), project.clone())?;
+
                 let mut feedback = ExpandedDisplay::new(diags).to_string();
                 eprintln!("{feedback}");
 
-                feedback.truncate(6000);
+                feedback.truncate(PROMPT_TRUNCATE);
 
                 Some(vec![
                     ChatCompletionRequestMessage {
@@ -872,6 +1055,7 @@ impl UnitTestGrader {
                         content: feedback,
                         name:    Some("Student".into()),
                     },
+                    context,
                     ChatCompletionRequestMessage {
                         role:    Role::System,
                         content: format!(
@@ -899,7 +1083,7 @@ impl UnitTestGrader {
             ]
             .concat();
             eprintln!("{output}");
-            output.truncate(6000);
+            output.truncate(PROMPT_TRUNCATE);
 
             let prompt = if !output.is_empty() {
                 Some(vec![
@@ -1061,7 +1245,6 @@ pub fn show_result(results: Array) {
     let (grade, out_of) = results.iter().fold((0f64, 0f64), |acc, r| {
         (acc.0 + r.grade.grade, acc.1 + r.grade.out_of)
     });
-    // TODO: print out coding rooms result
     eprintln!(
         "{}",
         results
@@ -1084,7 +1267,7 @@ pub fn show_result(results: Array) {
 }
 
 /// Schema for `prompts` table
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct PromptRow {
     /// UUID of data entry
     id:               String,
@@ -1123,6 +1306,11 @@ pub fn generate_feedback(results: Array) -> Result<()> {
             };
 
             let messages = serde_json::to_string(&body)?;
+
+            fs::write(
+                format!("prompt_{}", body.requirement_name),
+                format!("{:#?}", body.messages),
+            )?;
 
             names.push(res.requirement());
             ids.push(id);

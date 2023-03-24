@@ -18,7 +18,6 @@ use anyhow::{
     Context,
     Result,
 };
-use colored::Colorize;
 use futures::{
     future::{
         join_all,
@@ -110,8 +109,6 @@ pub struct Project {
 
 #[derive(Clone)]
 /// A struct that wraps a tree-sitter parser object and source code
-///
-/// TODO: The source code should not be in here, extract it out
 pub struct Parser {
     /// the source code being parsed
     code:  String,
@@ -382,11 +379,11 @@ impl File {
                 result.push(format!(
                     "- Interface: `{proper_name} {parameters} {extends}`:\n"
                 ));
-                if !consts.trim().is_empty() {
+                if !consts.trim().is_empty() || !consts.contains("NOT FOUND") {
                     result.push(String::from("\t- Constants:"));
                     result.push(consts);
                 }
-                if !methods.trim().is_empty() {
+                if !methods.trim().is_empty() || !methods.contains("NOT FOUND") {
                     result.push(String::from("\t- Methods:"));
                     result.push(methods);
                 }
@@ -466,15 +463,15 @@ impl File {
                 result.push(format!(
                     "- Class: `{proper_name} {parameters} {implements}`:\n"
                 ));
-                if !fields.trim().is_empty() {
+                if !fields.trim().is_empty() || !fields.contains("NOT FOUND") {
                     result.push(String::from("\t- Fields:"));
                     result.push(fields);
                 }
-                if !constructors.trim().is_empty() {
+                if !constructors.trim().is_empty() || !constructors.contains("NOT FOUND") {
                     result.push(String::from("\t- Constructors:"));
                     result.push(constructors);
                 }
-                if !methods.trim().is_empty() {
+                if !methods.trim().is_empty() || !methods.contains("NOT FOUND") {
                     result.push(String::from("\t- Methods:"));
                     result.push(methods);
                 }
@@ -534,16 +531,10 @@ impl File {
 
     #[generate_rhai_variant(Fallible, Mut)]
     /// Utility method to check for syntax errors using javac flag.
-    /// TODO: instead of printing javac output, return it.
-    /// TODO: have all such methods have generated versions that display output
-    /// instead of returning.
-    pub fn check(&self) -> Result<()> {
+    pub fn check(&self) -> Result<String> {
         let path = self.path.display().to_string();
 
-        let child = Command::new(javac_path()?)
-            .stdin(Stdio::inherit())
-            .stdout(Stdio::inherit())
-            .stderr(Stdio::inherit())
+        let out = Command::new(javac_path()?)
             .args([
                 "--source-path",
                 sourcepath()?.as_str(),
@@ -557,27 +548,29 @@ impl File {
                 // "-Xlint",
                 "-Xprefer:source",
             ])
-            .spawn()
-            .context("Failed to spawn javac process.")?;
+            .output()
+            .context("Failed to spawn javac process.");
 
-        match child.wait_with_output() {
-            Ok(status) => {
-                if !status.status.success() {
-                    bail!(
-                        "There were compiler errors in checked file or other source files it \
-                         imports."
-                            .bright_red()
-                            .bold()
-                    );
+        match out {
+            Ok(out) => {
+                if out.status.success() {
+                    Ok([
+                        String::from_utf8(out.stderr)?,
+                        String::from_utf8(out.stdout)?,
+                    ]
+                    .concat())
+                } else {
+                    let output = [
+                        String::from_utf8(out.stderr)?,
+                        String::from_utf8(out.stdout)?,
+                    ]
+                    .concat();
+
+                    Err(anyhow!(output).context("Something went wrong while compiling the file."))
                 }
             }
-            Err(e) => bail!(
-                "Failed to wait for child process for {}: {}",
-                self.proper_name.clone(),
-                e
-            ),
-        };
-        Ok(())
+            Err(e) => Err(e),
+        }
     }
 
     #[generate_rhai_variant(Fallible, Mut)]
@@ -585,7 +578,7 @@ impl File {
     /// TODO: instead of printing javac output, return it.
     /// TODO: have all such methods have generated versions that display output
     /// instead of returning.
-    pub fn run(&self) -> Result<()> {
+    pub fn run(&self) -> Result<Output> {
         self.check()?;
 
         ensure!(
@@ -594,26 +587,14 @@ impl File {
         );
 
         let name = self.proper_name.clone();
-        let child = Command::new(java_path()?)
+
+        Command::new(java_path()?)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .args(["--class-path", classpath()?.as_str(), name.as_str()])
-            .spawn()
-            .context("Failed to spawn javac process.")?;
-
-        match child.wait_with_output() {
-            Ok(status) => {
-                if status.status.success() {
-                    eprintln!("{}", "Ran and exited successfully.".bright_green().bold(),);
-                } else {
-                    eprintln!("{}", "Ran but exited unsuccessfully.".bright_red().bold(),);
-                }
-            }
-            Err(e) => bail!("Failed to wait for child process for {}: {}", name, e),
-        };
-
-        Ok(())
+            .output()
+            .context("Failed to spawn javac process.")
     }
 
     #[generate_rhai_variant(Fallible, Mut)]
@@ -628,6 +609,7 @@ impl File {
     /// `Into<String>`) meant to represent test method names,
     pub fn test(&self, tests: Vec<&str>) -> Result<Output> {
         self.check()?;
+
         let tests = {
             let mut new_tests = Vec::<String>::new();
             for t in tests {
@@ -763,9 +745,6 @@ impl Project {
     /// Initializes a Project, by discovering java files in the
     /// [struct@UMM_DIR] directory. Also downloads some `jar`
     /// files required for unit testing and mutation testing.
-    ///
-    /// TODO: Only download these jars if required.
-    /// TODO: get rid of DataStructures.jar from all labs and assignments.
     pub fn new() -> Result<Self> {
         let mut files = vec![];
         let mut names = vec![];
@@ -999,6 +978,9 @@ impl Project {
         );
 
         for f in self.files.iter() {
+            if f.proper_name.contains("Hidden") {
+                continue;
+            }
             result.push_str(f.description().as_str());
             result.push_str("\n\n");
         }
