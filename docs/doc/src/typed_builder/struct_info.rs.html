@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/typed-builder-0.12.0/src/struct_info.rs`."><title>struct_info.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../typed_builder/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/typed-builder-0.14.0/src/struct_info.rs`."><title>struct_info.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../static.files/ayu-be46fdc453a55015.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../typed_builder/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -724,6 +724,53 @@
 <a href="#724" id="724">724</a>
 <a href="#725" id="725">725</a>
 <a href="#726" id="726">726</a>
+<a href="#727" id="727">727</a>
+<a href="#728" id="728">728</a>
+<a href="#729" id="729">729</a>
+<a href="#730" id="730">730</a>
+<a href="#731" id="731">731</a>
+<a href="#732" id="732">732</a>
+<a href="#733" id="733">733</a>
+<a href="#734" id="734">734</a>
+<a href="#735" id="735">735</a>
+<a href="#736" id="736">736</a>
+<a href="#737" id="737">737</a>
+<a href="#738" id="738">738</a>
+<a href="#739" id="739">739</a>
+<a href="#740" id="740">740</a>
+<a href="#741" id="741">741</a>
+<a href="#742" id="742">742</a>
+<a href="#743" id="743">743</a>
+<a href="#744" id="744">744</a>
+<a href="#745" id="745">745</a>
+<a href="#746" id="746">746</a>
+<a href="#747" id="747">747</a>
+<a href="#748" id="748">748</a>
+<a href="#749" id="749">749</a>
+<a href="#750" id="750">750</a>
+<a href="#751" id="751">751</a>
+<a href="#752" id="752">752</a>
+<a href="#753" id="753">753</a>
+<a href="#754" id="754">754</a>
+<a href="#755" id="755">755</a>
+<a href="#756" id="756">756</a>
+<a href="#757" id="757">757</a>
+<a href="#758" id="758">758</a>
+<a href="#759" id="759">759</a>
+<a href="#760" id="760">760</a>
+<a href="#761" id="761">761</a>
+<a href="#762" id="762">762</a>
+<a href="#763" id="763">763</a>
+<a href="#764" id="764">764</a>
+<a href="#765" id="765">765</a>
+<a href="#766" id="766">766</a>
+<a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
+<a href="#771" id="771">771</a>
+<a href="#772" id="772">772</a>
+<a href="#773" id="773">773</a>
 </pre><pre class="rust"><code><span class="kw">use </span>proc_macro2::TokenStream;
 <span class="kw">use </span>quote::quote;
 <span class="kw">use </span>syn::parse::Error;
@@ -774,12 +821,6 @@
         })
     }
 
-    <span class="kw">fn </span>modify_generics&lt;F: FnMut(<span class="kw-2">&amp;mut </span>syn::Generics)&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>mutator: F) -&gt; syn::Generics {
-        <span class="kw">let </span><span class="kw-2">mut </span>generics = <span class="self">self</span>.generics.clone();
-        mutator(<span class="kw-2">&amp;mut </span>generics);
-        generics
-    }
-
     <span class="kw">pub fn </span>builder_creation_impl(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;TokenStream, Error&gt; {
         <span class="kw">let </span>StructInfo {
             vis,
@@ -788,14 +829,18 @@
             ..
         } = <span class="kw-2">*</span><span class="self">self</span>;
         <span class="kw">let </span>(impl_generics, ty_generics, where_clause) = <span class="self">self</span>.generics.split_for_impl();
-        <span class="kw">let </span>all_fields_param =
-            syn::GenericParam::Type(syn::Ident::new(<span class="string">&quot;TypedBuilderFields&quot;</span>, proc_macro2::Span::call_site()).into());
-        <span class="kw">let </span>b_generics = <span class="self">self</span>.modify_generics(|g| {
-            g.params.insert(<span class="number">0</span>, all_fields_param.clone());
-        });
         <span class="kw">let </span>empties_tuple = type_tuple(<span class="self">self</span>.included_fields().map(|<span class="kw">_</span>| empty_type()));
+        <span class="kw">let </span><span class="kw-2">mut </span>all_fields_param_type: syn::TypeParam =
+            syn::Ident::new(<span class="string">&quot;TypedBuilderFields&quot;</span>, proc_macro2::Span::call_site()).into();
+        <span class="kw">let </span>all_fields_param = syn::GenericParam::Type(all_fields_param_type.clone());
+        all_fields_param_type.default = <span class="prelude-val">Some</span>(syn::Type::Tuple(empties_tuple.clone()));
+        <span class="kw">let </span>b_generics = {
+            <span class="kw">let </span><span class="kw-2">mut </span>generics = <span class="self">self</span>.generics.clone();
+            generics.params.push(syn::GenericParam::Type(all_fields_param_type));
+            generics
+        };
         <span class="kw">let </span>generics_with_empty = modify_types_generics_hack(<span class="kw-2">&amp;</span>ty_generics, |args| {
-            args.insert(<span class="number">0</span>, syn::GenericArgument::Type(empties_tuple.clone().into()));
+            args.push(syn::GenericArgument::Type(empties_tuple.clone().into()));
         });
         <span class="kw">let </span>phantom_generics = <span class="self">self</span>.generics.params.iter().map(|param| <span class="kw">match </span>param {
             syn::GenericParam::Lifetime(lifetime) =&gt; {
@@ -958,18 +1003,14 @@
             .collect();
         <span class="kw">let </span><span class="kw-2">mut </span>target_generics_tuple = empty_type_tuple();
         <span class="kw">let </span><span class="kw-2">mut </span>ty_generics_tuple = empty_type_tuple();
-        <span class="kw">let </span>generics = <span class="self">self</span>.modify_generics(|g| {
-            <span class="kw">let </span>index_after_lifetime_in_generics = g
-                .params
-                .iter()
-                .filter(|arg| <span class="macro">matches!</span>(arg, syn::GenericParam::Lifetime(<span class="kw">_</span>)))
-                .count();
+        <span class="kw">let </span>generics = {
+            <span class="kw">let </span><span class="kw-2">mut </span>generics = <span class="self">self</span>.generics.clone();
             <span class="kw">for </span>f <span class="kw">in </span><span class="self">self</span>.included_fields() {
                 <span class="kw">if </span>f.ordinal == field.ordinal {
                     ty_generics_tuple.elems.push_value(empty_type());
                     target_generics_tuple.elems.push_value(f.tuplized_type_ty_param());
                 } <span class="kw">else </span>{
-                    g.params.insert(index_after_lifetime_in_generics, f.generic_ty_param());
+                    generics.params.push(f.generic_ty_param());
                     <span class="kw">let </span>generic_argument: syn::Type = f.type_ident();
                     ty_generics_tuple.elems.push_value(generic_argument.clone());
                     target_generics_tuple.elems.push_value(generic_argument);
@@ -977,20 +1018,11 @@
                 ty_generics_tuple.elems.push_punct(Default::default());
                 target_generics_tuple.elems.push_punct(Default::default());
             }
-        });
+            generics
+        };
         <span class="kw">let </span><span class="kw-2">mut </span>target_generics = ty_generics.clone();
-        <span class="kw">let </span>index_after_lifetime_in_generics = target_generics
-            .iter()
-            .filter(|arg| <span class="macro">matches!</span>(arg, syn::GenericArgument::Lifetime(<span class="kw">_</span>)))
-            .count();
-        target_generics.insert(
-            index_after_lifetime_in_generics,
-            syn::GenericArgument::Type(target_generics_tuple.into()),
-        );
-        ty_generics.insert(
-            index_after_lifetime_in_generics,
-            syn::GenericArgument::Type(ty_generics_tuple.into()),
-        );
+        target_generics.push(syn::GenericArgument::Type(target_generics_tuple.into()));
+        ty_generics.push(syn::GenericArgument::Type(ty_generics_tuple.into()));
         <span class="kw">let </span>(impl_generics, <span class="kw">_</span>, where_clause) = generics.split_for_impl();
         <span class="kw">let </span>doc = <span class="kw">match </span>field.builder_attr.setter.doc {
             <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>doc) =&gt; <span class="macro">quote!</span>(<span class="attr">#[doc = #doc]</span>),
@@ -1090,12 +1122,8 @@
             })
             .collect();
         <span class="kw">let </span><span class="kw-2">mut </span>builder_generics_tuple = empty_type_tuple();
-        <span class="kw">let </span>generics = <span class="self">self</span>.modify_generics(|g| {
-            <span class="kw">let </span>index_after_lifetime_in_generics = g
-                .params
-                .iter()
-                .filter(|arg| <span class="macro">matches!</span>(arg, syn::GenericParam::Lifetime(<span class="kw">_</span>)))
-                .count();
+        <span class="kw">let </span>generics = {
+            <span class="kw">let </span><span class="kw-2">mut </span>generics = <span class="self">self</span>.generics.clone();
             <span class="kw">for </span>f <span class="kw">in </span><span class="self">self</span>.included_fields() {
                 <span class="kw">if </span>f.builder_attr.default.is_some() {
                     <span class="comment">// `f` is not mandatory - it does not have it&#39;s own fake `build` method, so `field` will need
@@ -1105,7 +1133,7 @@
                         <span class="string">&quot;`required_field_impl` called for optional field {}&quot;</span>,
                         field.name
                     );
-                    g.params.insert(index_after_lifetime_in_generics, f.generic_ty_param());
+                    generics.params.push(f.generic_ty_param());
                     builder_generics_tuple.elems.push_value(f.type_ident());
                 } <span class="kw">else if </span>f.ordinal &lt; field.ordinal {
                     <span class="comment">// Only add a `build` method that warns about missing `field` if `f` is set. If `f` is not set,
@@ -1117,22 +1145,16 @@
                     <span class="comment">// `f` appears later in the argument list after `field`, so if they are both missing we will
                     // show a warning for `field` and not for `f` - which means this warning should appear whether
                     // or not `f` is set.
-                    </span>g.params.insert(index_after_lifetime_in_generics, f.generic_ty_param());
+                    </span>generics.params.push(f.generic_ty_param());
                     builder_generics_tuple.elems.push_value(f.type_ident());
                 }
 
                 builder_generics_tuple.elems.push_punct(Default::default());
             }
-        });
+            generics
+        };
 
-        <span class="kw">let </span>index_after_lifetime_in_generics = builder_generics
-            .iter()
-            .filter(|arg| <span class="macro">matches!</span>(arg, syn::GenericArgument::Lifetime(<span class="kw">_</span>)))
-            .count();
-        builder_generics.insert(
-            index_after_lifetime_in_generics,
-            syn::GenericArgument::Type(builder_generics_tuple.into()),
-        );
+        builder_generics.push(syn::GenericArgument::Type(builder_generics_tuple.into()));
         <span class="kw">let </span>(impl_generics, <span class="kw">_</span>, where_clause) = generics.split_for_impl();
         <span class="kw">let </span>(<span class="kw">_</span>, ty_generics, <span class="kw">_</span>) = <span class="self">self</span>.generics.split_for_impl();
 
@@ -1146,6 +1168,9 @@
         );
         <span class="kw">let </span>early_build_error_message = <span class="macro">format!</span>(<span class="string">&quot;Missing required field {}&quot;</span>, field_name);
 
+        <span class="kw">let </span>build_method_name = <span class="self">self</span>.build_method_name();
+        <span class="kw">let </span>build_method_visibility = <span class="self">self</span>.build_method_visibility();
+
         <span class="macro">quote! </span>{
             <span class="attr">#[doc(hidden)]
             #[allow(dead_code, non_camel_case_types, non_snake_case)]
@@ -1156,11 +1181,19 @@
                 <span class="attr">#[deprecated(
                     note = #early_build_error_message
                 )]
-                </span><span class="kw">pub fn </span>build(<span class="self">self</span>, <span class="kw">_</span>: #early_build_error_type_name) -&gt; #name #ty_generics {
+                </span>#build_method_visibility <span class="kw">fn </span>#build_method_name(<span class="self">self</span>, <span class="kw">_</span>: #early_build_error_type_name) -&gt; #name #ty_generics {
                     <span class="macro">panic!</span>();
                 }
             }
         }
+    }
+
+    <span class="kw">fn </span>build_method_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; TokenStream {
+        <span class="self">self</span>.builder_attr.build_method.common.get_name().unwrap_or(<span class="macro">quote!</span>(build))
+    }
+
+    <span class="kw">fn </span>build_method_visibility(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; TokenStream {
+        first_visibility(<span class="kw-2">&amp;</span>[<span class="self">self</span>.builder_attr.build_method.common.vis.as_ref(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>public_visibility())])
     }
 
     <span class="kw">pub fn </span>build_method_impl(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; TokenStream {
@@ -1170,12 +1203,8 @@
             ..
         } = <span class="kw-2">*</span><span class="self">self</span>;
 
-        <span class="kw">let </span>generics = <span class="self">self</span>.modify_generics(|g| {
-            <span class="kw">let </span>index_after_lifetime_in_generics = g
-                .params
-                .iter()
-                .filter(|arg| <span class="macro">matches!</span>(arg, syn::GenericParam::Lifetime(<span class="kw">_</span>)))
-                .count();
+        <span class="kw">let </span>generics = {
+            <span class="kw">let </span><span class="kw-2">mut </span>generics = <span class="self">self</span>.generics.clone();
             <span class="kw">for </span>field <span class="kw">in </span><span class="self">self</span>.included_fields() {
                 <span class="kw">if </span>field.builder_attr.default.is_some() {
                     <span class="kw">let </span>trait_ref = syn::TraitBound {
@@ -1195,28 +1224,26 @@
                     };
                     <span class="kw">let </span><span class="kw-2">mut </span>generic_param: syn::TypeParam = field.generic_ident.clone().into();
                     generic_param.bounds.push(trait_ref.into());
-                    g.params.insert(index_after_lifetime_in_generics, generic_param.into());
+                    generics.params.push(generic_param.into());
                 }
             }
-        });
+            generics
+        };
         <span class="kw">let </span>(impl_generics, <span class="kw">_</span>, <span class="kw">_</span>) = generics.split_for_impl();
 
         <span class="kw">let </span>(<span class="kw">_</span>, ty_generics, where_clause) = <span class="self">self</span>.generics.split_for_impl();
 
         <span class="kw">let </span>modified_ty_generics = modify_types_generics_hack(<span class="kw-2">&amp;</span>ty_generics, |args| {
-            args.insert(
-                <span class="number">0</span>,
-                syn::GenericArgument::Type(
-                    type_tuple(<span class="self">self</span>.included_fields().map(|field| {
-                        <span class="kw">if </span>field.builder_attr.default.is_some() {
-                            field.type_ident()
-                        } <span class="kw">else </span>{
-                            field.tuplized_type_ty_param()
-                        }
-                    }))
-                    .into(),
-                ),
-            );
+            args.push(syn::GenericArgument::Type(
+                type_tuple(<span class="self">self</span>.included_fields().map(|field| {
+                    <span class="kw">if </span>field.builder_attr.default.is_some() {
+                        field.type_ident()
+                    } <span class="kw">else </span>{
+                        field.tuplized_type_ty_param()
+                    }
+                }))
+                .into(),
+            ));
         });
 
         <span class="kw">let </span>descructuring = <span class="self">self</span>.included_fields().map(|f| f.name);
@@ -1241,27 +1268,37 @@
         });
         <span class="kw">let </span>field_names = <span class="self">self</span>.fields.iter().map(|field| field.name);
 
-        <span class="kw">let </span>build_method_name = <span class="self">self</span>.builder_attr.build_method.get_name().unwrap_or(<span class="macro">quote!</span>(build));
-        <span class="kw">let </span>build_method_visibility =
-            first_visibility(<span class="kw-2">&amp;</span>[<span class="self">self</span>.builder_attr.build_method.vis.as_ref(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>public_visibility())]);
+        <span class="kw">let </span>build_method_name = <span class="self">self</span>.build_method_name();
+        <span class="kw">let </span>build_method_visibility = <span class="self">self</span>.build_method_visibility();
         <span class="kw">let </span>build_method_doc = <span class="kw">if </span><span class="self">self</span>.builder_attr.doc {
             <span class="self">self</span>.builder_attr
                 .build_method
+                .common
                 .get_doc_or(|| <span class="macro">format!</span>(<span class="string">&quot;Finalise the builder and create its [`{}`] instance&quot;</span>, name))
         } <span class="kw">else </span>{
             <span class="macro">quote!</span>()
         };
+        <span class="kw">let </span>(build_method_generic, output_type, build_method_where_clause) = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.builder_attr.build_method.into {
+            IntoSetting::NoConversion =&gt; (<span class="prelude-val">None</span>, <span class="macro">quote!</span>(#name #ty_generics), <span class="prelude-val">None</span>),
+            IntoSetting::GenericConversion =&gt; (
+                <span class="prelude-val">Some</span>(<span class="macro">quote!</span>(&lt;__R&gt;)),
+                <span class="macro">quote!</span>(__R),
+                <span class="prelude-val">Some</span>(<span class="macro">quote!</span>(<span class="kw">where </span>#name #ty_generics: Into&lt;__R&gt;)),
+            ),
+            IntoSetting::TypeConversionToSpecificType(into) =&gt; (<span class="prelude-val">None</span>, <span class="macro">quote!</span>(#into), <span class="prelude-val">None</span>),
+        };
+
         <span class="macro">quote!</span>(
             <span class="attr">#[allow(dead_code, non_camel_case_types, missing_docs)]
             </span><span class="kw">impl </span>#impl_generics #builder_name #modified_ty_generics #where_clause {
                 #build_method_doc
                 <span class="attr">#[allow(clippy::default_trait_access)]
-                </span>#build_method_visibility <span class="kw">fn </span>#build_method_name(<span class="self">self</span>) -&gt; #name #ty_generics {
+                </span>#build_method_visibility <span class="kw">fn </span>#build_method_name #build_method_generic (<span class="self">self</span>) -&gt; #output_type #build_method_where_clause {
                     <span class="kw">let </span>( #(#descructuring,)* ) = <span class="self">self</span>.fields;
                     #( #assignments )*
                     #name {
                         #( #field_names ),*
-                    }
+                    }.into()
                 }
             }
         )
@@ -1321,6 +1358,62 @@
     }
 }
 
+<span class="doccomment">/// Setting of the `into` argument.
+</span><span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub enum </span>IntoSetting {
+    <span class="doccomment">/// Do not run any conversion on the built value.
+    </span>NoConversion,
+    <span class="doccomment">/// Convert the build value into the generic parameter passed to the `build` method.
+    </span>GenericConversion,
+    <span class="doccomment">/// Convert the build value into a specific type specified in the attribute.
+    </span>TypeConversionToSpecificType(syn::ExprPath),
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>IntoSetting {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::NoConversion
+    }
+}
+
+<span class="attr">#[derive(Debug, Default, Clone)]
+</span><span class="kw">pub struct </span>BuildMethodSettings {
+    <span class="kw">pub </span>common: CommonDeclarationSettings,
+
+    <span class="doccomment">/// Whether to convert the builded type into another while finishing the build.
+    </span><span class="kw">pub </span>into: IntoSetting,
+}
+
+<span class="kw">impl </span>BuildMethodSettings {
+    <span class="kw">fn </span>apply_meta(<span class="kw-2">&amp;mut </span><span class="self">self</span>, expr: syn::Expr) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+        <span class="kw">match </span><span class="kw-2">&amp;</span>expr {
+            syn::Expr::Assign(assign) =&gt; {
+                <span class="kw">let </span>name =
+                    expr_to_single_string(<span class="kw-2">&amp;</span>assign.left).ok_or_else(|| Error::new_spanned(<span class="kw-2">&amp;</span>assign.left, <span class="string">&quot;Expected identifier&quot;</span>))<span class="question-mark">?</span>;
+                <span class="kw">if </span>name.as_str() == <span class="string">&quot;into&quot; </span>{
+                    <span class="kw">let </span>expr_path = <span class="kw">match </span>assign.right.as_ref() {
+                        syn::Expr::Path(expr_path) =&gt; expr_path,
+                        <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new_spanned(<span class="kw-2">&amp;</span>assign.right, <span class="string">&quot;Expected path expression type&quot;</span>)),
+                    };
+                    <span class="self">self</span>.into = IntoSetting::TypeConversionToSpecificType(expr_path.clone());
+                    <span class="prelude-val">Ok</span>(())
+                } <span class="kw">else </span>{
+                    <span class="self">self</span>.common.apply_meta(expr)
+                }
+            }
+            syn::Expr::Path(path) =&gt; {
+                <span class="kw">let </span>name = path_to_single_string(<span class="kw-2">&amp;</span>path.path).ok_or_else(|| Error::new_spanned(path, <span class="string">&quot;Expected identifier&quot;</span>))<span class="question-mark">?</span>;
+                <span class="kw">if </span>name.as_str() == <span class="string">&quot;into&quot; </span>{
+                    <span class="self">self</span>.into = IntoSetting::GenericConversion;
+                    <span class="prelude-val">Ok</span>(())
+                } <span class="kw">else </span>{
+                    <span class="self">self</span>.common.apply_meta(expr)
+                }
+            }
+            <span class="kw">_ </span>=&gt; <span class="self">self</span>.common.apply_meta(expr),
+        }
+    }
+}
+
 <span class="attr">#[derive(Debug, Default)]
 </span><span class="kw">pub struct </span>TypeBuilderAttr {
     <span class="doccomment">/// Whether to show docs for the `TypeBuilder` type (rather than hiding them).
@@ -1333,7 +1426,7 @@
     </span><span class="kw">pub </span>builder_type: CommonDeclarationSettings,
 
     <span class="doccomment">/// Customize build method, ex. visibility, name
-    </span><span class="kw">pub </span>build_method: CommonDeclarationSettings,
+    </span><span class="kw">pub </span>build_method: BuildMethodSettings,
 
     <span class="kw">pub </span>field_defaults: FieldBuilderAttr,
 }
@@ -1366,7 +1459,7 @@
             }
         }
 
-        <span class="kw">if </span>result.builder_type.doc.is_some() || result.build_method.doc.is_some() {
+        <span class="kw">if </span>result.builder_type.doc.is_some() || result.build_method.common.doc.is_some() {
             result.doc = <span class="bool-val">true</span>;
         }
 
@@ -1378,6 +1471,7 @@
             syn::Expr::Assign(assign) =&gt; {
                 <span class="kw">let </span>name =
                     expr_to_single_string(<span class="kw-2">&amp;</span>assign.left).ok_or_else(|| Error::new_spanned(<span class="kw-2">&amp;</span>assign.left, <span class="string">&quot;Expected identifier&quot;</span>))<span class="question-mark">?</span>;
+
                 <span class="kw">let </span>gen_structure_depracation_error = |put_under: <span class="kw-2">&amp;</span>str, new_name: <span class="kw-2">&amp;</span>str| {
                     Error::new_spanned(
                         <span class="kw-2">&amp;</span>assign.left,
@@ -1451,4 +1545,4 @@
     }
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="typed_builder" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="typed_builder" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

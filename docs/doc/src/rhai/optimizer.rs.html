@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.12.0/src/optimizer.rs`."><title>optimizer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.13.0/src/optimizer.rs`."><title>optimizer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../static.files/ayu-be46fdc453a55015.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1389,6 +1389,7 @@
 <a href="#1389" id="1389">1389</a>
 <a href="#1390" id="1390">1390</a>
 <a href="#1391" id="1391">1391</a>
+<a href="#1392" id="1392">1392</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Module implementing the [`AST`] optimizer.
 </span><span class="attr">#![cfg(not(feature = <span class="string">&quot;no_optimize&quot;</span>))]
 
@@ -1396,7 +1397,9 @@
     ASTFlags, Expr, FlowControl, OpAssignment, Stmt, StmtBlock, StmtBlockContainer,
     SwitchCasesCollection,
 };
-<span class="kw">use </span><span class="kw">crate</span>::engine::{KEYWORD_DEBUG, KEYWORD_EVAL, KEYWORD_FN_PTR, KEYWORD_PRINT, KEYWORD_TYPE_OF};
+<span class="kw">use </span><span class="kw">crate</span>::engine::{
+    KEYWORD_DEBUG, KEYWORD_EVAL, KEYWORD_FN_PTR, KEYWORD_PRINT, KEYWORD_TYPE_OF, OP_NOT,
+};
 <span class="kw">use </span><span class="kw">crate</span>::eval::{Caches, GlobalRuntimeState};
 <span class="kw">use </span><span class="kw">crate</span>::func::builtin::get_builtin_binary_op_fn;
 <span class="kw">use </span><span class="kw">crate</span>::func::hashing::get_hasher;
@@ -1415,9 +1418,6 @@
     hash::{Hash, Hasher},
     mem,
 };
-
-<span class="doccomment">/// Standard not operator.
-</span><span class="kw">const </span>OP_NOT: <span class="kw-2">&amp;</span>str = Token::Bang.literal_syntax();
 
 <span class="doccomment">/// Level of optimization performed.
 </span><span class="attr">#[derive(Debug, Eq, PartialEq, Hash, Clone, Copy)]
@@ -1538,7 +1538,7 @@
     </span><span class="kw">pub fn </span>call_fn_with_constant_arguments(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         fn_name: <span class="kw-2">&amp;</span>str,
-        op_token: <span class="prelude-ty">Option</span>&lt;Token&gt;,
+        op_token: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Token&gt;,
         arg_values: <span class="kw-2">&amp;mut </span>[Dynamic],
     ) -&gt; <span class="prelude-ty">Option</span>&lt;Dynamic&gt; {
         <span class="self">self</span>.engine
@@ -1620,7 +1620,7 @@
         });
 
         <span class="comment">// Optimize each statement in the block
-        </span><span class="kw">for </span>stmt <span class="kw">in </span><span class="kw-2">&amp;mut </span>statements {
+        </span>statements.iter_mut().for_each(|stmt| {
             <span class="kw">match </span>stmt {
                 Stmt::Var(x, options, ..) =&gt; {
                     <span class="kw">if </span>options.contains(ASTFlags::CONSTANT) {
@@ -1643,7 +1643,7 @@
                 <span class="comment">// Optimize the statement
                 </span><span class="kw">_ </span>=&gt; optimize_stmt(stmt, state, preserve_result),
             }
-        }
+        });
 
         <span class="comment">// Remove all pure statements except the last one
         </span><span class="kw">let </span><span class="kw-2">mut </span>index = <span class="number">0</span>;
@@ -1955,16 +1955,14 @@
             }
 
             <span class="comment">// Then check ranges
-            </span><span class="kw">if </span>value.is_int() &amp;&amp; !ranges.is_empty() {
-                <span class="kw">let </span>value = value.as_int().unwrap();
-
+            </span><span class="kw">if </span>!ranges.is_empty() {
                 <span class="comment">// Only one range or all ranges without conditions
                 </span><span class="kw">if </span>ranges.len() == <span class="number">1
                     </span>|| ranges
                         .iter()
                         .all(|r| expressions[r.index()].is_always_true())
                 {
-                    <span class="kw">if let </span><span class="prelude-val">Some</span>(r) = ranges.iter().find(|r| r.contains(value)) {
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(r) = ranges.iter().find(|r| r.contains(<span class="kw-2">&amp;</span>value)) {
                         <span class="kw">let </span>range_block = <span class="kw-2">&amp;mut </span>expressions[r.index()];
 
                         <span class="kw">if </span>range_block.is_always_true() {
@@ -2011,17 +2009,17 @@
 
                     <span class="kw">let </span>old_ranges_len = ranges.len();
 
-                    ranges.retain(|r| r.contains(value));
+                    ranges.retain(|r| r.contains(<span class="kw-2">&amp;</span>value));
 
                     <span class="kw">if </span>ranges.len() != old_ranges_len {
                         state.set_dirty();
                     }
 
-                    <span class="kw">for </span>r <span class="kw">in </span><span class="kw-2">&amp;*</span>ranges {
+                    ranges.iter().for_each(|r| {
                         <span class="kw">let </span>b = <span class="kw-2">&amp;mut </span>expressions[r.index()];
                         optimize_expr(<span class="kw-2">&amp;mut </span>b.condition, state, <span class="bool-val">false</span>);
                         optimize_expr(<span class="kw-2">&amp;mut </span>b.expr, state, <span class="bool-val">false</span>);
-                    }
+                    });
                     <span class="kw">return</span>;
                 }
             }
@@ -2054,7 +2052,7 @@
             optimize_expr(match_expr, state, <span class="bool-val">false</span>);
 
             <span class="comment">// Optimize blocks
-            </span><span class="kw">for </span>b <span class="kw">in </span>expressions.as_mut() {
+            </span>expressions.iter_mut().for_each(|b| {
                 optimize_expr(<span class="kw-2">&amp;mut </span>b.condition, state, <span class="bool-val">false</span>);
                 optimize_expr(<span class="kw-2">&amp;mut </span>b.expr, state, <span class="bool-val">false</span>);
 
@@ -2062,7 +2060,7 @@
                     b.expr = Expr::Unit(b.expr.position());
                     state.set_dirty();
                 }
-            }
+            });
 
             <span class="comment">// Remove false cases
             </span>cases.retain(|<span class="kw">_</span>, list| {
@@ -2109,12 +2107,12 @@
             }
 
             <span class="comment">// Remove unused block statements
-            </span><span class="kw">for </span>index <span class="kw">in </span><span class="number">0</span>..expressions.len() {
+            </span>(<span class="number">0</span>..expressions.len()).into_iter().for_each(|index| {
                 <span class="kw">if </span><span class="kw-2">*</span>def_case == <span class="prelude-val">Some</span>(index)
                     || cases.values().flat_map(|c| c.iter()).any(|<span class="kw-2">&amp;</span>n| n == index)
                     || ranges.iter().any(|r| r.index() == index)
                 {
-                    <span class="kw">continue</span>;
+                    <span class="kw">return</span>;
                 }
 
                 <span class="kw">let </span>b = <span class="kw-2">&amp;mut </span>expressions[index];
@@ -2123,7 +2121,7 @@
                     b.expr = Expr::Unit(b.expr.position());
                     state.set_dirty();
                 }
-            }
+            });
         }
 
         <span class="comment">// while false { block } -&gt; Noop
@@ -2529,15 +2527,11 @@
                 }
                 <span class="comment">// Overloaded operators can override built-in.
                 </span><span class="kw">_ if </span>x.args.len() == <span class="number">2 </span>&amp;&amp; x.op_token.is_some() &amp;&amp; (state.engine.fast_operators() || !state.engine.has_native_fn_override(x.hashes.native(), <span class="kw-2">&amp;</span>arg_types)) =&gt; {
-                    <span class="kw">if let </span><span class="prelude-val">Some</span>(result) = get_builtin_binary_op_fn(x.op_token.clone().unwrap(), <span class="kw-2">&amp;</span>arg_values[<span class="number">0</span>], <span class="kw-2">&amp;</span>arg_values[<span class="number">1</span>])
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(result) = get_builtin_binary_op_fn(x.op_token.as_ref().unwrap(), <span class="kw-2">&amp;</span>arg_values[<span class="number">0</span>], <span class="kw-2">&amp;</span>arg_values[<span class="number">1</span>])
                         .and_then(|(f, ctx)| {
-                            <span class="kw">let </span>context = <span class="kw">if </span>ctx {
-                                <span class="prelude-val">Some</span>((state.engine, x.name.as_str(), <span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>state.global, <span class="kw-2">*</span>pos).into())
-                            } <span class="kw">else </span>{
-                                <span class="prelude-val">None
-                            </span>};
+                            <span class="kw">let </span>context = ctx.then(|| (state.engine, x.name.as_str(), <span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>state.global, <span class="kw-2">*</span>pos).into());
                             <span class="kw">let </span>(first, second) = arg_values.split_first_mut().unwrap();
-                            (f)(context, <span class="kw-2">&amp;mut </span>[ first, <span class="kw-2">&amp;mut </span>second[<span class="number">0</span>] ]).ok()
+                            f(context, <span class="kw-2">&amp;mut </span>[ first, <span class="kw-2">&amp;mut </span>second[<span class="number">0</span>] ]).ok()
                         }) {
                             state.set_dirty();
                             <span class="kw-2">*</span>expr = Expr::from_dynamic(result, <span class="kw-2">*</span>pos);
@@ -2550,8 +2544,7 @@
             x.args.iter_mut().for_each(|a| optimize_expr(a, state, <span class="bool-val">false</span>));
 
             <span class="comment">// Move constant arguments
-            </span><span class="kw">for </span>arg <span class="kw">in </span><span class="kw-2">&amp;mut </span>x.args {
-                <span class="kw">match </span>arg {
+            </span>x.args.iter_mut().for_each(|arg| <span class="kw">match </span>arg {
                     Expr::DynamicConstant(..) | Expr::Unit(..)
                     | Expr::StringConstant(..) | Expr::CharConstant(..)
                     | Expr::BoolConstant(..) | Expr::IntegerConstant(..) =&gt; (),
@@ -2563,8 +2556,7 @@
                         state.set_dirty();
                         <span class="kw-2">*</span>arg = Expr::DynamicConstant(value.into(), arg.start_position());
                     },
-                }
-            }
+                });
         }
 
         <span class="comment">// Eagerly call functions
@@ -2586,7 +2578,7 @@
                     KEYWORD_TYPE_OF <span class="kw">if </span>arg_values.len() == <span class="number">1 </span>=&gt; <span class="prelude-val">Some</span>(state.engine.map_type_name(arg_values[<span class="number">0</span>].type_name()).into()),
                     <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
                     </span><span class="kw">crate</span>::engine::KEYWORD_IS_SHARED <span class="kw">if </span>arg_values.len() == <span class="number">1 </span>=&gt; <span class="prelude-val">Some</span>(Dynamic::FALSE),
-                    <span class="kw">_ </span>=&gt; state.call_fn_with_constant_arguments(<span class="kw-2">&amp;</span>x.name, x.op_token.clone(), arg_values)
+                    <span class="kw">_ </span>=&gt; state.call_fn_with_constant_arguments(<span class="kw-2">&amp;</span>x.name, x.op_token.as_ref(), arg_values)
                 };
 
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(r) = result {
@@ -2600,7 +2592,7 @@
         }
 
         <span class="comment">// id(args ..) or xxx.id(args ..) -&gt; optimize function call arguments
-        </span>Expr::FnCall(x, ..) | Expr::MethodCall(x, ..) =&gt; <span class="kw">for </span>arg <span class="kw">in </span><span class="kw-2">&amp;mut </span>x.args {
+        </span>Expr::FnCall(x, ..) | Expr::MethodCall(x, ..) =&gt; x.args.iter_mut().for_each(|arg| {
             optimize_expr(arg, state, <span class="bool-val">false</span>);
 
             <span class="comment">// Move constant arguments
@@ -2617,7 +2609,7 @@
                     <span class="kw-2">*</span>arg = Expr::DynamicConstant(value.into(), arg.start_position());
                 },
             }
-        },
+        }),
 
         <span class="comment">// constant-name
         </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
@@ -2679,7 +2671,7 @@
     </span><span class="kw">fn </span>optimize_top_level(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         statements: StmtBlockContainer,
-        scope: <span class="kw-2">&amp;</span>Scope,
+        scope: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Scope&gt;,
         lib: <span class="kw-2">&amp;</span>[<span class="kw">crate</span>::SharedModule],
         optimization_level: OptimizationLevel,
     ) -&gt; StmtBlockContainer {
@@ -2695,18 +2687,25 @@
         </span><span class="kw">let </span><span class="kw-2">mut </span>state = OptimizerState::new(<span class="self">self</span>, lib, optimization_level);
 
         <span class="comment">// Add constants from global modules
-        </span><span class="kw">for </span>(name, value) <span class="kw">in </span><span class="self">self</span>.global_modules.iter().rev().flat_map(|m| m.iter_var()) {
-            state.push_var(name, AccessMode::ReadOnly, <span class="prelude-val">Some</span>(value.clone()));
-        }
+        </span><span class="self">self</span>.global_modules
+            .iter()
+            .rev()
+            .flat_map(|m| m.iter_var())
+            .for_each(|(name, value)| {
+                state.push_var(name, AccessMode::ReadOnly, <span class="prelude-val">Some</span>(value.clone()))
+            });
 
         <span class="comment">// Add constants and variables from the scope
-        </span><span class="kw">for </span>(name, constant, value) <span class="kw">in </span>scope.iter() {
-            <span class="kw">if </span>constant {
-                state.push_var(name, AccessMode::ReadOnly, <span class="prelude-val">Some</span>(value));
-            } <span class="kw">else </span>{
-                state.push_var(name, AccessMode::ReadWrite, <span class="prelude-val">None</span>);
-            }
-        }
+        </span>scope
+            .into_iter()
+            .flat_map(Scope::iter)
+            .for_each(|(name, constant, value)| {
+                <span class="kw">if </span>constant {
+                    state.push_var(name, AccessMode::ReadOnly, <span class="prelude-val">Some</span>(value));
+                } <span class="kw">else </span>{
+                    state.push_var(name, AccessMode::ReadWrite, <span class="prelude-val">None</span>);
+                }
+            });
 
         optimize_stmt_block(statements, <span class="kw-2">&amp;mut </span>state, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">true</span>)
     }
@@ -2714,7 +2713,7 @@
     <span class="doccomment">/// Optimize a collection of statements and functions into an [`AST`].
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>optimize_into_ast(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        scope: <span class="kw-2">&amp;</span>Scope,
+        scope: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Scope&gt;,
         statements: StmtBlockContainer,
         <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))] </span>functions: StaticVec&lt;
             <span class="kw">crate</span>::Shared&lt;<span class="kw">crate</span>::ast::ScriptFnDef&gt;,
@@ -2728,15 +2727,16 @@
             <span class="kw">let </span><span class="kw-2">mut </span>module = <span class="kw">crate</span>::Module::new();
 
             <span class="kw">if </span>optimization_level == OptimizationLevel::None {
-                <span class="kw">for </span>fn_def <span class="kw">in </span>functions {
+                functions.into_iter().for_each(|fn_def| {
                     module.set_script_fn(fn_def);
-                }
+                });
             } <span class="kw">else </span>{
                 <span class="comment">// We only need the script library&#39;s signatures for optimization purposes
                 </span><span class="kw">let </span><span class="kw-2">mut </span>lib2 = <span class="kw">crate</span>::Module::new();
 
-                <span class="kw">for </span>fn_def <span class="kw">in </span><span class="kw-2">&amp;</span>functions {
-                    lib2.set_script_fn(<span class="kw">crate</span>::ast::ScriptFnDef {
+                functions
+                    .iter()
+                    .map(|fn_def| <span class="kw">crate</span>::ast::ScriptFnDef {
                         name: fn_def.name.clone(),
                         access: fn_def.access,
                         body: <span class="kw">crate</span>::ast::StmtBlock::NONE,
@@ -2744,12 +2744,14 @@
                         <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
                         #[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
                         </span>comments: Box::default(),
+                    })
+                    .for_each(|script_def| {
+                        lib2.set_script_fn(script_def);
                     });
-                }
 
                 <span class="kw">let </span>lib2 = <span class="kw-2">&amp;</span>[lib2.into()];
 
-                <span class="kw">for </span>fn_def <span class="kw">in </span>functions {
+                functions.into_iter().for_each(|fn_def| {
                     <span class="kw">let </span><span class="kw-2">mut </span>fn_def = <span class="kw">crate</span>::func::shared_take_or_clone(fn_def);
 
                     <span class="comment">// Optimize the function body
@@ -2758,7 +2760,7 @@
                     <span class="kw-2">*</span>fn_def.body = <span class="self">self</span>.optimize_top_level(body, scope, lib2, optimization_level);
 
                     module.set_script_fn(fn_def);
-                }
+                });
             }
 
             module.into()
@@ -2781,4 +2783,4 @@
     }
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/bpaf-0.7.9/src/args.rs`."><title>args.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../bpaf/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/bpaf-0.7.10/src/args.rs`."><title>args.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../static.files/ayu-be46fdc453a55015.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../bpaf/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -770,10 +770,62 @@
 <a href="#770" id="770">770</a>
 <a href="#771" id="771">771</a>
 <a href="#772" id="772">772</a>
+<a href="#773" id="773">773</a>
+<a href="#774" id="774">774</a>
+<a href="#775" id="775">775</a>
+<a href="#776" id="776">776</a>
+<a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
+<a href="#786" id="786">786</a>
+<a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
+<a href="#790" id="790">790</a>
+<a href="#791" id="791">791</a>
+<a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
+<a href="#802" id="802">802</a>
+<a href="#803" id="803">803</a>
+<a href="#804" id="804">804</a>
+<a href="#805" id="805">805</a>
+<a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
+<a href="#810" id="810">810</a>
+<a href="#811" id="811">811</a>
+<a href="#812" id="812">812</a>
+<a href="#813" id="813">813</a>
+<a href="#814" id="814">814</a>
+<a href="#815" id="815">815</a>
+<a href="#816" id="816">816</a>
+<a href="#817" id="817">817</a>
+<a href="#818" id="818">818</a>
+<a href="#819" id="819">819</a>
+<a href="#820" id="820">820</a>
+<a href="#821" id="821">821</a>
+<a href="#822" id="822">822</a>
+<a href="#823" id="823">823</a>
+<a href="#824" id="824">824</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::ffi::OsString;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="kw">crate</span>::arg::<span class="kw-2">*</span>;
-<span class="kw">use crate</span>::{parsers::NamedArg, Error, Meta};
+<span class="kw">use crate</span>::{info::Info, parsers::NamedArg, Error, Meta, ParseFailure};
 
 <span class="doccomment">/// Shows which branch of [`ParseOrElse`] parsed the argument
 </span><span class="attr">#[derive(Debug, Clone)]
@@ -790,6 +842,17 @@
             Conflict::Solo(s) =&gt; s,
             Conflict::Conflicts(w, <span class="kw">_</span>) =&gt; w,
         }
+    }
+}
+
+<span class="attr">#[derive(Clone)]
+</span><span class="kw">pub struct </span>Improve(
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span>(args: <span class="kw-2">&amp;mut </span>Args, info: <span class="kw-2">&amp;</span>Info, inner: <span class="kw-2">&amp;</span>Meta, err: Error) -&gt; ParseFailure,
+);
+
+<span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span>Improve {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_tuple(<span class="string">&quot;Improve&quot;</span>).finish()
     }
 }
 
@@ -852,6 +915,9 @@
         <span class="doccomment">/// set of conflicts - usize contains the offset to the rejected item,
         /// first Meta contains accepted item, second meta contains rejected item
         </span><span class="kw">pub</span>(<span class="kw">crate</span>) conflicts: BTreeMap&lt;usize, Conflict&gt;,
+
+        <span class="doccomment">/// A way to customize behavior for --help and error handling
+        </span><span class="kw">pub</span>(<span class="kw">crate</span>) improve_error: <span class="kw">super</span>::Improve,
     }
 
     <span class="kw">impl</span>&lt;<span class="kw">const </span>N: usize&gt; From&lt;<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>str; N]&gt; <span class="kw">for </span>Args {
@@ -916,6 +982,7 @@
                 </span>no_pos_ahead: <span class="bool-val">false</span>,
                 ambig,
                 conflicts: BTreeMap::new(),
+                improve_error: <span class="kw">super</span>::Improve(<span class="kw">crate</span>::help::improve_error),
             }
         }
     }
@@ -923,6 +990,43 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>ArgsIter&lt;<span class="lifetime">&#39;a</span>&gt; {
         args: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Args,
         cur: usize,
+    }
+
+    <span class="kw">impl </span>Args {
+        <span class="attr">#[inline(never)]
+        </span><span class="doccomment">/// Get a list of command line arguments from OS
+        </span><span class="kw">pub fn </span>current_args() -&gt; <span class="self">Self </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>arg_vec = Vec::new();
+            <span class="attr">#[cfg(feature = <span class="string">&quot;autocomplete&quot;</span>)]
+            </span><span class="kw">let </span><span class="kw-2">mut </span>complete_vec = Vec::new();
+
+            <span class="kw">let </span><span class="kw-2">mut </span>args = std::env::args_os();
+
+            <span class="attr">#[allow(unused_variables)]
+            </span><span class="kw">let </span>name = args.next().expect(<span class="string">&quot;no command name from args_os?&quot;</span>);
+
+            <span class="attr">#[cfg(feature = <span class="string">&quot;autocomplete&quot;</span>)]
+            </span><span class="kw">for </span>arg <span class="kw">in </span>args {
+                <span class="kw">if </span>arg
+                    .to_str()
+                    .map_or(<span class="bool-val">false</span>, |s| s.starts_with(<span class="string">&quot;--bpaf-complete-&quot;</span>))
+                {
+                    complete_vec.push(arg);
+                } <span class="kw">else </span>{
+                    arg_vec.push(arg);
+                }
+            }
+            <span class="attr">#[cfg(not(feature = <span class="string">&quot;autocomplete&quot;</span>))]
+            </span>arg_vec.extend(args);
+
+            <span class="attr">#[cfg(feature = <span class="string">&quot;autocomplete&quot;</span>)]
+            </span><span class="kw">let </span>args = <span class="kw">crate</span>::complete_run::args_with_complete(name, <span class="kw-2">&amp;</span>arg_vec, <span class="kw-2">&amp;</span>complete_vec);
+
+            <span class="attr">#[cfg(not(feature = <span class="string">&quot;autocomplete&quot;</span>))]
+            </span><span class="kw">let </span>args = <span class="self">Self</span>::from(arg_vec.as_slice());
+
+            args
+        }
     }
 
     <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Args {
@@ -1181,7 +1285,7 @@
         ///   ([-a] alpha) | beta
         /// and user passes &quot;-a &lt;TAB&gt;&quot; we should not suggest &quot;beta&quot;
         </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>valid_complete_head(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-            <span class="self">self</span>.len() == <span class="number">0 </span>|| (<span class="self">self</span>.len() == <span class="number">1 </span>&amp;&amp; <span class="self">self</span>.removed.last() == <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="bool-val">false</span>))
+            <span class="self">self</span>.is_empty() || (<span class="self">self</span>.len() == <span class="number">1 </span>&amp;&amp; <span class="self">self</span>.removed.last() == <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="bool-val">false</span>))
         }
 
         <span class="attr">#[cfg(feature = <span class="string">&quot;autocomplete&quot;</span>)]
@@ -1249,7 +1353,7 @@
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>word_parse_error(<span class="kw-2">&amp;mut </span><span class="self">self</span>, error: <span class="kw-2">&amp;</span>str) -&gt; Error {
-        Error::Stderr(<span class="kw">if let </span><span class="prelude-val">Some</span>(os) = <span class="self">self</span>.current_word() {
+        Error::Message(<span class="kw">if let </span><span class="prelude-val">Some</span>(os) = <span class="self">self</span>.current_word() {
             <span class="macro">format!</span>(<span class="string">&quot;Couldn&#39;t parse {:?}: {}&quot;</span>, os.to_string_lossy(), error)
         } <span class="kw">else </span>{
             <span class="macro">format!</span>(<span class="string">&quot;Couldn&#39;t parse: {}&quot;</span>, error)
@@ -1257,7 +1361,7 @@
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>word_validate_error(<span class="kw-2">&amp;mut </span><span class="self">self</span>, error: <span class="kw-2">&amp;</span>str) -&gt; Error {
-        Error::Stderr(<span class="kw">if let </span><span class="prelude-val">Some</span>(os) = <span class="self">self</span>.current_word() {
+        Error::Message(<span class="kw">if let </span><span class="prelude-val">Some</span>(os) = <span class="self">self</span>.current_word() {
             <span class="macro">format!</span>(<span class="string">&quot;{:?}: {}&quot;</span>, os.to_string_lossy(), error)
         } <span class="kw">else </span>{
             error.to_owned()
@@ -1311,9 +1415,9 @@
                     <span class="kw">let </span>os = os.to_string_lossy();
                     <span class="macro">format!</span>( <span class="string">&quot;`{}` requires an argument, got a flag-like `{}`, try `{}={}` to use it as an argument&quot;</span>, arg, os, arg,os)
                 };
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Stderr(msg));
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Message(msg));
             }
-            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Stderr(<span class="macro">format!</span>(<span class="string">&quot;{} requires an argument&quot;</span>, arg))),
+            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Message(<span class="macro">format!</span>(<span class="string">&quot;{} requires an argument&quot;</span>, arg))),
         };
         <span class="kw">let </span>val = val.clone();
         <span class="self">self</span>.current = <span class="prelude-val">Some</span>(val_ix);
@@ -1340,7 +1444,7 @@
                 <span class="self">self</span>.remove(ix);
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>((<span class="bool-val">false</span>, w)))
             }
-            <span class="prelude-val">Some</span>((<span class="kw">_</span>, arg)) =&gt; <span class="prelude-val">Err</span>(Error::Stderr(<span class="macro">format!</span>(<span class="string">&quot;Expected an argument, got {}&quot;</span>, arg))),
+            <span class="prelude-val">Some</span>((<span class="kw">_</span>, arg)) =&gt; <span class="prelude-val">Err</span>(Error::Message(<span class="macro">format!</span>(<span class="string">&quot;Expected an argument, got {}&quot;</span>, arg))),
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
         }
     }
@@ -1543,4 +1647,4 @@
     }
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bpaf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bpaf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

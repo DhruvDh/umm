@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["classpath","count_tokens_chatgpt","count_tokens_davinci","download","download_to_json","download_to_string","find_files","java_path","javac_path","sourcepath","umm_path"],"opaque":[""]};
+window.SIDEBAR_ITEMS = {"fn":["classpath","download","download_to_json","download_to_string","find_files","java_path","javac_path","sourcepath","umm_path"],"opaque":[""]};

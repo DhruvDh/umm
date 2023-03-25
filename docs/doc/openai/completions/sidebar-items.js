@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["CompletionBuilderError"],"struct":["Completion","CompletionBuilder","CompletionChoice","CompletionRequest"]};

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.12.0/src/ast/expr.rs`."><title>expr.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.13.0/src/ast/expr.rs`."><title>expr.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-be46fdc453a55015.css"><script src="../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -904,22 +904,15 @@
 <a href="#904" id="904">904</a>
 <a href="#905" id="905">905</a>
 <a href="#906" id="906">906</a>
-<a href="#907" id="907">907</a>
-<a href="#908" id="908">908</a>
-<a href="#909" id="909">909</a>
-<a href="#910" id="910">910</a>
-<a href="#911" id="911">911</a>
-<a href="#912" id="912">912</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Module defining script expressions.
 
 </span><span class="kw">use super</span>::{ASTFlags, ASTNode, Ident, Namespace, Stmt, StmtBlock};
 <span class="kw">use </span><span class="kw">crate</span>::engine::{KEYWORD_FN_PTR, OP_EXCLUSIVE_RANGE, OP_INCLUSIVE_RANGE};
-<span class="kw">use </span><span class="kw">crate</span>::func::hashing::ALT_ZERO_HASH;
 <span class="kw">use </span><span class="kw">crate</span>::tokenizer::Token;
 <span class="kw">use </span><span class="kw">crate</span>::types::dynamic::Union;
 <span class="kw">use crate</span>::{
-    calc_fn_hash, Dynamic, FnPtr, Identifier, ImmutableString, Position, SmartString, StaticVec,
-    INT,
+    calc_fn_hash, Dynamic, FnArgsVec, FnPtr, Identifier, ImmutableString, Position, SmartString,
+    StaticVec, INT,
 };
 <span class="attr">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
@@ -929,7 +922,7 @@
     fmt::Write,
     hash::Hash,
     iter::once,
-    num::{NonZeroU64, NonZeroU8, NonZeroUsize},
+    num::{NonZeroU8, NonZeroUsize},
 };
 
 <span class="doccomment">/// _(internals)_ A binary expression.
@@ -1015,9 +1008,9 @@
 </span><span class="kw">pub struct </span>FnCallHashes {
     <span class="doccomment">/// Pre-calculated hash for a script-defined function ([`None`] if native functions only).
     </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-    </span>script: <span class="prelude-ty">Option</span>&lt;NonZeroU64&gt;,
+    </span>script: <span class="prelude-ty">Option</span>&lt;u64&gt;,
     <span class="doccomment">/// Pre-calculated hash for a native Rust function with no parameter types.
-    </span>native: NonZeroU64,
+    </span>native: u64,
 }
 
 <span class="kw">impl </span>fmt::Debug <span class="kw">for </span>FnCallHashes {
@@ -1037,38 +1030,37 @@
     }
 }
 
-<span class="kw">impl </span>From&lt;u64&gt; <span class="kw">for </span>FnCallHashes {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(hash: u64) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span>hash = NonZeroU64::new(<span class="kw">if </span>hash == <span class="number">0 </span>{ ALT_ZERO_HASH } <span class="kw">else </span>{ hash }).unwrap();
-
+<span class="kw">impl </span>FnCallHashes {
+    <span class="doccomment">/// Create a [`FnCallHashes`] from a single hash.
+    </span><span class="attr">#[inline]
+    #[must_use]
+    </span><span class="kw">pub const fn </span>from_hash(hash: u64) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             </span>script: <span class="prelude-val">Some</span>(hash),
             native: hash,
         }
     }
-}
-
-<span class="kw">impl </span>FnCallHashes {
     <span class="doccomment">/// Create a [`FnCallHashes`] with only the native Rust hash.
     </span><span class="attr">#[inline]
     #[must_use]
-    </span><span class="kw">pub fn </span>from_native(hash: u64) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>from_native_only(hash: u64) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             </span>script: <span class="prelude-val">None</span>,
-            native: NonZeroU64::new(<span class="kw">if </span>hash == <span class="number">0 </span>{ ALT_ZERO_HASH } <span class="kw">else </span>{ hash }).unwrap(),
+            native: hash,
         }
     }
-    <span class="doccomment">/// Create a [`FnCallHashes`] with both native Rust and script function hashes.
-    </span><span class="attr">#[inline]
+    <span class="doccomment">/// Create a [`FnCallHashes`] with both script function and native Rust hashes.
+    ///
+    /// Not available under `no_function`.
+    </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+    #[inline]
     #[must_use]
-    </span><span class="kw">pub fn </span>from_all(<span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))] </span>script: u64, native: u64) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub const fn </span>from_script_and_native(script: u64, native: u64) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-            </span>script: NonZeroU64::new(<span class="kw">if </span>script == <span class="number">0 </span>{ ALT_ZERO_HASH } <span class="kw">else </span>{ script }),
-            native: NonZeroU64::new(<span class="kw">if </span>native == <span class="number">0 </span>{ ALT_ZERO_HASH } <span class="kw">else </span>{ native }).unwrap(),
+            script: <span class="prelude-val">Some</span>(script),
+            native,
         }
     }
     <span class="doccomment">/// Is this [`FnCallHashes`] native-only?
@@ -1086,7 +1078,7 @@
     </span><span class="attr">#[inline(always)]
     #[must_use]
     </span><span class="kw">pub const fn </span>native(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
-        <span class="self">self</span>.native.get()
+        <span class="self">self</span>.native
     }
     <span class="doccomment">/// Get the script hash.
     ///
@@ -1099,8 +1091,8 @@
     #[inline(always)]
     #[must_use]
     </span><span class="kw">pub fn </span>script(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
-        <span class="macro">assert!</span>(<span class="self">self</span>.script.is_some());
-        <span class="self">self</span>.script.as_ref().unwrap().get()
+        <span class="macro">debug_assert!</span>(<span class="self">self</span>.script.is_some());
+        <span class="self">self</span>.script.unwrap()
     }
 }
 
@@ -1115,7 +1107,7 @@
     <span class="doccomment">/// Pre-calculated hashes.
     </span><span class="kw">pub </span>hashes: FnCallHashes,
     <span class="doccomment">/// List of function call argument expressions.
-    </span><span class="kw">pub </span>args: StaticVec&lt;Expr&gt;,
+    </span><span class="kw">pub </span>args: FnArgsVec&lt;Expr&gt;,
     <span class="doccomment">/// Does this function call capture the parent scope?
     </span><span class="kw">pub </span>capture_parent_scope: bool,
     <span class="doccomment">/// Is this function call a native operator?
@@ -1162,11 +1154,7 @@
     </span><span class="attr">#[inline]
     #[must_use]
     </span><span class="kw">pub fn </span>constant_args(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">if </span><span class="self">self</span>.args.is_empty() {
-            <span class="bool-val">true
-        </span>} <span class="kw">else </span>{
-            <span class="self">self</span>.args.iter().all(Expr::is_constant)
-        }
+        <span class="self">self</span>.args.is_empty() || <span class="self">self</span>.args.iter().all(Expr::is_constant)
     }
 }
 
@@ -1297,7 +1285,7 @@
 
                 <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
                 </span><span class="kw">if </span>!x.<span class="number">1</span>.is_empty() {
-                    <span class="macro">write!</span>(f, <span class="string">&quot;{}{}&quot;</span>, x.<span class="number">1</span>, Token::DoubleColon.literal_syntax())<span class="question-mark">?</span>;
+                    <span class="macro">write!</span>(f, <span class="string">&quot;{}{}&quot;</span>, x.<span class="number">1</span>, <span class="kw">crate</span>::engine::NAMESPACE_SEPARATOR)<span class="question-mark">?</span>;
                     <span class="kw">let </span>pos = x.<span class="number">1</span>.position();
                     <span class="kw">if </span>!pos.is_none() {
                         display_pos = pos;
@@ -1492,7 +1480,7 @@
                 FnCallExpr {
                     namespace: Namespace::NONE,
                     name: KEYWORD_FN_PTR.into(),
-                    hashes: calc_fn_hash(<span class="prelude-val">None</span>, f.fn_name(), <span class="number">1</span>).into(),
+                    hashes: FnCallHashes::from_hash(calc_fn_hash(<span class="prelude-val">None</span>, f.fn_name(), <span class="number">1</span>)),
                     args: once(<span class="self">Self</span>::StringConstant(f.fn_name().into(), pos)).collect(),
                     capture_parent_scope: <span class="bool-val">false</span>,
                     op_token: <span class="prelude-val">None</span>,
@@ -1823,4 +1811,4 @@
     </span>}
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

@@ -1,20 +1,20 @@
-; ModuleID = 'probe1.5332e131-cgu.0'
-source_filename = "probe1.5332e131-cgu.0"
+; ModuleID = 'probe1.8b2bc696-cgu.0'
+source_filename = "probe1.8b2bc696-cgu.0"
 target datalayout = "e-m:o-i64:64-i128:128-n32:64-S128"
 target triple = "arm64-apple-macosx11.0.0"
 
 ; core::f64::<impl f64>::to_int_unchecked
 ; Function Attrs: inlinehint uwtable
-define i32 @"_ZN4core3f6421_$LT$impl$u20$f64$GT$16to_int_unchecked17hb64e2e9c369a75cbE"(double %self) unnamed_addr #0 {
+define i32 @"_ZN4core3f6421_$LT$impl$u20$f64$GT$16to_int_unchecked17hb894367077c86991E"(double %self) unnamed_addr #0 {
 start:
 ; call <f64 as core::convert::num::FloatToInt<i32>>::to_int_unchecked
-  %0 = call i32 @"_ZN65_$LT$f64$u20$as$u20$core..convert..num..FloatToInt$LT$i32$GT$$GT$16to_int_unchecked17h356950695e57c507E"(double %self)
+  %0 = call i32 @"_ZN65_$LT$f64$u20$as$u20$core..convert..num..FloatToInt$LT$i32$GT$$GT$16to_int_unchecked17hb364154997280f4eE"(double %self)
   ret i32 %0
 }
 
 ; <f64 as core::convert::num::FloatToInt<i32>>::to_int_unchecked
 ; Function Attrs: inlinehint uwtable
-define internal i32 @"_ZN65_$LT$f64$u20$as$u20$core..convert..num..FloatToInt$LT$i32$GT$$GT$16to_int_unchecked17h356950695e57c507E"(double %self) unnamed_addr #0 {
+define internal i32 @"_ZN65_$LT$f64$u20$as$u20$core..convert..num..FloatToInt$LT$i32$GT$$GT$16to_int_unchecked17hb364154997280f4eE"(double %self) unnamed_addr #0 {
 start:
   %0 = alloca i32, align 4
   %1 = fptosi double %self to i32
@@ -25,10 +25,10 @@ start:
 
 ; probe1::probe
 ; Function Attrs: uwtable
-define void @_ZN6probe15probe17h8ee0d40ae5f1ee54E() unnamed_addr #1 {
+define void @_ZN6probe15probe17h92c5d0dc5fafe56dE() unnamed_addr #1 {
 start:
 ; call core::f64::<impl f64>::to_int_unchecked
-  %_1 = call i32 @"_ZN4core3f6421_$LT$impl$u20$f64$GT$16to_int_unchecked17hb64e2e9c369a75cbE"(double 1.000000e+00)
+  %_1 = call i32 @"_ZN4core3f6421_$LT$impl$u20$f64$GT$16to_int_unchecked17hb894367077c86991E"(double 1.000000e+00)
   ret void
 }
 

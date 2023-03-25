@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["DEFAULT_CELL_STYLE"],"enum":["AlignmentHorizontal","AlignmentVertical","Entity"],"fn":["string_width"],"struct":["Border","Grid","Indent","Settings","SplitLine","Style"]};
+window.SIDEBAR_ITEMS = {"enum":["AlignmentHorizontal","AlignmentVertical","Entity","Offset"],"mod":["height","records","util","width"],"struct":["Border","Borders","EntityIterator","Formatting","Grid","GridConfig","HorizontalLine","Indent","Sides","VerticalLine"],"trait":["Estimate"],"type":["Margin","Padding","Position"]};

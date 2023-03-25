@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tabled-0.5.0/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../tabled/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tabled-0.10.0/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../static.files/ayu-be46fdc453a55015.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../tabled/index.html">
+                        <img src="https://raw.githubusercontent.com/zhiburt/tabled/86ac146e532ce9f7626608d7fd05072123603a2e/assets/tabled-gear.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -292,22 +293,207 @@
 <a href="#292" id="292">292</a>
 <a href="#293" id="293">293</a>
 <a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
+<a href="#347" id="347">347</a>
+<a href="#348" id="348">348</a>
+<a href="#349" id="349">349</a>
+<a href="#350" id="350">350</a>
+<a href="#351" id="351">351</a>
+<a href="#352" id="352">352</a>
+<a href="#353" id="353">353</a>
+<a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a>
+<a href="#356" id="356">356</a>
+<a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a>
+<a href="#359" id="359">359</a>
+<a href="#360" id="360">360</a>
+<a href="#361" id="361">361</a>
+<a href="#362" id="362">362</a>
+<a href="#363" id="363">363</a>
+<a href="#364" id="364">364</a>
+<a href="#365" id="365">365</a>
+<a href="#366" id="366">366</a>
+<a href="#367" id="367">367</a>
+<a href="#368" id="368">368</a>
+<a href="#369" id="369">369</a>
+<a href="#370" id="370">370</a>
+<a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
+<a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
+<a href="#433" id="433">433</a>
+<a href="#434" id="434">434</a>
+<a href="#435" id="435">435</a>
+<a href="#436" id="436">436</a>
+<a href="#437" id="437">437</a>
+<a href="#438" id="438">438</a>
+<a href="#439" id="439">439</a>
+<a href="#440" id="440">440</a>
+<a href="#441" id="441">441</a>
+<a href="#442" id="442">442</a>
+<a href="#443" id="443">443</a>
+<a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
+<a href="#448" id="448">448</a>
+<a href="#449" id="449">449</a>
+<a href="#450" id="450">450</a>
+<a href="#451" id="451">451</a>
+<a href="#452" id="452">452</a>
+<a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a>
+<a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a>
+<a href="#459" id="459">459</a>
+<a href="#460" id="460">460</a>
+<a href="#461" id="461">461</a>
+<a href="#462" id="462">462</a>
+<a href="#463" id="463">463</a>
+<a href="#464" id="464">464</a>
+<a href="#465" id="465">465</a>
+<a href="#466" id="466">466</a>
+<a href="#467" id="467">467</a>
+<a href="#468" id="468">468</a>
+<a href="#469" id="469">469</a>
+<a href="#470" id="470">470</a>
+<a href="#471" id="471">471</a>
+<a href="#472" id="472">472</a>
+<a href="#473" id="473">473</a>
+<a href="#474" id="474">474</a>
+<a href="#475" id="475">475</a>
+<a href="#476" id="476">476</a>
+<a href="#477" id="477">477</a>
+<a href="#478" id="478">478</a>
 </pre><pre class="rust"><code><span class="doccomment">//! An easy to use library for pretty print tables of Rust `struct`s and `enum`s.
 //!
-//! The library is based on a [Tabled] trait which is used to actually build tables.
-//! It also provides an variate of dynamic settings for customization of a [Table].
+//! The library is based on a [`Tabled`] trait which is used to actually build tables.
+//! It also provides an variate of dynamic settings for customization of a [`Table`].
 //!
-//! [Table] can be build from vast majority of Rust&#39;s standart types.
+//! [`Table`] can be build from vast majority of Rust&#39;s standard types.
 //!
 //! ## Usage
 //!
 //! If you want to build a table for your custom type.
 //! A starting point is to a anotate your type with `#[derive(Tabled)]`.
 //!
-//! Then you can create `Table::new` to create a table;
+//! Then one of ways to create a table is to call [`Table::new`] to create a table.
 //!
-//! ```rust
-//! use tabled::{Tabled, Table};
+</span><span class="attr">#![cfg_attr(feature = <span class="string">&quot;derive&quot;</span>, doc = <span class="string">&quot;```&quot;</span>)]
+#![cfg_attr(not(feature = <span class="string">&quot;derive&quot;</span>), doc = <span class="string">&quot;```ignore&quot;</span>)]
+</span><span class="doccomment">//! use tabled::{Tabled, Table};
 //!
 //! #[derive(Tabled)]
 //! struct Language {
@@ -337,19 +523,19 @@
 //! let table = Table::new(languages).to_string();
 //!
 //! let expected = &quot;+------+----------------+---------------+\n\
-//!                 | name |  designed_by   | invented_year |\n\
+//!                 | name | designed_by    | invented_year |\n\
 //!                 +------+----------------+---------------+\n\
-//!                 |  C   | Dennis Ritchie |     1972      |\n\
+//!                 | C    | Dennis Ritchie | 1972          |\n\
 //!                 +------+----------------+---------------+\n\
-//!                 | Rust | Graydon Hoare  |     2010      |\n\
+//!                 | Rust | Graydon Hoare  | 2010          |\n\
 //!                 +------+----------------+---------------+\n\
-//!                 |  Go  |    Rob Pike    |     2009      |\n\
-//!                 +------+----------------+---------------+\n&quot;;
+//!                 | Go   | Rob Pike       | 2009          |\n\
+//!                 +------+----------------+---------------+&quot;;
 //!
 //! assert_eq!(table, expected);
 //! ```
 //!
-//! You can also create a table by using [TableIteratorExt].
+//! You can also create a table by using [`TableIteratorExt`].
 //!
 //! ```rust,no_run
 //! # let languages = [&quot;&quot;];
@@ -357,7 +543,7 @@
 //! let table = languages.table();
 //! ```
 //!
-//! Not all types can derive [Tabled] trait though.
+//! Not all types can derive [`Tabled`] trait though.
 //! The example below can&#39;t be compiled.
 //!
 //! ```rust,compile_fail
@@ -371,7 +557,7 @@
 //! ```
 //!
 //! We must know what we&#39;re up to print as a field. Because of this
-//! each field must implement [std::fmt::Display].
+//! each field must implement [`std::fmt::Display`].
 //!
 //! ### Default implementations
 //!
@@ -385,26 +571,27 @@
 //! # let expected = &quot;+-----+\n\
 //! #                 | i32 |\n\
 //! #                 +-----+\n\
-//! #                 |  1  |\n\
+//! #                 | 1   |\n\
 //! #                 +-----+\n\
-//! #                 |  2  |\n\
+//! #                 | 2   |\n\
 //! #                 +-----+\n\
-//! #                 |  3  |\n\
-//! #                 +-----+\n&quot;;
+//! #                 | 3   |\n\
+//! #                 +-----+&quot;;
 //! # assert_eq!(table.to_string(), expected);
 //! ```
 //!
 //! ### Combination of types via tuples
 //!
 //! Personally I consider this a feature which drives the library to shine.
-//! You can combine any types that implements [Tabled] trait into one table.
+//! You can combine any types that implements [`Tabled`] trait into one table.
 //!
 //! You can also see in this example a `#[header(&quot;name&quot;)]` usage which configures a header
 //! of a table which will be printed.
 //! You could change it dynamically as well.
 //!
-//! ```rust
-//! use tabled::{Tabled, Table, Style};
+</span><span class="attr">#![cfg_attr(feature = <span class="string">&quot;derive&quot;</span>, doc = <span class="string">&quot;```&quot;</span>)]
+#![cfg_attr(not(feature = <span class="string">&quot;derive&quot;</span>), doc = <span class="string">&quot;```ignore&quot;</span>)]
+</span><span class="doccomment">//! use tabled::{Tabled, Table, Style, Alignment, ModifyObject, object::{Rows, Columns, Object}};
 //!
 //! #[derive(Tabled)]
 //! enum Domain {
@@ -415,7 +602,7 @@
 //! }
 //!
 //! #[derive(Tabled)]
-//! struct Developer(#[header(&quot;name&quot;)] &amp;&#39;static str);
+//! struct Developer(#[tabled(rename = &quot;name&quot;)] &amp;&#39;static str);
 //!     
 //! let data = vec![
 //!     (Developer(&quot;Terri Kshlerin&quot;), Domain::Embeded),
@@ -424,17 +611,90 @@
 //!     (Developer(&quot;Maxim Zhiburt&quot;), Domain::Unknown),
 //! ];
 //!     
-//! let table = Table::new(data).with(Style::psql()).to_string();
+//! let table = Table::new(data)
+//!     .with(Style::psql())
+//!     .with(Rows::new(1..).not(Columns::first()).modify().with(Alignment::center()))
+//!     .to_string();
 //!
 //! assert_eq!(
 //!     table,
 //!     concat!(
-//!         &quot;      name       | Security | Embeded | Frontend | Unknown \n&quot;,
+//!         &quot; name            | Security | Embeded | Frontend | Unknown \n&quot;,
 //!         &quot;-----------------+----------+---------+----------+---------\n&quot;,
 //!         &quot; Terri Kshlerin  |          |    +    |          |         \n&quot;,
 //!         &quot; Catalina Dicki  |    +     |         |          |         \n&quot;,
 //!         &quot; Jennie Schmeler |          |         |    +     |         \n&quot;,
-//!         &quot;  Maxim Zhiburt  |          |         |          |    +    \n&quot;
+//!         &quot; Maxim Zhiburt   |          |         |          |    +    &quot;
+//!     )
+//! );
+//! ```
+//!
+//! ### Dynamic table
+//!
+//! When you data sheme is not known at compile time.
+//! You mostlikely will not able to use [`Tabled`] trait.
+//! But you could build table from scratch.
+//!
+//! ```
+//! use tabled::{builder::Builder, ModifyObject, object::Rows, Alignment, Style};
+//!
+//! let mut builder = Builder::default();
+//!
+//! for i in 0..3 {
+//!     let mut row = vec![];
+//!     row.push(i.to_string());
+//!     for j in 0..10 {
+//!         row.push((i*j).to_string());
+//!     }
+//!
+//!     builder.add_record(row);
+//! }
+//!
+//! builder.set_columns(std::iter::once(String::from(&quot;i&quot;)).chain((0..10).map(|i| i.to_string())));
+//!
+//! let table = builder.build()
+//!     .with(Style::rounded())
+//!     .with(Rows::new(1..).modify().with(Alignment::left()))
+//!     .to_string();
+//!
+//! assert_eq!(
+//!     table,
+//!     concat!(
+//!         &quot;╭───┬───┬───┬───┬───┬───┬────┬────┬────┬────┬────╮\n&quot;,
+//!         &quot;│ i │ 0 │ 1 │ 2 │ 3 │ 4 │ 5  │ 6  │ 7  │ 8  │ 9  │\n&quot;,
+//!         &quot;├───┼───┼───┼───┼───┼───┼────┼────┼────┼────┼────┤\n&quot;,
+//!         &quot;│ 0 │ 0 │ 0 │ 0 │ 0 │ 0 │ 0  │ 0  │ 0  │ 0  │ 0  │\n&quot;,
+//!         &quot;│ 1 │ 0 │ 1 │ 2 │ 3 │ 4 │ 5  │ 6  │ 7  │ 8  │ 9  │\n&quot;,
+//!         &quot;│ 2 │ 0 │ 2 │ 4 │ 6 │ 8 │ 10 │ 12 │ 14 │ 16 │ 18 │\n&quot;,
+//!         &quot;╰───┴───┴───┴───┴───┴───┴────┴────┴────┴────┴────╯&quot;,
+//!     )
+//! );
+//! ```
+//!
+//! ### Build table using [`row`] and [`col`].
+//!
+</span><span class="attr">#![cfg_attr(feature = <span class="string">&quot;macros&quot;</span>, doc = <span class="string">&quot;```&quot;</span>)]
+#![cfg_attr(not(feature = <span class="string">&quot;macros&quot;</span>), doc = <span class="string">&quot;```ignore&quot;</span>)]
+</span><span class="doccomment">//! use tabled::{row, col};
+//!
+//! let table = row![
+//!     col![&quot;Hello&quot;, &quot;World&quot;, &quot;!&quot;],
+//!     col![&quot;Hello&quot;; 3],
+//!     col![&quot;World&quot;; 3],
+//! ].to_string();
+//!
+//! assert_eq!(
+//!     table,
+//!     concat!(
+//!         &quot;+-----------+-----------+-----------+\n&quot;,
+//!         &quot;| +-------+ | +-------+ | +-------+ |\n&quot;,
+//!         &quot;| | Hello | | | Hello | | | World | |\n&quot;,
+//!         &quot;| +-------+ | +-------+ | +-------+ |\n&quot;,
+//!         &quot;| | World | | | Hello | | | World | |\n&quot;,
+//!         &quot;| +-------+ | +-------+ | +-------+ |\n&quot;,
+//!         &quot;| | !     | | | Hello | | | World | |\n&quot;,
+//!         &quot;| +-------+ | +-------+ | +-------+ |\n&quot;,
+//!         &quot;+-----------+-----------+-----------+&quot;,
 //!     )
 //! );
 //! ```
@@ -443,148 +703,257 @@
 //!
 //! You can find more examples of settings and attributes in
 //! [README.md](https://github.com/zhiburt/tabled/blob/master/README.md)
-//!
 
-</span><span class="kw">use </span>std::fmt;
+</span><span class="attr">#![cfg_attr(docsrs, feature(doc_cfg, doc_auto_cfg))]
+#![doc(
+    html_logo_url = <span class="string">&quot;https://raw.githubusercontent.com/zhiburt/tabled/86ac146e532ce9f7626608d7fd05072123603a2e/assets/tabled-gear.svg&quot;
+</span>)]
+#![warn(
+    missing_docs,
+    rust_2018_idioms,
+    missing_debug_implementations,
+    unreachable_pub
+)]
+#![deny(unused_must_use)]
 
-<span class="kw">mod </span>alignment;
-<span class="kw">mod </span>concat;
-<span class="kw">mod </span>disable;
-<span class="kw">mod </span>formating;
-<span class="kw">mod </span>highlight;
-<span class="kw">mod </span>indent;
-<span class="kw">mod </span>object;
-<span class="kw">mod </span>panel;
-<span class="kw">mod </span>rotate;
+</span><span class="kw">mod </span>features;
+<span class="kw">mod </span>modify;
 <span class="kw">mod </span>table;
-<span class="kw">mod </span>width;
+<span class="kw">mod </span>table_iterator_ext;
+<span class="kw">mod </span>tabled;
 
 <span class="kw">pub mod </span>builder;
 <span class="kw">pub mod </span>display;
-<span class="kw">pub mod </span>style;
+<span class="kw">pub mod </span>object;
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;macros&quot;</span>)]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">&quot;macros&quot;</span>)))]
+</span><span class="kw">pub mod </span>macros;
+
+<span class="kw">pub use </span>papergrid;
 
 <span class="kw">pub use crate</span>::{
-    alignment::<span class="kw-2">*</span>, concat::<span class="kw-2">*</span>, disable::<span class="kw-2">*</span>, formating::<span class="kw-2">*</span>, highlight::<span class="kw-2">*</span>, indent::<span class="kw-2">*</span>, object::<span class="kw-2">*</span>,
-    panel::<span class="kw-2">*</span>, rotate::<span class="kw-2">*</span>, style::Style, table::<span class="kw-2">*</span>, width::<span class="kw-2">*</span>,
+    features::{
+        alignment::{<span class="self">self</span>, Alignment},
+        concat::Concat,
+        disable::Disable,
+        extract::Extract,
+        format, formatting,
+        height::{<span class="self">self</span>, Height},
+        highlight::Highlight,
+        locator,
+        margin::Margin,
+        measurment, merge,
+        padding::Padding,
+        panel::{Footer, Header, Panel},
+        peaker,
+        rotate::Rotate,
+        shadow,
+        span::Span,
+        style::{<span class="self">self</span>, Border, BorderText, Style},
+        width::{<span class="self">self</span>, Width},
+    },
+    modify::{CellSettingsList, Modify, ModifyList, ModifyObject},
+    table::{CellOption, Table, TableOption},
+    table_iterator_ext::TableIteratorExt,
+    tabled::Tabled,
 };
 
-<span class="kw">pub use </span>tabled_derive::Tabled;
+<span class="attr">#[cfg(feature = <span class="string">&quot;color&quot;</span>)]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">&quot;color&quot;</span>)))]
+</span><span class="kw">pub use </span><span class="kw">crate</span>::features::{color, highlight, margin_color, padding_color};
 
-<span class="comment">// todo: change return type to impl Iterator&lt;Cow&lt;str
-
-</span><span class="doccomment">/// Tabled a trait responsible for providing a header fields and a row fields.
+<span class="doccomment">/// A derive to implement a [`Tabled`] trait.
 ///
-/// It&#39;s urgent that `header` len is equal to `fields` len.
+/// The macros available only when `derive` feature in turned on (and it is by default).
 ///
-/// ```text
-/// Self::headers().len() == self.fields().len()
+/// To be able to use the derive each field must implement `std::fmt::Display`.
+/// The following example will cause a error because of that.
+///
+/// ```rust,compile_fail
+/// use tabled::Tabled;
+/// #[derive(Tabled)]
+/// struct SomeType {
+///     field1: SomeOtherType,
+/// }
+///
+/// struct SomeOtherType;
 /// ```
-</span><span class="kw">pub trait </span>Tabled {
-    <span class="doccomment">/// A length of fields and headers,
-    /// which must be the same.
-    </span><span class="kw">const </span>LENGTH: usize;
-
-    <span class="doccomment">/// Fields method must return a list of cells.
-    ///
-    /// The cells will be placed in the same row, preserving the order.
-    </span><span class="kw">fn </span>fields(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;String&gt;;
-    <span class="doccomment">/// Headers must return a list of column names.
-    </span><span class="kw">fn </span>headers() -&gt; Vec&lt;String&gt;;
-}
-
-<span class="kw">impl</span>&lt;T&gt; Tabled <span class="kw">for </span><span class="kw-2">&amp;</span>T
-<span class="kw">where
-    </span>T: Tabled,
-{
-    <span class="kw">const </span>LENGTH: usize = T::LENGTH;
-
-    <span class="kw">fn </span>fields(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;String&gt; {
-        T::fields(<span class="self">self</span>)
-    }
-    <span class="kw">fn </span>headers() -&gt; Vec&lt;String&gt; {
-        T::headers()
-    }
-}
-
-<span class="macro">macro_rules! </span>tuple_table {
-    ( $(<span class="macro-nonterminal">$name</span>:ident)+ ) =&gt; {
-        <span class="kw">impl</span>&lt;$(<span class="macro-nonterminal">$name</span>: Tabled),+&gt; Tabled <span class="kw">for </span>($(<span class="macro-nonterminal">$name</span>,)+){
-            <span class="kw">const </span>LENGTH: usize = $(<span class="macro-nonterminal">$name::LENGTH</span>+)+ <span class="number">0</span>;
-
-            <span class="kw">fn </span>fields(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;String&gt; {
-                <span class="attr">#![allow(non_snake_case)]
-                </span><span class="kw">let </span>($(<span class="macro-nonterminal">$name</span>,)+) = <span class="self">self</span>;
-                <span class="kw">let </span><span class="kw-2">mut </span>fields = Vec::new();
-                $(fields.append(<span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$name</span>.fields());)+
-                fields
-            }
-
-            <span class="kw">fn </span>headers() -&gt; Vec&lt;String&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>fields = Vec::new();
-                $(fields.append(<span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$name::headers</span>());)+
-                fields
-            }
-        }
-    };
-}
-
-<span class="macro">tuple_table! </span>{ A }
-<span class="macro">tuple_table! </span>{ A B }
-<span class="macro">tuple_table! </span>{ A B C }
-<span class="macro">tuple_table! </span>{ A B C D }
-<span class="macro">tuple_table! </span>{ A B C D E }
-<span class="macro">tuple_table! </span>{ A B C D E F }
-
-<span class="macro">macro_rules! </span>default_table {
-    ( <span class="macro-nonterminal">$t</span>:ty ) =&gt; {
-        <span class="kw">impl </span>Tabled <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
-            <span class="kw">const </span>LENGTH: usize = <span class="number">1</span>;
-
-            <span class="kw">fn </span>fields(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;String&gt; {
-                <span class="macro">vec!</span>[<span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, <span class="self">self</span>)]
-            }
-            <span class="kw">fn </span>headers() -&gt; Vec&lt;String&gt; {
-                <span class="macro">vec!</span>[<span class="macro">stringify!</span>(<span class="macro-nonterminal">$t</span>).to_string()]
-            }
-        }
-    };
-}
-
-<span class="macro">default_table!</span>(<span class="kw-2">&amp;</span>str);
-<span class="macro">default_table!</span>(String);
-
-<span class="macro">default_table!</span>(char);
-
-<span class="macro">default_table!</span>(bool);
-
-<span class="macro">default_table!</span>(isize);
-<span class="macro">default_table!</span>(usize);
-
-<span class="macro">default_table!</span>(u8);
-<span class="macro">default_table!</span>(u16);
-<span class="macro">default_table!</span>(u32);
-<span class="macro">default_table!</span>(u64);
-<span class="macro">default_table!</span>(u128);
-
-<span class="macro">default_table!</span>(i8);
-<span class="macro">default_table!</span>(i16);
-<span class="macro">default_table!</span>(i32);
-<span class="macro">default_table!</span>(i64);
-<span class="macro">default_table!</span>(i128);
-
-<span class="macro">default_table!</span>(f32);
-<span class="macro">default_table!</span>(f64);
-
-<span class="kw">impl</span>&lt;T: fmt::Display, <span class="kw">const </span>N: usize&gt; Tabled <span class="kw">for </span>[T; N] {
-    <span class="kw">const </span>LENGTH: usize = N;
-
-    <span class="kw">fn </span>fields(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;String&gt; {
-        <span class="self">self</span>.iter().map(|e| e.to_string()).collect()
-    }
-
-    <span class="kw">fn </span>headers() -&gt; Vec&lt;String&gt; {
-        (<span class="number">0</span>..N).map(|i| <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, i)).collect()
-    }
-}
+///
+/// Bellow you&#39;ll find available options for it.
+///
+/// ### Override a column name
+///
+/// You can use a `#[tabled(rename = &quot;&quot;)]` attribute to override a column name.
+///
+/// ```rust,no_run
+/// use tabled::Tabled;
+///
+/// #[derive(Tabled)]
+/// struct Person {
+///     #[tabled(rename = &quot;Name&quot;)]
+///     first_name: &amp;&#39;static str,
+///     #[tabled(rename = &quot;Surname&quot;)]
+///     last_name: &amp;&#39;static str,
+/// }
+/// ```
+///
+/// ### Hide a column
+///
+/// You can mark filds as hidden in which case they fill be ignored and not be present on a sheet.
+///
+/// A similar affect could be achieved by the means of a `Disable` setting.
+///
+/// ```rust,no_run
+/// use tabled::Tabled;
+///
+/// #[derive(Tabled)]
+/// struct Person {
+///    id: u8,
+///    #[tabled(skip)]
+///    number: &amp;&#39;static str,
+///    name: &amp;&#39;static str,
+/// }
+/// ```
+///
+/// ### Set column order
+///
+/// You can change the order in which they will be displayed in table.
+///
+/// ```rust,no_run
+/// use tabled::Tabled;
+///
+/// #[derive(Tabled)]
+/// struct Person {
+///    id: u8,
+///    #[tabled(order = 0)]
+///    number: &amp;&#39;static str,
+///    #[tabled(order = 1)]
+///    name: &amp;&#39;static str,
+/// }
+/// ```
+///
+/// ### Format fields
+///
+/// As was said already, using `#[derive(Tabled)]` is possible only when all fields implement a `Display` trait.
+/// However, this may be often not the case for example when a field uses the `Option` type. There&#39;s 2 common ways how to solve this:
+///
+/// - Implement `Tabled` trait manually for a type.
+/// - Wrap `Option` to something like `DisplayedOption&lt;T&gt;(Option&lt;T&gt;)` and implement a Display trait for it.
+///
+/// Alternatively, you can use the `#[tabled(display_with = &quot;func&quot;)]` attribute for the field to specify a display function.
+///
+/// ```rust,no_run
+/// use tabled::Tabled;
+///
+/// #[derive(Tabled)]
+/// pub struct MyRecord {
+///     pub id: i64,
+///     #[tabled(display_with = &quot;display_option&quot;)]
+///     pub valid: Option&lt;bool&gt;
+/// }
+///
+/// fn display_option(o: &amp;Option&lt;bool&gt;) -&gt; String {
+///     match o {
+///         Some(s) =&gt; format!(&quot;is valid thing = {}&quot;, s),
+///         None =&gt; format!(&quot;is not valid&quot;),
+///     }
+/// }
+/// ```
+///
+/// It&#39;s also possible to change function argument to be `&amp;self`,
+/// using `#[tabled(display_with(&quot;some_function&quot;, args))]`
+///
+/// ```rust,no_run
+/// use tabled::Tabled;
+///
+/// #[derive(Tabled)]
+/// pub struct MyRecord {
+///     pub id: i64,
+///     #[tabled(display_with(&quot;Self::display_valid&quot;, args))]
+///     pub valid: Option&lt;bool&gt;
+/// }
+///
+/// impl MyRecord {
+///     fn display_valid(&amp;self) -&gt; String {
+///         match self.valid {
+///             Some(s) =&gt; format!(&quot;is valid thing = {}&quot;, s),
+///             None =&gt; format!(&quot;is not valid&quot;),
+///         }
+///     }
+/// }
+/// ```
+///
+/// ### Format headers
+///
+/// Beside `#[tabled(rename = &quot;&quot;)]` you can change a format of a column name using
+/// `#[tabled(rename_all = &quot;UPPERCASE&quot;)]`.
+///
+/// ```rust,no_run
+/// use tabled::Tabled;
+///
+/// #[derive(Tabled)]
+/// #[tabled(rename_all = &quot;CamelCase&quot;)]
+/// struct Person {
+///     id: u8,
+///     number: &amp;&#39;static str,
+///     name: &amp;&#39;static str,
+///     #[tabled(rename_all = &quot;snake_case&quot;)]
+///     middle_name: &amp;&#39;static str,
+/// }
+/// ```
+///
+/// ### Inline
+///
+/// It&#39;s possible to inline internal data if it implements the `Tabled` trait using `#[tabled(inline)]`.
+/// You can also set a prefix which will be used for all inlined elements by `#[tabled(inline(&quot;prefix&gt;&gt;&quot;))]`.
+///
+/// ```rust,no_run
+/// use tabled::Tabled;
+///
+/// #[derive(Tabled)]
+/// struct Person {
+///     id: u8,
+///     name: &amp;&#39;static str,
+///     #[tabled(inline)]
+///     ed: Education,
+/// }
+///
+/// #[derive(Tabled)]
+/// struct Education {
+///     uni: &amp;&#39;static str,
+///     graduated: bool,
+/// }
+/// ```
+///
+/// And it works for enums as well.
+///
+/// ```rust,no_run
+/// use tabled::Tabled;
+///
+/// #[derive(Tabled)]
+/// enum Vehicle {
+///     #[tabled(inline(&quot;Auto::&quot;))]
+///     Auto {
+///         model: &amp;&#39;static str,
+///         engine: &amp;&#39;static str,
+///     },
+///     #[tabled(inline)]
+///     Bikecycle(
+///         &amp;&#39;static str,
+///         #[tabled(inline)] Bike,
+///     ),
+/// }
+///
+/// #[derive(Tabled)]
+/// struct Bike {
+///     brand: &amp;&#39;static str,
+///     price: f32,
+/// }
+/// ```
+</span><span class="comment">// @todo: Move the comment to tabled_derive
+</span><span class="attr">#[cfg(feature = <span class="string">&quot;derive&quot;</span>)]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">&quot;derive&quot;</span>)))]
+</span><span class="kw">pub use </span>tabled_derive::Tabled;
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tabled" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tabled" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

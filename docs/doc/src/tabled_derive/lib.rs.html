@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tabled_derive-0.2.0/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../tabled_derive/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/tabled_derive-0.5.0/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../static.files/ayu-be46fdc453a55015.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../tabled_derive/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -520,58 +520,27 @@
 <a href="#520" id="520">520</a>
 <a href="#521" id="521">521</a>
 <a href="#522" id="522">522</a>
-<a href="#523" id="523">523</a>
-<a href="#524" id="524">524</a>
-<a href="#525" id="525">525</a>
-<a href="#526" id="526">526</a>
-<a href="#527" id="527">527</a>
-<a href="#528" id="528">528</a>
-<a href="#529" id="529">529</a>
-<a href="#530" id="530">530</a>
-<a href="#531" id="531">531</a>
-<a href="#532" id="532">532</a>
-<a href="#533" id="533">533</a>
-<a href="#534" id="534">534</a>
-<a href="#535" id="535">535</a>
-<a href="#536" id="536">536</a>
-<a href="#537" id="537">537</a>
-<a href="#538" id="538">538</a>
-<a href="#539" id="539">539</a>
-<a href="#540" id="540">540</a>
-<a href="#541" id="541">541</a>
-<a href="#542" id="542">542</a>
-<a href="#543" id="543">543</a>
-<a href="#544" id="544">544</a>
-<a href="#545" id="545">545</a>
-<a href="#546" id="546">546</a>
-<a href="#547" id="547">547</a>
-<a href="#548" id="548">548</a>
-<a href="#549" id="549">549</a>
-<a href="#550" id="550">550</a>
-<a href="#551" id="551">551</a>
-<a href="#552" id="552">552</a>
-<a href="#553" id="553">553</a>
-<a href="#554" id="554">554</a>
-<a href="#555" id="555">555</a>
-<a href="#556" id="556">556</a>
-<a href="#557" id="557">557</a>
-<a href="#558" id="558">558</a>
-<a href="#559" id="559">559</a>
-<a href="#560" id="560">560</a>
-<a href="#561" id="561">561</a>
-<a href="#562" id="562">562</a>
-<a href="#563" id="563">563</a>
 </pre><pre class="rust"><code><span class="kw">extern crate </span>proc_macro;
 
+<span class="kw">mod </span>attributes;
+<span class="kw">mod </span>casing_style;
+<span class="kw">mod </span>error;
+<span class="kw">mod </span>parse;
+
 <span class="kw">use </span>proc_macro2::TokenStream;
-<span class="kw">use </span>quote::<span class="kw-2">*</span>;
-<span class="kw">use </span>std::str;
+<span class="kw">use </span>proc_macro_error::proc_macro_error;
+<span class="kw">use </span>quote::{quote, ToTokens, TokenStreamExt};
+<span class="kw">use </span>std::{collections::HashMap, str};
 <span class="kw">use </span>syn::{
-    parse_macro_input, token, Attribute, Data, DataEnum, DataStruct, DeriveInput, Field, Fields,
-    Ident, Index, Lit, Meta, NestedMeta, Type, Variant,
+    parse_macro_input, token, Data, DataEnum, DataStruct, DeriveInput, Field, Fields, Ident, Index,
+    Type, Variant,
 };
 
-<span class="attr">#[proc_macro_derive(Tabled, attributes(header, field))]
+<span class="kw">use </span>attributes::{Attributes, ObjectAttributes};
+<span class="kw">use </span>error::Error;
+
+<span class="attr">#[proc_macro_derive(Tabled, attributes(tabled))]
+#[proc_macro_error]
 </span><span class="kw">pub fn </span>tabled(input: proc_macro::TokenStream) -&gt; proc_macro::TokenStream {
     <span class="kw">let </span>input = <span class="macro">parse_macro_input!</span>(input <span class="kw">as </span>DeriveInput);
     <span class="kw">let </span>ast = impl_tabled(<span class="kw-2">&amp;</span>input);
@@ -579,8 +548,12 @@
 }
 
 <span class="kw">fn </span>impl_tabled(ast: <span class="kw-2">&amp;</span>DeriveInput) -&gt; TokenStream {
-    <span class="kw">let </span>length = get_tabled_length(ast).unwrap();
-    <span class="kw">let </span>info = collect_info(ast).unwrap();
+    <span class="kw">let </span>attrs = ObjectAttributes::parse(<span class="kw-2">&amp;</span>ast.attrs)
+        .map_err(error::abort)
+        .unwrap();
+
+    <span class="kw">let </span>length = get_tabled_length(ast).map_err(error::abort).unwrap();
+    <span class="kw">let </span>info = collect_info(ast, <span class="kw-2">&amp;</span>attrs).map_err(error::abort).unwrap();
     <span class="kw">let </span>fields = info.values;
     <span class="kw">let </span>headers = info.headers;
 
@@ -590,11 +563,11 @@
         <span class="kw">impl </span>#impl_generics Tabled <span class="kw">for </span>#name #ty_generics #where_clause {
             <span class="kw">const </span>LENGTH: usize = #length;
 
-            <span class="kw">fn </span>fields(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;String&gt; {
+            <span class="kw">fn </span>fields(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;::std::borrow::Cow&lt;<span class="lifetime">&#39;_</span>, str&gt;&gt; {
                 #fields
             }
 
-            <span class="kw">fn </span>headers() -&gt; Vec&lt;String&gt; {
+            <span class="kw">fn </span>headers() -&gt; Vec&lt;::std::borrow::Cow&lt;<span class="lifetime">&#39;static</span>, str&gt;&gt; {
                 #headers
             }
         }
@@ -603,98 +576,132 @@
     expanded
 }
 
-<span class="kw">fn </span>get_tabled_length(ast: <span class="kw-2">&amp;</span>DeriveInput) -&gt; <span class="prelude-ty">Result</span>&lt;TokenStream, String&gt; {
+<span class="kw">fn </span>get_tabled_length(ast: <span class="kw-2">&amp;</span>DeriveInput) -&gt; <span class="prelude-ty">Result</span>&lt;TokenStream, Error&gt; {
     <span class="kw">match </span><span class="kw-2">&amp;</span>ast.data {
-        Data::Struct(data) =&gt; <span class="prelude-val">Ok</span>(get_fields_length(<span class="kw-2">&amp;</span>data.fields)),
-        Data::Enum(data) =&gt; <span class="prelude-val">Ok</span>(get_enum_length(data)),
-        Data::Union(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(<span class="string">&quot;Union type isn&#39;t supported&quot;</span>.to_owned()),
+        Data::Struct(data) =&gt; get_fields_length(<span class="kw-2">&amp;</span>data.fields),
+        Data::Enum(data) =&gt; get_enum_length(data),
+        Data::Union(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(Error::message(<span class="string">&quot;Union type isn&#39;t supported&quot;</span>)),
     }
 }
 
-<span class="kw">fn </span>get_fields_length(fields: <span class="kw-2">&amp;</span>Fields) -&gt; TokenStream {
-    <span class="kw">let </span>size_compontents = fields
+<span class="kw">fn </span>get_fields_length(fields: <span class="kw-2">&amp;</span>Fields) -&gt; <span class="prelude-ty">Result</span>&lt;TokenStream, Error&gt; {
+    <span class="kw">let </span>size_components = fields
         .iter()
         .map(|field| {
-            <span class="kw">let </span>attributes = Attributes::parse(<span class="kw-2">&amp;</span>field.attrs);
-            (field, attributes)
+            <span class="kw">let </span>attributes = Attributes::parse(<span class="kw-2">&amp;</span>field.attrs)<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>((field, attributes))
         })
+        .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;, Error&gt;&gt;()<span class="question-mark">?
+        </span>.into_iter()
         .filter(|(<span class="kw">_</span>, attr)| !attr.is_ignored())
         .map(|(field, attr)| {
-            <span class="kw">if </span>!attr.inline {
-                <span class="macro">quote!</span>({ <span class="number">1 </span>})
-            } <span class="kw">else </span>{
+            <span class="kw">if </span>attr.inline {
                 <span class="kw">let </span>field_type = <span class="kw-2">&amp;</span>field.ty;
                 <span class="macro">quote!</span>({&lt;#field_type <span class="kw">as </span>Tabled&gt;::LENGTH})
+            } <span class="kw">else </span>{
+                <span class="macro">quote!</span>({ <span class="number">1 </span>})
             }
         });
 
-    <span class="kw">let </span>size_compontents = std::iter::once(<span class="macro">quote!</span>(<span class="number">0</span>)).chain(size_compontents);
+    <span class="kw">let </span>size_components = std::iter::once(<span class="macro">quote!</span>(<span class="number">0</span>)).chain(size_components);
 
     <span class="kw">let </span><span class="kw-2">mut </span>stream = TokenStream::new();
-    stream.append_separated(size_compontents, syn::token::Add::default());
+    stream.append_separated(size_components, syn::token::Add::default());
 
-    stream
+    <span class="prelude-val">Ok</span>(stream)
 }
 
-<span class="kw">fn </span>get_enum_length(enum_ast: <span class="kw-2">&amp;</span>DataEnum) -&gt; TokenStream {
+<span class="kw">fn </span>get_enum_length(enum_ast: <span class="kw-2">&amp;</span>DataEnum) -&gt; <span class="prelude-ty">Result</span>&lt;TokenStream, Error&gt; {
     <span class="kw">let </span>variant_sizes = get_enum_variant_length(enum_ast);
-    <span class="kw">let </span>variant_sizes = std::iter::once(<span class="macro">quote!</span>(<span class="number">0</span>)).chain(variant_sizes);
 
     <span class="kw">let </span><span class="kw-2">mut </span>stream = TokenStream::new();
-    stream.append_separated(variant_sizes, syn::token::Add::default());
+    <span class="kw">for </span>(i, size) <span class="kw">in </span>variant_sizes.enumerate() {
+        <span class="kw">let </span>size = size<span class="question-mark">?</span>;
 
-    stream
+        <span class="kw">if </span>i != <span class="number">0 </span>{
+            stream.append_all(syn::token::Add::default().into_token_stream());
+        }
+
+        stream.append_all(size);
+    }
+
+    <span class="prelude-val">Ok</span>(stream)
 }
 
-<span class="kw">fn </span>get_enum_variant_length(enum_ast: <span class="kw-2">&amp;</span>DataEnum) -&gt; <span class="kw">impl </span>Iterator&lt;Item = TokenStream&gt; + <span class="lifetime">&#39;_ </span>{
+<span class="kw">fn </span>get_enum_variant_length(
+    enum_ast: <span class="kw-2">&amp;</span>DataEnum,
+) -&gt; <span class="kw">impl </span>Iterator&lt;Item = <span class="prelude-ty">Result</span>&lt;TokenStream, Error&gt;&gt; + <span class="lifetime">&#39;_ </span>{
     enum_ast
         .variants
         .iter()
-        .map(|variant| {
-            <span class="kw">let </span>attributes = Attributes::parse(<span class="kw-2">&amp;</span>variant.attrs);
-            (variant, attributes)
+        .map(|variant| -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw">_</span>, Error&gt; {
+            <span class="kw">let </span>attributes = Attributes::parse(<span class="kw-2">&amp;</span>variant.attrs)<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>((variant, attributes))
         })
-        .filter(|(<span class="kw">_</span>, attr)| !attr.is_ignored())
-        .map(|(variant, attr)| {
-            <span class="kw">if </span>!attr.inline {
-                <span class="macro">quote!</span>(<span class="number">1</span>)
-            } <span class="kw">else </span>{
+        .filter(|result| result.is_err() || <span class="macro">matches!</span>(result, <span class="prelude-val">Ok</span>((<span class="kw">_</span>, attr)) <span class="kw">if </span>!attr.is_ignored()))
+        .map(|result| {
+            <span class="kw">let </span>(variant, attr) = result<span class="question-mark">?</span>;
+
+            <span class="kw">if </span>attr.inline {
                 get_fields_length(<span class="kw-2">&amp;</span>variant.fields)
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Ok</span>(<span class="macro">quote!</span>(<span class="number">1</span>))
             }
         })
 }
 
-<span class="kw">fn </span>collect_info(ast: <span class="kw-2">&amp;</span>DeriveInput) -&gt; <span class="prelude-ty">Result</span>&lt;Impl, String&gt; {
+<span class="kw">fn </span>collect_info(ast: <span class="kw-2">&amp;</span>DeriveInput, attrs: <span class="kw-2">&amp;</span>ObjectAttributes) -&gt; <span class="prelude-ty">Result</span>&lt;Impl, Error&gt; {
     <span class="kw">match </span><span class="kw-2">&amp;</span>ast.data {
-        Data::Struct(data) =&gt; collect_info_struct(data),
-        Data::Enum(data) =&gt; collect_info_enum(data),
-        Data::Union(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(<span class="string">&quot;Union type isn&#39;t supported&quot;</span>.to_owned()),
+        Data::Struct(data) =&gt; collect_info_struct(data, attrs),
+        Data::Enum(data) =&gt; collect_info_enum(data, attrs),
+        Data::Union(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(Error::message(<span class="string">&quot;Union type isn&#39;t supported&quot;</span>)),
     }
 }
 
-<span class="kw">fn </span>collect_info_struct(ast: <span class="kw-2">&amp;</span>DataStruct) -&gt; <span class="prelude-ty">Result</span>&lt;Impl, String&gt; {
-    info_from_fields(<span class="kw-2">&amp;</span>ast.fields, field_var_name, <span class="string">&quot;&quot;</span>)
+<span class="kw">fn </span>collect_info_struct(ast: <span class="kw-2">&amp;</span>DataStruct, attrs: <span class="kw-2">&amp;</span>ObjectAttributes) -&gt; <span class="prelude-ty">Result</span>&lt;Impl, Error&gt; {
+    info_from_fields(<span class="kw-2">&amp;</span>ast.fields, attrs, field_var_name, <span class="string">&quot;&quot;</span>)
 }
 
 <span class="comment">// todo: refactoring. instead of using a lambda + prefix
 // we could just not emit `self.` `_x` inside
-// So the calle would prefix it on its own
+// So the called would prefix it on its own
 </span><span class="kw">fn </span>info_from_fields(
     fields: <span class="kw-2">&amp;</span>Fields,
+    attrs: <span class="kw-2">&amp;</span>ObjectAttributes,
     field_name: <span class="kw">impl </span>Fn(usize, <span class="kw-2">&amp;</span>Field) -&gt; TokenStream,
     header_prefix: <span class="kw-2">&amp;</span>str,
-) -&gt; <span class="prelude-ty">Result</span>&lt;Impl, String&gt; {
-    <span class="kw">let </span>fields = fields.into_iter().enumerate().map(|(i, field)| {
-        <span class="kw">let </span>attributes = Attributes::parse(<span class="kw-2">&amp;</span>field.attrs);
-        (i, field, attributes)
-    });
+) -&gt; <span class="prelude-ty">Result</span>&lt;Impl, Error&gt; {
+    <span class="kw">let </span>count_fields = fields.len();
+
+    <span class="kw">let </span>fields = fields
+        .into_iter()
+        .enumerate()
+        .map(|(i, field)| -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw">_</span>, Error&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>attributes = Attributes::parse(<span class="kw-2">&amp;</span>field.attrs)<span class="question-mark">?</span>;
+            merge_attributes(<span class="kw-2">&amp;mut </span>attributes, attrs);
+
+            <span class="prelude-val">Ok</span>((i, field, attributes))
+        });
 
     <span class="kw">let </span><span class="kw-2">mut </span>headers = Vec::new();
     <span class="kw">let </span><span class="kw-2">mut </span>values = Vec::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>reorder = HashMap::new();
 
-    <span class="kw">for </span>(i, field, attributes) <span class="kw">in </span>fields {
+    <span class="kw">for </span>result <span class="kw">in </span>fields {
+        <span class="kw">let </span>(i, field, attributes) = result<span class="question-mark">?</span>;
         <span class="kw">if </span>attributes.is_ignored() {
             <span class="kw">continue</span>;
+        }
+
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(order) = attributes.order {
+            <span class="kw">if </span>order &gt;= count_fields {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::message(<span class="macro">format!</span>(
+                    <span class="string">&quot;An order index &#39;{}&#39; is out of fields scope&quot;</span>,
+                    order
+                )));
+            }
+
+            reorder.insert(order, i);
         }
 
         <span class="kw">let </span>header = field_headers(field, i, <span class="kw-2">&amp;</span>attributes, header_prefix);
@@ -702,9 +709,14 @@
         headers.push(header);
 
         <span class="kw">let </span>field_name = field_name(i, field);
-        <span class="kw">let </span>value = get_field_fields(field_name, <span class="kw-2">&amp;</span>attributes);
+        <span class="kw">let </span>value = get_field_fields(<span class="kw-2">&amp;</span>field_name, <span class="kw-2">&amp;</span>attributes);
 
         values.push(value);
+    }
+
+    <span class="kw">if </span>!reorder.is_empty() {
+        values = reorder_fields(<span class="kw-2">&amp;</span>reorder, <span class="kw-2">&amp;</span>values);
+        headers = reorder_fields(<span class="kw-2">&amp;</span>reorder, <span class="kw-2">&amp;</span>headers);
     }
 
     <span class="kw">let </span>headers = <span class="macro">quote!</span>({
@@ -722,6 +734,34 @@
     <span class="prelude-val">Ok</span>(Impl { headers, values })
 }
 
+<span class="kw">fn </span>reorder_fields&lt;T: Clone&gt;(order: <span class="kw-2">&amp;</span>HashMap&lt;usize, usize&gt;, elements: <span class="kw-2">&amp;</span>[T]) -&gt; Vec&lt;T&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>out: Vec&lt;<span class="prelude-ty">Option</span>&lt;T&gt;&gt; = Vec::with_capacity(elements.len());
+    out.resize(elements.len(), <span class="prelude-val">None</span>);
+
+    <span class="kw">for </span>(pos, index) <span class="kw">in </span>order {
+        <span class="kw">let </span>value = elements[<span class="kw-2">*</span>index].clone();
+        out[<span class="kw-2">*</span>pos] = <span class="prelude-val">Some</span>(value);
+    }
+
+    <span class="kw">let </span><span class="kw-2">mut </span>j = <span class="number">0</span>;
+    <span class="kw">for </span>el <span class="kw">in </span><span class="kw-2">&amp;mut </span>out {
+        <span class="kw">if </span>el.is_some() {
+            <span class="kw">continue</span>;
+        }
+
+        <span class="kw">while </span>order.values().any(|<span class="kw-2">&amp;</span>pos| j == pos) {
+            j += <span class="number">1</span>;
+        }
+
+        <span class="kw">let </span>v = elements[j].clone();
+        <span class="kw-2">*</span>el = <span class="prelude-val">Some</span>(v);
+
+        j += <span class="number">1</span>;
+    }
+
+    out.into_iter().flatten().collect()
+}
+
 <span class="kw">fn </span>field_headers(
     field: <span class="kw-2">&amp;</span>Field,
     index: usize,
@@ -729,33 +769,41 @@
     prefix: <span class="kw-2">&amp;</span>str,
 ) -&gt; TokenStream {
     <span class="kw">if </span>attributes.inline {
-        <span class="kw">return </span>get_type_headers(<span class="kw-2">&amp;</span>field.ty, <span class="kw-2">&amp;</span>attributes.inline_prefix, <span class="string">&quot;&quot;</span>);
+        <span class="kw">let </span>prefix = attributes
+            .inline_prefix
+            .as_ref()
+            .map_or_else(|| <span class="string">&quot;&quot;</span>, |s| s.as_str());
+        <span class="kw">return </span>get_type_headers(<span class="kw-2">&amp;</span>field.ty, prefix, <span class="string">&quot;&quot;</span>);
     }
 
     <span class="kw">let </span>header_name = field_header_name(field, attributes, index);
-    <span class="kw">if </span>!prefix.is_empty() {
-        <span class="macro">quote!</span>(<span class="macro">vec!</span>[<span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, #prefix, #header_name)])
+    <span class="kw">if </span>prefix.is_empty() {
+        <span class="macro">quote!</span>(<span class="macro">vec!</span>[::std::borrow::Cow::Borrowed(#header_name)])
     } <span class="kw">else </span>{
-        <span class="macro">quote!</span>(<span class="macro">vec!</span>[String::from(#header_name)])
+        <span class="kw">let </span>name = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, prefix, header_name);
+        <span class="macro">quote!</span>(<span class="macro">vec!</span>[::std::borrow::Cow::Borrowed(#name)])
     }
 }
 
-<span class="kw">fn </span>collect_info_enum(ast: <span class="kw-2">&amp;</span>DataEnum) -&gt; <span class="prelude-ty">Result</span>&lt;Impl, String&gt; {
+<span class="kw">fn </span>collect_info_enum(ast: <span class="kw-2">&amp;</span>DataEnum, attrs: <span class="kw-2">&amp;</span>ObjectAttributes) -&gt; <span class="prelude-ty">Result</span>&lt;Impl, Error&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>headers_list = Vec::new();
     <span class="kw">let </span><span class="kw-2">mut </span>variants = Vec::new();
     <span class="kw">for </span>variant <span class="kw">in </span><span class="kw-2">&amp;</span>ast.variants {
-        <span class="kw">let </span>attributes = Attributes::parse(<span class="kw-2">&amp;</span>variant.attrs);
+        <span class="kw">let </span><span class="kw-2">mut </span>attributes = Attributes::parse(<span class="kw-2">&amp;</span>variant.attrs)<span class="question-mark">?</span>;
+        merge_attributes(<span class="kw-2">&amp;mut </span>attributes, attrs);
         <span class="kw">if </span>attributes.is_ignored() {
             <span class="kw">continue</span>;
         }
 
-        <span class="kw">let </span>info = info_from_variant(variant, <span class="kw-2">&amp;</span>attributes)<span class="question-mark">?</span>;
+        <span class="kw">let </span>info = info_from_variant(variant, <span class="kw-2">&amp;</span>attributes, attrs)<span class="question-mark">?</span>;
         variants.push((variant, info.values));
         headers_list.push(info.headers);
     }
 
-    <span class="kw">let </span>variant_sizes = get_enum_variant_length(ast);
-    <span class="kw">let </span>values = values_for_enum(variant_sizes, variants);
+    <span class="kw">let </span>variant_sizes = get_enum_variant_length(ast)
+        .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;, Error&gt;&gt;()<span class="question-mark">?
+        </span>.into_iter();
+    <span class="kw">let </span>values = values_for_enum(variant_sizes, <span class="kw-2">&amp;</span>variants);
 
     <span class="kw">let </span>headers = <span class="macro">quote! </span>{
         <span class="macro">vec!</span>[
@@ -767,18 +815,26 @@
     <span class="prelude-val">Ok</span>(Impl { headers, values })
 }
 
-<span class="kw">fn </span>info_from_variant(variant: <span class="kw-2">&amp;</span>Variant, attributes: <span class="kw-2">&amp;</span>Attributes) -&gt; <span class="prelude-ty">Result</span>&lt;Impl, String&gt; {
+<span class="kw">fn </span>info_from_variant(
+    variant: <span class="kw-2">&amp;</span>Variant,
+    attributes: <span class="kw-2">&amp;</span>Attributes,
+    attrs: <span class="kw-2">&amp;</span>ObjectAttributes,
+) -&gt; <span class="prelude-ty">Result</span>&lt;Impl, Error&gt; {
     <span class="kw">if </span>attributes.inline {
-        <span class="kw">return </span>info_from_fields(<span class="kw-2">&amp;</span>variant.fields, variant_var_name, <span class="kw-2">&amp;</span>attributes.inline_prefix);
+        <span class="kw">let </span>prefix = attributes
+            .inline_prefix
+            .as_ref()
+            .map_or_else(|| <span class="string">&quot;&quot;</span>, |s| s.as_str());
+        <span class="kw">return </span>info_from_fields(<span class="kw-2">&amp;</span>variant.fields, attrs, variant_var_name, prefix);
     }
 
     <span class="kw">let </span>variant_name = variant_name(variant, attributes);
     <span class="kw">let </span>value = <span class="string">&quot;+&quot;</span>;
 
     <span class="comment">// we need exactly string because of it must be inlined as string
-    </span><span class="kw">let </span>headers = <span class="macro">quote! </span>{<span class="macro">vec!</span>[#variant_name.to_string()]};
+    </span><span class="kw">let </span>headers = <span class="macro">quote! </span>{ <span class="macro">vec!</span>[::std::borrow::Cow::Borrowed(#variant_name)] };
     <span class="comment">// we need exactly string because of it must be inlined as string
-    </span><span class="kw">let </span>values = <span class="macro">quote! </span>{<span class="macro">vec!</span>[#value.to_string()]};
+    </span><span class="kw">let </span>values = <span class="macro">quote! </span>{ <span class="macro">vec!</span>[::std::borrow::Cow::Borrowed(#value)] };
 
     <span class="prelude-val">Ok</span>(Impl { headers, values })
 }
@@ -794,34 +850,54 @@
     } <span class="kw">else </span>{
         <span class="macro">quote! </span>{
             &lt;#field_type <span class="kw">as </span>Tabled&gt;::headers().into_iter()
-                .map(|header| <span class="macro">format!</span>(<span class="string">&quot;{}{}{}&quot;</span>, #prefix, #inline_prefix, header))
+                .map(|header| {
+                    <span class="kw">let </span>header = <span class="macro">format!</span>(<span class="string">&quot;{}{}{}&quot;</span>, #prefix, #inline_prefix, header);
+                    ::std::borrow::Cow::Owned(header)
+                })
                 .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
         }
     }
 }
 
-<span class="kw">fn </span>get_field_fields(field: TokenStream, attr: <span class="kw-2">&amp;</span>Attributes) -&gt; TokenStream {
+<span class="kw">fn </span>get_field_fields(field: <span class="kw-2">&amp;</span>TokenStream, attr: <span class="kw-2">&amp;</span>Attributes) -&gt; TokenStream {
     <span class="kw">if </span>attr.inline {
         <span class="kw">return </span><span class="macro">quote! </span>{ #field.fields() };
     }
 
     <span class="kw">if let </span><span class="prelude-val">Some</span>(func) = <span class="kw-2">&amp;</span>attr.display_with {
-        <span class="kw">let </span>func_call = use_function_for(field, func);
-        <span class="kw">return </span><span class="macro">quote!</span>(<span class="macro">vec!</span>[#func_call]);
+        <span class="kw">let </span>func_call = <span class="kw">match </span>attr.display_with_use_self {
+            <span class="bool-val">true </span>=&gt; use_function_with_self(func),
+            <span class="bool-val">false </span>=&gt; use_function_for(field, func),
+        };
+
+        <span class="kw">return </span><span class="macro">quote!</span>(<span class="macro">vec!</span>[::std::borrow::Cow::from(#func_call)]);
     }
 
-    <span class="macro">quote!</span>(<span class="macro">vec!</span>[<span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, #field)])
+    <span class="macro">quote!</span>(<span class="macro">vec!</span>[::std::borrow::Cow::Owned(<span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, #field))])
 }
 
-<span class="kw">fn </span>use_function_for(field: TokenStream, function: <span class="kw-2">&amp;</span>str) -&gt; TokenStream {
+<span class="kw">fn </span>use_function_for(field: <span class="kw-2">&amp;</span>TokenStream, function: <span class="kw-2">&amp;</span>str) -&gt; TokenStream {
     <span class="kw">let </span>path: syn::Result&lt;syn::ExprPath&gt; = syn::parse_str(function);
     <span class="kw">match </span>path {
         <span class="prelude-val">Ok</span>(path) =&gt; {
             <span class="macro">quote! </span>{ #path(<span class="kw-2">&amp;</span>#field) }
         }
-        <span class="kw">_ </span>=&gt; {
+        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
             <span class="kw">let </span>function = Ident::new(function, proc_macro2::Span::call_site());
             <span class="macro">quote! </span>{ #function(<span class="kw-2">&amp;</span>#field) }
+        }
+    }
+}
+
+<span class="kw">fn </span>use_function_with_self(function: <span class="kw-2">&amp;</span>str) -&gt; TokenStream {
+    <span class="kw">let </span>path: syn::Result&lt;syn::ExprPath&gt; = syn::parse_str(function);
+    <span class="kw">match </span>path {
+        <span class="prelude-val">Ok</span>(path) =&gt; {
+            <span class="macro">quote! </span>{ #path(<span class="kw-2">&amp;</span><span class="self">self</span>) }
+        }
+        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
+            <span class="kw">let </span>function = Ident::new(function, proc_macro2::Span::call_site());
+            <span class="macro">quote! </span>{ #function(<span class="kw-2">&amp;</span><span class="self">self</span>) }
         }
     }
 }
@@ -829,7 +905,7 @@
 <span class="kw">fn </span>field_var_name(index: usize, field: <span class="kw-2">&amp;</span>Field) -&gt; TokenStream {
     <span class="kw">let </span>f = field.ident.as_ref().map_or_else(
         || Index::from(index).to_token_stream(),
-        |i| i.to_token_stream(),
+        quote::ToTokens::to_token_stream,
     );
     <span class="macro">quote!</span>(<span class="self">self</span>.#f)
 }
@@ -847,7 +923,7 @@
 
 <span class="kw">fn </span>values_for_enum(
     variant_sizes: <span class="kw">impl </span>Iterator&lt;Item = TokenStream&gt;,
-    variants: Vec&lt;(<span class="kw-2">&amp;</span>Variant, TokenStream)&gt;,
+    variants: <span class="kw-2">&amp;</span>[(<span class="kw-2">&amp;</span>Variant, TokenStream)],
 ) -&gt; TokenStream {
     <span class="kw">let </span>branches = variants.iter().map(|(variant, <span class="kw">_</span>)| match_variant(variant));
 
@@ -861,7 +937,7 @@
         <span class="kw">let </span>branch = <span class="macro">quote! </span>{
             <span class="self">Self</span>::#branch =&gt; {
                 <span class="kw">let </span>offset = offsets[#i];
-                <span class="kw">let </span>fields: Vec&lt;String&gt; = #fields;
+                <span class="kw">let </span>fields: Vec&lt;::std::borrow::Cow&lt;<span class="lifetime">&#39;_</span>, str&gt;&gt; = #fields;
 
                 <span class="kw">for </span>(i, field) <span class="kw">in </span>fields.into_iter().enumerate() {
                     out_vec[i+offset] = field;
@@ -886,7 +962,7 @@
         }
 
         <span class="kw">let </span>size = &lt;<span class="self">Self </span><span class="kw">as </span>Tabled&gt;::LENGTH;
-        <span class="kw">let </span><span class="kw-2">mut </span>out_vec: Vec&lt;String&gt; = <span class="macro">vec!</span>[String::new(); size];
+        <span class="kw">let </span><span class="kw-2">mut </span>out_vec = <span class="macro">vec!</span>[::std::borrow::Cow::Borrowed(<span class="string">&quot;&quot;</span>); size];
 
         <span class="attr">#[allow(unused_variables)]
         </span><span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self </span>{
@@ -933,196 +1009,38 @@
 
 <span class="kw">fn </span>variant_name(variant: <span class="kw-2">&amp;</span>Variant, attributes: <span class="kw-2">&amp;</span>Attributes) -&gt; String {
     attributes
-        .name
+        .rename
         .clone()
+        .or_else(|| {
+            attributes
+                .rename_all
+                .as_ref()
+                .map(|case| case.cast(variant.ident.to_string()))
+        })
         .unwrap_or_else(|| variant.ident.to_string())
 }
 
 <span class="kw">fn </span>field_header_name(f: <span class="kw-2">&amp;</span>Field, attr: <span class="kw-2">&amp;</span>Attributes, index: usize) -&gt; String {
-    <span class="kw">match </span><span class="kw-2">&amp;</span>attr.name {
-        <span class="prelude-val">Some</span>(name) =&gt; name.to_string(),
-        <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>f.ident.as_ref() {
-            <span class="prelude-val">Some</span>(name) =&gt; name.to_string(),
-            <span class="prelude-val">None </span>=&gt; <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, index),
-        },
-    }
-}
-
-<span class="comment">// It would be cool to create a library for a parsing attributes
-</span><span class="attr">#[derive(Debug)]
-</span><span class="kw">struct </span>Attributes {
-    hidden: bool,
-    inline: bool,
-    inline_prefix: String,
-    name: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    display_with: <span class="prelude-ty">Option</span>&lt;String&gt;,
-}
-
-<span class="kw">impl </span>Attributes {
-    <span class="kw">fn </span>parse(attrs: <span class="kw-2">&amp;</span>[Attribute]) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span>is_ignored = attrs_has_ignore_sign(attrs);
-        <span class="kw">let </span>should_be_inlined = should_be_inlined(attrs);
-        <span class="kw">let </span>inline_prefix = look_for_inline_prefix(attrs);
-        <span class="kw">let </span>display_with = check_display_with_func(attrs);
-        <span class="kw">let </span>override_header_name = override_header_name(attrs);
-
-        <span class="self">Self </span>{
-            display_with,
-            hidden: is_ignored,
-            inline: should_be_inlined,
-            inline_prefix,
-            name: override_header_name,
-        }
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(name) = <span class="kw-2">&amp;</span>attr.rename {
+        <span class="kw">return </span>name.to_string();
     }
 
-    <span class="kw">fn </span>is_ignored(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.hidden
-    }
-}
-
-<span class="kw">fn </span>override_header_name(attrs: <span class="kw-2">&amp;</span>[Attribute]) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
-    find_name_attribute(attrs, <span class="string">&quot;header&quot;</span>, <span class="string">&quot;name&quot;</span>, look_up_nested_meta_str)
-        .or_else(|| find_name_attribute(attrs, <span class="string">&quot;header&quot;</span>, <span class="string">&quot;name&quot;</span>, look_up_nested_meta_flag_str))
-}
-
-<span class="kw">fn </span>check_display_with_func(attrs: <span class="kw-2">&amp;</span>[Attribute]) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
-    find_name_attribute(attrs, <span class="string">&quot;field&quot;</span>, <span class="string">&quot;display_with&quot;</span>, look_up_nested_meta_str)
-}
-
-<span class="kw">fn </span>should_be_inlined(attrs: <span class="kw-2">&amp;</span>[Attribute]) -&gt; bool {
-    <span class="kw">let </span>inline_attr = find_name_attribute(attrs, <span class="string">&quot;header&quot;</span>, <span class="string">&quot;inline&quot;</span>, look_up_nested_meta_bool)
-        .or_else(|| find_name_attribute(attrs, <span class="string">&quot;field&quot;</span>, <span class="string">&quot;inline&quot;</span>, look_up_nested_meta_bool))
-        .or_else(|| {
-            find_name_attribute(attrs, <span class="string">&quot;header&quot;</span>, <span class="string">&quot;inline&quot;</span>, look_up_nested_flag_str_in_attr)
-                .map(|<span class="kw">_</span>| <span class="bool-val">true</span>)
-        })
-        .or_else(|| {
-            find_name_attribute(attrs, <span class="string">&quot;field&quot;</span>, <span class="string">&quot;inline&quot;</span>, look_up_nested_flag_str_in_attr)
-                .map(|<span class="kw">_</span>| <span class="bool-val">true</span>)
-        });
-    inline_attr == <span class="prelude-val">Some</span>(<span class="bool-val">true</span>)
-}
-
-<span class="kw">fn </span>look_for_inline_prefix(attrs: <span class="kw-2">&amp;</span>[Attribute]) -&gt; String {
-    find_name_attribute(attrs, <span class="string">&quot;header&quot;</span>, <span class="string">&quot;inline&quot;</span>, look_up_nested_flag_str_in_attr)
-        .or_else(|| find_name_attribute(attrs, <span class="string">&quot;field&quot;</span>, <span class="string">&quot;inline&quot;</span>, look_up_nested_flag_str_in_attr))
-        .unwrap_or_else(|| <span class="string">&quot;&quot;</span>.to_owned())
-}
-
-<span class="kw">fn </span>attrs_has_ignore_sign(attrs: <span class="kw-2">&amp;</span>[Attribute]) -&gt; bool {
-    <span class="kw">let </span>is_ignored = find_name_attribute(attrs, <span class="string">&quot;header&quot;</span>, <span class="string">&quot;hidden&quot;</span>, look_up_nested_meta_bool);
-    is_ignored == <span class="prelude-val">Some</span>(<span class="bool-val">true</span>)
-}
-
-<span class="kw">fn </span>parse_name_attribute&lt;R, F&gt;(attr: <span class="kw-2">&amp;</span>Attribute, method: <span class="kw-2">&amp;</span>str, name: <span class="kw-2">&amp;</span>str, lookup: F) -&gt; <span class="prelude-ty">Option</span>&lt;R&gt;
-<span class="kw">where
-    </span>F: Fn(<span class="kw-2">&amp;</span>NestedMeta, <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;R&gt;, String&gt;,
-{
-    <span class="kw">if </span>!attr.path.is_ident(method) {
-        <span class="kw">return </span><span class="prelude-val">None</span>;
-    }
-
-    <span class="kw">let </span>meta = attr.parse_meta().ok()<span class="question-mark">?</span>;
-
-    <span class="kw">if let </span>Meta::List(meta_list) = meta {
-        <span class="kw">let </span>val = parse_name_attribute_nested(meta_list.nested.iter(), method, name, lookup);
-        <span class="kw">if </span>val.is_some() {
-            <span class="kw">return </span>val;
-        }
-    }
-
-    <span class="prelude-val">None
-</span>}
-
-<span class="kw">fn </span>parse_name_attribute_nested&lt;<span class="lifetime">&#39;a</span>, R, F&gt;(
-    nested: <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>NestedMeta&gt;,
-    method: <span class="kw-2">&amp;</span>str,
-    name: <span class="kw-2">&amp;</span>str,
-    lookup: F,
-) -&gt; <span class="prelude-ty">Option</span>&lt;R&gt;
-<span class="kw">where
-    </span>F: Fn(<span class="kw-2">&amp;</span>NestedMeta, <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;R&gt;, String&gt;,
-{
-    <span class="kw">for </span>nested_meta <span class="kw">in </span>nested {
-        <span class="kw">let </span>val = lookup(nested_meta, name).unwrap_or_else(
-            |e| <span class="macro">panic!</span>(<span class="string">&quot;{error} macros {macro} field {name}&quot;</span>, error=e, <span class="kw">macro</span>=method, name=name),
-        );
-
-        <span class="kw">if </span>val.is_some() {
-            <span class="kw">return </span>val;
-        }
-    }
-    <span class="prelude-val">None
-</span>}
-
-<span class="kw">fn </span>look_up_nested_meta_str(meta: <span class="kw-2">&amp;</span>NestedMeta, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;String&gt;, String&gt; {
-    <span class="kw">match </span>meta {
-        NestedMeta::Meta(Meta::NameValue(value)) =&gt; {
-            <span class="kw">if </span>value.path.is_ident(name) {
-                check_str_literal(<span class="kw-2">&amp;</span>value.lit)
-            } <span class="kw">else </span>{
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
+    <span class="kw">match </span><span class="kw-2">&amp;</span>f.ident {
+        <span class="prelude-val">Some</span>(name) =&gt; {
+            <span class="kw">let </span>name = name.to_string();
+            <span class="kw">match </span><span class="kw-2">&amp;</span>attr.rename_all {
+                <span class="prelude-val">Some</span>(case) =&gt; case.cast(name),
+                <span class="prelude-val">None </span>=&gt; name,
             }
         }
-        <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
+        <span class="prelude-val">None </span>=&gt; index.to_string(),
     }
 }
 
-<span class="kw">fn </span>look_up_nested_meta_flag_str(meta: <span class="kw-2">&amp;</span>NestedMeta, <span class="kw">_</span>: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;String&gt;, String&gt; {
-    <span class="kw">match </span>meta {
-        NestedMeta::Lit(lit) =&gt; check_str_literal(lit),
-        <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
+<span class="kw">fn </span>merge_attributes(attr: <span class="kw-2">&amp;mut </span>Attributes, global_attr: <span class="kw-2">&amp;</span>ObjectAttributes) {
+    <span class="kw">if </span>attr.rename_all.is_none() {
+        attr.rename_all = global_attr.rename_all;
     }
-}
-
-<span class="kw">fn </span>check_str_literal(lit: <span class="kw-2">&amp;</span>Lit) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;String&gt;, String&gt; {
-    <span class="kw">match </span>lit {
-        Lit::Str(value) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(value.value())),
-        Lit::ByteStr(value) =&gt; str::from_utf8(<span class="kw-2">&amp;</span>value.value())
-            .map(|s| s.to_owned())
-            .map(<span class="prelude-val">Some</span>)
-            .map_err(|<span class="kw">_</span>| <span class="string">&quot;Expected a valid UTF-8 string for a field&quot;</span>.to_owned()),
-        <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
-    }
-}
-
-<span class="kw">fn </span>look_up_nested_meta_bool(meta: <span class="kw-2">&amp;</span>NestedMeta, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;bool&gt;, String&gt; {
-    <span class="kw">match </span>meta {
-        NestedMeta::Meta(Meta::Path(path)) <span class="kw">if </span>path.is_ident(name) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="bool-val">true</span>)),
-        NestedMeta::Meta(Meta::NameValue(value)) <span class="kw">if </span>value.path.is_ident(name) =&gt; <span class="kw">match </span><span class="kw-2">&amp;</span>value.lit {
-            Lit::Bool(value) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(value.value())),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="string">&quot;A parameter should be a bool value&quot;</span>.to_string()),
-        },
-        <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
-    }
-}
-
-<span class="kw">fn </span>look_up_nested_flag_str_in_attr(
-    meta: <span class="kw-2">&amp;</span>NestedMeta,
-    name: <span class="kw-2">&amp;</span>str,
-) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;String&gt;, String&gt; {
-    <span class="kw">match </span>meta {
-        NestedMeta::Meta(Meta::List(list)) =&gt; {
-            parse_name_attribute_nested(list.nested.iter(), <span class="string">&quot;&quot;</span>, name, look_up_nested_meta_flag_str)
-                .ok_or_else(|| <span class="string">&quot;An attribute doesn&#39;t have expected value&quot;</span>.to_string())
-                .map(<span class="prelude-val">Some</span>)
-        }
-        <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
-    }
-}
-
-<span class="kw">fn </span>find_name_attribute&lt;R, F&gt;(
-    attributes: <span class="kw-2">&amp;</span>[Attribute],
-    method: <span class="kw-2">&amp;</span>str,
-    name: <span class="kw-2">&amp;</span>str,
-    lookup: F,
-) -&gt; <span class="prelude-ty">Option</span>&lt;R&gt;
-<span class="kw">where
-    </span>F: Fn(<span class="kw-2">&amp;</span>NestedMeta, <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;R&gt;, String&gt; + Clone,
-{
-    attributes
-        .iter()
-        .find_map(|attr| parse_name_attribute(attr, method, name, lookup.clone()))
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tabled_derive" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tabled_derive" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

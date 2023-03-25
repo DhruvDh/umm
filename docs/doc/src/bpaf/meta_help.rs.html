@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/bpaf-0.7.9/src/meta_help.rs`."><title>meta_help.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../bpaf/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/bpaf-0.7.10/src/meta_help.rs`."><title>meta_help.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../static.files/ayu-be46fdc453a55015.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../bpaf/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -471,11 +471,17 @@
 <a href="#471" id="471">471</a>
 <a href="#472" id="472">472</a>
 <a href="#473" id="473">473</a>
+<a href="#474" id="474">474</a>
+<a href="#475" id="475">475</a>
+<a href="#476" id="476">476</a>
+<a href="#477" id="477">477</a>
+<a href="#478" id="478">478</a>
 </pre><pre class="rust"><code><span class="attr">#![allow(clippy::write_with_newline)]
 #![allow(clippy::match_like_matches_macro)]
 </span><span class="kw">use </span>std::collections::BTreeSet;
 
 <span class="kw">use crate</span>::{
+    buffer::{Buffer, Checkpoint, Style},
     info::Info,
     item::{Item, ShortLong},
     Meta,
@@ -501,7 +507,6 @@
     },
     BlankDecor,
     Positional {
-        strict: bool,
         metavar: Metavar,
         help: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
     },
@@ -515,14 +520,19 @@
         </span>info: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Info,
     },
     Flag {
-        name: ShortLongHelp,
+        name: ShortLong,
         help: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
     },
     Argument {
-        name: ShortLongHelp,
+        name: ShortLong,
         metavar: Metavar,
         env: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
         help: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
+    },
+    MultiArg {
+        name: ShortLong,
+        help: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt;,
+        fields: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, <span class="prelude-ty">Option</span>&lt;String&gt;)],
     },
 }
 
@@ -542,10 +552,10 @@
     }
 }
 
-<span class="kw">fn </span>dedup(items: <span class="kw-2">&amp;mut </span>BTreeSet&lt;String&gt;, payload: <span class="kw-2">&amp;mut </span>String, prev: usize) {
-    <span class="kw">let </span>new = payload[prev..payload.len()].to_owned();
+<span class="kw">fn </span>dedup(items: <span class="kw-2">&amp;mut </span>BTreeSet&lt;String&gt;, buf: <span class="kw-2">&amp;mut </span>Buffer, cp: Checkpoint) {
+    <span class="kw">let </span>new = buf.content_since(cp).to_owned();
     <span class="kw">if </span>!items.insert(new) {
-        payload.truncate(prev);
+        buf.rollback(cp);
     }
 }
 
@@ -553,20 +563,19 @@
     <span class="attr">#[inline(never)]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>classify_item(<span class="kw-2">&amp;mut </span><span class="self">self</span>, item: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Item) {
         <span class="kw">match </span>item {
-            <span class="kw">crate</span>::item::Item::Positional {
+            Item::Positional {
                 metavar,
                 help,
-                strict,
+                strict: <span class="kw">_</span>,
             } =&gt; {
                 <span class="kw">if </span>help.is_some() {
                     <span class="self">self</span>.psns.push(HelpItem::Positional {
                         metavar: Metavar(metavar),
                         help: help.as_deref(),
-                        strict: <span class="kw-2">*</span>strict,
                     });
                 }
             }
-            <span class="kw">crate</span>::item::Item::Command {
+            Item::Command {
                 name,
                 short,
                 help,
@@ -590,25 +599,35 @@
                     help: help.as_deref(),
                 });
             }
-            <span class="kw">crate</span>::item::Item::Flag {
+            Item::Flag {
                 name,
                 help,
                 shorts: <span class="kw">_</span>,
             } =&gt; <span class="self">self</span>.flgs.push(HelpItem::Flag {
-                name: ShortLongHelp(<span class="kw-2">*</span>name),
+                name: <span class="kw-2">*</span>name,
                 help: help.as_deref(),
             }),
-            <span class="kw">crate</span>::item::Item::Argument {
+            Item::Argument {
                 name,
                 metavar,
                 env,
                 help,
                 shorts: <span class="kw">_</span>,
             } =&gt; <span class="self">self</span>.flgs.push(HelpItem::Argument {
-                name: ShortLongHelp(<span class="kw-2">*</span>name),
+                name: <span class="kw-2">*</span>name,
                 metavar: Metavar(metavar),
                 env: <span class="kw-2">*</span>env,
                 help: help.as_deref(),
+            }),
+            Item::MultiArg {
+                name,
+                shorts: <span class="kw">_</span>,
+                help,
+                fields,
+            } =&gt; <span class="self">self</span>.flgs.push(HelpItem::MultiArg {
+                name: <span class="kw-2">*</span>name,
+                help: help.as_deref(),
+                fields,
             }),
         }
     }
@@ -652,19 +671,6 @@
     }
 }
 
-<span class="attr">#[derive(Debug, Copy, Clone)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>ShortLongHelp(<span class="kw">pub</span>(<span class="kw">crate</span>) ShortLong);
-
-<span class="kw">impl </span>ShortLongHelp {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>full_width(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
-            ShortLong::Short(<span class="kw">_</span>) =&gt; <span class="number">2</span>,
-            ShortLong::Long(l) | ShortLong::ShortLong(<span class="kw">_</span>, l) =&gt; <span class="number">6 </span>+ l.len(),
-        }
-    }
-}
-
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>Long&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str);
 <span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>Long&lt;<span class="lifetime">&#39;_</span>&gt; {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
@@ -682,106 +688,18 @@
     }
 }
 
-<span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>ShortLongHelp {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
-            ShortLong::Short(short) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, <span class="macro">w_flag!</span>(Short(short))),
-            ShortLong::Long(long) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;    {}&quot;</span>, <span class="macro">w_flag!</span>(Long(long))),
-            ShortLong::ShortLong(short, long) =&gt; {
-                <span class="macro">write!</span>(f, <span class="string">&quot;{}, {}&quot;</span>, <span class="macro">w_flag!</span>(Short(short)), <span class="macro">w_flag!</span>(Long(long)))
-            }
-        }
-    }
-}
-
-<span class="doccomment">/// supports padding of the help by some max width
-</span><span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>HelpItem&lt;<span class="lifetime">&#39;_</span>&gt; {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">match </span><span class="self">self </span>{
-            HelpItem::Flag { name, help: <span class="kw">_ </span>} =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;    {}&quot;</span>, name),
-            HelpItem::Argument {
-                name,
-                metavar,
-                help,
-                env,
-            } =&gt; {
-                <span class="macro">write!</span>(f, <span class="string">&quot;    {} {}&quot;</span>, name, <span class="macro">w_flag!</span>(metavar))<span class="question-mark">?</span>;
-
-                <span class="kw">let </span>width = f.width().unwrap();
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(env) = env {
-                    <span class="kw">let </span>pad = width - <span class="self">self</span>.full_width();
-
-                    <span class="kw">let </span>m_os = std::env::var_os(env);
-                    <span class="kw">let </span>val = <span class="kw">match </span><span class="kw-2">&amp;</span>m_os {
-                        <span class="prelude-val">Some</span>(s) =&gt; std::borrow::Cow::from(<span class="macro">format!</span>(<span class="string">&quot; = {:?}&quot;</span>, s.to_string_lossy())),
-                        <span class="prelude-val">None </span>=&gt; std::borrow::Cow::Borrowed(<span class="string">&quot;: N/A&quot;</span>),
-                    };
-                    <span class="kw">let </span>next_pad = <span class="number">4 </span>+ <span class="self">self</span>.full_width();
-                    <span class="macro">write!</span>(f, <span class="string">&quot;{:pad$}  [env:{}{}]&quot;</span>, <span class="string">&quot;&quot;</span>, env, val, pad = pad,)<span class="question-mark">?</span>;
-                    <span class="kw">if </span>help.is_some() {
-                        <span class="macro">write!</span>(f, <span class="string">&quot;\n{:width$}&quot;</span>, <span class="string">&quot;&quot;</span>, width = next_pad)<span class="question-mark">?</span>;
-                    }
-                }
-                <span class="prelude-val">Ok</span>(())
-            }
-            HelpItem::Decor { help } =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;  {}&quot;</span>, help),
-            HelpItem::BlankDecor =&gt; <span class="prelude-val">Ok</span>(()),
-            HelpItem::Positional {
-                metavar,
-                help: <span class="kw">_</span>,
-                strict,
-            } =&gt; {
-                <span class="kw">if </span><span class="kw-2">*</span>strict {
-                    <span class="macro">write!</span>(f, <span class="string">&quot;    -- {}&quot;</span>, <span class="macro">w_flag!</span>(metavar))
-                } <span class="kw">else </span>{
-                    <span class="macro">write!</span>(f, <span class="string">&quot;    {}&quot;</span>, <span class="macro">w_flag!</span>(metavar))
-                }
-            }
-            HelpItem::Command {
-                name,
-                help: <span class="kw">_</span>,
-                short,
-                <span class="attr">#[cfg(feature = <span class="string">&quot;manpage&quot;</span>)]
-                    </span>meta: <span class="kw">_</span>,
-                <span class="attr">#[cfg(feature = <span class="string">&quot;manpage&quot;</span>)]
-                    </span>info: <span class="kw">_</span>,
-            } =&gt; <span class="kw">match </span>short {
-                <span class="prelude-val">Some</span>(s) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;    {}, {}&quot;</span>, <span class="macro">w_flag!</span>(name), <span class="macro">w_flag!</span>(s)),
-                <span class="prelude-val">None </span>=&gt; <span class="macro">write!</span>(f, <span class="string">&quot;    {}&quot;</span>, <span class="macro">w_flag!</span>(name)),
-            },
-        }<span class="question-mark">?</span>;
-
-        <span class="comment">// alt view requires width, so unwrap should just work;
-        </span><span class="kw">let </span>width = f.width().unwrap();
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(help) = <span class="self">self</span>.help() {
-            <span class="kw">let </span>pad = width - <span class="self">self</span>.full_width();
-            <span class="kw">for </span>(ix, line) <span class="kw">in </span>help.split(<span class="string">&#39;\n&#39;</span>).enumerate() {
-                {
-                    <span class="kw">if </span>ix == <span class="number">0 </span>{
-                        <span class="macro">write!</span>(f, <span class="string">&quot;{:pad$}  {}&quot;</span>, <span class="string">&quot;&quot;</span>, line, pad = pad)
-                    } <span class="kw">else </span>{
-                        <span class="macro">write!</span>(f, <span class="string">&quot;\n{:pad$}      {}&quot;</span>, <span class="string">&quot;&quot;</span>, line, pad = width)
-                    }
-                }<span class="question-mark">?</span>;
-            }
-        }
-        <span class="prelude-val">Ok</span>(())
-    }
-}
-
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">crate</span>::item::Item&gt; <span class="kw">for </span>HelpItem&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="kw">fn </span>from(item: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw">crate</span>::item::Item) -&gt; <span class="self">Self </span>{
         <span class="kw">match </span>item {
-            <span class="kw">crate</span>::item::Item::Positional {
+            Item::Positional {
                 metavar,
                 help,
-                strict,
+                strict: <span class="kw">_</span>,
             } =&gt; <span class="self">Self</span>::Positional {
                 metavar: Metavar(metavar),
-                strict: <span class="kw-2">*</span>strict,
                 help: help.as_deref(),
             },
-            <span class="kw">crate</span>::item::Item::Command {
+            Item::Command {
                 name,
                 short,
                 help,
@@ -802,147 +720,239 @@
                 <span class="attr">#[cfg(feature = <span class="string">&quot;manpage&quot;</span>)]
                 </span>info,
             },
-            <span class="kw">crate</span>::item::Item::Flag {
+            Item::Flag {
                 name,
                 help,
                 shorts: <span class="kw">_</span>,
             } =&gt; <span class="self">Self</span>::Flag {
-                name: ShortLongHelp(<span class="kw-2">*</span>name),
+                name: <span class="kw-2">*</span>name,
                 help: help.as_deref(),
             },
-            <span class="kw">crate</span>::item::Item::Argument {
+            Item::Argument {
                 name,
                 metavar,
                 env,
                 help,
                 shorts: <span class="kw">_</span>,
             } =&gt; <span class="self">Self</span>::Argument {
-                name: ShortLongHelp(<span class="kw-2">*</span>name),
+                name: <span class="kw-2">*</span>name,
                 metavar: Metavar(metavar),
                 env: <span class="kw-2">*</span>env,
                 help: help.as_deref(),
+            },
+            Item::MultiArg {
+                name,
+                shorts: <span class="kw">_</span>,
+                help,
+                fields,
+            } =&gt; <span class="self">Self</span>::MultiArg {
+                name: <span class="kw-2">*</span>name,
+                help: help.as_deref(),
+                fields,
             },
         }
     }
 }
 
-<span class="kw">impl </span>HelpItem&lt;<span class="lifetime">&#39;_</span>&gt; {
-    <span class="attr">#[must_use]
-    </span><span class="doccomment">/// Full width for the name, including implicit short flag, space and comma
-    /// betwen short and log parameters and metavar variable if present
-    </span><span class="kw">fn </span>full_width(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="kw">match </span><span class="self">self </span>{
-            HelpItem::Decor { .. } | HelpItem::BlankDecor { .. } =&gt; <span class="number">0</span>,
-            HelpItem::Flag { name, .. } =&gt; name.full_width(),
-            HelpItem::Argument { name, metavar, .. } =&gt; name.full_width() + metavar.<span class="number">0</span>.len() + <span class="number">3</span>,
-            HelpItem::Positional { metavar, .. } =&gt; metavar.<span class="number">0</span>.len() + <span class="number">2</span>,
-            HelpItem::Command {
-                name, short: <span class="prelude-val">None</span>, ..
-            } =&gt; name.len(),
-            HelpItem::Command {
-                name,
-                short: <span class="prelude-val">Some</span>(<span class="kw">_</span>),
-                ..
-            } =&gt; name.len() + <span class="number">3</span>,
+<span class="kw">fn </span>write_metavar(buf: <span class="kw-2">&amp;mut </span>Buffer, metavar: Metavar) {
+    buf.write_char(<span class="string">&#39;&lt;&#39;</span>, Style::Label);
+    buf.write_str(metavar.<span class="number">0</span>, Style::Label);
+    buf.write_char(<span class="string">&#39;&gt;&#39;</span>, Style::Label);
+}
+
+<span class="kw">fn </span>write_help_item(buf: <span class="kw-2">&amp;mut </span>Buffer, item: <span class="kw-2">&amp;</span>HelpItem) {
+    <span class="kw">match </span>item {
+        HelpItem::Decor { help } =&gt; {
+            buf.margin(<span class="number">2</span>);
+            buf.write_str(help, Style::Text);
+        }
+        HelpItem::BlankDecor =&gt; {}
+        HelpItem::Positional { metavar, help } =&gt; {
+            buf.margin(<span class="number">4</span>);
+            write_metavar(buf, <span class="kw-2">*</span>metavar);
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(help) = help {
+                buf.tabstop();
+                buf.write_str(help, Style::Text);
+            }
+        }
+        HelpItem::Command {
+            name,
+            short,
+            help,
+            <span class="attr">#[cfg(feature = <span class="string">&quot;manpage&quot;</span>)]
+                </span>meta: <span class="kw">_</span>,
+            <span class="attr">#[cfg(feature = <span class="string">&quot;manpage&quot;</span>)]
+                </span>info: <span class="kw">_</span>,
+        } =&gt; {
+            buf.margin(<span class="number">4</span>);
+            buf.write_str(name, Style::Label);
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(short) = short {
+                buf.write_str(<span class="string">&quot;, &quot;</span>, Style::Text);
+                buf.write_char(<span class="kw-2">*</span>short, Style::Label);
+            }
+            buf.tabstop();
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(help) = help {
+                buf.write_str(help, Style::Text);
+            }
+        }
+        HelpItem::Flag { name, help } =&gt; {
+            buf.margin(<span class="number">4</span>);
+            write_shortlong(buf, <span class="kw-2">*</span>name);
+            buf.tabstop();
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(help) = help {
+                buf.write_str(help, Style::Text);
+            }
+        }
+        HelpItem::Argument {
+            name,
+            metavar,
+            env,
+            help,
+        } =&gt; {
+            buf.margin(<span class="number">4</span>);
+            write_shortlong(buf, <span class="kw-2">*</span>name);
+            buf.write_str(<span class="string">&quot; &quot;</span>, Style::Label);
+            write_metavar(buf, <span class="kw-2">*</span>metavar);
+            buf.tabstop();
+
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(env) = env {
+                <span class="kw">let </span>val = <span class="kw">match </span>std::env::var_os(env) {
+                    <span class="prelude-val">Some</span>(s) =&gt; std::borrow::Cow::from(<span class="macro">format!</span>(<span class="string">&quot; = {:?}&quot;</span>, s.to_string_lossy())),
+                    <span class="prelude-val">None </span>=&gt; std::borrow::Cow::Borrowed(<span class="string">&quot;: N/A&quot;</span>),
+                };
+                buf.write_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;[env:{}{}]&quot;</span>, env, val), Style::Text);
+                <span class="kw">if </span>help.is_some() {
+                    buf.newline();
+                    buf.tabstop();
+                }
+            }
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(help) = help {
+                buf.write_str(help, Style::Text);
+            }
+        }
+        HelpItem::MultiArg { name, help, fields } =&gt; {
+            buf.margin(<span class="number">4</span>);
+            write_shortlong(buf, <span class="kw-2">*</span>name);
+            <span class="kw">for </span>(field, <span class="kw">_</span>) <span class="kw">in </span>fields.iter() {
+                buf.write_str(<span class="string">&quot; &quot;</span>, Style::Label);
+                write_metavar(buf, Metavar(field));
+            }
+
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(help) = help {
+                buf.tabstop();
+                buf.write_str(help, Style::Text);
+            }
+            buf.margin(<span class="number">12</span>);
+            <span class="kw">for </span>(field, help) <span class="kw">in </span>fields.iter() {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(help) = help {
+                    buf.newline();
+                    write_metavar(buf, Metavar(field));
+                    buf.tabstop();
+                    buf.write_str(help, Style::Text);
+                }
+            }
         }
     }
+    buf.newline();
+}
 
-    <span class="kw">fn </span>help(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt; {
-        <span class="kw">match </span><span class="self">self </span>{
-            HelpItem::Decor { .. } | HelpItem::BlankDecor =&gt; <span class="prelude-val">None</span>,
-            HelpItem::Command { help, .. }
-            | HelpItem::Flag { help, .. }
-            | HelpItem::Argument { help, .. }
-            | HelpItem::Positional { help, .. } =&gt; <span class="kw-2">*</span>help,
+<span class="kw">fn </span>write_shortlong(buf: <span class="kw-2">&amp;mut </span>Buffer, name: ShortLong) {
+    <span class="kw">match </span>name {
+        ShortLong::Short(s) =&gt; {
+            buf.write_char(<span class="string">&#39;-&#39;</span>, Style::Label);
+            buf.write_char(s, Style::Label);
+        }
+        ShortLong::Long(l) =&gt; {
+            buf.write_str(<span class="string">&quot;    --&quot;</span>, Style::Label);
+            buf.write_str(l, Style::Label);
+        }
+        ShortLong::ShortLong(s, l) =&gt; {
+            buf.write_char(<span class="string">&#39;-&#39;</span>, Style::Label);
+            buf.write_char(s, Style::Label);
+            buf.write_str(<span class="string">&quot;, &quot;</span>, Style::Text);
+            buf.write_str(<span class="string">&quot;--&quot;</span>, Style::Label);
+            buf.write_str(l, Style::Label);
         }
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>render_help(
-    info: <span class="kw-2">&amp;</span>Info,
-    parser_meta: <span class="kw-2">&amp;</span>Meta,
-    help_meta: <span class="kw-2">&amp;</span>Meta,
-) -&gt; <span class="prelude-ty">Result</span>&lt;String, std::fmt::Error&gt; {
-    <span class="kw">use </span>std::fmt::Write;
+<span class="kw">fn </span>write_as_lines(buf: <span class="kw-2">&amp;mut </span>Buffer, line: <span class="kw-2">&amp;</span>str) {
+    <span class="kw">for </span>line <span class="kw">in </span>line.lines() {
+        buf.write_str(line, Style::Text);
+        buf.newline();
+    }
+}
 
+<span class="kw">fn </span>write_items(items: <span class="kw-2">&amp;</span>[HelpItem], descr: <span class="kw-2">&amp;</span>str) -&gt; String {
+    <span class="kw">if </span>items.is_empty() {
+        String::new()
+    } <span class="kw">else </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = Buffer::default();
+        <span class="kw">let </span><span class="kw-2">mut </span>dedup_cache: BTreeSet&lt;String&gt; = BTreeSet::new();
+        buf.newline();
+        buf.margin(<span class="number">0</span>);
+        buf.write_str(descr, Style::Section);
+        buf.newline();
+        <span class="kw">for </span>i <span class="kw">in </span>items {
+            <span class="kw">let </span>cp = buf.checkpoint();
+            write_help_item(<span class="kw-2">&amp;mut </span>buf, i);
+            dedup(<span class="kw-2">&amp;mut </span>dedup_cache, <span class="kw-2">&amp;mut </span>buf, cp);
+        }
+        buf.to_string()
+    }
+}
+
+<span class="kw">pub fn </span>render_help(info: <span class="kw-2">&amp;</span>Info, parser_meta: <span class="kw-2">&amp;</span>Meta, help_meta: <span class="kw-2">&amp;</span>Meta) -&gt; String {
     <span class="kw">let </span><span class="kw-2">mut </span>res = String::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>buf = Buffer::default();
+
     <span class="kw">if let </span><span class="prelude-val">Some</span>(t) = info.descr {
-        <span class="macro">write!</span>(res, <span class="string">&quot;{}\n\n&quot;</span>, t)<span class="question-mark">?</span>;
+        write_as_lines(<span class="kw-2">&amp;mut </span>buf, t);
+        buf.newline();
     }
 
     <span class="kw">let </span>auto = parser_meta.to_usage_meta().map(|u| u.to_string());
     <span class="kw">if let </span><span class="prelude-val">Some</span>(custom_usage) = info.usage {
         <span class="kw">match </span>auto {
-            <span class="prelude-val">Some</span>(auto_usage) =&gt; <span class="macro">write!</span>(
-                res,
-                <span class="string">&quot;{}\n&quot;</span>,
-                custom_usage.replacen(<span class="string">&quot;{usage}&quot;</span>, <span class="kw-2">&amp;</span>auto_usage, <span class="number">1</span>)
+            <span class="prelude-val">Some</span>(auto_usage) =&gt; buf.write_str(
+                custom_usage.replacen(<span class="string">&quot;{usage}&quot;</span>, <span class="kw-2">&amp;</span>auto_usage, <span class="number">1</span>).as_str(),
+                Style::Text,
             ),
-            <span class="prelude-val">None </span>=&gt; <span class="macro">write!</span>(res, <span class="string">&quot;{}\n&quot;</span>, custom_usage),
-        }<span class="question-mark">?</span>;
+            <span class="prelude-val">None </span>=&gt; buf.write_str(custom_usage, Style::Text),
+        };
+        buf.newline();
     } <span class="kw">else if let </span><span class="prelude-val">Some</span>(usage) = auto {
-        <span class="macro">write!</span>(res, <span class="string">&quot;Usage: {}\n&quot;</span>, usage)<span class="question-mark">?</span>;
+        buf.write_str(<span class="string">&quot;Usage: &quot;</span>, Style::Text);
+        buf.write_str(<span class="kw-2">&amp;</span>usage, Style::Text);
+        buf.newline();
     }
 
     <span class="kw">if let </span><span class="prelude-val">Some</span>(t) = info.header {
-        <span class="macro">write!</span>(res, <span class="string">&quot;\n{}\n&quot;</span>, t)<span class="question-mark">?</span>;
+        buf.newline();
+        buf.margin(<span class="number">0</span>);
+
+        write_as_lines(<span class="kw-2">&amp;mut </span>buf, t);
     }
 
     <span class="kw">let </span><span class="kw-2">mut </span>items = HelpItems::default();
     items.classify(parser_meta);
     items.classify(help_meta);
-    <span class="kw">let </span><span class="kw-2">mut </span>dedup_cache = BTreeSet::new();
-    <span class="kw">if </span>!items.psns.is_empty() {
-        <span class="kw">let </span>max_width = items
-            .psns
-            .iter()
-            .map(HelpItem::full_width)
-            .max()
-            .unwrap_or(<span class="number">0</span>);
-        <span class="macro">w_section!</span>(res, <span class="string">&quot;\nAvailable positional items:\n&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">for </span>i <span class="kw">in </span><span class="kw-2">&amp;</span>items.psns {
-            <span class="kw">let </span>len = res.len();
-            <span class="macro">write!</span>(res, <span class="string">&quot;{:padding$}\n&quot;</span>, i, padding = max_width)<span class="question-mark">?</span>;
-            dedup(<span class="kw-2">&amp;mut </span>dedup_cache, <span class="kw-2">&amp;mut </span>res, len);
-        }
+
+    res.push_str(<span class="kw-2">&amp;</span>buf.to_string());
+
+    res.push_str(<span class="kw-2">&amp;</span>write_items(<span class="kw-2">&amp;</span>items.psns, <span class="string">&quot;Available positional items:&quot;</span>));
+    res.push_str(<span class="kw-2">&amp;</span>write_items(<span class="kw-2">&amp;</span>items.flgs, <span class="string">&quot;Available options:&quot;</span>));
+    res.push_str(<span class="kw-2">&amp;</span>write_items(<span class="kw-2">&amp;</span>items.cmds, <span class="string">&quot;Available commands:&quot;</span>));
+
+    <span class="kw">let </span><span class="kw-2">mut </span>buf = Buffer::default();
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(footer) = info.footer {
+        buf.margin(<span class="number">0</span>);
+        buf.newline();
+        write_as_lines(<span class="kw-2">&amp;mut </span>buf, footer);
     }
 
-    <span class="kw">if </span>!items.flgs.is_empty() {
-        <span class="kw">let </span>max_width = items
-            .flgs
-            .iter()
-            .map(HelpItem::full_width)
-            .max()
-            .unwrap_or(<span class="number">0</span>);
-        <span class="macro">w_section!</span>(res, <span class="string">&quot;\nAvailable options:\n&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">for </span>i <span class="kw">in </span><span class="kw-2">&amp;</span>items.flgs {
-            <span class="kw">let </span>len = res.len();
-            <span class="macro">write!</span>(res, <span class="string">&quot;{:padding$}\n&quot;</span>, i, padding = max_width)<span class="question-mark">?</span>;
-            dedup(<span class="kw-2">&amp;mut </span>dedup_cache, <span class="kw-2">&amp;mut </span>res, len);
-        }
-    }
-
-    <span class="kw">if </span>!items.cmds.is_empty() {
-        <span class="macro">w_section!</span>(res, <span class="string">&quot;\nAvailable commands:\n&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">let </span>max_width = items
-            .cmds
-            .iter()
-            .map(HelpItem::full_width)
-            .max()
-            .unwrap_or(<span class="number">0</span>);
-        <span class="kw">for </span>i <span class="kw">in </span><span class="kw-2">&amp;</span>items.cmds {
-            <span class="kw">let </span>len = res.len();
-            <span class="macro">write!</span>(res, <span class="string">&quot;{:padding$}\n&quot;</span>, i, padding = max_width)<span class="question-mark">?</span>;
-            dedup(<span class="kw-2">&amp;mut </span>dedup_cache, <span class="kw-2">&amp;mut </span>res, len);
-        }
-    }
-    <span class="kw">if let </span><span class="prelude-val">Some</span>(t) = info.footer {
-        <span class="macro">write!</span>(res, <span class="string">&quot;\n{}&quot;</span>, t)<span class="question-mark">?</span>;
-    }
-    <span class="kw">if </span>!res.ends_with(<span class="string">&#39;\n&#39;</span>) {
-        res.push(<span class="string">&#39;\n&#39;</span>);
-    }
-    <span class="prelude-val">Ok</span>(res)
+    res.push_str(<span class="kw-2">&amp;</span>buf.to_string());
+    res
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bpaf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bpaf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

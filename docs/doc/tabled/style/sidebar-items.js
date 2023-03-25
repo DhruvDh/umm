@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["CustomStyle","On","Style","StyleSettings","TopBorderText"]};
+window.SIDEBAR_ITEMS = {"enum":["Offset"],"struct":["Border","BorderChar","BorderText","HorizontalLine","Line","RawStyle","Style","StyleCorrectSpan","VerticalLine"]};

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.12.0/src/ast/stmt.rs`."><title>stmt.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.13.0/src/ast/stmt.rs`."><title>stmt.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-be46fdc453a55015.css"><script src="../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1081,20 +1081,123 @@
 <a href="#1081" id="1081">1081</a>
 <a href="#1082" id="1082">1082</a>
 <a href="#1083" id="1083">1083</a>
+<a href="#1084" id="1084">1084</a>
+<a href="#1085" id="1085">1085</a>
+<a href="#1086" id="1086">1086</a>
+<a href="#1087" id="1087">1087</a>
+<a href="#1088" id="1088">1088</a>
+<a href="#1089" id="1089">1089</a>
+<a href="#1090" id="1090">1090</a>
+<a href="#1091" id="1091">1091</a>
+<a href="#1092" id="1092">1092</a>
+<a href="#1093" id="1093">1093</a>
+<a href="#1094" id="1094">1094</a>
+<a href="#1095" id="1095">1095</a>
+<a href="#1096" id="1096">1096</a>
+<a href="#1097" id="1097">1097</a>
+<a href="#1098" id="1098">1098</a>
+<a href="#1099" id="1099">1099</a>
+<a href="#1100" id="1100">1100</a>
+<a href="#1101" id="1101">1101</a>
+<a href="#1102" id="1102">1102</a>
+<a href="#1103" id="1103">1103</a>
+<a href="#1104" id="1104">1104</a>
+<a href="#1105" id="1105">1105</a>
+<a href="#1106" id="1106">1106</a>
+<a href="#1107" id="1107">1107</a>
+<a href="#1108" id="1108">1108</a>
+<a href="#1109" id="1109">1109</a>
+<a href="#1110" id="1110">1110</a>
+<a href="#1111" id="1111">1111</a>
+<a href="#1112" id="1112">1112</a>
+<a href="#1113" id="1113">1113</a>
+<a href="#1114" id="1114">1114</a>
+<a href="#1115" id="1115">1115</a>
+<a href="#1116" id="1116">1116</a>
+<a href="#1117" id="1117">1117</a>
+<a href="#1118" id="1118">1118</a>
+<a href="#1119" id="1119">1119</a>
+<a href="#1120" id="1120">1120</a>
+<a href="#1121" id="1121">1121</a>
+<a href="#1122" id="1122">1122</a>
+<a href="#1123" id="1123">1123</a>
+<a href="#1124" id="1124">1124</a>
+<a href="#1125" id="1125">1125</a>
+<a href="#1126" id="1126">1126</a>
+<a href="#1127" id="1127">1127</a>
+<a href="#1128" id="1128">1128</a>
+<a href="#1129" id="1129">1129</a>
+<a href="#1130" id="1130">1130</a>
+<a href="#1131" id="1131">1131</a>
+<a href="#1132" id="1132">1132</a>
+<a href="#1133" id="1133">1133</a>
+<a href="#1134" id="1134">1134</a>
+<a href="#1135" id="1135">1135</a>
+<a href="#1136" id="1136">1136</a>
+<a href="#1137" id="1137">1137</a>
+<a href="#1138" id="1138">1138</a>
+<a href="#1139" id="1139">1139</a>
+<a href="#1140" id="1140">1140</a>
+<a href="#1141" id="1141">1141</a>
+<a href="#1142" id="1142">1142</a>
+<a href="#1143" id="1143">1143</a>
+<a href="#1144" id="1144">1144</a>
+<a href="#1145" id="1145">1145</a>
+<a href="#1146" id="1146">1146</a>
+<a href="#1147" id="1147">1147</a>
+<a href="#1148" id="1148">1148</a>
+<a href="#1149" id="1149">1149</a>
+<a href="#1150" id="1150">1150</a>
+<a href="#1151" id="1151">1151</a>
+<a href="#1152" id="1152">1152</a>
+<a href="#1153" id="1153">1153</a>
+<a href="#1154" id="1154">1154</a>
+<a href="#1155" id="1155">1155</a>
+<a href="#1156" id="1156">1156</a>
+<a href="#1157" id="1157">1157</a>
+<a href="#1158" id="1158">1158</a>
+<a href="#1159" id="1159">1159</a>
+<a href="#1160" id="1160">1160</a>
+<a href="#1161" id="1161">1161</a>
+<a href="#1162" id="1162">1162</a>
+<a href="#1163" id="1163">1163</a>
+<a href="#1164" id="1164">1164</a>
+<a href="#1165" id="1165">1165</a>
+<a href="#1166" id="1166">1166</a>
+<a href="#1167" id="1167">1167</a>
+<a href="#1168" id="1168">1168</a>
+<a href="#1169" id="1169">1169</a>
+<a href="#1170" id="1170">1170</a>
+<a href="#1171" id="1171">1171</a>
+<a href="#1172" id="1172">1172</a>
+<a href="#1173" id="1173">1173</a>
+<a href="#1174" id="1174">1174</a>
+<a href="#1175" id="1175">1175</a>
+<a href="#1176" id="1176">1176</a>
+<a href="#1177" id="1177">1177</a>
+<a href="#1178" id="1178">1178</a>
+<a href="#1179" id="1179">1179</a>
+<a href="#1180" id="1180">1180</a>
+<a href="#1181" id="1181">1181</a>
+<a href="#1182" id="1182">1182</a>
+<a href="#1183" id="1183">1183</a>
+<a href="#1184" id="1184">1184</a>
+<a href="#1185" id="1185">1185</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Module defining script statements.
 
 </span><span class="kw">use super</span>::{ASTFlags, ASTNode, BinaryExpr, Expr, FnCallExpr, Ident};
-<span class="kw">use </span><span class="kw">crate</span>::engine::KEYWORD_EVAL;
+<span class="kw">use </span><span class="kw">crate</span>::engine::{KEYWORD_EVAL, OP_EQUALS};
+<span class="kw">use </span><span class="kw">crate</span>::func::StraightHashMap;
 <span class="kw">use </span><span class="kw">crate</span>::tokenizer::Token;
+<span class="kw">use </span><span class="kw">crate</span>::types::dynamic::Union;
 <span class="kw">use </span><span class="kw">crate</span>::types::Span;
-<span class="kw">use crate</span>::{calc_fn_hash, Position, StaticVec, INT};
+<span class="kw">use crate</span>::{calc_fn_hash, Dynamic, Position, StaticVec, INT};
 <span class="attr">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::{
     borrow::Borrow,
-    collections::BTreeMap,
     fmt,
-    hash::Hash,
+    hash::{Hash, Hasher},
     mem,
     num::NonZeroUsize,
     ops::{Deref, DerefMut, Range, RangeInclusive},
@@ -1107,15 +1210,19 @@
 </span><span class="attr">#[derive(Clone, PartialEq, Hash)]
 </span><span class="kw">pub struct </span>OpAssignment {
     <span class="doccomment">/// Hash of the op-assignment call.
-    </span><span class="kw">pub </span>hash_op_assign: u64,
+    </span>hash_op_assign: u64,
     <span class="doccomment">/// Hash of the underlying operator call (for fallback).
-    </span><span class="kw">pub </span>hash_op: u64,
+    </span>hash_op: u64,
     <span class="doccomment">/// Op-assignment operator.
-    </span><span class="kw">pub </span>op_assign: Token,
+    </span>op_assign: Token,
+    <span class="doccomment">/// Syntax of op-assignment operator.
+    </span>op_assign_syntax: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
     <span class="doccomment">/// Underlying operator.
-    </span><span class="kw">pub </span>op: Token,
+    </span>op: Token,
+    <span class="doccomment">/// Syntax of underlying operator.
+    </span>op_syntax: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
     <span class="doccomment">/// [Position] of the op-assignment operator.
-    </span><span class="kw">pub </span>pos: Position,
+    </span>pos: Position,
 }
 
 <span class="kw">impl </span>OpAssignment {
@@ -1127,16 +1234,52 @@
             hash_op_assign: <span class="number">0</span>,
             hash_op: <span class="number">0</span>,
             op_assign: Token::Equals,
+            op_assign_syntax: OP_EQUALS,
             op: Token::Equals,
+            op_syntax: OP_EQUALS,
             pos,
         }
     }
     <span class="doccomment">/// Is this an op-assignment?
     </span><span class="attr">#[must_use]
     #[inline(always)]
-    </span><span class="kw">pub const fn </span>is_op_assignment(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.hash_op_assign != <span class="number">0 </span>|| <span class="self">self</span>.hash_op != <span class="number">0
-    </span>}
+    </span><span class="kw">pub fn </span>is_op_assignment(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        !<span class="macro">matches!</span>(<span class="self">self</span>.op, Token::Equals)
+    }
+    <span class="doccomment">/// Get information if this [`OpAssignment`] is an op-assignment.
+    ///
+    /// Returns `( hash_op_assign, hash_op, op_assign, op_assign_syntax, op, op_syntax )`:
+    ///
+    /// * `hash_op_assign`: Hash of the op-assignment call.
+    /// * `hash_op`: Hash of the underlying operator call (for fallback).
+    /// * `op_assign`: Op-assignment operator.
+    /// * `op_assign_syntax`: Syntax of op-assignment operator.
+    /// * `op`: Underlying operator.
+    /// * `op_syntax`: Syntax of underlying operator.
+    </span><span class="attr">#[must_use]
+    #[inline]
+    </span><span class="kw">pub fn </span>get_op_assignment_info(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;(u64, u64, <span class="kw-2">&amp;</span>Token, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, <span class="kw-2">&amp;</span>Token, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str)&gt; {
+        <span class="kw">if </span><span class="self">self</span>.is_op_assignment() {
+            <span class="prelude-val">Some</span>((
+                <span class="self">self</span>.hash_op_assign,
+                <span class="self">self</span>.hash_op,
+                <span class="kw-2">&amp;</span><span class="self">self</span>.op_assign,
+                <span class="self">self</span>.op_assign_syntax,
+                <span class="kw-2">&amp;</span><span class="self">self</span>.op,
+                <span class="self">self</span>.op_syntax,
+            ))
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
+    }
+    <span class="doccomment">/// Get the [position][Position] of this [`OpAssignment`].
+    </span><span class="attr">#[must_use]
+    #[inline(always)]
+    </span><span class="kw">pub const fn </span>position(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Position {
+        <span class="self">self</span>.pos
+    }
     <span class="doccomment">/// Create a new [`OpAssignment`].
     ///
     /// # Panics
@@ -1159,11 +1302,16 @@
             .get_base_op_from_assignment()
             .expect(<span class="string">&quot;op-assignment operator&quot;</span>);
 
+        <span class="kw">let </span>op_assign_syntax = op_assign.literal_syntax();
+        <span class="kw">let </span>op_syntax = op.literal_syntax();
+
         <span class="self">Self </span>{
-            hash_op_assign: calc_fn_hash(<span class="prelude-val">None</span>, op_assign.literal_syntax(), <span class="number">2</span>),
-            hash_op: calc_fn_hash(<span class="prelude-val">None</span>, op.literal_syntax(), <span class="number">2</span>),
+            hash_op_assign: calc_fn_hash(<span class="prelude-val">None</span>, op_assign_syntax, <span class="number">2</span>),
+            hash_op: calc_fn_hash(<span class="prelude-val">None</span>, op_syntax, <span class="number">2</span>),
             op_assign,
+            op_assign_syntax,
             op,
+            op_syntax,
             pos,
         }
     }
@@ -1176,7 +1324,7 @@
     #[inline(always)]
     </span><span class="kw">pub fn </span>new_op_assignment_from_base(name: <span class="kw-2">&amp;</span>str, pos: Position) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>op = Token::lookup_symbol_from_syntax(name).expect(<span class="string">&quot;operator&quot;</span>);
-        <span class="self">Self</span>::new_op_assignment_from_base_token(op, pos)
+        <span class="self">Self</span>::new_op_assignment_from_base_token(<span class="kw-2">&amp;</span>op, pos)
     }
     <span class="doccomment">/// Convert a [`Token`] into a new [`OpAssignment`].
     ///
@@ -1185,7 +1333,7 @@
     /// Panics if the token is cannot be converted into an op-assignment operator.
     </span><span class="attr">#[inline(always)]
     #[must_use]
-    </span><span class="kw">pub fn </span>new_op_assignment_from_base_token(op: Token, pos: Position) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>new_op_assignment_from_base_token(op: <span class="kw-2">&amp;</span>Token, pos: Position) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::new_op_assignment_from_token(op.convert_to_op_assignment().expect(<span class="string">&quot;operator&quot;</span>), pos)
     }
 }
@@ -1199,7 +1347,9 @@
                 .field(<span class="string">&quot;hash_op_assign&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.hash_op_assign)
                 .field(<span class="string">&quot;hash_op&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.hash_op)
                 .field(<span class="string">&quot;op_assign&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.op_assign)
+                .field(<span class="string">&quot;op_assign_syntax&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.op_assign_syntax)
                 .field(<span class="string">&quot;op&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.op)
+                .field(<span class="string">&quot;op_syntax&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.op_syntax)
                 .field(<span class="string">&quot;pos&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.pos)
                 .finish()
         } <span class="kw">else </span>{
@@ -1293,7 +1443,7 @@
     <span class="kw">type </span>Item = INT;
     <span class="kw">type </span>IntoIter = Box&lt;<span class="kw">dyn </span>Iterator&lt;Item = <span class="self">Self</span>::Item&gt;&gt;;
 
-    <span class="attr">#[inline(always)]
+    <span class="attr">#[inline]
     #[must_use]
     </span><span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
         <span class="kw">match </span><span class="self">self </span>{
@@ -1305,7 +1455,7 @@
 
 <span class="kw">impl </span>RangeCase {
     <span class="doccomment">/// Returns `true` if the range contains no items.
-    </span><span class="attr">#[inline(always)]
+    </span><span class="attr">#[inline]
     #[must_use]
     </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="kw">match </span><span class="self">self </span>{
@@ -1314,7 +1464,7 @@
         }
     }
     <span class="doccomment">/// Size of the range.
-    </span><span class="attr">#[inline(always)]
+    </span><span class="attr">#[inline]
     #[must_use]
     </span><span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; INT {
         <span class="kw">match </span><span class="self">self </span>{
@@ -1324,13 +1474,54 @@
             <span class="self">Self</span>::InclusiveInt(r, ..) =&gt; <span class="kw-2">*</span>r.end() - <span class="kw-2">*</span>r.start() + <span class="number">1</span>,
         }
     }
-    <span class="doccomment">/// Is the specified number within this range?
-    </span><span class="attr">#[inline(always)]
+    <span class="doccomment">/// Is the specified value within this range?
+    </span><span class="attr">#[inline]
     #[must_use]
-    </span><span class="kw">pub fn </span>contains(<span class="kw-2">&amp;</span><span class="self">self</span>, n: INT) -&gt; bool {
+    </span><span class="kw">pub fn </span>contains(<span class="kw-2">&amp;</span><span class="self">self</span>, value: <span class="kw-2">&amp;</span>Dynamic) -&gt; bool {
+        <span class="kw">match </span>value {
+            Dynamic(Union::Int(v, ..)) =&gt; <span class="self">self</span>.contains_int(<span class="kw-2">*</span>v),
+            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
+            </span>Dynamic(Union::Float(v, ..)) =&gt; <span class="self">self</span>.contains_float(<span class="kw-2">**</span>v),
+            <span class="attr">#[cfg(feature = <span class="string">&quot;decimal&quot;</span>)]
+            </span>Dynamic(Union::Decimal(v, ..)) =&gt; <span class="self">self</span>.contains_decimal(<span class="kw-2">**</span>v),
+            <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
+        }
+    }
+    <span class="doccomment">/// Is the specified number within this range?
+    </span><span class="attr">#[inline]
+    #[must_use]
+    </span><span class="kw">pub fn </span>contains_int(<span class="kw-2">&amp;</span><span class="self">self</span>, n: INT) -&gt; bool {
         <span class="kw">match </span><span class="self">self </span>{
             <span class="self">Self</span>::ExclusiveInt(r, ..) =&gt; r.contains(<span class="kw-2">&amp;</span>n),
             <span class="self">Self</span>::InclusiveInt(r, ..) =&gt; r.contains(<span class="kw-2">&amp;</span>n),
+        }
+    }
+    <span class="doccomment">/// Is the specified floating-point number within this range?
+    </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
+    #[inline]
+    #[must_use]
+    </span><span class="kw">pub fn </span>contains_float(<span class="kw-2">&amp;</span><span class="self">self</span>, n: <span class="kw">crate</span>::FLOAT) -&gt; bool {
+        <span class="kw">use </span><span class="kw">crate</span>::FLOAT;
+
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::ExclusiveInt(r, ..) =&gt; ((r.start <span class="kw">as </span>FLOAT)..(r.end <span class="kw">as </span>FLOAT)).contains(<span class="kw-2">&amp;</span>n),
+            <span class="self">Self</span>::InclusiveInt(r, ..) =&gt; ((<span class="kw-2">*</span>r.start() <span class="kw">as </span>FLOAT)..=(<span class="kw-2">*</span>r.end() <span class="kw">as </span>FLOAT)).contains(<span class="kw-2">&amp;</span>n),
+        }
+    }
+    <span class="doccomment">/// Is the specified decimal number within this range?
+    </span><span class="attr">#[cfg(feature = <span class="string">&quot;decimal&quot;</span>)]
+    #[inline]
+    #[must_use]
+    </span><span class="kw">pub fn </span>contains_decimal(<span class="kw-2">&amp;</span><span class="self">self</span>, n: rust_decimal::Decimal) -&gt; bool {
+        <span class="kw">use </span>rust_decimal::Decimal;
+
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::ExclusiveInt(r, ..) =&gt; {
+                (Into::&lt;Decimal&gt;::into(r.start)..Into::&lt;Decimal&gt;::into(r.end)).contains(<span class="kw-2">&amp;</span>n)
+            }
+            <span class="self">Self</span>::InclusiveInt(r, ..) =&gt; {
+                (Into::&lt;Decimal&gt;::into(<span class="kw-2">*</span>r.start())..=Into::&lt;Decimal&gt;::into(<span class="kw-2">*</span>r.end())).contains(<span class="kw-2">&amp;</span>n)
+            }
         }
     }
     <span class="doccomment">/// Is the specified range inclusive?
@@ -1363,16 +1554,29 @@
 
 <span class="doccomment">/// _(internals)_ A type containing all cases for a `switch` statement.
 /// Exported under the `internals` feature only.
-</span><span class="attr">#[derive(Debug, Clone, Hash)]
+</span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>SwitchCasesCollection {
     <span class="doccomment">/// List of [`ConditionalExpr`]&#39;s.
     </span><span class="kw">pub </span>expressions: StaticVec&lt;ConditionalExpr&gt;,
     <span class="doccomment">/// Dictionary mapping value hashes to [`ConditionalExpr`]&#39;s.
-    </span><span class="kw">pub </span>cases: BTreeMap&lt;u64, CaseBlocksList&gt;,
+    </span><span class="kw">pub </span>cases: StraightHashMap&lt;CaseBlocksList&gt;,
     <span class="doccomment">/// List of range cases.
     </span><span class="kw">pub </span>ranges: StaticVec&lt;RangeCase&gt;,
     <span class="doccomment">/// Statements block for the default case (there can be no condition for the default case).
     </span><span class="kw">pub </span>def_case: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+}
+
+<span class="kw">impl </span>Hash <span class="kw">for </span>SwitchCasesCollection {
+    <span class="attr">#[inline(always)]
+    </span><span class="kw">fn </span>hash&lt;H: Hasher&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, state: <span class="kw-2">&amp;mut </span>H) {
+        <span class="self">self</span>.expressions.hash(state);
+
+        <span class="self">self</span>.cases.len().hash(state);
+        <span class="self">self</span>.cases.iter().for_each(|kv| kv.hash(state));
+
+        <span class="self">self</span>.ranges.hash(state);
+        <span class="self">self</span>.def_case.hash(state);
+    }
 }
 
 <span class="doccomment">/// Number of items to keep inline for [`StmtBlockContainer`].
@@ -2165,4 +2369,4 @@
     </span>}
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

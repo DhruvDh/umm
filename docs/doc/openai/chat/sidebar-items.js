@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["ChatCompletionBuilderError","ChatCompletionMessageRole"],"struct":["ChatCompletion","ChatCompletionBuilder","ChatCompletionChoice","ChatCompletionMessage","ChatCompletionRequest"]};

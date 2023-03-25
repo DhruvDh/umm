@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.12.0/src/engine.rs`."><title>engine.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.13.0/src/engine.rs`."><title>engine.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../static.files/ayu-be46fdc453a55015.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -355,6 +355,32 @@
 <a href="#355" id="355">355</a>
 <a href="#356" id="356">356</a>
 <a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a>
+<a href="#359" id="359">359</a>
+<a href="#360" id="360">360</a>
+<a href="#361" id="361">361</a>
+<a href="#362" id="362">362</a>
+<a href="#363" id="363">363</a>
+<a href="#364" id="364">364</a>
+<a href="#365" id="365">365</a>
+<a href="#366" id="366">366</a>
+<a href="#367" id="367">367</a>
+<a href="#368" id="368">368</a>
+<a href="#369" id="369">369</a>
+<a href="#370" id="370">370</a>
+<a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
+<a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Main module defining the script evaluation [`Engine`].
 
 </span><span class="kw">use </span><span class="kw">crate</span>::api::options::LangOptions;
@@ -362,13 +388,11 @@
     locked_write, OnDebugCallback, OnDefVarCallback, OnParseTokenCallback, OnPrintCallback,
     OnVarCallback,
 };
-<span class="kw">use </span><span class="kw">crate</span>::module::ModuleFlags;
 <span class="kw">use </span><span class="kw">crate</span>::packages::{Package, StandardPackage};
 <span class="kw">use </span><span class="kw">crate</span>::tokenizer::Token;
 <span class="kw">use </span><span class="kw">crate</span>::types::StringsInterner;
 <span class="kw">use crate</span>::{
-    Dynamic, Identifier, ImmutableString, Locked, Module, OptimizationLevel, SharedModule,
-    StaticVec,
+    Dynamic, Identifier, ImmutableString, Locked, OptimizationLevel, SharedModule, StaticVec,
 };
 <span class="attr">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
@@ -414,11 +438,18 @@
 /// The `in` operator is implemented as a call to this function.
 </span><span class="kw">pub const </span>OP_CONTAINS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;contains&quot;</span>;
 
+<span class="doccomment">/// Standard not operator.
+</span><span class="kw">pub const </span>OP_NOT: <span class="kw-2">&amp;</span>str = Token::Bang.literal_syntax();
+
 <span class="doccomment">/// Standard exclusive range operator.
 </span><span class="kw">pub const </span>OP_EXCLUSIVE_RANGE: <span class="kw-2">&amp;</span>str = Token::ExclusiveRange.literal_syntax();
 
 <span class="doccomment">/// Standard inclusive range operator.
 </span><span class="kw">pub const </span>OP_INCLUSIVE_RANGE: <span class="kw-2">&amp;</span>str = Token::InclusiveRange.literal_syntax();
+
+<span class="doccomment">/// Separator for namespaces.
+</span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+</span><span class="kw">pub const </span>NAMESPACE_SEPARATOR: <span class="kw-2">&amp;</span>str = Token::DoubleColon.literal_syntax();
 
 <span class="doccomment">/// Rhai main scripting engine.
 ///
@@ -453,10 +484,10 @@
 
     <span class="doccomment">/// A module resolution service.
     </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) module_resolver: Box&lt;<span class="kw">dyn </span><span class="kw">crate</span>::ModuleResolver&gt;,
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) module_resolver: <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span><span class="kw">crate</span>::ModuleResolver&gt;&gt;,
 
-    <span class="doccomment">/// An empty [`ImmutableString`] for cloning purposes.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) interned_strings: Locked&lt;StringsInterner&gt;,
+    <span class="doccomment">/// Strings interner.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) interned_strings: <span class="prelude-ty">Option</span>&lt;Box&lt;Locked&lt;StringsInterner&gt;&gt;&gt;,
 
     <span class="doccomment">/// A set of symbols to disable.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) disabled_symbols: <span class="prelude-ty">Option</span>&lt;Box&lt;BTreeSet&lt;Identifier&gt;&gt;&gt;,
@@ -467,7 +498,7 @@
     <span class="doccomment">/// Custom syntax.
     </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) custom_syntax: <span class="prelude-ty">Option</span>&lt;
-        Box&lt;std::collections::BTreeMap&lt;Identifier, <span class="kw">crate</span>::api::custom_syntax::CustomSyntax&gt;&gt;,
+        Box&lt;std::collections::BTreeMap&lt;Identifier, Box&lt;<span class="kw">crate</span>::api::custom_syntax::CustomSyntax&gt;&gt;&gt;,
     &gt;,
     <span class="doccomment">/// Callback closure for filtering variable definition.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) def_var_filter: <span class="prelude-ty">Option</span>&lt;Box&lt;OnDefVarCallback&gt;&gt;,
@@ -477,9 +508,9 @@
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) token_mapper: <span class="prelude-ty">Option</span>&lt;Box&lt;OnParseTokenCallback&gt;&gt;,
 
     <span class="doccomment">/// Callback closure for implementing the `print` command.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) print: Box&lt;OnPrintCallback&gt;,
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) print: <span class="prelude-ty">Option</span>&lt;Box&lt;OnPrintCallback&gt;&gt;,
     <span class="doccomment">/// Callback closure for implementing the `debug` command.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) debug: Box&lt;OnDebugCallback&gt;,
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) debug: <span class="prelude-ty">Option</span>&lt;Box&lt;OnDebugCallback&gt;&gt;,
     <span class="doccomment">/// Callback closure for progress reporting.
     </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) progress: <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">crate</span>::func::native::OnProgressCallback&gt;&gt;,
@@ -499,12 +530,10 @@
 
     <span class="doccomment">/// Callback closure for debugging.
     </span><span class="attr">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) debugger_interface: <span class="prelude-ty">Option</span>&lt;
-        Box&lt;(
-            Box&lt;<span class="kw">crate</span>::eval::OnDebuggingInit&gt;,
-            Box&lt;<span class="kw">crate</span>::eval::OnDebuggerCallback&gt;,
-        )&gt;,
-    &gt;,
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) debugger_interface: <span class="prelude-ty">Option</span>&lt;(
+        Box&lt;<span class="kw">crate</span>::eval::OnDebuggingInit&gt;,
+        Box&lt;<span class="kw">crate</span>::eval::OnDebuggerCallback&gt;,
+    )&gt;,
 }
 
 <span class="kw">impl </span>fmt::Debug <span class="kw">for </span>Engine {
@@ -581,6 +610,49 @@
 }
 
 <span class="kw">impl </span>Engine {
+    <span class="doccomment">/// An empty raw [`Engine`].
+    </span><span class="kw">pub const </span>RAW: <span class="self">Self </span>= <span class="self">Self </span>{
+        global_modules: StaticVec::new_const(),
+
+        <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+        </span>global_sub_modules: <span class="prelude-val">None</span>,
+
+        <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+        </span>module_resolver: <span class="prelude-val">None</span>,
+
+        interned_strings: <span class="prelude-val">None</span>,
+        disabled_symbols: <span class="prelude-val">None</span>,
+        <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+        </span>custom_keywords: <span class="prelude-val">None</span>,
+        <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
+        </span>custom_syntax: <span class="prelude-val">None</span>,
+
+        def_var_filter: <span class="prelude-val">None</span>,
+        resolve_var: <span class="prelude-val">None</span>,
+        token_mapper: <span class="prelude-val">None</span>,
+
+        print: <span class="prelude-val">None</span>,
+        debug: <span class="prelude-val">None</span>,
+
+        <span class="attr">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
+        </span>progress: <span class="prelude-val">None</span>,
+
+        options: LangOptions::new(),
+
+        def_tag: Dynamic::UNIT,
+
+        <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_optimize&quot;</span>))]
+        </span>optimization_level: OptimizationLevel::Simple,
+        <span class="attr">#[cfg(feature = <span class="string">&quot;no_optimize&quot;</span>)]
+        </span>optimization_level: (),
+
+        <span class="attr">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
+        </span>limits: <span class="kw">crate</span>::api::limits::Limits::new(),
+
+        <span class="attr">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
+        </span>debugger_interface: <span class="prelude-val">None</span>,
+    };
+
     <span class="doccomment">/// Create a new [`Engine`].
     </span><span class="attr">#[inline]
     #[must_use]
@@ -592,22 +664,25 @@
         #[cfg(not(feature = <span class="string">&quot;no_std&quot;</span>))]
         #[cfg(not(target_family = <span class="string">&quot;wasm&quot;</span>))]
         </span>{
-            engine.module_resolver = Box::new(<span class="kw">crate</span>::module::resolvers::FileModuleResolver::new());
+            engine.module_resolver =
+                <span class="prelude-val">Some</span>(Box::new(<span class="kw">crate</span>::module::resolvers::FileModuleResolver::new()));
         }
+
+        engine.interned_strings = <span class="prelude-val">Some</span>(Locked::new(StringsInterner::new()).into());
 
         <span class="comment">// default print/debug implementations
         </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_std&quot;</span>))]
         #[cfg(not(target_family = <span class="string">&quot;wasm&quot;</span>))]
         </span>{
-            engine.print = Box::new(|s| <span class="macro">println!</span>(<span class="string">&quot;{s}&quot;</span>));
-            engine.debug = Box::new(|s, source, pos| <span class="kw">match </span>(source, pos) {
+            engine.print = <span class="prelude-val">Some</span>(Box::new(|s| <span class="macro">println!</span>(<span class="string">&quot;{s}&quot;</span>)));
+            engine.debug = <span class="prelude-val">Some</span>(Box::new(|s, source, pos| <span class="kw">match </span>(source, pos) {
                 (<span class="prelude-val">Some</span>(source), <span class="kw">crate</span>::Position::NONE) =&gt; <span class="macro">println!</span>(<span class="string">&quot;{source} | {s}&quot;</span>),
                 <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_position&quot;</span>))]
                 </span>(<span class="prelude-val">Some</span>(source), pos) =&gt; <span class="macro">println!</span>(<span class="string">&quot;{source} @ {pos:?} | {s}&quot;</span>),
                 (<span class="prelude-val">None</span>, <span class="kw">crate</span>::Position::NONE) =&gt; <span class="macro">println!</span>(<span class="string">&quot;{s}&quot;</span>),
                 <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_position&quot;</span>))]
                 </span>(<span class="prelude-val">None</span>, pos) =&gt; <span class="macro">println!</span>(<span class="string">&quot;{pos:?} | {s}&quot;</span>),
-            });
+            }));
         }
 
         engine.register_global_module(StandardPackage::new().as_shared_module());
@@ -616,59 +691,15 @@
     }
 
     <span class="doccomment">/// Create a new [`Engine`] with minimal built-in functions.
+    /// It returns a copy of [`Engine::RAW`].
+    ///
+    /// This is useful for creating a custom scripting engine with only the functions you need.
     ///
     /// Use [`register_global_module`][Engine::register_global_module] to add packages of functions.
     </span><span class="attr">#[inline]
     #[must_use]
-    </span><span class="kw">pub fn </span>new_raw() -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span><span class="kw-2">mut </span>engine = <span class="self">Self </span>{
-            global_modules: StaticVec::new_const(),
-
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-            </span>global_sub_modules: <span class="prelude-val">None</span>,
-
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-            </span>module_resolver: Box::new(<span class="kw">crate</span>::module::resolvers::DummyModuleResolver::new()),
-
-            interned_strings: StringsInterner::new().into(),
-            disabled_symbols: <span class="prelude-val">None</span>,
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
-            </span>custom_keywords: <span class="prelude-val">None</span>,
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_custom_syntax&quot;</span>))]
-            </span>custom_syntax: <span class="prelude-val">None</span>,
-
-            def_var_filter: <span class="prelude-val">None</span>,
-            resolve_var: <span class="prelude-val">None</span>,
-            token_mapper: <span class="prelude-val">None</span>,
-
-            print: Box::new(|<span class="kw">_</span>| {}),
-            debug: Box::new(|<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>| {}),
-
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
-            </span>progress: <span class="prelude-val">None</span>,
-
-            options: LangOptions::new(),
-
-            def_tag: Dynamic::UNIT,
-
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_optimize&quot;</span>))]
-            </span>optimization_level: OptimizationLevel::Simple,
-            <span class="attr">#[cfg(feature = <span class="string">&quot;no_optimize&quot;</span>)]
-            </span>optimization_level: (),
-
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
-            </span>limits: <span class="kw">crate</span>::api::limits::Limits::new(),
-
-            <span class="attr">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
-            </span>debugger_interface: <span class="prelude-val">None</span>,
-        };
-
-        <span class="comment">// Add the global namespace module
-        </span><span class="kw">let </span><span class="kw-2">mut </span>global_namespace = Module::new();
-        global_namespace.flags |= ModuleFlags::INTERNAL;
-        engine.global_modules.push(global_namespace.into());
-
-        engine
+    </span><span class="kw">pub const fn </span>new_raw() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::RAW
     }
 
     <span class="doccomment">/// Get an interned [string][ImmutableString].
@@ -679,7 +710,11 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         string: <span class="kw">impl </span>AsRef&lt;str&gt; + Into&lt;ImmutableString&gt;,
     ) -&gt; ImmutableString {
-        locked_write(<span class="kw-2">&amp;</span><span class="self">self</span>.interned_strings).get(string)
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>interner) = <span class="self">self</span>.interned_strings {
+            locked_write(interner).get(string)
+        } <span class="kw">else </span>{
+            string.into()
+        }
     }
 
     <span class="doccomment">/// _(internals)_ Get an interned [string][ImmutableString].
@@ -688,13 +723,17 @@
     /// [`Engine`] keeps a cache of [`ImmutableString`] instances and tries to avoid new allocations
     /// when an existing instance is found.
     </span><span class="attr">#[cfg(feature = <span class="string">&quot;internals&quot;</span>)]
-    #[inline(always)]
+    #[inline]
     #[must_use]
     </span><span class="kw">pub fn </span>get_interned_string(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         string: <span class="kw">impl </span>AsRef&lt;str&gt; + Into&lt;ImmutableString&gt;,
     ) -&gt; ImmutableString {
-        locked_write(<span class="kw-2">&amp;</span><span class="self">self</span>.interned_strings).get(string)
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>interner) = <span class="self">self</span>.interned_strings {
+            locked_write(interner).get(string)
+        } <span class="kw">else </span>{
+            string.into()
+        }
     }
 
     <span class="doccomment">/// Get an empty [`ImmutableString`] which refers to a shared instance.
@@ -711,6 +750,19 @@
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>is_debugger_registered(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="self">self</span>.debugger_interface.is_some()
     }
+
+    <span class="doccomment">/// Imitation of std::hints::black_box which requires nightly.
+    </span><span class="attr">#[cfg(not(target_family = <span class="string">&quot;wasm&quot;</span>))]
+    #[inline(never)]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>black_box() -&gt; usize {
+        <span class="kw">unsafe </span>{ core::ptr::read_volatile(<span class="kw-2">&amp;</span><span class="number">0_usize </span><span class="kw">as </span><span class="kw-2">*const </span>usize) }
+    }
+    <span class="doccomment">/// Imitation of std::hints::black_box which requires nightly.
+    </span><span class="attr">#[cfg(target_family = <span class="string">&quot;wasm&quot;</span>)]
+    #[inline(always)]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>black_box() -&gt; usize {
+        <span class="number">0
+    </span>}
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

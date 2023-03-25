@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.12.0/src/func/call.rs`."><title>call.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.13.0/src/func/call.rs`."><title>call.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-be46fdc453a55015.css"><script src="../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1639,6 +1639,127 @@
 <a href="#1639" id="1639">1639</a>
 <a href="#1640" id="1640">1640</a>
 <a href="#1641" id="1641">1641</a>
+<a href="#1642" id="1642">1642</a>
+<a href="#1643" id="1643">1643</a>
+<a href="#1644" id="1644">1644</a>
+<a href="#1645" id="1645">1645</a>
+<a href="#1646" id="1646">1646</a>
+<a href="#1647" id="1647">1647</a>
+<a href="#1648" id="1648">1648</a>
+<a href="#1649" id="1649">1649</a>
+<a href="#1650" id="1650">1650</a>
+<a href="#1651" id="1651">1651</a>
+<a href="#1652" id="1652">1652</a>
+<a href="#1653" id="1653">1653</a>
+<a href="#1654" id="1654">1654</a>
+<a href="#1655" id="1655">1655</a>
+<a href="#1656" id="1656">1656</a>
+<a href="#1657" id="1657">1657</a>
+<a href="#1658" id="1658">1658</a>
+<a href="#1659" id="1659">1659</a>
+<a href="#1660" id="1660">1660</a>
+<a href="#1661" id="1661">1661</a>
+<a href="#1662" id="1662">1662</a>
+<a href="#1663" id="1663">1663</a>
+<a href="#1664" id="1664">1664</a>
+<a href="#1665" id="1665">1665</a>
+<a href="#1666" id="1666">1666</a>
+<a href="#1667" id="1667">1667</a>
+<a href="#1668" id="1668">1668</a>
+<a href="#1669" id="1669">1669</a>
+<a href="#1670" id="1670">1670</a>
+<a href="#1671" id="1671">1671</a>
+<a href="#1672" id="1672">1672</a>
+<a href="#1673" id="1673">1673</a>
+<a href="#1674" id="1674">1674</a>
+<a href="#1675" id="1675">1675</a>
+<a href="#1676" id="1676">1676</a>
+<a href="#1677" id="1677">1677</a>
+<a href="#1678" id="1678">1678</a>
+<a href="#1679" id="1679">1679</a>
+<a href="#1680" id="1680">1680</a>
+<a href="#1681" id="1681">1681</a>
+<a href="#1682" id="1682">1682</a>
+<a href="#1683" id="1683">1683</a>
+<a href="#1684" id="1684">1684</a>
+<a href="#1685" id="1685">1685</a>
+<a href="#1686" id="1686">1686</a>
+<a href="#1687" id="1687">1687</a>
+<a href="#1688" id="1688">1688</a>
+<a href="#1689" id="1689">1689</a>
+<a href="#1690" id="1690">1690</a>
+<a href="#1691" id="1691">1691</a>
+<a href="#1692" id="1692">1692</a>
+<a href="#1693" id="1693">1693</a>
+<a href="#1694" id="1694">1694</a>
+<a href="#1695" id="1695">1695</a>
+<a href="#1696" id="1696">1696</a>
+<a href="#1697" id="1697">1697</a>
+<a href="#1698" id="1698">1698</a>
+<a href="#1699" id="1699">1699</a>
+<a href="#1700" id="1700">1700</a>
+<a href="#1701" id="1701">1701</a>
+<a href="#1702" id="1702">1702</a>
+<a href="#1703" id="1703">1703</a>
+<a href="#1704" id="1704">1704</a>
+<a href="#1705" id="1705">1705</a>
+<a href="#1706" id="1706">1706</a>
+<a href="#1707" id="1707">1707</a>
+<a href="#1708" id="1708">1708</a>
+<a href="#1709" id="1709">1709</a>
+<a href="#1710" id="1710">1710</a>
+<a href="#1711" id="1711">1711</a>
+<a href="#1712" id="1712">1712</a>
+<a href="#1713" id="1713">1713</a>
+<a href="#1714" id="1714">1714</a>
+<a href="#1715" id="1715">1715</a>
+<a href="#1716" id="1716">1716</a>
+<a href="#1717" id="1717">1717</a>
+<a href="#1718" id="1718">1718</a>
+<a href="#1719" id="1719">1719</a>
+<a href="#1720" id="1720">1720</a>
+<a href="#1721" id="1721">1721</a>
+<a href="#1722" id="1722">1722</a>
+<a href="#1723" id="1723">1723</a>
+<a href="#1724" id="1724">1724</a>
+<a href="#1725" id="1725">1725</a>
+<a href="#1726" id="1726">1726</a>
+<a href="#1727" id="1727">1727</a>
+<a href="#1728" id="1728">1728</a>
+<a href="#1729" id="1729">1729</a>
+<a href="#1730" id="1730">1730</a>
+<a href="#1731" id="1731">1731</a>
+<a href="#1732" id="1732">1732</a>
+<a href="#1733" id="1733">1733</a>
+<a href="#1734" id="1734">1734</a>
+<a href="#1735" id="1735">1735</a>
+<a href="#1736" id="1736">1736</a>
+<a href="#1737" id="1737">1737</a>
+<a href="#1738" id="1738">1738</a>
+<a href="#1739" id="1739">1739</a>
+<a href="#1740" id="1740">1740</a>
+<a href="#1741" id="1741">1741</a>
+<a href="#1742" id="1742">1742</a>
+<a href="#1743" id="1743">1743</a>
+<a href="#1744" id="1744">1744</a>
+<a href="#1745" id="1745">1745</a>
+<a href="#1746" id="1746">1746</a>
+<a href="#1747" id="1747">1747</a>
+<a href="#1748" id="1748">1748</a>
+<a href="#1749" id="1749">1749</a>
+<a href="#1750" id="1750">1750</a>
+<a href="#1751" id="1751">1751</a>
+<a href="#1752" id="1752">1752</a>
+<a href="#1753" id="1753">1753</a>
+<a href="#1754" id="1754">1754</a>
+<a href="#1755" id="1755">1755</a>
+<a href="#1756" id="1756">1756</a>
+<a href="#1757" id="1757">1757</a>
+<a href="#1758" id="1758">1758</a>
+<a href="#1759" id="1759">1759</a>
+<a href="#1760" id="1760">1760</a>
+<a href="#1761" id="1761">1761</a>
+<a href="#1762" id="1762">1762</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Implement function-calling mechanism for [`Engine`].
 
 </span><span class="kw">use super</span>::{get_builtin_binary_op_fn, get_builtin_op_assignment_fn, CallableFunction};
@@ -1650,9 +1771,10 @@
 };
 <span class="kw">use </span><span class="kw">crate</span>::eval::{Caches, FnResolutionCacheEntry, GlobalRuntimeState};
 <span class="kw">use </span><span class="kw">crate</span>::tokenizer::{is_valid_function_name, Token};
+<span class="kw">use </span><span class="kw">crate</span>::types::dynamic::Union;
 <span class="kw">use crate</span>::{
     calc_fn_hash, calc_fn_hash_full, Dynamic, Engine, FnArgsVec, FnPtr, ImmutableString,
-    OptimizationLevel, Position, RhaiError, RhaiResult, RhaiResultOf, Scope, Shared, ERR,
+    OptimizationLevel, Position, RhaiResult, RhaiResultOf, Scope, Shared, ERR,
 };
 <span class="attr">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>hashbrown::hash_map::Entry;
@@ -1805,15 +1927,11 @@
         _global: <span class="kw-2">&amp;</span>GlobalRuntimeState,
         caches: <span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span>Caches,
         local_entry: <span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span><span class="prelude-ty">Option</span>&lt;FnResolutionCacheEntry&gt;,
-        op_token: <span class="prelude-ty">Option</span>&lt;Token&gt;,
+        op_token: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Token&gt;,
         hash_base: u64,
         args: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>FnCallArgs&gt;,
         allow_dynamic: bool,
     ) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span>FnResolutionCacheEntry&gt; {
-        <span class="kw">if </span>hash_base == <span class="number">0 </span>{
-            <span class="kw">return </span><span class="prelude-val">None</span>;
-        }
-
         <span class="kw">let </span><span class="kw-2">mut </span>hash = args.as_deref().map_or(hash_base, |args| {
             calc_fn_hash_full(hash_base, args.iter().map(|a| a.type_id()))
         });
@@ -1986,7 +2104,7 @@
         global: <span class="kw-2">&amp;mut </span>GlobalRuntimeState,
         caches: <span class="kw-2">&amp;mut </span>Caches,
         name: <span class="kw-2">&amp;</span>str,
-        op_token: <span class="prelude-ty">Option</span>&lt;Token&gt;,
+        op_token: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Token&gt;,
         hash: u64,
         args: <span class="kw-2">&amp;mut </span>FnCallArgs,
         is_ref_mut: bool,
@@ -2008,7 +2126,7 @@
         );
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(FnResolutionCacheEntry { func, source }) = func {
-            <span class="macro">assert!</span>(func.is_native());
+            <span class="macro">debug_assert!</span>(func.is_native());
 
             <span class="comment">// Push a new call stack frame
             </span><span class="attr">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
@@ -2043,11 +2161,9 @@
             </span><span class="kw">let </span>is_method = func.is_method();
             <span class="kw">let </span>src = source.as_ref().map(|s| s.as_str());
 
-            <span class="kw">let </span>context = <span class="kw">if </span>func.has_context() {
-                <span class="prelude-val">Some</span>((<span class="self">self</span>, name, src, <span class="kw-2">&amp;*</span>global, pos).into())
-            } <span class="kw">else </span>{
-                <span class="prelude-val">None
-            </span>};
+            <span class="kw">let </span>context = func
+                .has_context()
+                .then(|| (<span class="self">self</span>, name, src, <span class="kw-2">&amp;*</span>global, pos).into());
 
             <span class="kw">let </span><span class="kw-2">mut </span>_result = <span class="kw">if let </span><span class="prelude-val">Some</span>(f) = func.get_plugin_fn() {
                 <span class="kw">if </span>!f.is_pure() &amp;&amp; !args.is_empty() &amp;&amp; args[<span class="number">0</span>].is_read_only() {
@@ -2106,18 +2222,26 @@
             <span class="comment">// See if the function match print/debug (which requires special processing)
             </span><span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="kw">match </span>name {
                 KEYWORD_PRINT =&gt; {
-                    <span class="kw">let </span>text = result.into_immutable_string().map_err(|typ| {
-                        <span class="kw">let </span>t = <span class="self">self</span>.map_type_name(type_name::&lt;ImmutableString&gt;()).into();
-                        ERR::ErrorMismatchOutputType(t, typ.into(), pos)
-                    })<span class="question-mark">?</span>;
-                    ((<span class="kw-2">*</span><span class="self">self</span>.print)(<span class="kw-2">&amp;</span>text).into(), <span class="bool-val">false</span>)
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>print) = <span class="self">self</span>.print {
+                        <span class="kw">let </span>text = result.into_immutable_string().map_err(|typ| {
+                            <span class="kw">let </span>t = <span class="self">self</span>.map_type_name(type_name::&lt;ImmutableString&gt;()).into();
+                            ERR::ErrorMismatchOutputType(t, typ.into(), pos)
+                        })<span class="question-mark">?</span>;
+                        (print(<span class="kw-2">&amp;</span>text).into(), <span class="bool-val">false</span>)
+                    } <span class="kw">else </span>{
+                        (Dynamic::UNIT, <span class="bool-val">false</span>)
+                    }
                 }
                 KEYWORD_DEBUG =&gt; {
-                    <span class="kw">let </span>text = result.into_immutable_string().map_err(|typ| {
-                        <span class="kw">let </span>t = <span class="self">self</span>.map_type_name(type_name::&lt;ImmutableString&gt;()).into();
-                        ERR::ErrorMismatchOutputType(t, typ.into(), pos)
-                    })<span class="question-mark">?</span>;
-                    ((<span class="kw-2">*</span><span class="self">self</span>.debug)(<span class="kw-2">&amp;</span>text, global.source(), pos).into(), <span class="bool-val">false</span>)
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>debug) = <span class="self">self</span>.debug {
+                        <span class="kw">let </span>text = result.into_immutable_string().map_err(|typ| {
+                            <span class="kw">let </span>t = <span class="self">self</span>.map_type_name(type_name::&lt;ImmutableString&gt;()).into();
+                            ERR::ErrorMismatchOutputType(t, typ.into(), pos)
+                        })<span class="question-mark">?</span>;
+                        (debug(<span class="kw-2">&amp;</span>text, global.source(), pos).into(), <span class="bool-val">false</span>)
+                    } <span class="kw">else </span>{
+                        (Dynamic::UNIT, <span class="bool-val">false</span>)
+                    }
                 }
                 <span class="kw">_ </span>=&gt; (result, is_method),
             });
@@ -2208,7 +2332,7 @@
         caches: <span class="kw-2">&amp;mut </span>Caches,
         _scope: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>Scope&gt;,
         fn_name: <span class="kw-2">&amp;</span>str,
-        op_token: <span class="prelude-ty">Option</span>&lt;Token&gt;,
+        op_token: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Token&gt;,
         hashes: FnCallHashes,
         <span class="kw-2">mut </span>_args: <span class="kw-2">&amp;mut </span>FnCallArgs,
         is_ref_mut: bool,
@@ -2278,7 +2402,7 @@
                 .cloned()
             {
                 <span class="comment">// Script function call
-                </span><span class="macro">assert!</span>(func.is_script());
+                </span><span class="macro">debug_assert!</span>(func.is_script());
 
                 <span class="kw">let </span>f = func.get_script_fn_def().expect(<span class="string">&quot;script-defined function&quot;</span>);
                 <span class="kw">let </span>environ = func.get_encapsulated_environ();
@@ -2296,7 +2420,7 @@
                 };
 
                 <span class="kw">let </span>orig_source = mem::replace(<span class="kw-2">&amp;mut </span>global.source, source.clone());
-                <span class="macro">auto_restore!</span>(global =&gt; <span class="kw">move </span>|g| g.source = orig_source);
+                <span class="macro">auto_restore! </span>{ global =&gt; <span class="kw">move </span>|g| g.source = orig_source }
 
                 <span class="kw">return if </span>_is_method_call {
                     <span class="comment">// Method call of script function - map first argument to `this`
@@ -2324,7 +2448,7 @@
                         backup.change_first_arg_to_copy(_args);
                     }
 
-                    <span class="macro">auto_restore!</span>(args = (_args) <span class="kw">if </span>swap =&gt; <span class="kw">move </span>|a| backup.restore_first_arg(a));
+                    <span class="macro">auto_restore! </span>{ args = (_args) <span class="kw">if </span>swap =&gt; <span class="kw">move </span>|a| backup.restore_first_arg(a) }
 
                     <span class="self">self</span>.call_script_fn(global, caches, scope, <span class="prelude-val">None</span>, environ, f, args, <span class="bool-val">true</span>, pos)
                 }
@@ -2368,7 +2492,7 @@
             })
         });
         <span class="attr">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
-        </span><span class="macro">auto_restore!</span>(global <span class="kw">if </span><span class="prelude-val">Some</span>(reset) =&gt; <span class="kw">move </span>|g| g.debugger_mut().reset_status(reset));
+        </span><span class="macro">auto_restore! </span>{ global <span class="kw">if </span><span class="prelude-val">Some</span>(reset) =&gt; <span class="kw">move </span>|g| g.debugger_mut().reset_status(reset) }
 
         <span class="self">self</span>.eval_expr(global, caches, scope, this_ptr, arg_expr)
             .map(|r| (r, arg_expr.start_position()))
@@ -2430,9 +2554,9 @@
                 </span><span class="kw">let </span>fn_name = fn_ptr.fn_name();
                 <span class="comment">// Recalculate hashes
                 </span><span class="kw">let </span>new_hash = <span class="kw">if </span>!is_anon &amp;&amp; !is_valid_function_name(fn_name) {
-                    FnCallHashes::from_native(calc_fn_hash(<span class="prelude-val">None</span>, fn_name, args.len()))
+                    FnCallHashes::from_native_only(calc_fn_hash(<span class="prelude-val">None</span>, fn_name, args.len()))
                 } <span class="kw">else </span>{
-                    calc_fn_hash(<span class="prelude-val">None</span>, fn_name, args.len()).into()
+                    FnCallHashes::from_hash(calc_fn_hash(<span class="prelude-val">None</span>, fn_name, args.len()))
                 };
 
                 <span class="comment">// Map it to name(args) in function-call style
@@ -2455,7 +2579,8 @@
                 <span class="kw">if </span>call_args.is_empty() {
                     <span class="kw">let </span>typ = <span class="self">self</span>.map_type_name(target.type_name());
                     <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="self">self</span>.make_type_mismatch_err::&lt;FnPtr&gt;(typ, fn_call_pos));
-                } <span class="kw">else if </span>!call_args[<span class="number">0</span>].is_fnptr() {
+                }
+                <span class="kw">if </span>!call_args[<span class="number">0</span>].is_fnptr() {
                     <span class="kw">let </span>typ = <span class="self">self</span>.map_type_name(call_args[<span class="number">0</span>].type_name());
                     <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="self">self</span>.make_type_mismatch_err::&lt;FnPtr&gt;(typ, first_arg_pos));
                 }
@@ -2512,14 +2637,17 @@
                 </span>args.insert(<span class="number">0</span>, target.as_mut());
 
                 <span class="comment">// Recalculate hash
-                </span><span class="kw">let </span>new_hash = <span class="kw">if </span>!is_anon &amp;&amp; !is_valid_function_name(<span class="kw-2">&amp;</span>fn_name) {
-                    FnCallHashes::from_native(calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>fn_name, args.len()))
-                } <span class="kw">else </span>{
-                    FnCallHashes::from_all(
-                        <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                        </span>calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>fn_name, args.len() - <span class="number">1</span>),
+                </span><span class="kw">let </span>new_hash = <span class="kw">match </span>is_anon {
+                    <span class="bool-val">false </span><span class="kw">if </span>!is_valid_function_name(<span class="kw-2">&amp;</span>fn_name) =&gt; {
+                        FnCallHashes::from_native_only(calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>fn_name, args.len()))
+                    }
+                    <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+                    </span><span class="kw">_ </span>=&gt; FnCallHashes::from_script_and_native(
+                        calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>fn_name, args.len() - <span class="number">1</span>),
                         calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>fn_name, args.len()),
-                    )
+                    ),
+                    <span class="attr">#[cfg(feature = <span class="string">&quot;no_function&quot;</span>)]
+                    </span><span class="kw">_ </span>=&gt; FnCallHashes::from_native_only(calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>fn_name, args.len())),
                 };
 
                 <span class="comment">// Map it to name(args) in function-call style
@@ -2588,18 +2716,22 @@
                                 call_args = <span class="kw-2">&amp;mut </span>_arg_values;
                             }
                             <span class="comment">// Recalculate the hash based on the new function name and new arguments
-                            </span>hash = <span class="kw">if </span>!is_anon &amp;&amp; !is_valid_function_name(fn_name) {
-                                FnCallHashes::from_native(calc_fn_hash(
-                                    <span class="prelude-val">None</span>,
-                                    fn_name,
-                                    call_args.len() + <span class="number">1</span>,
-                                ))
-                            } <span class="kw">else </span>{
-                                FnCallHashes::from_all(
-                                    <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                                    </span>calc_fn_hash(<span class="prelude-val">None</span>, fn_name, call_args.len()),
-                                    calc_fn_hash(<span class="prelude-val">None</span>, fn_name, call_args.len() + <span class="number">1</span>),
-                                )
+                            </span><span class="kw">let </span>args_len = call_args.len() + <span class="number">1</span>;
+                            hash = <span class="kw">match </span>is_anon {
+                                <span class="bool-val">false </span><span class="kw">if </span>!is_valid_function_name(fn_name) =&gt; {
+                                    FnCallHashes::from_native_only(calc_fn_hash(
+                                        <span class="prelude-val">None</span>, fn_name, args_len,
+                                    ))
+                                }
+                                <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+                                </span><span class="kw">_ </span>=&gt; FnCallHashes::from_script_and_native(
+                                    calc_fn_hash(<span class="prelude-val">None</span>, fn_name, args_len - <span class="number">1</span>),
+                                    calc_fn_hash(<span class="prelude-val">None</span>, fn_name, args_len),
+                                ),
+                                <span class="attr">#[cfg(feature = <span class="string">&quot;no_function&quot;</span>)]
+                                </span><span class="kw">_ </span>=&gt; FnCallHashes::from_native_only(calc_fn_hash(
+                                    <span class="prelude-val">None</span>, fn_name, args_len,
+                                )),
                             };
                         }
                     }
@@ -2641,7 +2773,7 @@
         scope: <span class="kw-2">&amp;mut </span>Scope,
         <span class="kw-2">mut </span>this_ptr: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>Dynamic&gt;,
         fn_name: <span class="kw-2">&amp;</span>str,
-        op_token: <span class="prelude-ty">Option</span>&lt;Token&gt;,
+        op_token: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Token&gt;,
         first_arg: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Expr&gt;,
         args_expr: <span class="kw-2">&amp;</span>[Expr],
         hashes: FnCallHashes,
@@ -2694,7 +2826,7 @@
                         </span><span class="kw">let </span><span class="kw-2">mut </span>arg_values = curry
                             .into_iter()
                             .map(<span class="prelude-val">Ok</span>)
-                            .chain(a_expr.iter().map(|expr| -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw">_</span>, RhaiError&gt; {
+                            .chain(a_expr.iter().map(|expr| -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw">_</span>, <span class="kw">crate</span>::RhaiError&gt; {
                                 <span class="kw">let </span>this_ptr = this_ptr.as_deref_mut();
                                 <span class="self">self</span>.get_arg_value(global, caches, scope, this_ptr, expr)
                                     .map(|(v, ..)| v)
@@ -2725,9 +2857,9 @@
                 </span><span class="kw">let </span>args_len = total_args + curry.len();
 
                 hashes = <span class="kw">if </span>!is_anon &amp;&amp; !is_valid_function_name(name) {
-                    FnCallHashes::from_native(calc_fn_hash(<span class="prelude-val">None</span>, name, args_len))
+                    FnCallHashes::from_native_only(calc_fn_hash(<span class="prelude-val">None</span>, name, args_len))
                 } <span class="kw">else </span>{
-                    calc_fn_hash(<span class="prelude-val">None</span>, name, args_len).into()
+                    FnCallHashes::from_hash(calc_fn_hash(<span class="prelude-val">None</span>, name, args_len))
                 };
             }
             <span class="comment">// Handle Fn()
@@ -2889,9 +3021,7 @@
         }
 
         <span class="comment">// Call with blank scope
-        </span><span class="kw">if </span>total_args == <span class="number">0 </span>&amp;&amp; curry.is_empty() {
-            <span class="comment">// No arguments
-        </span>} <span class="kw">else </span>{
+        </span><span class="kw">if </span>total_args &gt; <span class="number">0 </span>|| !curry.is_empty() {
             <span class="comment">// If the first argument is a variable, and there is no curried arguments,
             // convert to method-call style in order to leverage potential &amp;mut first argument and
             // avoid cloning the value
@@ -2962,9 +3092,7 @@
         <span class="kw">let </span>args = <span class="kw-2">&amp;mut </span>FnArgsVec::with_capacity(args_expr.len());
         <span class="kw">let </span><span class="kw-2">mut </span>first_arg_value = <span class="prelude-val">None</span>;
 
-        <span class="kw">if </span>args_expr.is_empty() {
-            <span class="comment">// No arguments
-        </span>} <span class="kw">else </span>{
+        <span class="kw">if </span>!args_expr.is_empty() {
             <span class="comment">// See if the first argument is a variable (not namespace-qualified).
             // If so, convert to method-call style in order to leverage potential &amp;mut first argument
             // and avoid cloning the value
@@ -3091,18 +3219,16 @@
                 <span class="kw">let </span>scope = <span class="kw-2">&amp;mut </span>Scope::new();
 
                 <span class="kw">let </span>orig_source = mem::replace(<span class="kw-2">&amp;mut </span>global.source, module.id_raw().cloned());
-                <span class="macro">auto_restore!</span>(global =&gt; <span class="kw">move </span>|g| g.source = orig_source);
+                <span class="macro">auto_restore! </span>{ global =&gt; <span class="kw">move </span>|g| g.source = orig_source }
 
                 <span class="self">self</span>.call_script_fn(global, caches, scope, <span class="prelude-val">None</span>, environ, f, args, <span class="bool-val">true</span>, pos)
             }
 
             <span class="prelude-val">Some</span>(f) <span class="kw">if </span>f.is_plugin_fn() =&gt; {
                 <span class="kw">let </span>f = f.get_plugin_fn().expect(<span class="string">&quot;plugin function&quot;</span>);
-                <span class="kw">let </span>context = <span class="kw">if </span>f.has_context() {
-                    <span class="prelude-val">Some</span>((<span class="self">self</span>, fn_name, module.id(), <span class="kw-2">&amp;*</span>global, pos).into())
-                } <span class="kw">else </span>{
-                    <span class="prelude-val">None
-                </span>};
+                <span class="kw">let </span>context = f
+                    .has_context()
+                    .then(|| (<span class="self">self</span>, fn_name, module.id(), <span class="kw-2">&amp;*</span>global, pos).into());
                 <span class="kw">if </span>!f.is_pure() &amp;&amp; !args.is_empty() &amp;&amp; args[<span class="number">0</span>].is_read_only() {
                     <span class="prelude-val">Err</span>(ERR::ErrorNonPureMethodCallOnConstant(fn_name.to_string(), pos).into())
                 } <span class="kw">else </span>{
@@ -3113,29 +3239,27 @@
 
             <span class="prelude-val">Some</span>(f) <span class="kw">if </span>f.is_native() =&gt; {
                 <span class="kw">let </span>func = f.get_native_fn().expect(<span class="string">&quot;native function&quot;</span>);
-                <span class="kw">let </span>context = <span class="kw">if </span>f.has_context() {
-                    <span class="prelude-val">Some</span>((<span class="self">self</span>, fn_name, module.id(), <span class="kw-2">&amp;*</span>global, pos).into())
-                } <span class="kw">else </span>{
-                    <span class="prelude-val">None
-                </span>};
+                <span class="kw">let </span>context = f
+                    .has_context()
+                    .then(|| (<span class="self">self</span>, fn_name, module.id(), <span class="kw-2">&amp;*</span>global, pos).into());
                 func(context, args).and_then(|r| <span class="self">self</span>.check_data_size(r, pos))
             }
 
             <span class="prelude-val">Some</span>(f) =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;unknown function type: {:?}&quot;</span>, f),
 
-            <span class="prelude-val">None </span>=&gt; {
-                <span class="kw">let </span>sig = <span class="kw">if </span>namespace.is_empty() {
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(ERR::ErrorFunctionNotFound(
+                <span class="kw">if </span>namespace.is_empty() {
                     <span class="self">self</span>.gen_fn_call_signature(fn_name, args)
                 } <span class="kw">else </span>{
                     <span class="macro">format!</span>(
                         <span class="string">&quot;{namespace}{}{}&quot;</span>,
-                        <span class="kw">crate</span>::tokenizer::Token::DoubleColon.literal_syntax(),
+                        <span class="kw">crate</span>::engine::NAMESPACE_SEPARATOR,
                         <span class="self">self</span>.gen_fn_call_signature(fn_name, args)
                     )
-                };
-
-                <span class="prelude-val">Err</span>(ERR::ErrorFunctionNotFound(sig, pos).into())
-            }
+                },
+                pos,
+            )
+            .into()),
         }
     }
 
@@ -3159,7 +3283,7 @@
         <span class="comment">// Compile the script text
         // No optimizations because we only run it once
         </span><span class="kw">let </span>ast = <span class="self">self</span>.compile_with_scope_and_optimization_level(
-            <span class="kw-2">&amp;</span>Scope::new(),
+            <span class="prelude-val">None</span>,
             [script],
             <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_optimize&quot;</span>))]
             </span>OptimizationLevel::None,
@@ -3185,6 +3309,9 @@
     <span class="doccomment">/// # Main Entry-Point (`FnCallExpr`)
     ///
     /// Evaluate a function call expression.
+    ///
+    /// This method tries to short-circuit function resolution under Fast Operators mode if the
+    /// function call is an operator.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>eval_fn_call_expr(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         global: <span class="kw-2">&amp;mut </span>GlobalRuntimeState,
@@ -3205,26 +3332,32 @@
             ..
         } = expr;
 
-        <span class="kw">let </span>op_token = op_token.clone();
+        <span class="kw">let </span>op_token = op_token.as_ref();
 
         <span class="comment">// Short-circuit native unary operator call if under Fast Operators mode
-        </span><span class="kw">if </span>op_token == <span class="prelude-val">Some</span>(Token::Bang) &amp;&amp; <span class="self">self</span>.fast_operators() &amp;&amp; args.len() == <span class="number">1 </span>{
+        </span><span class="kw">if </span><span class="self">self</span>.fast_operators() &amp;&amp; args.len() == <span class="number">1 </span>&amp;&amp; op_token == <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>Token::Bang) {
             <span class="kw">let </span><span class="kw-2">mut </span>value = <span class="self">self
                 </span>.get_arg_value(global, caches, scope, this_ptr.as_deref_mut(), <span class="kw-2">&amp;</span>args[<span class="number">0</span>])<span class="question-mark">?
                 </span>.<span class="number">0
                 </span>.flatten();
 
-            <span class="kw">return </span>value.as_bool().map(|r| (!r).into()).or_else(|<span class="kw">_</span>| {
-                <span class="kw">let </span>operand = <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>value];
-                <span class="self">self</span>.exec_fn_call(
-                    global, caches, <span class="prelude-val">None</span>, name, op_token, <span class="kw-2">*</span>hashes, operand, <span class="bool-val">false</span>, <span class="bool-val">false</span>, pos,
-                )
-                .map(|(v, ..)| v)
-            });
+            <span class="kw">return match </span>value.<span class="number">0 </span>{
+                Union::Bool(b, ..) =&gt; <span class="prelude-val">Ok</span>((!b).into()),
+                <span class="kw">_ </span>=&gt; {
+                    <span class="kw">let </span>operand = <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>value];
+                    <span class="self">self</span>.exec_fn_call(
+                        global, caches, <span class="prelude-val">None</span>, name, op_token, <span class="kw-2">*</span>hashes, operand, <span class="bool-val">false</span>, <span class="bool-val">false</span>, pos,
+                    )
+                    .map(|(v, ..)| v)
+                }
+            };
         }
 
         <span class="comment">// Short-circuit native binary operator call if under Fast Operators mode
         </span><span class="kw">if </span>op_token.is_some() &amp;&amp; <span class="self">self</span>.fast_operators() &amp;&amp; args.len() == <span class="number">2 </span>{
+            <span class="attr">#[allow(clippy::wildcard_imports)]
+            </span><span class="kw">use </span>Token::<span class="kw-2">*</span>;
+
             <span class="kw">let </span><span class="kw-2">mut </span>lhs = <span class="self">self
                 </span>.get_arg_value(global, caches, scope, this_ptr.as_deref_mut(), <span class="kw-2">&amp;</span>args[<span class="number">0</span>])<span class="question-mark">?
                 </span>.<span class="number">0
@@ -3235,19 +3368,128 @@
                 </span>.<span class="number">0
                 </span>.flatten();
 
+            <span class="comment">// For extremely simple primary data operations, do it directly
+            // to avoid the overhead of calling a function.
+            </span><span class="kw">match </span>(<span class="kw-2">&amp;</span>lhs.<span class="number">0</span>, <span class="kw-2">&amp;</span>rhs.<span class="number">0</span>) {
+                (Union::Unit(..), Union::Unit(..)) =&gt; <span class="kw">match </span>op_token.unwrap() {
+                    EqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(Dynamic::TRUE),
+                    NotEqualsTo | GreaterThan | GreaterThanEqualsTo | LessThan
+                    | LessThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(Dynamic::FALSE),
+                    <span class="kw">_ </span>=&gt; (),
+                },
+                (Union::Bool(b1, ..), Union::Bool(b2, ..)) =&gt; <span class="kw">match </span>op_token.unwrap() {
+                    EqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>b1 == <span class="kw-2">*</span>b2).into()),
+                    NotEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>b1 != <span class="kw-2">*</span>b2).into()),
+                    GreaterThan | GreaterThanEqualsTo | LessThan | LessThanEqualsTo =&gt; {
+                        <span class="kw">return </span><span class="prelude-val">Ok</span>(Dynamic::FALSE)
+                    }
+                    Pipe =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>b1 || <span class="kw-2">*</span>b2).into()),
+                    Ampersand =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>b1 &amp;&amp; <span class="kw-2">*</span>b2).into()),
+                    <span class="kw">_ </span>=&gt; (),
+                },
+                (Union::Int(n1, ..), Union::Int(n2, ..)) =&gt; {
+                    <span class="attr">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
+                    #[allow(clippy::wildcard_imports)]
+                    </span><span class="kw">use </span><span class="kw">crate</span>::packages::arithmetic::arith_basic::INT::functions::<span class="kw-2">*</span>;
+
+                    <span class="attr">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
+                    </span><span class="kw">match </span>op_token.unwrap() {
+                        EqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 == <span class="kw-2">*</span>n2).into()),
+                        NotEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 != <span class="kw-2">*</span>n2).into()),
+                        GreaterThan =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 &gt; <span class="kw-2">*</span>n2).into()),
+                        GreaterThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 &gt;= <span class="kw-2">*</span>n2).into()),
+                        LessThan =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 &lt; <span class="kw-2">*</span>n2).into()),
+                        LessThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 &lt;= <span class="kw-2">*</span>n2).into()),
+                        Plus =&gt; <span class="kw">return </span>add(<span class="kw-2">*</span>n1, <span class="kw-2">*</span>n2).map(Into::into),
+                        Minus =&gt; <span class="kw">return </span>subtract(<span class="kw-2">*</span>n1, <span class="kw-2">*</span>n2).map(Into::into),
+                        Multiply =&gt; <span class="kw">return </span>multiply(<span class="kw-2">*</span>n1, <span class="kw-2">*</span>n2).map(Into::into),
+                        Divide =&gt; <span class="kw">return </span>divide(<span class="kw-2">*</span>n1, <span class="kw-2">*</span>n2).map(Into::into),
+                        Modulo =&gt; <span class="kw">return </span>modulo(<span class="kw-2">*</span>n1, <span class="kw-2">*</span>n2).map(Into::into),
+                        <span class="kw">_ </span>=&gt; (),
+                    }
+                    <span class="attr">#[cfg(feature = <span class="string">&quot;unchecked&quot;</span>)]
+                    </span><span class="kw">match </span>op_token.unwrap() {
+                        EqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 == <span class="kw-2">*</span>n2).into()),
+                        NotEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 != <span class="kw-2">*</span>n2).into()),
+                        GreaterThan =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 &gt; <span class="kw-2">*</span>n2).into()),
+                        GreaterThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 &gt;= <span class="kw-2">*</span>n2).into()),
+                        LessThan =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 &lt; <span class="kw-2">*</span>n2).into()),
+                        LessThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 &lt;= <span class="kw-2">*</span>n2).into()),
+                        Plus =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 + <span class="kw-2">*</span>n2).into()),
+                        Minus =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 - <span class="kw-2">*</span>n2).into()),
+                        Multiply =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 * <span class="kw-2">*</span>n2).into()),
+                        Divide =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 / <span class="kw-2">*</span>n2).into()),
+                        Modulo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">*</span>n1 % <span class="kw-2">*</span>n2).into()),
+                        <span class="kw">_ </span>=&gt; (),
+                    }
+                }
+                <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
+                </span>(Union::Float(f1, ..), Union::Float(f2, ..)) =&gt; <span class="kw">match </span>op_token.unwrap() {
+                    EqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 == <span class="kw-2">**</span>f2).into()),
+                    NotEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 != <span class="kw-2">**</span>f2).into()),
+                    GreaterThan =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 &gt; <span class="kw-2">**</span>f2).into()),
+                    GreaterThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 &gt;= <span class="kw-2">**</span>f2).into()),
+                    LessThan =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 &lt; <span class="kw-2">**</span>f2).into()),
+                    LessThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 &lt;= <span class="kw-2">**</span>f2).into()),
+                    Plus =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 + <span class="kw-2">**</span>f2).into()),
+                    Minus =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 - <span class="kw-2">**</span>f2).into()),
+                    Multiply =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 * <span class="kw-2">**</span>f2).into()),
+                    Divide =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 / <span class="kw-2">**</span>f2).into()),
+                    Modulo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 % <span class="kw-2">**</span>f2).into()),
+                    <span class="kw">_ </span>=&gt; (),
+                },
+                <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
+                </span>(Union::Float(f1, ..), Union::Int(n2, ..)) =&gt; <span class="kw">match </span>op_token.unwrap() {
+                    EqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 == (<span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT)).into()),
+                    NotEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 != (<span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT)).into()),
+                    GreaterThan =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 &gt; (<span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT)).into()),
+                    GreaterThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 &gt;= (<span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT)).into()),
+                    LessThan =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 &lt; (<span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT)).into()),
+                    LessThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 &lt;= (<span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT)).into()),
+                    Plus =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 + (<span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT)).into()),
+                    Minus =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 - (<span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT)).into()),
+                    Multiply =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 * (<span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT)).into()),
+                    Divide =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 / (<span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT)).into()),
+                    Modulo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((<span class="kw-2">**</span>f1 % (<span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT)).into()),
+                    <span class="kw">_ </span>=&gt; (),
+                },
+                <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
+                </span>(Union::Int(n1, ..), Union::Float(f2, ..)) =&gt; <span class="kw">match </span>op_token.unwrap() {
+                    EqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(((<span class="kw-2">*</span>n1 <span class="kw">as </span><span class="kw">crate</span>::FLOAT) == <span class="kw-2">**</span>f2).into()),
+                    NotEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(((<span class="kw-2">*</span>n1 <span class="kw">as </span><span class="kw">crate</span>::FLOAT) != <span class="kw-2">**</span>f2).into()),
+                    GreaterThan =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(((<span class="kw-2">*</span>n1 <span class="kw">as </span><span class="kw">crate</span>::FLOAT) &gt; <span class="kw-2">**</span>f2).into()),
+                    GreaterThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(((<span class="kw-2">*</span>n1 <span class="kw">as </span><span class="kw">crate</span>::FLOAT) &gt;= <span class="kw-2">**</span>f2).into()),
+                    LessThan =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(((<span class="kw-2">*</span>n1 <span class="kw">as </span><span class="kw">crate</span>::FLOAT) &lt; <span class="kw-2">**</span>f2).into()),
+                    LessThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(((<span class="kw-2">*</span>n1 <span class="kw">as </span><span class="kw">crate</span>::FLOAT) &lt;= <span class="kw-2">**</span>f2).into()),
+                    Plus =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(((<span class="kw-2">*</span>n1 <span class="kw">as </span><span class="kw">crate</span>::FLOAT) + <span class="kw-2">**</span>f2).into()),
+                    Minus =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(((<span class="kw-2">*</span>n1 <span class="kw">as </span><span class="kw">crate</span>::FLOAT) - <span class="kw-2">**</span>f2).into()),
+                    Multiply =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(((<span class="kw-2">*</span>n1 <span class="kw">as </span><span class="kw">crate</span>::FLOAT) * <span class="kw-2">**</span>f2).into()),
+                    Divide =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(((<span class="kw-2">*</span>n1 <span class="kw">as </span><span class="kw">crate</span>::FLOAT) / <span class="kw-2">**</span>f2).into()),
+                    Modulo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(((<span class="kw-2">*</span>n1 <span class="kw">as </span><span class="kw">crate</span>::FLOAT) % <span class="kw-2">**</span>f2).into()),
+                    <span class="kw">_ </span>=&gt; (),
+                },
+                (Union::Str(s1, ..), Union::Str(s2, ..)) =&gt; <span class="kw">match </span>op_token.unwrap() {
+                    EqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((s1 == s2).into()),
+                    NotEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((s1 != s2).into()),
+                    GreaterThan =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((s1 &gt; s2).into()),
+                    GreaterThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((s1 &gt;= s2).into()),
+                    LessThan =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((s1 &lt; s2).into()),
+                    LessThanEqualsTo =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((s1 &lt;= s2).into()),
+                    <span class="kw">_ </span>=&gt; (),
+                },
+                <span class="kw">_ </span>=&gt; (),
+            }
+
             <span class="kw">let </span>operands = <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut </span>lhs, <span class="kw-2">&amp;mut </span>rhs];
 
             <span class="kw">if let </span><span class="prelude-val">Some</span>((func, need_context)) =
-                get_builtin_binary_op_fn(op_token.clone().unwrap(), operands[<span class="number">0</span>], operands[<span class="number">1</span>])
+                get_builtin_binary_op_fn(op_token.as_ref().unwrap(), operands[<span class="number">0</span>], operands[<span class="number">1</span>])
             {
-                <span class="comment">// Built-in found
-                </span><span class="macro">auto_restore! </span>{ <span class="kw">let </span>orig_level = global.level; global.level += <span class="number">1 </span>}
+                <span class="comment">// We may not need to bump the level because built-in&#39;s do not need it.
+                //auto_restore! { let orig_level = global.level; global.level += 1 }
 
-                <span class="kw">let </span>context = <span class="kw">if </span>need_context {
-                    <span class="prelude-val">Some</span>((<span class="self">self</span>, name.as_str(), <span class="prelude-val">None</span>, <span class="kw-2">&amp;*</span>global, pos).into())
-                } <span class="kw">else </span>{
-                    <span class="prelude-val">None
-                </span>};
+                </span><span class="kw">let </span>context =
+                    need_context.then(|| (<span class="self">self</span>, name.as_str(), <span class="prelude-val">None</span>, <span class="kw-2">&amp;*</span>global, pos).into());
                 <span class="kw">return </span>func(context, operands);
             }
 
@@ -3281,4 +3523,4 @@
     }
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

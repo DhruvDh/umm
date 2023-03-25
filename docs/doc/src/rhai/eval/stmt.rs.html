@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.12.0/src/eval/stmt.rs`."><title>stmt.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.13.0/src/eval/stmt.rs`."><title>stmt.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-be46fdc453a55015.css"><script src="../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -904,14 +904,89 @@
 <a href="#904" id="904">904</a>
 <a href="#905" id="905">905</a>
 <a href="#906" id="906">906</a>
+<a href="#907" id="907">907</a>
+<a href="#908" id="908">908</a>
+<a href="#909" id="909">909</a>
+<a href="#910" id="910">910</a>
+<a href="#911" id="911">911</a>
+<a href="#912" id="912">912</a>
+<a href="#913" id="913">913</a>
+<a href="#914" id="914">914</a>
+<a href="#915" id="915">915</a>
+<a href="#916" id="916">916</a>
+<a href="#917" id="917">917</a>
+<a href="#918" id="918">918</a>
+<a href="#919" id="919">919</a>
+<a href="#920" id="920">920</a>
+<a href="#921" id="921">921</a>
+<a href="#922" id="922">922</a>
+<a href="#923" id="923">923</a>
+<a href="#924" id="924">924</a>
+<a href="#925" id="925">925</a>
+<a href="#926" id="926">926</a>
+<a href="#927" id="927">927</a>
+<a href="#928" id="928">928</a>
+<a href="#929" id="929">929</a>
+<a href="#930" id="930">930</a>
+<a href="#931" id="931">931</a>
+<a href="#932" id="932">932</a>
+<a href="#933" id="933">933</a>
+<a href="#934" id="934">934</a>
+<a href="#935" id="935">935</a>
+<a href="#936" id="936">936</a>
+<a href="#937" id="937">937</a>
+<a href="#938" id="938">938</a>
+<a href="#939" id="939">939</a>
+<a href="#940" id="940">940</a>
+<a href="#941" id="941">941</a>
+<a href="#942" id="942">942</a>
+<a href="#943" id="943">943</a>
+<a href="#944" id="944">944</a>
+<a href="#945" id="945">945</a>
+<a href="#946" id="946">946</a>
+<a href="#947" id="947">947</a>
+<a href="#948" id="948">948</a>
+<a href="#949" id="949">949</a>
+<a href="#950" id="950">950</a>
+<a href="#951" id="951">951</a>
+<a href="#952" id="952">952</a>
+<a href="#953" id="953">953</a>
+<a href="#954" id="954">954</a>
+<a href="#955" id="955">955</a>
+<a href="#956" id="956">956</a>
+<a href="#957" id="957">957</a>
+<a href="#958" id="958">958</a>
+<a href="#959" id="959">959</a>
+<a href="#960" id="960">960</a>
+<a href="#961" id="961">961</a>
+<a href="#962" id="962">962</a>
+<a href="#963" id="963">963</a>
+<a href="#964" id="964">964</a>
+<a href="#965" id="965">965</a>
+<a href="#966" id="966">966</a>
+<a href="#967" id="967">967</a>
+<a href="#968" id="968">968</a>
+<a href="#969" id="969">969</a>
+<a href="#970" id="970">970</a>
+<a href="#971" id="971">971</a>
+<a href="#972" id="972">972</a>
+<a href="#973" id="973">973</a>
+<a href="#974" id="974">974</a>
+<a href="#975" id="975">975</a>
+<a href="#976" id="976">976</a>
+<a href="#977" id="977">977</a>
+<a href="#978" id="978">978</a>
+<a href="#979" id="979">979</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Module defining functions for evaluating a statement.
 
 </span><span class="kw">use super</span>::{Caches, EvalContext, GlobalRuntimeState, Target};
 <span class="kw">use </span><span class="kw">crate</span>::api::events::VarDefInfo;
 <span class="kw">use </span><span class="kw">crate</span>::ast::{
-    ASTFlags, BinaryExpr, Expr, FlowControl, OpAssignment, Stmt, SwitchCasesCollection,
+    ASTFlags, BinaryExpr, ConditionalExpr, Expr, FlowControl, OpAssignment, Stmt,
+    SwitchCasesCollection,
 };
 <span class="kw">use </span><span class="kw">crate</span>::func::{get_builtin_op_assignment_fn, get_hasher};
+<span class="kw">use </span><span class="kw">crate</span>::tokenizer::Token;
 <span class="kw">use </span><span class="kw">crate</span>::types::dynamic::{AccessMode, Union};
 <span class="kw">use crate</span>::{Dynamic, Engine, RhaiResult, RhaiResultOf, Scope, ERR, INT};
 <span class="kw">use </span>std::hash::{Hash, Hasher};
@@ -958,7 +1033,7 @@
             global.scope_level += <span class="number">1</span>;
         }
 
-        <span class="macro">auto_restore!</span>(global <span class="kw">if </span>restore_orig_state =&gt; <span class="kw">move </span>|g| {
+        <span class="macro">auto_restore! </span>{ global <span class="kw">if </span>restore_orig_state =&gt; <span class="kw">move </span>|g| {
             g.scope_level -= <span class="number">1</span>;
 
             <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
@@ -967,7 +1042,7 @@
             <span class="comment">// The impact of new local variables goes away at the end of a block
             // because any new variables introduced will go out of scope
             </span>g.always_search_scope = orig_always_search_scope;
-        });
+        }}
 
         <span class="comment">// Pop new function resolution caches at end of block
         </span><span class="macro">auto_restore! </span>{
@@ -1031,58 +1106,121 @@
             <span class="kw">return </span><span class="prelude-val">Err</span>(ERR::ErrorAssignmentToConstant(name.to_string(), pos).into());
         }
 
-        <span class="kw">if </span>op_info.is_op_assignment() {
-            <span class="kw">let </span>OpAssignment {
-                hash_op_assign,
-                hash_op,
-                op_assign,
-                op,
-                pos,
-            } = op_info;
+        <span class="kw">let </span>pos = op_info.position();
 
+        <span class="kw">if let </span><span class="prelude-val">Some</span>((hash_x, hash, op_x, op_x_str, op, op_str)) = op_info.get_op_assignment_info() {
             <span class="kw">let </span><span class="kw-2">mut </span>lock_guard = target.write_lock::&lt;Dynamic&gt;().unwrap();
+            <span class="kw">let </span><span class="kw-2">mut </span>done = <span class="bool-val">false</span>;
 
-            <span class="kw">let </span>hash = <span class="kw-2">*</span>hash_op_assign;
-            <span class="kw">let </span>args = <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut *</span>lock_guard, <span class="kw-2">&amp;mut </span>new_val];
+            <span class="comment">// Short-circuit built-in op-assignments if under Fast Operators mode
+            </span><span class="kw">if </span><span class="self">self</span>.fast_operators() {
+                <span class="attr">#[allow(clippy::wildcard_imports)]
+                </span><span class="kw">use </span>Token::<span class="kw-2">*</span>;
 
-            <span class="kw">if </span><span class="self">self</span>.fast_operators() {
-                <span class="kw">if let </span><span class="prelude-val">Some</span>((func, need_context)) =
-                    get_builtin_op_assignment_fn(op_assign.clone(), args[<span class="number">0</span>], args[<span class="number">1</span>])
-                {
-                    <span class="comment">// Built-in found
-                    </span><span class="macro">auto_restore! </span>{ <span class="kw">let </span>orig_level = global.level; global.level += <span class="number">1 </span>}
+                done = <span class="bool-val">true</span>;
 
-                    <span class="kw">let </span>context = <span class="kw">if </span>need_context {
-                        <span class="kw">let </span>op = op_assign.literal_syntax();
-                        <span class="kw">let </span>source = global.source();
-                        <span class="prelude-val">Some</span>((<span class="self">self</span>, op, source, <span class="kw-2">&amp;*</span>global, <span class="kw-2">*</span>pos).into())
-                    } <span class="kw">else </span>{
-                        <span class="prelude-val">None
-                    </span>};
-                    <span class="kw">return </span>func(context, args).map(|<span class="kw">_</span>| ());
+                <span class="comment">// For extremely simple primary data operations, do it directly
+                // to avoid the overhead of calling a function.
+                </span><span class="kw">match </span>(<span class="kw-2">&amp;mut </span>lock_guard.<span class="number">0</span>, <span class="kw-2">&amp;mut </span>new_val.<span class="number">0</span>) {
+                    (Union::Bool(b1, ..), Union::Bool(b2, ..)) =&gt; <span class="kw">match </span>op_x {
+                        AndAssign =&gt; <span class="kw-2">*</span>b1 = <span class="kw-2">*</span>b1 &amp;&amp; <span class="kw-2">*</span>b2,
+                        OrAssign =&gt; <span class="kw-2">*</span>b1 = <span class="kw-2">*</span>b1 || <span class="kw-2">*</span>b2,
+                        XOrAssign =&gt; <span class="kw-2">*</span>b1 = <span class="kw-2">*</span>b1 ^ <span class="kw-2">*</span>b2,
+                        <span class="kw">_ </span>=&gt; done = <span class="bool-val">false</span>,
+                    },
+                    (Union::Int(n1, ..), Union::Int(n2, ..)) =&gt; {
+                        <span class="attr">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
+                        #[allow(clippy::wildcard_imports)]
+                        </span><span class="kw">use </span><span class="kw">crate</span>::packages::arithmetic::arith_basic::INT::functions::<span class="kw-2">*</span>;
+
+                        <span class="attr">#[cfg(not(feature = <span class="string">&quot;unchecked&quot;</span>))]
+                        </span><span class="kw">match </span>op_x {
+                            PlusAssign =&gt; {
+                                <span class="kw-2">*</span>n1 = add(<span class="kw-2">*</span>n1, <span class="kw-2">*</span>n2).map_err(|err| err.fill_position(pos))<span class="question-mark">?
+                            </span>}
+                            MinusAssign =&gt; {
+                                <span class="kw-2">*</span>n1 = subtract(<span class="kw-2">*</span>n1, <span class="kw-2">*</span>n2).map_err(|err| err.fill_position(pos))<span class="question-mark">?
+                            </span>}
+                            MultiplyAssign =&gt; {
+                                <span class="kw-2">*</span>n1 = multiply(<span class="kw-2">*</span>n1, <span class="kw-2">*</span>n2).map_err(|err| err.fill_position(pos))<span class="question-mark">?
+                            </span>}
+                            DivideAssign =&gt; {
+                                <span class="kw-2">*</span>n1 = divide(<span class="kw-2">*</span>n1, <span class="kw-2">*</span>n2).map_err(|err| err.fill_position(pos))<span class="question-mark">?
+                            </span>}
+                            ModuloAssign =&gt; {
+                                <span class="kw-2">*</span>n1 = modulo(<span class="kw-2">*</span>n1, <span class="kw-2">*</span>n2).map_err(|err| err.fill_position(pos))<span class="question-mark">?
+                            </span>}
+                            <span class="kw">_ </span>=&gt; done = <span class="bool-val">false</span>,
+                        }
+                        <span class="attr">#[cfg(feature = <span class="string">&quot;unchecked&quot;</span>)]
+                        </span><span class="kw">match </span>op_x {
+                            PlusAssign =&gt; <span class="kw-2">*</span>n1 += <span class="kw-2">*</span>n2,
+                            MinusAssign =&gt; <span class="kw-2">*</span>n1 -= <span class="kw-2">*</span>n2,
+                            MultiplyAssign =&gt; <span class="kw-2">*</span>n1 <span class="kw-2">*</span>= <span class="kw-2">*</span>n2,
+                            DivideAssign =&gt; <span class="kw-2">*</span>n1 /= <span class="kw-2">*</span>n2,
+                            ModuloAssign =&gt; <span class="kw-2">*</span>n1 %= <span class="kw-2">*</span>n2,
+                            <span class="kw">_ </span>=&gt; done = <span class="bool-val">false</span>,
+                        }
+                    }
+                    <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
+                    </span>(Union::Float(f1, ..), Union::Float(f2, ..)) =&gt; <span class="kw">match </span>op_x {
+                        PlusAssign =&gt; <span class="kw-2">**</span>f1 += <span class="kw-2">**</span>f2,
+                        MinusAssign =&gt; <span class="kw-2">**</span>f1 -= <span class="kw-2">**</span>f2,
+                        MultiplyAssign =&gt; <span class="kw-2">**</span>f1 <span class="kw-2">*</span>= <span class="kw-2">**</span>f2,
+                        DivideAssign =&gt; <span class="kw-2">**</span>f1 /= <span class="kw-2">**</span>f2,
+                        ModuloAssign =&gt; <span class="kw-2">**</span>f1 %= <span class="kw-2">**</span>f2,
+                        <span class="kw">_ </span>=&gt; done = <span class="bool-val">false</span>,
+                    },
+                    <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
+                    </span>(Union::Float(f1, ..), Union::Int(n2, ..)) =&gt; <span class="kw">match </span>op_x {
+                        PlusAssign =&gt; <span class="kw-2">**</span>f1 += <span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT,
+                        MinusAssign =&gt; <span class="kw-2">**</span>f1 -= <span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT,
+                        MultiplyAssign =&gt; <span class="kw-2">**</span>f1 <span class="kw-2">*</span>= <span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT,
+                        DivideAssign =&gt; <span class="kw-2">**</span>f1 /= <span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT,
+                        ModuloAssign =&gt; <span class="kw-2">**</span>f1 %= <span class="kw-2">*</span>n2 <span class="kw">as </span><span class="kw">crate</span>::FLOAT,
+                        <span class="kw">_ </span>=&gt; done = <span class="bool-val">false</span>,
+                    },
+                    <span class="kw">_ </span>=&gt; done = <span class="bool-val">false</span>,
+                }
+
+                <span class="kw">if </span>!done {
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>((func, need_context)) =
+                        get_builtin_op_assignment_fn(op_x, <span class="kw-2">&amp;*</span>lock_guard, <span class="kw-2">&amp;</span>new_val)
+                    {
+                        <span class="comment">// We may not need to bump the level because built-in&#39;s do not need it.
+                        //auto_restore! { let orig_level = global.level; global.level += 1 }
+
+                        </span><span class="kw">let </span>args = <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut *</span>lock_guard, <span class="kw-2">&amp;mut </span>new_val];
+                        <span class="kw">let </span>context = need_context
+                            .then(|| (<span class="self">self</span>, op_x_str, global.source(), <span class="kw-2">&amp;*</span>global, pos).into());
+                        <span class="kw">let _ </span>= func(context, args).map_err(|err| err.fill_position(pos))<span class="question-mark">?</span>;
+                        done = <span class="bool-val">true</span>;
+                    }
                 }
             }
 
-            <span class="kw">let </span>token = <span class="prelude-val">Some</span>(op_assign.clone());
-            <span class="kw">let </span>op_assign = op_assign.literal_syntax();
+            <span class="kw">if </span>!done {
+                <span class="kw">let </span>opx = <span class="prelude-val">Some</span>(op_x);
+                <span class="kw">let </span>args = <span class="kw-2">&amp;mut </span>[<span class="kw-2">&amp;mut *</span>lock_guard, <span class="kw-2">&amp;mut </span>new_val];
 
-            <span class="kw">match </span><span class="self">self</span>.exec_native_fn_call(global, caches, op_assign, token, hash, args, <span class="bool-val">true</span>, <span class="kw-2">*</span>pos)
-            {
-                <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; (),
-                <span class="prelude-val">Err</span>(err) <span class="kw">if </span><span class="macro">matches!</span>(<span class="kw-2">*</span>err, ERR::ErrorFunctionNotFound(<span class="kw-2">ref </span>f, ..) <span class="kw">if </span>f.starts_with(op_assign)) =&gt;
+                <span class="kw">match </span><span class="self">self
+                    </span>.exec_native_fn_call(global, caches, op_x_str, opx, hash_x, args, <span class="bool-val">true</span>, pos)
                 {
-                    <span class="comment">// Expand to `var = var op rhs`
-                    </span><span class="kw">let </span>token = <span class="prelude-val">Some</span>(op.clone());
-                    <span class="kw">let </span>op = op.literal_syntax();
+                    <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; (),
+                    <span class="prelude-val">Err</span>(err) <span class="kw">if </span><span class="macro">matches!</span>(<span class="kw-2">*</span>err, ERR::ErrorFunctionNotFound(<span class="kw-2">ref </span>f, ..) <span class="kw">if </span>f.starts_with(op_x_str)) =&gt;
+                    {
+                        <span class="comment">// Expand to `var = var op rhs`
+                        </span><span class="kw">let </span>op = <span class="prelude-val">Some</span>(op);
 
-                    <span class="kw-2">*</span>args[<span class="number">0</span>] = <span class="self">self
-                        </span>.exec_native_fn_call(global, caches, op, token, <span class="kw-2">*</span>hash_op, args, <span class="bool-val">true</span>, <span class="kw-2">*</span>pos)<span class="question-mark">?
-                        </span>.<span class="number">0</span>;
+                        <span class="kw-2">*</span>args[<span class="number">0</span>] = <span class="self">self
+                            </span>.exec_native_fn_call(global, caches, op_str, op, hash, args, <span class="bool-val">true</span>, pos)<span class="question-mark">?
+                            </span>.<span class="number">0</span>;
+                    }
+                    <span class="prelude-val">Err</span>(err) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(err),
                 }
-                <span class="prelude-val">Err</span>(err) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(err),
-            }
 
-            <span class="self">self</span>.check_data_size(<span class="kw-2">&amp;*</span>args[<span class="number">0</span>], root.position())<span class="question-mark">?</span>;
+                <span class="self">self</span>.check_data_size(<span class="kw-2">&amp;*</span>args[<span class="number">0</span>], root.position())<span class="question-mark">?</span>;
+            }
         } <span class="kw">else </span>{
             <span class="comment">// Normal assignment
             </span><span class="kw">match </span>target {
@@ -1095,7 +1233,7 @@
             }
         }
 
-        target.propagate_changed_value(op_info.pos)
+        target.propagate_changed_value(pos)
     }
 
     <span class="doccomment">/// Evaluate a statement.
@@ -1112,25 +1250,21 @@
         </span><span class="kw">let </span>reset =
             <span class="self">self</span>.run_debugger_with_reset(global, caches, scope, this_ptr.as_deref_mut(), stmt)<span class="question-mark">?</span>;
         <span class="attr">#[cfg(feature = <span class="string">&quot;debugging&quot;</span>)]
-        </span><span class="macro">auto_restore!</span>(global <span class="kw">if </span><span class="prelude-val">Some</span>(reset) =&gt; <span class="kw">move </span>|g| g.debugger_mut().reset_status(reset));
+        </span><span class="macro">auto_restore! </span>{ global <span class="kw">if </span><span class="prelude-val">Some</span>(reset) =&gt; <span class="kw">move </span>|g| g.debugger_mut().reset_status(reset) }
+
+        <span class="self">self</span>.track_operation(global, stmt.position())<span class="question-mark">?</span>;
 
         <span class="comment">// Coded this way for better branch prediction.
         // Popular branches are lifted out of the `match` statement into their own branches.
 
         // Function calls should account for a relatively larger portion of statements.
         </span><span class="kw">if let </span>Stmt::FnCall(x, pos) = stmt {
-            <span class="self">self</span>.track_operation(global, stmt.position())<span class="question-mark">?</span>;
-
             <span class="kw">return </span><span class="self">self</span>.eval_fn_call_expr(global, caches, scope, this_ptr, x, <span class="kw-2">*</span>pos);
         }
 
         <span class="comment">// Then assignments.
-        // We shouldn&#39;t do this for too many variants because, soon or later, the added comparisons
-        // will cost more than the mis-predicted `match` branch.
         </span><span class="kw">if let </span>Stmt::Assignment(x, ..) = stmt {
             <span class="kw">let </span>(op_info, BinaryExpr { lhs, rhs }) = <span class="kw-2">&amp;**</span>x;
-
-            <span class="self">self</span>.track_operation(global, stmt.position())<span class="question-mark">?</span>;
 
             <span class="kw">if let </span>Expr::Variable(x, ..) = lhs {
                 <span class="kw">let </span>rhs_val = <span class="self">self
@@ -1195,7 +1329,97 @@
             }
         }
 
-        <span class="self">self</span>.track_operation(global, stmt.position())<span class="question-mark">?</span>;
+        <span class="comment">// Then variable definitions.
+        </span><span class="kw">if let </span>Stmt::Var(x, options, pos) = stmt {
+            <span class="kw">if </span>!<span class="self">self</span>.allow_shadowing() &amp;&amp; scope.contains(<span class="kw-2">&amp;</span>x.<span class="number">0</span>) {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(ERR::ErrorVariableExists(x.<span class="number">0</span>.to_string(), <span class="kw-2">*</span>pos).into());
+            }
+
+            <span class="comment">// Let/const statement
+            </span><span class="kw">let </span>(var_name, expr, index) = <span class="kw-2">&amp;**</span>x;
+
+            <span class="kw">let </span>access = <span class="kw">if </span>options.contains(ASTFlags::CONSTANT) {
+                AccessMode::ReadOnly
+            } <span class="kw">else </span>{
+                AccessMode::ReadWrite
+            };
+            <span class="kw">let </span>export = options.contains(ASTFlags::EXPORTED);
+
+            <span class="comment">// Check variable definition filter
+            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>filter) = <span class="self">self</span>.def_var_filter {
+                <span class="kw">let </span>will_shadow = scope.contains(var_name);
+                <span class="kw">let </span>is_const = access == AccessMode::ReadOnly;
+                <span class="kw">let </span>info = VarDefInfo {
+                    name: var_name,
+                    is_const,
+                    nesting_level: global.scope_level,
+                    will_shadow,
+                };
+                <span class="kw">let </span>orig_scope_len = scope.len();
+                <span class="kw">let </span>context =
+                    EvalContext::new(<span class="self">self</span>, global, caches, scope, this_ptr.as_deref_mut());
+                <span class="kw">let </span>filter_result = filter(<span class="bool-val">true</span>, info, context);
+
+                <span class="kw">if </span>orig_scope_len != scope.len() {
+                    <span class="comment">// The scope is changed, always search from now on
+                    </span>global.always_search_scope = <span class="bool-val">true</span>;
+                }
+
+                <span class="kw">if </span>!filter_result<span class="question-mark">? </span>{
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(ERR::ErrorForbiddenVariable(var_name.to_string(), <span class="kw-2">*</span>pos).into());
+                }
+            }
+
+            <span class="comment">// Evaluate initial value
+            </span><span class="kw">let </span><span class="kw-2">mut </span>value = <span class="self">self
+                </span>.eval_expr(global, caches, scope, this_ptr, expr)<span class="question-mark">?
+                </span>.flatten()
+                .intern_string(<span class="self">self</span>);
+
+            <span class="kw">let </span>_alias = <span class="kw">if </span>!rewind_scope {
+                <span class="comment">// Put global constants into global module
+                </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+                #[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+                </span><span class="kw">if </span>global.scope_level == <span class="number">0
+                    </span>&amp;&amp; access == AccessMode::ReadOnly
+                    &amp;&amp; global.lib.iter().any(|m| !m.is_empty())
+                {
+                    <span class="kw">crate</span>::func::locked_write(global.constants.get_or_insert_with(|| {
+                        <span class="kw">crate</span>::Shared::new(<span class="kw">crate</span>::Locked::new(std::collections::BTreeMap::new()))
+                    }))
+                    .insert(var_name.name.clone(), value.clone());
+                }
+
+                <span class="kw">if </span>export {
+                    <span class="prelude-val">Some</span>(var_name)
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">None
+                </span>}
+            } <span class="kw">else if </span>export {
+                <span class="macro">unreachable!</span>(<span class="string">&quot;exported variable not on global level&quot;</span>);
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>};
+
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(index) = index {
+                value.set_access_mode(access);
+                <span class="kw-2">*</span>scope.get_mut_by_index(scope.len() - index.get()) = value;
+            } <span class="kw">else </span>{
+                scope.push_entry(var_name.name.clone(), access, value);
+            }
+
+            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(alias) = _alias {
+                scope.add_alias_by_index(scope.len() - <span class="number">1</span>, alias.as_str().into());
+            }
+
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(Dynamic::UNIT);
+        }
+
+        <span class="comment">// Stop merging branches here!
+        // We shouldn&#39;t lift out too many variants because, soon or later, the added comparisons
+        // will cost more than the mis-predicted `match` branch.
+        </span><span class="self">Self</span>::black_box();
 
         <span class="kw">match </span>stmt {
             <span class="comment">// No-op
@@ -1207,9 +1431,12 @@
                 .map(Dynamic::flatten),
 
             <span class="comment">// Block scope
-            </span>Stmt::Block(statements, ..) <span class="kw">if </span>statements.is_empty() =&gt; <span class="prelude-val">Ok</span>(Dynamic::UNIT),
-            Stmt::Block(statements, ..) =&gt; {
-                <span class="self">self</span>.eval_stmt_block(global, caches, scope, this_ptr, statements, <span class="bool-val">true</span>)
+            </span>Stmt::Block(statements, ..) =&gt; {
+                <span class="kw">if </span>statements.is_empty() {
+                    <span class="prelude-val">Ok</span>(Dynamic::UNIT)
+                } <span class="kw">else </span>{
+                    <span class="self">self</span>.eval_stmt_block(global, caches, scope, this_ptr, statements, <span class="bool-val">true</span>)
+                }
             }
 
             <span class="comment">// If statement
@@ -1225,12 +1452,14 @@
                     </span>.as_bool()
                     .map_err(|typ| <span class="self">self</span>.make_type_mismatch_err::&lt;bool&gt;(typ, expr.position()))<span class="question-mark">?</span>;
 
-                <span class="kw">if </span>guard_val &amp;&amp; !if_block.is_empty() {
-                    <span class="self">self</span>.eval_stmt_block(global, caches, scope, this_ptr, if_block, <span class="bool-val">true</span>)
-                } <span class="kw">else if </span>!guard_val &amp;&amp; !else_block.is_empty() {
-                    <span class="self">self</span>.eval_stmt_block(global, caches, scope, this_ptr, else_block, <span class="bool-val">true</span>)
-                } <span class="kw">else </span>{
-                    <span class="prelude-val">Ok</span>(Dynamic::UNIT)
+                <span class="kw">match </span>guard_val {
+                    <span class="bool-val">true </span><span class="kw">if </span>!if_block.is_empty() =&gt; {
+                        <span class="self">self</span>.eval_stmt_block(global, caches, scope, this_ptr, if_block, <span class="bool-val">true</span>)
+                    }
+                    <span class="bool-val">false </span><span class="kw">if </span>!else_block.is_empty() =&gt; {
+                        <span class="self">self</span>.eval_stmt_block(global, caches, scope, this_ptr, else_block, <span class="bool-val">true</span>)
+                    }
+                    <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(Dynamic::UNIT),
                 }
             }
 
@@ -1257,7 +1486,7 @@
 
                     <span class="comment">// First check hashes
                     </span><span class="kw">if let </span><span class="prelude-val">Some</span>(case_blocks_list) = cases.get(<span class="kw-2">&amp;</span>hash) {
-                        <span class="macro">assert!</span>(!case_blocks_list.is_empty());
+                        <span class="macro">debug_assert!</span>(!case_blocks_list.is_empty());
 
                         <span class="kw">for </span><span class="kw-2">&amp;</span>index <span class="kw">in </span>case_blocks_list {
                             <span class="kw">let </span>block = <span class="kw-2">&amp;</span>expressions[index];
@@ -1277,15 +1506,13 @@
                                 <span class="kw">break</span>;
                             }
                         }
-                    } <span class="kw">else if </span>value.is_int() &amp;&amp; !ranges.is_empty() {
+                    } <span class="kw">else if </span>!ranges.is_empty() {
                         <span class="comment">// Then check integer ranges
-                        </span><span class="kw">let </span>value = value.as_int().expect(<span class="string">&quot;`INT`&quot;</span>);
+                        </span><span class="kw">for </span>r <span class="kw">in </span>ranges.iter().filter(|r| r.contains(<span class="kw-2">&amp;</span>value)) {
+                            <span class="kw">let </span>ConditionalExpr { condition, expr } = <span class="kw-2">&amp;</span>expressions[r.index()];
 
-                        <span class="kw">for </span>r <span class="kw">in </span>ranges.iter().filter(|r| r.contains(value)) {
-                            <span class="kw">let </span>block = <span class="kw-2">&amp;</span>expressions[r.index()];
-
-                            <span class="kw">let </span>cond_result = <span class="kw">match </span>block.condition {
-                                Expr::BoolConstant(b, ..) =&gt; b,
+                            <span class="kw">let </span>cond_result = <span class="kw">match </span>condition {
+                                Expr::BoolConstant(b, ..) =&gt; <span class="kw-2">*</span>b,
                                 <span class="kw-2">ref </span>c =&gt; <span class="self">self
                                     </span>.eval_expr(global, caches, scope, this_ptr.as_deref_mut(), c)<span class="question-mark">?
                                     </span>.as_bool()
@@ -1295,7 +1522,7 @@
                             };
 
                             <span class="kw">if </span>cond_result {
-                                result = <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>block.expr);
+                                result = <span class="prelude-val">Some</span>(expr);
                                 <span class="kw">break</span>;
                             }
                         }
@@ -1435,12 +1662,10 @@
                 </span><span class="macro">auto_restore! </span>{ scope =&gt; rewind; <span class="kw">let </span>orig_scope_len = scope.len(); }
 
                 <span class="comment">// Add the loop variables
-                </span><span class="kw">let </span>counter_index = <span class="kw">if </span>counter.is_empty() {
-                    usize::MAX
-                } <span class="kw">else </span>{
+                </span><span class="kw">let </span>counter_index = (!counter.is_empty()).then(|| {
                     scope.push(counter.name.clone(), <span class="number">0 </span><span class="kw">as </span>INT);
                     scope.len() - <span class="number">1
-                </span>};
+                </span>});
 
                 scope.push(var_name.name.clone(), ());
                 <span class="kw">let </span>index = scope.len() - <span class="number">1</span>;
@@ -1449,7 +1674,7 @@
 
                 <span class="kw">for </span>(x, iter_value) <span class="kw">in </span>iter_func(iter_obj).enumerate() {
                     <span class="comment">// Increment counter
-                    </span><span class="kw">if </span>counter_index &lt; usize::MAX {
+                    </span><span class="kw">if let </span><span class="prelude-val">Some</span>(counter_index) = counter_index {
                         <span class="comment">// As the variable increments from 0, this should always work
                         // since any overflow will first be caught below.
                         </span><span class="kw">let </span>index_value = x <span class="kw">as </span>INT;
@@ -1609,87 +1834,6 @@
             <span class="comment">// Empty return
             </span>Stmt::Return(<span class="prelude-val">None</span>, .., pos) =&gt; <span class="prelude-val">Err</span>(ERR::Return(Dynamic::UNIT, <span class="kw-2">*</span>pos).into()),
 
-            <span class="comment">// Let/const statement - shadowing disallowed
-            </span>Stmt::Var(x, .., pos) <span class="kw">if </span>!<span class="self">self</span>.allow_shadowing() &amp;&amp; scope.contains(<span class="kw-2">&amp;</span>x.<span class="number">0</span>) =&gt; {
-                <span class="prelude-val">Err</span>(ERR::ErrorVariableExists(x.<span class="number">0</span>.to_string(), <span class="kw-2">*</span>pos).into())
-            }
-            <span class="comment">// Let/const statement
-            </span>Stmt::Var(x, options, pos) =&gt; {
-                <span class="kw">let </span>(var_name, expr, index) = <span class="kw-2">&amp;**</span>x;
-
-                <span class="kw">let </span>access = <span class="kw">if </span>options.contains(ASTFlags::CONSTANT) {
-                    AccessMode::ReadOnly
-                } <span class="kw">else </span>{
-                    AccessMode::ReadWrite
-                };
-                <span class="kw">let </span>export = options.contains(ASTFlags::EXPORTED);
-
-                <span class="comment">// Check variable definition filter
-                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>filter) = <span class="self">self</span>.def_var_filter {
-                    <span class="kw">let </span>will_shadow = scope.contains(var_name);
-                    <span class="kw">let </span>is_const = access == AccessMode::ReadOnly;
-                    <span class="kw">let </span>info = VarDefInfo {
-                        name: var_name,
-                        is_const,
-                        nesting_level: global.scope_level,
-                        will_shadow,
-                    };
-                    <span class="kw">let </span>context =
-                        EvalContext::new(<span class="self">self</span>, global, caches, scope, this_ptr.as_deref_mut());
-
-                    <span class="kw">if </span>!filter(<span class="bool-val">true</span>, info, context)<span class="question-mark">? </span>{
-                        <span class="kw">return </span><span class="prelude-val">Err</span>(ERR::ErrorForbiddenVariable(var_name.to_string(), <span class="kw-2">*</span>pos).into());
-                    }
-                }
-
-                <span class="comment">// Evaluate initial value
-                </span><span class="kw">let </span><span class="kw-2">mut </span>value = <span class="self">self
-                    </span>.eval_expr(global, caches, scope, this_ptr, expr)<span class="question-mark">?
-                    </span>.flatten()
-                    .intern_string(<span class="self">self</span>);
-
-                <span class="kw">let </span>_alias = <span class="kw">if </span>!rewind_scope {
-                    <span class="comment">// Put global constants into global module
-                    </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                    #[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-                    </span><span class="kw">if </span>global.scope_level == <span class="number">0
-                        </span>&amp;&amp; access == AccessMode::ReadOnly
-                        &amp;&amp; global.lib.iter().any(|m| !m.is_empty())
-                    {
-                        <span class="kw">crate</span>::func::locked_write(global.constants.get_or_insert_with(|| {
-                            <span class="kw">crate</span>::Shared::new(
-                                <span class="kw">crate</span>::Locked::new(std::collections::BTreeMap::new()),
-                            )
-                        }))
-                        .insert(var_name.name.clone(), value.clone());
-                    }
-
-                    <span class="kw">if </span>export {
-                        <span class="prelude-val">Some</span>(var_name)
-                    } <span class="kw">else </span>{
-                        <span class="prelude-val">None
-                    </span>}
-                } <span class="kw">else if </span>export {
-                    <span class="macro">unreachable!</span>(<span class="string">&quot;exported variable not on global level&quot;</span>);
-                } <span class="kw">else </span>{
-                    <span class="prelude-val">None
-                </span>};
-
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(index) = index {
-                    value.set_access_mode(access);
-                    <span class="kw-2">*</span>scope.get_mut_by_index(scope.len() - index.get()) = value;
-                } <span class="kw">else </span>{
-                    scope.push_entry(var_name.name.clone(), access, value);
-                }
-
-                <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(alias) = _alias {
-                    scope.add_alias_by_index(scope.len() - <span class="number">1</span>, alias.as_str().into());
-                }
-
-                <span class="prelude-val">Ok</span>(Dynamic::UNIT)
-            }
-
             <span class="comment">// Import statement
             </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
             </span>Stmt::Import(x, _pos) =&gt; {
@@ -1714,14 +1858,16 @@
 
                 <span class="kw">let </span>module = resolver
                     .as_ref()
-                    .and_then(|r| <span class="kw">match </span>r.resolve_raw(<span class="self">self</span>, global, <span class="kw-2">&amp;</span>path, path_pos) {
-                        <span class="prelude-val">Err</span>(err) <span class="kw">if </span><span class="macro">matches!</span>(<span class="kw-2">*</span>err, ERR::ErrorModuleNotFound(..)) =&gt; <span class="prelude-val">None</span>,
-                        result =&gt; <span class="prelude-val">Some</span>(result),
-                    })
+                    .and_then(
+                        |r| <span class="kw">match </span>r.resolve_raw(<span class="self">self</span>, global, scope, <span class="kw-2">&amp;</span>path, path_pos) {
+                            <span class="prelude-val">Err</span>(err) <span class="kw">if </span><span class="macro">matches!</span>(<span class="kw-2">*</span>err, ERR::ErrorModuleNotFound(..)) =&gt; <span class="prelude-val">None</span>,
+                            result =&gt; <span class="prelude-val">Some</span>(result),
+                        },
+                    )
                     .or_else(|| {
                         <span class="prelude-val">Some</span>(
-                            <span class="self">self</span>.module_resolver
-                                .resolve_raw(<span class="self">self</span>, global, <span class="kw-2">&amp;</span>path, path_pos),
+                            <span class="self">self</span>.module_resolver()
+                                .resolve_raw(<span class="self">self</span>, global, scope, <span class="kw-2">&amp;</span>path, path_pos),
                         )
                     })
                     .unwrap_or_else(|| {
@@ -1811,4 +1957,4 @@
     }
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

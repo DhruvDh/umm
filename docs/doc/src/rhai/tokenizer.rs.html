@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.12.0/src/tokenizer.rs`."><title>tokenizer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.13.0/src/tokenizer.rs`."><title>tokenizer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../static.files/ayu-be46fdc453a55015.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2384,14 +2384,262 @@
 <a href="#2384" id="2384">2384</a>
 <a href="#2385" id="2385">2385</a>
 <a href="#2386" id="2386">2386</a>
+<a href="#2387" id="2387">2387</a>
+<a href="#2388" id="2388">2388</a>
+<a href="#2389" id="2389">2389</a>
+<a href="#2390" id="2390">2390</a>
+<a href="#2391" id="2391">2391</a>
+<a href="#2392" id="2392">2392</a>
+<a href="#2393" id="2393">2393</a>
+<a href="#2394" id="2394">2394</a>
+<a href="#2395" id="2395">2395</a>
+<a href="#2396" id="2396">2396</a>
+<a href="#2397" id="2397">2397</a>
+<a href="#2398" id="2398">2398</a>
+<a href="#2399" id="2399">2399</a>
+<a href="#2400" id="2400">2400</a>
+<a href="#2401" id="2401">2401</a>
+<a href="#2402" id="2402">2402</a>
+<a href="#2403" id="2403">2403</a>
+<a href="#2404" id="2404">2404</a>
+<a href="#2405" id="2405">2405</a>
+<a href="#2406" id="2406">2406</a>
+<a href="#2407" id="2407">2407</a>
+<a href="#2408" id="2408">2408</a>
+<a href="#2409" id="2409">2409</a>
+<a href="#2410" id="2410">2410</a>
+<a href="#2411" id="2411">2411</a>
+<a href="#2412" id="2412">2412</a>
+<a href="#2413" id="2413">2413</a>
+<a href="#2414" id="2414">2414</a>
+<a href="#2415" id="2415">2415</a>
+<a href="#2416" id="2416">2416</a>
+<a href="#2417" id="2417">2417</a>
+<a href="#2418" id="2418">2418</a>
+<a href="#2419" id="2419">2419</a>
+<a href="#2420" id="2420">2420</a>
+<a href="#2421" id="2421">2421</a>
+<a href="#2422" id="2422">2422</a>
+<a href="#2423" id="2423">2423</a>
+<a href="#2424" id="2424">2424</a>
+<a href="#2425" id="2425">2425</a>
+<a href="#2426" id="2426">2426</a>
+<a href="#2427" id="2427">2427</a>
+<a href="#2428" id="2428">2428</a>
+<a href="#2429" id="2429">2429</a>
+<a href="#2430" id="2430">2430</a>
+<a href="#2431" id="2431">2431</a>
+<a href="#2432" id="2432">2432</a>
+<a href="#2433" id="2433">2433</a>
+<a href="#2434" id="2434">2434</a>
+<a href="#2435" id="2435">2435</a>
+<a href="#2436" id="2436">2436</a>
+<a href="#2437" id="2437">2437</a>
+<a href="#2438" id="2438">2438</a>
+<a href="#2439" id="2439">2439</a>
+<a href="#2440" id="2440">2440</a>
+<a href="#2441" id="2441">2441</a>
+<a href="#2442" id="2442">2442</a>
+<a href="#2443" id="2443">2443</a>
+<a href="#2444" id="2444">2444</a>
+<a href="#2445" id="2445">2445</a>
+<a href="#2446" id="2446">2446</a>
+<a href="#2447" id="2447">2447</a>
+<a href="#2448" id="2448">2448</a>
+<a href="#2449" id="2449">2449</a>
+<a href="#2450" id="2450">2450</a>
+<a href="#2451" id="2451">2451</a>
+<a href="#2452" id="2452">2452</a>
+<a href="#2453" id="2453">2453</a>
+<a href="#2454" id="2454">2454</a>
+<a href="#2455" id="2455">2455</a>
+<a href="#2456" id="2456">2456</a>
+<a href="#2457" id="2457">2457</a>
+<a href="#2458" id="2458">2458</a>
+<a href="#2459" id="2459">2459</a>
+<a href="#2460" id="2460">2460</a>
+<a href="#2461" id="2461">2461</a>
+<a href="#2462" id="2462">2462</a>
+<a href="#2463" id="2463">2463</a>
+<a href="#2464" id="2464">2464</a>
+<a href="#2465" id="2465">2465</a>
+<a href="#2466" id="2466">2466</a>
+<a href="#2467" id="2467">2467</a>
+<a href="#2468" id="2468">2468</a>
+<a href="#2469" id="2469">2469</a>
+<a href="#2470" id="2470">2470</a>
+<a href="#2471" id="2471">2471</a>
+<a href="#2472" id="2472">2472</a>
+<a href="#2473" id="2473">2473</a>
+<a href="#2474" id="2474">2474</a>
+<a href="#2475" id="2475">2475</a>
+<a href="#2476" id="2476">2476</a>
+<a href="#2477" id="2477">2477</a>
+<a href="#2478" id="2478">2478</a>
+<a href="#2479" id="2479">2479</a>
+<a href="#2480" id="2480">2480</a>
+<a href="#2481" id="2481">2481</a>
+<a href="#2482" id="2482">2482</a>
+<a href="#2483" id="2483">2483</a>
+<a href="#2484" id="2484">2484</a>
+<a href="#2485" id="2485">2485</a>
+<a href="#2486" id="2486">2486</a>
+<a href="#2487" id="2487">2487</a>
+<a href="#2488" id="2488">2488</a>
+<a href="#2489" id="2489">2489</a>
+<a href="#2490" id="2490">2490</a>
+<a href="#2491" id="2491">2491</a>
+<a href="#2492" id="2492">2492</a>
+<a href="#2493" id="2493">2493</a>
+<a href="#2494" id="2494">2494</a>
+<a href="#2495" id="2495">2495</a>
+<a href="#2496" id="2496">2496</a>
+<a href="#2497" id="2497">2497</a>
+<a href="#2498" id="2498">2498</a>
+<a href="#2499" id="2499">2499</a>
+<a href="#2500" id="2500">2500</a>
+<a href="#2501" id="2501">2501</a>
+<a href="#2502" id="2502">2502</a>
+<a href="#2503" id="2503">2503</a>
+<a href="#2504" id="2504">2504</a>
+<a href="#2505" id="2505">2505</a>
+<a href="#2506" id="2506">2506</a>
+<a href="#2507" id="2507">2507</a>
+<a href="#2508" id="2508">2508</a>
+<a href="#2509" id="2509">2509</a>
+<a href="#2510" id="2510">2510</a>
+<a href="#2511" id="2511">2511</a>
+<a href="#2512" id="2512">2512</a>
+<a href="#2513" id="2513">2513</a>
+<a href="#2514" id="2514">2514</a>
+<a href="#2515" id="2515">2515</a>
+<a href="#2516" id="2516">2516</a>
+<a href="#2517" id="2517">2517</a>
+<a href="#2518" id="2518">2518</a>
+<a href="#2519" id="2519">2519</a>
+<a href="#2520" id="2520">2520</a>
+<a href="#2521" id="2521">2521</a>
+<a href="#2522" id="2522">2522</a>
+<a href="#2523" id="2523">2523</a>
+<a href="#2524" id="2524">2524</a>
+<a href="#2525" id="2525">2525</a>
+<a href="#2526" id="2526">2526</a>
+<a href="#2527" id="2527">2527</a>
+<a href="#2528" id="2528">2528</a>
+<a href="#2529" id="2529">2529</a>
+<a href="#2530" id="2530">2530</a>
+<a href="#2531" id="2531">2531</a>
+<a href="#2532" id="2532">2532</a>
+<a href="#2533" id="2533">2533</a>
+<a href="#2534" id="2534">2534</a>
+<a href="#2535" id="2535">2535</a>
+<a href="#2536" id="2536">2536</a>
+<a href="#2537" id="2537">2537</a>
+<a href="#2538" id="2538">2538</a>
+<a href="#2539" id="2539">2539</a>
+<a href="#2540" id="2540">2540</a>
+<a href="#2541" id="2541">2541</a>
+<a href="#2542" id="2542">2542</a>
+<a href="#2543" id="2543">2543</a>
+<a href="#2544" id="2544">2544</a>
+<a href="#2545" id="2545">2545</a>
+<a href="#2546" id="2546">2546</a>
+<a href="#2547" id="2547">2547</a>
+<a href="#2548" id="2548">2548</a>
+<a href="#2549" id="2549">2549</a>
+<a href="#2550" id="2550">2550</a>
+<a href="#2551" id="2551">2551</a>
+<a href="#2552" id="2552">2552</a>
+<a href="#2553" id="2553">2553</a>
+<a href="#2554" id="2554">2554</a>
+<a href="#2555" id="2555">2555</a>
+<a href="#2556" id="2556">2556</a>
+<a href="#2557" id="2557">2557</a>
+<a href="#2558" id="2558">2558</a>
+<a href="#2559" id="2559">2559</a>
+<a href="#2560" id="2560">2560</a>
+<a href="#2561" id="2561">2561</a>
+<a href="#2562" id="2562">2562</a>
+<a href="#2563" id="2563">2563</a>
+<a href="#2564" id="2564">2564</a>
+<a href="#2565" id="2565">2565</a>
+<a href="#2566" id="2566">2566</a>
+<a href="#2567" id="2567">2567</a>
+<a href="#2568" id="2568">2568</a>
+<a href="#2569" id="2569">2569</a>
+<a href="#2570" id="2570">2570</a>
+<a href="#2571" id="2571">2571</a>
+<a href="#2572" id="2572">2572</a>
+<a href="#2573" id="2573">2573</a>
+<a href="#2574" id="2574">2574</a>
+<a href="#2575" id="2575">2575</a>
+<a href="#2576" id="2576">2576</a>
+<a href="#2577" id="2577">2577</a>
+<a href="#2578" id="2578">2578</a>
+<a href="#2579" id="2579">2579</a>
+<a href="#2580" id="2580">2580</a>
+<a href="#2581" id="2581">2581</a>
+<a href="#2582" id="2582">2582</a>
+<a href="#2583" id="2583">2583</a>
+<a href="#2584" id="2584">2584</a>
+<a href="#2585" id="2585">2585</a>
+<a href="#2586" id="2586">2586</a>
+<a href="#2587" id="2587">2587</a>
+<a href="#2588" id="2588">2588</a>
+<a href="#2589" id="2589">2589</a>
+<a href="#2590" id="2590">2590</a>
+<a href="#2591" id="2591">2591</a>
+<a href="#2592" id="2592">2592</a>
+<a href="#2593" id="2593">2593</a>
+<a href="#2594" id="2594">2594</a>
+<a href="#2595" id="2595">2595</a>
+<a href="#2596" id="2596">2596</a>
+<a href="#2597" id="2597">2597</a>
+<a href="#2598" id="2598">2598</a>
+<a href="#2599" id="2599">2599</a>
+<a href="#2600" id="2600">2600</a>
+<a href="#2601" id="2601">2601</a>
+<a href="#2602" id="2602">2602</a>
+<a href="#2603" id="2603">2603</a>
+<a href="#2604" id="2604">2604</a>
+<a href="#2605" id="2605">2605</a>
+<a href="#2606" id="2606">2606</a>
+<a href="#2607" id="2607">2607</a>
+<a href="#2608" id="2608">2608</a>
+<a href="#2609" id="2609">2609</a>
+<a href="#2610" id="2610">2610</a>
+<a href="#2611" id="2611">2611</a>
+<a href="#2612" id="2612">2612</a>
+<a href="#2613" id="2613">2613</a>
+<a href="#2614" id="2614">2614</a>
+<a href="#2615" id="2615">2615</a>
+<a href="#2616" id="2616">2616</a>
+<a href="#2617" id="2617">2617</a>
+<a href="#2618" id="2618">2618</a>
+<a href="#2619" id="2619">2619</a>
+<a href="#2620" id="2620">2620</a>
+<a href="#2621" id="2621">2621</a>
+<a href="#2622" id="2622">2622</a>
+<a href="#2623" id="2623">2623</a>
+<a href="#2624" id="2624">2624</a>
+<a href="#2625" id="2625">2625</a>
+<a href="#2626" id="2626">2626</a>
+<a href="#2627" id="2627">2627</a>
+<a href="#2628" id="2628">2628</a>
+<a href="#2629" id="2629">2629</a>
+<a href="#2630" id="2630">2630</a>
+<a href="#2631" id="2631">2631</a>
+<a href="#2632" id="2632">2632</a>
+<a href="#2633" id="2633">2633</a>
+<a href="#2634" id="2634">2634</a>
+<a href="#2635" id="2635">2635</a>
+<a href="#2636" id="2636">2636</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Main module defining the lexer and parser.
 
-</span><span class="kw">use </span><span class="kw">crate</span>::engine::{
-    Precedence, KEYWORD_DEBUG, KEYWORD_EVAL, KEYWORD_FN_PTR, KEYWORD_FN_PTR_CALL,
-    KEYWORD_FN_PTR_CURRY, KEYWORD_IS_DEF_VAR, KEYWORD_PRINT, KEYWORD_THIS, KEYWORD_TYPE_OF,
-};
+</span><span class="kw">use </span><span class="kw">crate</span>::engine::Precedence;
 <span class="kw">use </span><span class="kw">crate</span>::func::native::OnParseTokenCallback;
 <span class="kw">use crate</span>::{Engine, Identifier, LexError, Position, SmartString, StaticVec, INT, UNSIGNED_INT};
+<span class="kw">use </span>smallvec::SmallVec;
 <span class="attr">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::{
@@ -2662,8 +2910,6 @@
     <span class="doccomment">/// End of the input stream.
     /// Used as a placeholder for the end of input.
     </span>EOF,
-    <span class="doccomment">/// Placeholder to indicate the lack of a token.
-    </span>NONE,
 }
 
 <span class="kw">impl </span>fmt::Display <span class="kw">for </span>Token {
@@ -2689,12 +2935,353 @@
             Comment(s) =&gt; f.write_str(s),
 
             EOF =&gt; f.write_str(<span class="string">&quot;{EOF}&quot;</span>),
-            NONE =&gt; f.write_str(<span class="string">&quot;{NONE}&quot;</span>),
 
             token =&gt; f.write_str(token.literal_syntax()),
         }
     }
 }
+
+<span class="comment">// Table-driven keyword recognizer generated by GNU `gperf` on the file `tools/keywords.txt`.
+//
+// When adding new keywords, make sure to update `tools/keywords.txt` and re-generate this.
+
+</span><span class="kw">const </span>MIN_KEYWORD_LEN: usize = <span class="number">1</span>;
+<span class="kw">const </span>MAX_KEYWORD_LEN: usize = <span class="number">8</span>;
+<span class="kw">const </span>MIN_KEYWORD_HASH_VALUE: usize = <span class="number">1</span>;
+<span class="kw">const </span>MAX_KEYWORD_HASH_VALUE: usize = <span class="number">152</span>;
+
+<span class="kw">static </span>KEYWORD_ASSOC_VALUES: [u8; <span class="number">257</span>] = [
+    <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>,
+    <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">115</span>, <span class="number">153</span>, <span class="number">100</span>, <span class="number">153</span>, <span class="number">110</span>,
+    <span class="number">105</span>, <span class="number">40</span>, <span class="number">80</span>, <span class="number">2</span>, <span class="number">20</span>, <span class="number">25</span>, <span class="number">125</span>, <span class="number">95</span>, <span class="number">15</span>, <span class="number">40</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">55</span>,
+    <span class="number">35</span>, <span class="number">10</span>, <span class="number">5</span>, <span class="number">0</span>, <span class="number">30</span>, <span class="number">110</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>,
+    <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">120</span>, <span class="number">105</span>, <span class="number">100</span>, <span class="number">85</span>, <span class="number">90</span>, <span class="number">153</span>, <span class="number">125</span>, <span class="number">5</span>,
+    <span class="number">0</span>, <span class="number">125</span>, <span class="number">35</span>, <span class="number">10</span>, <span class="number">100</span>, <span class="number">153</span>, <span class="number">20</span>, <span class="number">0</span>, <span class="number">153</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">45</span>, <span class="number">55</span>, <span class="number">0</span>, <span class="number">153</span>, <span class="number">50</span>, <span class="number">55</span>, <span class="number">5</span>, <span class="number">0</span>, <span class="number">153</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">35</span>, <span class="number">153</span>,
+    <span class="number">45</span>, <span class="number">50</span>, <span class="number">30</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>,
+    <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>,
+    <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>,
+    <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>,
+    <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>,
+    <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>,
+    <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>, <span class="number">153</span>,
+    <span class="number">153</span>,
+];
+<span class="kw">static </span>KEYWORDS_LIST: [(<span class="kw-2">&amp;</span>str, Token); <span class="number">153</span>] = [
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&gt;&quot;</span>, Token::GreaterThan),
+    (<span class="string">&quot;&gt;=&quot;</span>, Token::GreaterThanEqualsTo),
+    (<span class="string">&quot;)&quot;</span>, Token::RightParen),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;const&quot;</span>, Token::Const),
+    (<span class="string">&quot;=&quot;</span>, Token::Equals),
+    (<span class="string">&quot;==&quot;</span>, Token::EqualsTo),
+    (<span class="string">&quot;continue&quot;</span>, Token::Continue),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;catch&quot;</span>, Token::Catch),
+    (<span class="string">&quot;&lt;&quot;</span>, Token::LessThan),
+    (<span class="string">&quot;&lt;=&quot;</span>, Token::LessThanEqualsTo),
+    (<span class="string">&quot;for&quot;</span>, Token::For),
+    (<span class="string">&quot;loop&quot;</span>, Token::Loop),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;.&quot;</span>, Token::Period),
+    (<span class="string">&quot;&lt;&lt;&quot;</span>, Token::LeftShift),
+    (<span class="string">&quot;&lt;&lt;=&quot;</span>, Token::LeftShiftAssign),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;false&quot;</span>, Token::False),
+    (<span class="string">&quot;*&quot;</span>, Token::Multiply),
+    (<span class="string">&quot;*=&quot;</span>, Token::MultiplyAssign),
+    (<span class="string">&quot;let&quot;</span>, Token::Let),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;while&quot;</span>, Token::While),
+    (<span class="string">&quot;+&quot;</span>, Token::Plus),
+    (<span class="string">&quot;+=&quot;</span>, Token::PlusAssign),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;throw&quot;</span>, Token::Throw),
+    (<span class="string">&quot;}&quot;</span>, Token::RightBrace),
+    (<span class="string">&quot;&gt;&gt;&quot;</span>, Token::RightShift),
+    (<span class="string">&quot;&gt;&gt;=&quot;</span>, Token::RightShiftAssign),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;;&quot;</span>, Token::SemiColon),
+    (<span class="string">&quot;=&gt;&quot;</span>, Token::DoubleArrow),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;else&quot;</span>, Token::Else),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;/&quot;</span>, Token::Divide),
+    (<span class="string">&quot;/=&quot;</span>, Token::DivideAssign),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;{&quot;</span>, Token::LeftBrace),
+    (<span class="string">&quot;**&quot;</span>, Token::PowerOf),
+    (<span class="string">&quot;**=&quot;</span>, Token::PowerOfAssign),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;|&quot;</span>, Token::Pipe),
+    (<span class="string">&quot;|=&quot;</span>, Token::OrAssign),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;:&quot;</span>, Token::Colon),
+    (<span class="string">&quot;..&quot;</span>, Token::ExclusiveRange),
+    (<span class="string">&quot;..=&quot;</span>, Token::InclusiveRange),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;until&quot;</span>, Token::Until),
+    (<span class="string">&quot;switch&quot;</span>, Token::Switch),
+    <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+    </span>(<span class="string">&quot;private&quot;</span>, Token::Private),
+    <span class="attr">#[cfg(feature = <span class="string">&quot;no_function&quot;</span>)]
+    </span>(<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;try&quot;</span>, Token::Try),
+    (<span class="string">&quot;true&quot;</span>, Token::True),
+    (<span class="string">&quot;break&quot;</span>, Token::Break),
+    (<span class="string">&quot;return&quot;</span>, Token::Return),
+    <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+    </span>(<span class="string">&quot;fn&quot;</span>, Token::Fn),
+    <span class="attr">#[cfg(feature = <span class="string">&quot;no_function&quot;</span>)]
+    </span>(<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+    </span>(<span class="string">&quot;import&quot;</span>, Token::Import),
+    <span class="attr">#[cfg(feature = <span class="string">&quot;no_module&quot;</span>)]
+    </span>(<span class="string">&quot;&quot;</span>, Token::EOF),
+    <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
+    </span>(<span class="string">&quot;?.&quot;</span>, Token::Elvis),
+    <span class="attr">#[cfg(feature = <span class="string">&quot;no_object&quot;</span>)]
+    </span>(<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+    </span>(<span class="string">&quot;export&quot;</span>, Token::Export),
+    <span class="attr">#[cfg(feature = <span class="string">&quot;no_module&quot;</span>)]
+    </span>(<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;in&quot;</span>, Token::In),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;(&quot;</span>, Token::LeftParen),
+    (<span class="string">&quot;||&quot;</span>, Token::Or),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;^&quot;</span>, Token::XOr),
+    (<span class="string">&quot;^=&quot;</span>, Token::XOrAssign),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;_&quot;</span>, Token::Underscore),
+    (<span class="string">&quot;::&quot;</span>, Token::DoubleColon),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;-&quot;</span>, Token::Minus),
+    (<span class="string">&quot;-=&quot;</span>, Token::MinusAssign),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;]&quot;</span>, Token::RightBracket),
+    (<span class="string">&quot;()&quot;</span>, Token::Unit),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&amp;&quot;</span>, Token::Ampersand),
+    (<span class="string">&quot;&amp;=&quot;</span>, Token::AndAssign),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;%&quot;</span>, Token::Modulo),
+    (<span class="string">&quot;%=&quot;</span>, Token::ModuloAssign),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;!&quot;</span>, Token::Bang),
+    (<span class="string">&quot;!=&quot;</span>, Token::NotEqualsTo),
+    (<span class="string">&quot;!in&quot;</span>, Token::NotIn),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;[&quot;</span>, Token::LeftBracket),
+    (<span class="string">&quot;if&quot;</span>, Token::If),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;,Token::&quot;</span>, Token::Comma),
+    (<span class="string">&quot;do&quot;</span>, Token::Do),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+    </span>(<span class="string">&quot;as&quot;</span>, Token::As),
+    <span class="attr">#[cfg(feature = <span class="string">&quot;no_module&quot;</span>)]
+    </span>(<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
+    </span>(<span class="string">&quot;?[&quot;</span>, Token::QuestionBracket),
+    <span class="attr">#[cfg(feature = <span class="string">&quot;no_index&quot;</span>)]
+    </span>(<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;??&quot;</span>, Token::DoubleQuestion),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&amp;&amp;&quot;</span>, Token::And),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;&quot;</span>, Token::EOF),
+    (<span class="string">&quot;#{&quot;</span>, Token::MapStart),
+];
+
+<span class="comment">// Table-driven reserved symbol recognizer generated by GNU `gperf` on the file `tools/reserved.txt`.
+//
+// When adding new reserved symbols, make sure to update `tools/reserved.txt` and re-generate this.
+
+</span><span class="kw">const </span>MIN_RESERVED_LEN: usize = <span class="number">1</span>;
+<span class="kw">const </span>MAX_RESERVED_LEN: usize = <span class="number">10</span>;
+<span class="kw">const </span>MIN_RESERVED_HASH_VALUE: usize = <span class="number">1</span>;
+<span class="kw">const </span>MAX_RESERVED_HASH_VALUE: usize = <span class="number">112</span>;
+
+<span class="kw">static </span>RESERVED_ASSOC_VALUES: [u8; <span class="number">256</span>] = [
+    <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>,
+    <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">35</span>, <span class="number">113</span>, <span class="number">45</span>, <span class="number">25</span>, <span class="number">113</span>,
+    <span class="number">113</span>, <span class="number">113</span>, <span class="number">60</span>, <span class="number">55</span>, <span class="number">50</span>, <span class="number">50</span>, <span class="number">113</span>, <span class="number">15</span>, <span class="number">0</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>,
+    <span class="number">10</span>, <span class="number">85</span>, <span class="number">45</span>, <span class="number">5</span>, <span class="number">55</span>, <span class="number">50</span>, <span class="number">5</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">85</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>,
+    <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">35</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">55</span>, <span class="number">113</span>, <span class="number">10</span>, <span class="number">40</span>,
+    <span class="number">5</span>, <span class="number">0</span>, <span class="number">5</span>, <span class="number">35</span>, <span class="number">10</span>, <span class="number">5</span>, <span class="number">0</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">20</span>, <span class="number">25</span>, <span class="number">5</span>, <span class="number">45</span>, <span class="number">0</span>, <span class="number">113</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">15</span>, <span class="number">30</span>, <span class="number">20</span>, <span class="number">25</span>, <span class="number">20</span>, <span class="number">113</span>, <span class="number">113</span>,
+    <span class="number">20</span>, <span class="number">113</span>, <span class="number">0</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>,
+    <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>,
+    <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>,
+    <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>,
+    <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>,
+    <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>,
+    <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>, <span class="number">113</span>,
+];
+<span class="kw">static </span>RESERVED_LIST: [(<span class="kw-2">&amp;</span>str, bool, bool, bool); <span class="number">113</span>] = [
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;~&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;is&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;...&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;print&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;@&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;private&quot;</span>, <span class="macro">cfg!</span>(feature = <span class="string">&quot;no_function&quot;</span>), <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;this&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;thread&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;as&quot;</span>, <span class="macro">cfg!</span>(feature = <span class="string">&quot;no_module&quot;</span>), <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;spawn&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;static&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;:=&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;===&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;case&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;super&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;shared&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;package&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;use&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;with&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;curry&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>),
+    (<span class="string">&quot;$&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;type_of&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>),
+    (<span class="string">&quot;nil&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;sync&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;yield&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;import&quot;</span>, <span class="macro">cfg!</span>(feature = <span class="string">&quot;no_module&quot;</span>), <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;--&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;new&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;exit&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;async&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;export&quot;</span>, <span class="macro">cfg!</span>(feature = <span class="string">&quot;no_module&quot;</span>), <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;!.&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;call&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>),
+    (<span class="string">&quot;match&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;fn&quot;</span>, <span class="macro">cfg!</span>(feature = <span class="string">&quot;no_function&quot;</span>), <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;var&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;null&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;await&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;#&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;default&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;!==&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;eval&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;debug&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;?&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;?.&quot;</span>, <span class="macro">cfg!</span>(feature = <span class="string">&quot;no_object&quot;</span>), <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;protected&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;go&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;goto&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;public&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&lt;-&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;is_def_fn&quot;</span>, <span class="macro">cfg!</span>(not(feature = <span class="string">&quot;no_function&quot;</span>)), <span class="bool-val">true</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;is_def_var&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&lt;|&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;::&lt;&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;-&gt;&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;module&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;|&gt;&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;void&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;#!&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;?[&quot;</span>, <span class="macro">cfg!</span>(feature = <span class="string">&quot;no_index&quot;</span>), <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;Fn&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;:;&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;++&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;*)&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;&quot;</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    (<span class="string">&quot;(*&quot;</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+];
 
 <span class="kw">impl </span>Token {
     <span class="doccomment">/// Is the token a literal symbol?
@@ -2718,7 +3305,7 @@
             </span>Custom(..) =&gt; <span class="bool-val">false</span>,
             LexError(..) | Comment(..) =&gt; <span class="bool-val">false</span>,
 
-            EOF | NONE =&gt; <span class="bool-val">false</span>,
+            EOF =&gt; <span class="bool-val">false</span>,
 
             <span class="kw">_ </span>=&gt; <span class="bool-val">true</span>,
         }
@@ -2917,101 +3504,38 @@
     }
 
     <span class="doccomment">/// Reverse lookup a symbol token from a piece of syntax.
-    </span><span class="attr">#[must_use]
+    </span><span class="attr">#[inline]
+    #[must_use]
     </span><span class="kw">pub fn </span>lookup_symbol_from_syntax(syntax: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="attr">#[allow(clippy::enum_glob_use)]
-        </span><span class="kw">use </span>Token::<span class="kw-2">*</span>;
+        <span class="comment">// This implementation is based upon a pre-calculated table generated
+        // by GNU `gperf` on the list of keywords.
+        </span><span class="kw">let </span>utf8 = syntax.as_bytes();
+        <span class="kw">let </span>len = utf8.len();
+        <span class="kw">let </span><span class="kw-2">mut </span>hash_val = len;
 
-        <span class="prelude-val">Some</span>(<span class="kw">match </span>syntax {
-            <span class="string">&quot;{&quot; </span>=&gt; LeftBrace,
-            <span class="string">&quot;}&quot; </span>=&gt; RightBrace,
-            <span class="string">&quot;(&quot; </span>=&gt; LeftParen,
-            <span class="string">&quot;)&quot; </span>=&gt; RightParen,
-            <span class="string">&quot;[&quot; </span>=&gt; LeftBracket,
-            <span class="string">&quot;]&quot; </span>=&gt; RightBracket,
-            <span class="string">&quot;()&quot; </span>=&gt; Unit,
-            <span class="string">&quot;+&quot; </span>=&gt; Plus,
-            <span class="string">&quot;-&quot; </span>=&gt; Minus,
-            <span class="string">&quot;*&quot; </span>=&gt; Multiply,
-            <span class="string">&quot;/&quot; </span>=&gt; Divide,
-            <span class="string">&quot;;&quot; </span>=&gt; SemiColon,
-            <span class="string">&quot;:&quot; </span>=&gt; Colon,
-            <span class="string">&quot;::&quot; </span>=&gt; DoubleColon,
-            <span class="string">&quot;=&gt;&quot; </span>=&gt; DoubleArrow,
-            <span class="string">&quot;_&quot; </span>=&gt; Underscore,
-            <span class="string">&quot;,&quot; </span>=&gt; Comma,
-            <span class="string">&quot;.&quot; </span>=&gt; Period,
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
-            </span><span class="string">&quot;?.&quot; </span>=&gt; Elvis,
-            <span class="string">&quot;??&quot; </span>=&gt; DoubleQuestion,
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
-            </span><span class="string">&quot;?[&quot; </span>=&gt; QuestionBracket,
-            <span class="string">&quot;..&quot; </span>=&gt; ExclusiveRange,
-            <span class="string">&quot;..=&quot; </span>=&gt; InclusiveRange,
-            <span class="string">&quot;#{&quot; </span>=&gt; MapStart,
-            <span class="string">&quot;=&quot; </span>=&gt; Equals,
-            <span class="string">&quot;true&quot; </span>=&gt; True,
-            <span class="string">&quot;false&quot; </span>=&gt; False,
-            <span class="string">&quot;let&quot; </span>=&gt; Let,
-            <span class="string">&quot;const&quot; </span>=&gt; Const,
-            <span class="string">&quot;if&quot; </span>=&gt; If,
-            <span class="string">&quot;else&quot; </span>=&gt; Else,
-            <span class="string">&quot;switch&quot; </span>=&gt; Switch,
-            <span class="string">&quot;do&quot; </span>=&gt; Do,
-            <span class="string">&quot;while&quot; </span>=&gt; While,
-            <span class="string">&quot;until&quot; </span>=&gt; Until,
-            <span class="string">&quot;loop&quot; </span>=&gt; Loop,
-            <span class="string">&quot;for&quot; </span>=&gt; For,
-            <span class="string">&quot;in&quot; </span>=&gt; In,
-            <span class="string">&quot;!in&quot; </span>=&gt; NotIn,
-            <span class="string">&quot;&lt;&quot; </span>=&gt; LessThan,
-            <span class="string">&quot;&gt;&quot; </span>=&gt; GreaterThan,
-            <span class="string">&quot;!&quot; </span>=&gt; Bang,
-            <span class="string">&quot;&lt;=&quot; </span>=&gt; LessThanEqualsTo,
-            <span class="string">&quot;&gt;=&quot; </span>=&gt; GreaterThanEqualsTo,
-            <span class="string">&quot;==&quot; </span>=&gt; EqualsTo,
-            <span class="string">&quot;!=&quot; </span>=&gt; NotEqualsTo,
-            <span class="string">&quot;|&quot; </span>=&gt; Pipe,
-            <span class="string">&quot;||&quot; </span>=&gt; Or,
-            <span class="string">&quot;&amp;&quot; </span>=&gt; Ampersand,
-            <span class="string">&quot;&amp;&amp;&quot; </span>=&gt; And,
-            <span class="string">&quot;continue&quot; </span>=&gt; Continue,
-            <span class="string">&quot;break&quot; </span>=&gt; Break,
-            <span class="string">&quot;return&quot; </span>=&gt; Return,
-            <span class="string">&quot;throw&quot; </span>=&gt; Throw,
-            <span class="string">&quot;try&quot; </span>=&gt; Try,
-            <span class="string">&quot;catch&quot; </span>=&gt; Catch,
-            <span class="string">&quot;+=&quot; </span>=&gt; PlusAssign,
-            <span class="string">&quot;-=&quot; </span>=&gt; MinusAssign,
-            <span class="string">&quot;*=&quot; </span>=&gt; MultiplyAssign,
-            <span class="string">&quot;/=&quot; </span>=&gt; DivideAssign,
-            <span class="string">&quot;&lt;&lt;=&quot; </span>=&gt; LeftShiftAssign,
-            <span class="string">&quot;&gt;&gt;=&quot; </span>=&gt; RightShiftAssign,
-            <span class="string">&quot;&amp;=&quot; </span>=&gt; AndAssign,
-            <span class="string">&quot;|=&quot; </span>=&gt; OrAssign,
-            <span class="string">&quot;^=&quot; </span>=&gt; XOrAssign,
-            <span class="string">&quot;&lt;&lt;&quot; </span>=&gt; LeftShift,
-            <span class="string">&quot;&gt;&gt;&quot; </span>=&gt; RightShift,
-            <span class="string">&quot;^&quot; </span>=&gt; XOr,
-            <span class="string">&quot;%&quot; </span>=&gt; Modulo,
-            <span class="string">&quot;%=&quot; </span>=&gt; ModuloAssign,
-            <span class="string">&quot;**&quot; </span>=&gt; PowerOf,
-            <span class="string">&quot;**=&quot; </span>=&gt; PowerOfAssign,
+        <span class="kw">if </span>!(MIN_KEYWORD_LEN..=MAX_KEYWORD_LEN).contains(<span class="kw-2">&amp;</span>len) {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
+        }
 
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-            </span><span class="string">&quot;fn&quot; </span>=&gt; Fn,
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-            </span><span class="string">&quot;private&quot; </span>=&gt; Private,
+        <span class="kw">match </span>len {
+            <span class="number">1 </span>=&gt; (),
+            <span class="kw">_ </span>=&gt; hash_val += KEYWORD_ASSOC_VALUES[(utf8[<span class="number">1</span>] <span class="kw">as </span>usize) + <span class="number">1</span>] <span class="kw">as </span>usize,
+        }
+        hash_val += KEYWORD_ASSOC_VALUES[utf8[<span class="number">0</span>] <span class="kw">as </span>usize] <span class="kw">as </span>usize;
 
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-            </span><span class="string">&quot;import&quot; </span>=&gt; Import,
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-            </span><span class="string">&quot;export&quot; </span>=&gt; Export,
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-            </span><span class="string">&quot;as&quot; </span>=&gt; As,
+        <span class="kw">if </span>!(MIN_KEYWORD_HASH_VALUE..=MAX_KEYWORD_HASH_VALUE).contains(<span class="kw-2">&amp;</span>hash_val) {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
+        }
 
-            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
-        })
+        <span class="kw">match </span>KEYWORDS_LIST[hash_val] {
+            (<span class="kw">_</span>, Token::EOF) =&gt; <span class="prelude-val">None</span>,
+            <span class="comment">// Fail early to avoid calling memcmp().
+            // Since we are already working with bytes, mind as well check the first one.
+            </span>(s, <span class="kw-2">ref </span>t) <span class="kw">if </span>s.len() == len &amp;&amp; s.as_bytes()[<span class="number">0</span>] == utf8[<span class="number">0</span>] &amp;&amp; s == syntax =&gt; {
+                <span class="prelude-val">Some</span>(t.clone())
+            }
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
+        }
     }
 
     <span class="doccomment">/// If another operator is after these, it&#39;s probably a unary operator
@@ -3320,7 +3844,7 @@
     }
 
     <span class="kw">loop </span>{
-        <span class="macro">assert!</span>(
+        <span class="macro">debug_assert!</span>(
             !verbatim || escape.is_empty(),
             <span class="string">&quot;verbatim strings should not have any escapes&quot;
         </span>);
@@ -3369,7 +3893,7 @@
         </span><span class="kw">if </span>termination_char == next_char &amp;&amp; escape.is_empty() {
             <span class="comment">// Double wrapper
             </span><span class="kw">if </span>stream.peek_next().map_or(<span class="bool-val">false</span>, |c| c == termination_char) {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>last) = state.last_token {
                     last.push(termination_char);
                 }
@@ -3511,7 +4035,7 @@
 
 <span class="doccomment">/// Consume the next character.
 </span><span class="attr">#[inline(always)]
-</span><span class="kw">fn </span>eat_next(stream: <span class="kw-2">&amp;mut </span><span class="kw">impl </span>InputStream, pos: <span class="kw-2">&amp;mut </span>Position) -&gt; <span class="prelude-ty">Option</span>&lt;char&gt; {
+</span><span class="kw">fn </span>eat_next_and_advance(stream: <span class="kw-2">&amp;mut </span><span class="kw">impl </span>InputStream, pos: <span class="kw-2">&amp;mut </span>Position) -&gt; <span class="prelude-ty">Option</span>&lt;char&gt; {
     pos.advance();
     stream.get_next()
 }
@@ -3536,7 +4060,7 @@
         <span class="kw">match </span>c {
             <span class="string">&#39;/&#39; </span>=&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(c2) = stream.peek_next().filter(|<span class="kw-2">&amp;</span>c2| c2 == <span class="string">&#39;*&#39;</span>) {
-                    eat_next(stream, pos);
+                    eat_next_and_advance(stream, pos);
                     <span class="kw">if let </span><span class="prelude-val">Some</span>(comment) = comment.as_mut() {
                         comment.push(c2);
                     }
@@ -3545,7 +4069,7 @@
             }
             <span class="string">&#39;*&#39; </span>=&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(c2) = stream.peek_next().filter(|<span class="kw-2">&amp;</span>c2| c2 == <span class="string">&#39;/&#39;</span>) {
-                    eat_next(stream, pos);
+                    eat_next_and_advance(stream, pos);
                     <span class="kw">if let </span><span class="prelude-val">Some</span>(comment) = comment.as_mut() {
                         comment.push(c2);
                     }
@@ -3592,7 +4116,7 @@
 <span class="doccomment">/// Test if the given character is a numeric digit.
 </span><span class="attr">#[inline(always)]
 </span><span class="kw">const fn </span>is_numeric_digit(c: char) -&gt; bool {
-    <span class="macro">matches!</span>(c, <span class="string">&#39;0&#39;</span>..=<span class="string">&#39;9&#39;</span>)
+    c.is_ascii_digit()
 }
 
 <span class="doccomment">/// Test if the comment block is a doc-comment.
@@ -3617,11 +4141,7 @@
     <span class="comment">// Still inside a comment?
     </span><span class="kw">if </span>state.comment_level &gt; <span class="number">0 </span>{
         <span class="kw">let </span>start_pos = <span class="kw-2">*</span>pos;
-        <span class="kw">let </span><span class="kw-2">mut </span>comment = <span class="kw">if </span>state.include_comments {
-            <span class="prelude-val">Some</span>(String::new())
-        } <span class="kw">else </span>{
-            <span class="prelude-val">None
-        </span>};
+        <span class="kw">let </span><span class="kw-2">mut </span>comment = state.include_comments.then(|| String::new());
 
         state.comment_level =
             scan_block_comment(stream, state.comment_level, pos, comment.as_mut());
@@ -3661,8 +4181,10 @@
         pos.advance();
 
         <span class="kw">let </span>start_pos = <span class="kw-2">*</span>pos;
+        <span class="kw">let </span>cc = stream.peek_next().unwrap_or(<span class="string">&#39;\0&#39;</span>);
 
-        <span class="kw">match </span>(c, stream.peek_next().unwrap_or(<span class="string">&#39;\0&#39;</span>)) {
+        <span class="comment">// Identifiers and strings that can have non-ASCII characters
+        </span><span class="kw">match </span>(c, cc) {
             <span class="comment">// \n
             </span>(<span class="string">&#39;\n&#39;</span>, ..) =&gt; pos.new_line(),
 
@@ -3676,11 +4198,11 @@
                 <span class="kw">while let </span><span class="prelude-val">Some</span>(next_char) = stream.peek_next() {
                     <span class="kw">match </span>next_char {
                         NUMBER_SEPARATOR =&gt; {
-                            eat_next(stream, pos);
+                            eat_next_and_advance(stream, pos);
                         }
                         ch <span class="kw">if </span>valid(ch) =&gt; {
                             result.push(next_char);
-                            eat_next(stream, pos);
+                            eat_next_and_advance(stream, pos);
                         }
                         <span class="attr">#[cfg(any(not(feature = <span class="string">&quot;no_float&quot;</span>), feature = <span class="string">&quot;decimal&quot;</span>))]
                         </span><span class="string">&#39;.&#39; </span>=&gt; {
@@ -3746,7 +4268,7 @@
                             <span class="kw">if </span>c == <span class="string">&#39;0&#39; </span>&amp;&amp; result.len() &lt;= <span class="number">1 </span>=&gt;
                         {
                             result.push(next_char);
-                            eat_next(stream, pos);
+                            eat_next_and_advance(stream, pos);
 
                             valid = <span class="kw">match </span>ch {
                                 <span class="string">&#39;x&#39; </span>| <span class="string">&#39;X&#39; </span>=&gt; is_hex_digit,
@@ -3826,16 +4348,6 @@
                 <span class="kw">return </span><span class="prelude-val">Some</span>((token, num_pos));
             }
 
-            <span class="comment">// letter or underscore ...
-            </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>))]
-            </span>(<span class="string">&#39;a&#39;</span>..=<span class="string">&#39;z&#39; </span>| <span class="string">&#39;_&#39; </span>| <span class="string">&#39;A&#39;</span>..=<span class="string">&#39;Z&#39;</span>, ..) =&gt; {
-                <span class="kw">return </span><span class="prelude-val">Some</span>(parse_identifier_token(stream, state, pos, start_pos, c));
-            }
-            <span class="attr">#[cfg(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>)]
-            </span>(ch, ..) <span class="kw">if </span>unicode_xid::UnicodeXID::is_xid_start(ch) || ch == <span class="string">&#39;_&#39; </span>=&gt; {
-                <span class="kw">return </span><span class="prelude-val">Some</span>(parse_identifier_token(stream, state, pos, start_pos, c));
-            }
-
             <span class="comment">// &quot; - string literal
             </span>(<span class="string">&#39;&quot;&#39;</span>, ..) =&gt; {
                 <span class="kw">return </span>parse_string_literal(stream, state, pos, c, <span class="bool-val">false</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>)
@@ -3850,16 +4362,16 @@
                 </span><span class="kw">match </span>stream.peek_next() {
                     <span class="comment">// `\r - start from next line
                     </span><span class="prelude-val">Some</span>(<span class="string">&#39;\r&#39;</span>) =&gt; {
-                        eat_next(stream, pos);
+                        eat_next_and_advance(stream, pos);
                         <span class="comment">// `\r\n
                         </span><span class="kw">if </span>stream.peek_next() == <span class="prelude-val">Some</span>(<span class="string">&#39;\n&#39;</span>) {
-                            eat_next(stream, pos);
+                            eat_next_and_advance(stream, pos);
                         }
                         pos.new_line();
                     }
                     <span class="comment">// `\n - start from next line
                     </span><span class="prelude-val">Some</span>(<span class="string">&#39;\n&#39;</span>) =&gt; {
-                        eat_next(stream, pos);
+                        eat_next_and_advance(stream, pos);
                         pos.new_line();
                     }
                     <span class="kw">_ </span>=&gt; (),
@@ -3911,13 +4423,13 @@
 
             <span class="comment">// Unit
             </span>(<span class="string">&#39;(&#39;</span>, <span class="string">&#39;)&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Unit, start_pos));
             }
 
             <span class="comment">// Parentheses
             </span>(<span class="string">&#39;(&#39;</span>, <span class="string">&#39;*&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;(*&quot;</span>.into())), start_pos));
             }
             (<span class="string">&#39;(&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::LeftParen, start_pos)),
@@ -3930,16 +4442,16 @@
             <span class="comment">// Map literal
             </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
             </span>(<span class="string">&#39;#&#39;</span>, <span class="string">&#39;{&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::MapStart, start_pos));
             }
             <span class="comment">// Shebang
             </span>(<span class="string">&#39;#&#39;</span>, <span class="string">&#39;!&#39;</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;#!&quot;</span>.into())), start_pos)),
 
             (<span class="string">&#39;#&#39;</span>, <span class="string">&#39; &#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">let </span>token = <span class="kw">if </span>stream.peek_next() == <span class="prelude-val">Some</span>(<span class="string">&#39;{&#39;</span>) {
-                    eat_next(stream, pos);
+                    eat_next_and_advance(stream, pos);
                     <span class="string">&quot;# {&quot;
                 </span>} <span class="kw">else </span>{
                     <span class="string">&quot;#&quot;
@@ -3951,11 +4463,11 @@
 
             <span class="comment">// Operators
             </span>(<span class="string">&#39;+&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::PlusAssign, start_pos));
             }
             (<span class="string">&#39;+&#39;</span>, <span class="string">&#39;+&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;++&quot;</span>.into())), start_pos));
             }
             (<span class="string">&#39;+&#39;</span>, ..) <span class="kw">if </span>!state.next_token_cannot_be_unary =&gt; {
@@ -3966,15 +4478,15 @@
             (<span class="string">&#39;-&#39;</span>, <span class="string">&#39;0&#39;</span>..=<span class="string">&#39;9&#39;</span>) <span class="kw">if </span>!state.next_token_cannot_be_unary =&gt; negated = <span class="prelude-val">Some</span>(start_pos),
             (<span class="string">&#39;-&#39;</span>, <span class="string">&#39;0&#39;</span>..=<span class="string">&#39;9&#39;</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Minus, start_pos)),
             (<span class="string">&#39;-&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::MinusAssign, start_pos));
             }
             (<span class="string">&#39;-&#39;</span>, <span class="string">&#39;&gt;&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;-&gt;&quot;</span>.into())), start_pos));
             }
             (<span class="string">&#39;-&#39;</span>, <span class="string">&#39;-&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;--&quot;</span>.into())), start_pos));
             }
             (<span class="string">&#39;-&#39;</span>, ..) <span class="kw">if </span>!state.next_token_cannot_be_unary =&gt; {
@@ -3983,19 +4495,19 @@
             (<span class="string">&#39;-&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Minus, start_pos)),
 
             (<span class="string">&#39;*&#39;</span>, <span class="string">&#39;)&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;*)&quot;</span>.into())), start_pos));
             }
             (<span class="string">&#39;*&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::MultiplyAssign, start_pos));
             }
             (<span class="string">&#39;*&#39;</span>, <span class="string">&#39;*&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
 
                 <span class="kw">return </span><span class="prelude-val">Some</span>((
                     <span class="kw">if </span>stream.peek_next() == <span class="prelude-val">Some</span>(<span class="string">&#39;=&#39;</span>) {
-                        eat_next(stream, pos);
+                        eat_next_and_advance(stream, pos);
                         Token::PowerOfAssign
                     } <span class="kw">else </span>{
                         Token::PowerOf
@@ -4007,13 +4519,13 @@
 
             <span class="comment">// Comments
             </span>(<span class="string">&#39;/&#39;</span>, <span class="string">&#39;/&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
 
                 <span class="kw">let </span><span class="kw-2">mut </span>comment: <span class="prelude-ty">Option</span>&lt;String&gt; = <span class="kw">match </span>stream.peek_next() {
                     <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
                     #[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
                     </span><span class="prelude-val">Some</span>(<span class="string">&#39;/&#39;</span>) =&gt; {
-                        eat_next(stream, pos);
+                        eat_next_and_advance(stream, pos);
 
                         <span class="comment">// Long streams of `///...` are not doc-comments
                         </span><span class="kw">match </span>stream.peek_next() {
@@ -4023,7 +4535,7 @@
                     }
                     <span class="attr">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
                     </span><span class="prelude-val">Some</span>(<span class="string">&#39;!&#39;</span>) =&gt; {
-                        eat_next(stream, pos);
+                        eat_next_and_advance(stream, pos);
                         <span class="prelude-val">Some</span>(<span class="string">&quot;//!&quot;</span>.into())
                     }
                     <span class="kw">_ if </span>state.include_comments =&gt; <span class="prelude-val">Some</span>(<span class="string">&quot;//&quot;</span>.into()),
@@ -4034,7 +4546,7 @@
                     <span class="kw">if </span>c == <span class="string">&#39;\r&#39; </span>{
                         <span class="comment">// \r\n
                         </span><span class="kw">if </span>stream.peek_next() == <span class="prelude-val">Some</span>(<span class="string">&#39;\n&#39;</span>) {
-                            eat_next(stream, pos);
+                            eat_next_and_advance(stream, pos);
                         }
                         pos.new_line();
                         <span class="kw">break</span>;
@@ -4065,13 +4577,13 @@
             }
             (<span class="string">&#39;/&#39;</span>, <span class="string">&#39;*&#39;</span>) =&gt; {
                 state.comment_level = <span class="number">1</span>;
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
 
                 <span class="kw">let </span><span class="kw-2">mut </span>comment: <span class="prelude-ty">Option</span>&lt;String&gt; = <span class="kw">match </span>stream.peek_next() {
                     <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
                     #[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
                     </span><span class="prelude-val">Some</span>(<span class="string">&#39;*&#39;</span>) =&gt; {
-                        eat_next(stream, pos);
+                        eat_next_and_advance(stream, pos);
 
                         <span class="comment">// Long streams of `/****...` are not doc-comments
                         </span><span class="kw">match </span>stream.peek_next() {
@@ -4092,7 +4604,7 @@
             }
 
             (<span class="string">&#39;/&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::DivideAssign, start_pos));
             }
             (<span class="string">&#39;/&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Divide, start_pos)),
@@ -4101,15 +4613,15 @@
             (<span class="string">&#39;,&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Comma, start_pos)),
 
             (<span class="string">&#39;.&#39;</span>, <span class="string">&#39;.&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((
                     <span class="kw">match </span>stream.peek_next() {
                         <span class="prelude-val">Some</span>(<span class="string">&#39;.&#39;</span>) =&gt; {
-                            eat_next(stream, pos);
+                            eat_next_and_advance(stream, pos);
                             Token::Reserved(Box::new(<span class="string">&quot;...&quot;</span>.into()))
                         }
                         <span class="prelude-val">Some</span>(<span class="string">&#39;=&#39;</span>) =&gt; {
-                            eat_next(stream, pos);
+                            eat_next_and_advance(stream, pos);
                             Token::InclusiveRange
                         }
                         <span class="kw">_ </span>=&gt; Token::ExclusiveRange,
@@ -4120,56 +4632,56 @@
             (<span class="string">&#39;.&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Period, start_pos)),
 
             (<span class="string">&#39;=&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
 
                 <span class="kw">if </span>stream.peek_next() == <span class="prelude-val">Some</span>(<span class="string">&#39;=&#39;</span>) {
-                    eat_next(stream, pos);
+                    eat_next_and_advance(stream, pos);
                     <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;===&quot;</span>.into())), start_pos));
                 }
 
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::EqualsTo, start_pos));
             }
             (<span class="string">&#39;=&#39;</span>, <span class="string">&#39;&gt;&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::DoubleArrow, start_pos));
             }
             (<span class="string">&#39;=&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Equals, start_pos)),
 
             <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
             </span>(<span class="string">&#39;:&#39;</span>, <span class="string">&#39;:&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
 
                 <span class="kw">if </span>stream.peek_next() == <span class="prelude-val">Some</span>(<span class="string">&#39;&lt;&#39;</span>) {
-                    eat_next(stream, pos);
+                    eat_next_and_advance(stream, pos);
                     <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;::&lt;&quot;</span>.into())), start_pos));
                 }
 
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::DoubleColon, start_pos));
             }
             (<span class="string">&#39;:&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;:=&quot;</span>.into())), start_pos));
             }
             (<span class="string">&#39;:&#39;</span>, <span class="string">&#39;;&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;:;&quot;</span>.into())), start_pos));
             }
             (<span class="string">&#39;:&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Colon, start_pos)),
 
             (<span class="string">&#39;&lt;&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::LessThanEqualsTo, start_pos));
             }
             (<span class="string">&#39;&lt;&#39;</span>, <span class="string">&#39;-&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;&lt;-&quot;</span>.into())), start_pos));
             }
             (<span class="string">&#39;&lt;&#39;</span>, <span class="string">&#39;&lt;&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
 
                 <span class="kw">return </span><span class="prelude-val">Some</span>((
                     <span class="kw">if </span>stream.peek_next() == <span class="prelude-val">Some</span>(<span class="string">&#39;=&#39;</span>) {
-                        eat_next(stream, pos);
+                        eat_next_and_advance(stream, pos);
                         Token::LeftShiftAssign
                     } <span class="kw">else </span>{
                         Token::LeftShift
@@ -4178,21 +4690,21 @@
                 ));
             }
             (<span class="string">&#39;&lt;&#39;</span>, <span class="string">&#39;|&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;&lt;|&quot;</span>.into())), start_pos));
             }
             (<span class="string">&#39;&lt;&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::LessThan, start_pos)),
 
             (<span class="string">&#39;&gt;&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::GreaterThanEqualsTo, start_pos));
             }
             (<span class="string">&#39;&gt;&#39;</span>, <span class="string">&#39;&gt;&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
 
                 <span class="kw">return </span><span class="prelude-val">Some</span>((
                     <span class="kw">if </span>stream.peek_next() == <span class="prelude-val">Some</span>(<span class="string">&#39;=&#39;</span>) {
-                        eat_next(stream, pos);
+                        eat_next_and_advance(stream, pos);
                         Token::RightShiftAssign
                     } <span class="kw">else </span>{
                         Token::RightShift
@@ -4203,56 +4715,68 @@
             (<span class="string">&#39;&gt;&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::GreaterThan, start_pos)),
 
             (<span class="string">&#39;!&#39;</span>, <span class="string">&#39;i&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                stream.get_next().unwrap();
                 <span class="kw">if </span>stream.peek_next() == <span class="prelude-val">Some</span>(<span class="string">&#39;n&#39;</span>) {
-                    eat_next(stream, pos);
-                    <span class="kw">return </span><span class="prelude-val">Some</span>((Token::NotIn, start_pos));
+                    stream.get_next().unwrap();
+                    <span class="kw">match </span>stream.peek_next() {
+                        <span class="prelude-val">Some</span>(c) <span class="kw">if </span>is_id_continue(c) =&gt; {
+                            stream.unget(<span class="string">&#39;n&#39;</span>);
+                            stream.unget(<span class="string">&#39;i&#39;</span>);
+                            <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Bang, start_pos));
+                        }
+                        <span class="kw">_ </span>=&gt; {
+                            pos.advance();
+                            pos.advance();
+                            <span class="kw">return </span><span class="prelude-val">Some</span>((Token::NotIn, start_pos));
+                        }
+                    }
                 }
+
                 stream.unget(<span class="string">&#39;i&#39;</span>);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Bang, start_pos));
             }
             (<span class="string">&#39;!&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
 
                 <span class="kw">if </span>stream.peek_next() == <span class="prelude-val">Some</span>(<span class="string">&#39;=&#39;</span>) {
-                    eat_next(stream, pos);
+                    eat_next_and_advance(stream, pos);
                     <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;!==&quot;</span>.into())), start_pos));
                 }
 
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::NotEqualsTo, start_pos));
             }
             (<span class="string">&#39;!&#39;</span>, <span class="string">&#39;.&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;!.&quot;</span>.into())), start_pos));
             }
             (<span class="string">&#39;!&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Bang, start_pos)),
 
             (<span class="string">&#39;|&#39;</span>, <span class="string">&#39;|&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Or, start_pos));
             }
             (<span class="string">&#39;|&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::OrAssign, start_pos));
             }
             (<span class="string">&#39;|&#39;</span>, <span class="string">&#39;&gt;&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;|&gt;&quot;</span>.into())), start_pos));
             }
             (<span class="string">&#39;|&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Pipe, start_pos)),
 
             (<span class="string">&#39;&amp;&#39;</span>, <span class="string">&#39;&amp;&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::And, start_pos));
             }
             (<span class="string">&#39;&amp;&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::AndAssign, start_pos));
             }
             (<span class="string">&#39;&amp;&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Ampersand, start_pos)),
 
             (<span class="string">&#39;^&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::XOrAssign, start_pos));
             }
             (<span class="string">&#39;^&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::XOr, start_pos)),
@@ -4260,7 +4784,7 @@
             (<span class="string">&#39;~&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;~&quot;</span>.into())), start_pos)),
 
             (<span class="string">&#39;%&#39;</span>, <span class="string">&#39;=&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::ModuloAssign, start_pos));
             }
             (<span class="string">&#39;%&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Modulo, start_pos)),
@@ -4270,7 +4794,7 @@
             (<span class="string">&#39;$&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;$&quot;</span>.into())), start_pos)),
 
             (<span class="string">&#39;?&#39;</span>, <span class="string">&#39;.&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((
                     <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_object&quot;</span>))]
                     </span>Token::Elvis,
@@ -4280,11 +4804,11 @@
                 ));
             }
             (<span class="string">&#39;?&#39;</span>, <span class="string">&#39;?&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((Token::DoubleQuestion, start_pos));
             }
             (<span class="string">&#39;?&#39;</span>, <span class="string">&#39;[&#39;</span>) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 <span class="kw">return </span><span class="prelude-val">Some</span>((
                     <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
                     </span>Token::QuestionBracket,
@@ -4295,11 +4819,16 @@
             }
             (<span class="string">&#39;?&#39;</span>, ..) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((Token::Reserved(Box::new(<span class="string">&quot;?&quot;</span>.into())), start_pos)),
 
-            (ch, ..) <span class="kw">if </span>ch.is_whitespace() =&gt; (),
+            <span class="comment">// letter or underscore ...
+            </span><span class="kw">_ if </span>is_id_first_alphabetic(c) || c == <span class="string">&#39;_&#39; </span>=&gt; {
+                <span class="kw">return </span><span class="prelude-val">Some</span>(parse_identifier_token(stream, state, pos, start_pos, c));
+            }
 
-            (ch, ..) =&gt; {
+            <span class="kw">_ if </span>c.is_whitespace() =&gt; (),
+
+            <span class="kw">_ </span>=&gt; {
                 <span class="kw">return </span><span class="prelude-val">Some</span>((
-                    Token::LexError(LERR::UnexpectedInput(ch.to_string()).into()),
+                    Token::LexError(LERR::UnexpectedInput(c.to_string()).into()),
                     start_pos,
                 ))
             }
@@ -4329,7 +4858,7 @@
     <span class="kw">while let </span><span class="prelude-val">Some</span>(next_char) = stream.peek_next() {
         <span class="kw">match </span>next_char {
             x <span class="kw">if </span>is_id_continue(x) =&gt; {
-                eat_next(stream, pos);
+                eat_next_and_advance(stream, pos);
                 identifier.push(x);
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>last) = state.last_token {
                     last.push(x);
@@ -4343,7 +4872,7 @@
         <span class="kw">return </span>(token, start_pos);
     }
 
-    <span class="kw">if </span>is_reserved_keyword_or_symbol(<span class="kw-2">&amp;</span>identifier) {
+    <span class="kw">if </span>is_reserved_keyword_or_symbol(<span class="kw-2">&amp;</span>identifier).<span class="number">0 </span>{
         <span class="kw">return </span>(Token::Reserved(Box::new(identifier)), start_pos);
     }
 
@@ -4355,30 +4884,6 @@
     }
 
     (Token::Identifier(identifier.into()), start_pos)
-}
-
-<span class="doccomment">/// Can a keyword be called like a function?
-///
-/// # Return values
-///
-/// The first `bool` indicates whether the keyword can be called normally as a function.
-///
-/// The second `bool` indicates whether the keyword can be called in method-call style.
-</span><span class="attr">#[inline]
-#[must_use]
-</span><span class="kw">pub fn </span>is_keyword_function(name: <span class="kw-2">&amp;</span>str) -&gt; (bool, bool) {
-    <span class="kw">match </span>name {
-        KEYWORD_TYPE_OF | KEYWORD_FN_PTR_CALL | KEYWORD_FN_PTR_CURRY =&gt; (<span class="bool-val">true</span>, <span class="bool-val">true</span>),
-
-        KEYWORD_PRINT | KEYWORD_DEBUG | KEYWORD_EVAL | KEYWORD_FN_PTR | KEYWORD_IS_DEF_VAR =&gt; {
-            (<span class="bool-val">true</span>, <span class="bool-val">false</span>)
-        }
-
-        <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-        </span><span class="kw">crate</span>::engine::KEYWORD_IS_DEF_FN =&gt; (<span class="bool-val">true</span>, <span class="bool-val">false</span>),
-
-        <span class="kw">_ </span>=&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
-    }
 }
 
 <span class="doccomment">/// _(internals)_ Is a text string a valid identifier?
@@ -4406,72 +4911,71 @@
 #[must_use]
 </span><span class="kw">pub fn </span>is_valid_function_name(name: <span class="kw-2">&amp;</span>str) -&gt; bool {
     is_valid_identifier(name)
-        &amp;&amp; !is_reserved_keyword_or_symbol(name)
-        &amp;&amp; Token::lookup_symbol_from_syntax(name).is_none()
+        &amp;&amp; !is_reserved_keyword_or_symbol(name).<span class="number">0
+        </span>&amp;&amp; Token::lookup_symbol_from_syntax(name).is_none()
 }
 
 <span class="doccomment">/// Is a character valid to start an identifier?
-</span><span class="attr">#[cfg(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>)]
-#[inline(always)]
+</span><span class="attr">#[inline(always)]
 #[must_use]
 </span><span class="kw">pub fn </span>is_id_first_alphabetic(x: char) -&gt; bool {
-    unicode_xid::UnicodeXID::is_xid_start(x)
+    <span class="attr">#[cfg(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>)]
+    </span><span class="kw">return </span>unicode_xid::UnicodeXID::is_xid_start(x);
+    <span class="attr">#[cfg(not(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>))]
+    </span><span class="kw">return </span>x.is_ascii_alphabetic();
 }
 
 <span class="doccomment">/// Is a character valid for an identifier?
-</span><span class="attr">#[cfg(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>)]
-#[inline(always)]
+</span><span class="attr">#[inline(always)]
 #[must_use]
 </span><span class="kw">pub fn </span>is_id_continue(x: char) -&gt; bool {
-    unicode_xid::UnicodeXID::is_xid_continue(x)
+    <span class="attr">#[cfg(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>)]
+    </span><span class="kw">return </span>unicode_xid::UnicodeXID::is_xid_continue(x);
+    <span class="attr">#[cfg(not(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>))]
+    </span><span class="kw">return </span>x.is_ascii_alphanumeric() || x == <span class="string">&#39;_&#39;</span>;
 }
 
-<span class="doccomment">/// Is a character valid to start an identifier?
-</span><span class="attr">#[cfg(not(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>))]
-#[inline(always)]
+<span class="doccomment">/// Is a piece of syntax a reserved keyword or reserved symbol?
+///
+/// # Return values
+///
+/// The first `bool` indicates whether it is a reserved keyword or symbol.
+///
+/// The second `bool` indicates whether the keyword can be called normally as a function.
+///
+/// The third `bool` indicates whether the keyword can be called in method-call style.
+</span><span class="attr">#[inline]
 #[must_use]
-</span><span class="kw">pub const fn </span>is_id_first_alphabetic(x: char) -&gt; bool {
-    x.is_ascii_alphabetic()
-}
+</span><span class="kw">pub fn </span>is_reserved_keyword_or_symbol(syntax: <span class="kw-2">&amp;</span>str) -&gt; (bool, bool, bool) {
+    <span class="comment">// This implementation is based upon a pre-calculated table generated
+    // by GNU `gperf` on the list of keywords.
+    </span><span class="kw">let </span>utf8 = syntax.as_bytes();
+    <span class="kw">let </span>len = utf8.len();
+    <span class="kw">let </span>rounds = len.min(<span class="number">3</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>hash_val = len;
 
-<span class="doccomment">/// Is a character valid for an identifier?
-</span><span class="attr">#[cfg(not(feature = <span class="string">&quot;unicode-xid-ident&quot;</span>))]
-#[inline(always)]
-#[must_use]
-</span><span class="kw">pub const fn </span>is_id_continue(x: char) -&gt; bool {
-    x.is_ascii_alphanumeric() || x == <span class="string">&#39;_&#39;
-</span>}
+    <span class="kw">if </span>!(MIN_RESERVED_LEN..=MAX_RESERVED_LEN).contains(<span class="kw-2">&amp;</span>len) {
+        <span class="kw">return </span>(<span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>);
+    }
 
-<span class="doccomment">/// Is a piece of syntax a reserved keyword or symbol?
-</span><span class="attr">#[must_use]
-</span><span class="kw">pub fn </span>is_reserved_keyword_or_symbol(syntax: <span class="kw-2">&amp;</span>str) -&gt; bool {
-    <span class="kw">match </span>syntax {
-        <span class="attr">#[cfg(feature = <span class="string">&quot;no_object&quot;</span>)]
-        </span><span class="string">&quot;?.&quot; </span>=&gt; <span class="bool-val">true</span>,
-        <span class="attr">#[cfg(feature = <span class="string">&quot;no_index&quot;</span>)]
-        </span><span class="string">&quot;?[&quot; </span>=&gt; <span class="bool-val">true</span>,
-        <span class="attr">#[cfg(feature = <span class="string">&quot;no_function&quot;</span>)]
-        </span><span class="string">&quot;fn&quot; </span>| <span class="string">&quot;private&quot; </span>=&gt; <span class="bool-val">true</span>,
-        <span class="attr">#[cfg(feature = <span class="string">&quot;no_module&quot;</span>)]
-        </span><span class="string">&quot;import&quot; </span>| <span class="string">&quot;export&quot; </span>| <span class="string">&quot;as&quot; </span>=&gt; <span class="bool-val">true</span>,
+    <span class="kw">for </span>x <span class="kw">in </span><span class="number">0</span>..rounds {
+        hash_val += RESERVED_ASSOC_VALUES[utf8[rounds - <span class="number">1 </span>- x] <span class="kw">as </span>usize] <span class="kw">as </span>usize;
+    }
 
-        <span class="comment">// List of reserved operators
-        </span><span class="string">&quot;===&quot; </span>| <span class="string">&quot;!==&quot; </span>| <span class="string">&quot;-&gt;&quot; </span>| <span class="string">&quot;&lt;-&quot; </span>| <span class="string">&quot;?&quot; </span>| <span class="string">&quot;:=&quot; </span>| <span class="string">&quot;:;&quot; </span>| <span class="string">&quot;~&quot; </span>| <span class="string">&quot;!.&quot; </span>| <span class="string">&quot;::&lt;&quot; </span>| <span class="string">&quot;(*&quot; </span>| <span class="string">&quot;*)&quot;
-        </span>| <span class="string">&quot;#&quot; </span>| <span class="string">&quot;#!&quot; </span>| <span class="string">&quot;@&quot; </span>| <span class="string">&quot;$&quot; </span>| <span class="string">&quot;++&quot; </span>| <span class="string">&quot;--&quot; </span>| <span class="string">&quot;...&quot; </span>| <span class="string">&quot;&lt;|&quot; </span>| <span class="string">&quot;|&gt;&quot; </span>=&gt; <span class="bool-val">true</span>,
+    <span class="kw">if </span>!(MIN_RESERVED_HASH_VALUE..=MAX_RESERVED_HASH_VALUE).contains(<span class="kw-2">&amp;</span>hash_val) {
+        <span class="kw">return </span>(<span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>);
+    }
 
-        <span class="comment">// List of reserved keywords
-        </span><span class="string">&quot;public&quot; </span>| <span class="string">&quot;protected&quot; </span>| <span class="string">&quot;super&quot; </span>| <span class="string">&quot;new&quot; </span>| <span class="string">&quot;use&quot; </span>| <span class="string">&quot;module&quot; </span>| <span class="string">&quot;package&quot; </span>| <span class="string">&quot;var&quot;
-        </span>| <span class="string">&quot;static&quot; </span>| <span class="string">&quot;shared&quot; </span>| <span class="string">&quot;with&quot; </span>| <span class="string">&quot;is&quot; </span>| <span class="string">&quot;goto&quot; </span>| <span class="string">&quot;exit&quot; </span>| <span class="string">&quot;match&quot; </span>| <span class="string">&quot;case&quot; </span>| <span class="string">&quot;default&quot;
-        </span>| <span class="string">&quot;void&quot; </span>| <span class="string">&quot;null&quot; </span>| <span class="string">&quot;nil&quot; </span>| <span class="string">&quot;spawn&quot; </span>| <span class="string">&quot;thread&quot; </span>| <span class="string">&quot;go&quot; </span>| <span class="string">&quot;sync&quot; </span>| <span class="string">&quot;async&quot; </span>| <span class="string">&quot;await&quot;
-        </span>| <span class="string">&quot;yield&quot; </span>=&gt; <span class="bool-val">true</span>,
-
-        KEYWORD_PRINT | KEYWORD_DEBUG | KEYWORD_TYPE_OF | KEYWORD_EVAL | KEYWORD_FN_PTR
-        | KEYWORD_FN_PTR_CALL | KEYWORD_FN_PTR_CURRY | KEYWORD_THIS | KEYWORD_IS_DEF_VAR =&gt; <span class="bool-val">true</span>,
-
-        <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-        </span><span class="kw">crate</span>::engine::KEYWORD_IS_DEF_FN =&gt; <span class="bool-val">true</span>,
-
-        <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
+    <span class="kw">match </span>RESERVED_LIST[hash_val] {
+        (<span class="string">&quot;&quot;</span>, ..) =&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+        (s, <span class="bool-val">true</span>, a, b) =&gt; (
+            <span class="comment">// Fail early to avoid calling memcmp().
+            // Since we are already working with bytes, mind as well check the first one.
+            </span>s.len() == len &amp;&amp; s.as_bytes()[<span class="number">0</span>] == utf8[<span class="number">0</span>] &amp;&amp; s == syntax,
+            a,
+            b,
+        ),
+        <span class="kw">_ </span>=&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>),
     }
 }
 
@@ -4480,8 +4984,8 @@
 ///
 /// Multiple character streams are jointed together to form one single stream.
 </span><span class="kw">pub struct </span>MultiInputsStream&lt;<span class="lifetime">&#39;a</span>&gt; {
-    <span class="doccomment">/// Buffered character, if any.
-    </span><span class="kw">pub </span>buf: <span class="prelude-ty">Option</span>&lt;char&gt;,
+    <span class="doccomment">/// Buffered characters, if any.
+    </span><span class="kw">pub </span>buf: SmallVec&lt;[char; <span class="number">2</span>]&gt;,
     <span class="doccomment">/// The current stream index.
     </span><span class="kw">pub </span>index: usize,
     <span class="doccomment">/// The input character streams.
@@ -4491,15 +4995,11 @@
 <span class="kw">impl </span>InputStream <span class="kw">for </span>MultiInputsStream&lt;<span class="lifetime">&#39;_</span>&gt; {
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>unget(<span class="kw-2">&amp;mut </span><span class="self">self</span>, ch: char) {
-        <span class="kw">if </span><span class="self">self</span>.buf.is_some() {
-            <span class="macro">panic!</span>(<span class="string">&quot;cannot unget two characters in a row&quot;</span>);
-        }
-
-        <span class="self">self</span>.buf = <span class="prelude-val">Some</span>(ch);
+        <span class="self">self</span>.buf.push(ch);
     }
     <span class="kw">fn </span>get_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;char&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(ch) = <span class="self">self</span>.buf.take() {
-            <span class="kw">return </span><span class="prelude-val">Some</span>(ch);
+        <span class="kw">if let </span>ch @ <span class="prelude-val">Some</span>(..) = <span class="self">self</span>.buf.pop() {
+            <span class="kw">return </span>ch;
         }
 
         <span class="kw">loop </span>{
@@ -4516,8 +5016,8 @@
         }
     }
     <span class="kw">fn </span>peek_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;char&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(ch) = <span class="self">self</span>.buf {
-            <span class="kw">return </span><span class="prelude-val">Some</span>(ch);
+        <span class="kw">if let </span>ch @ <span class="prelude-val">Some</span>(..) = <span class="self">self</span>.buf.last() {
+            <span class="kw">return </span>ch.copied();
         }
 
         <span class="kw">loop </span>{
@@ -4757,7 +5257,7 @@
                 },
                 pos: Position::new(<span class="number">1</span>, <span class="number">0</span>),
                 stream: MultiInputsStream {
-                    buf: <span class="prelude-val">None</span>,
+                    buf: SmallVec::new_const(),
                     streams: input
                         .into_iter()
                         .map(|s| s.as_ref().chars().peekable())
@@ -4771,4 +5271,4 @@
     }
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["API_BASE","ORGANIZATION_HEADER"],"mod":["error","types"],"struct":["Audio","Chat","Client","Completions","Edits","Embeddings","Files","FineTunes","Images","Models","Moderations"]};

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.12.0/src/parser.rs`."><title>parser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.13.0/src/parser.rs`."><title>parser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../static.files/ayu-be46fdc453a55015.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../rhai/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -3962,6 +3962,54 @@
 <a href="#3962" id="3962">3962</a>
 <a href="#3963" id="3963">3963</a>
 <a href="#3964" id="3964">3964</a>
+<a href="#3965" id="3965">3965</a>
+<a href="#3966" id="3966">3966</a>
+<a href="#3967" id="3967">3967</a>
+<a href="#3968" id="3968">3968</a>
+<a href="#3969" id="3969">3969</a>
+<a href="#3970" id="3970">3970</a>
+<a href="#3971" id="3971">3971</a>
+<a href="#3972" id="3972">3972</a>
+<a href="#3973" id="3973">3973</a>
+<a href="#3974" id="3974">3974</a>
+<a href="#3975" id="3975">3975</a>
+<a href="#3976" id="3976">3976</a>
+<a href="#3977" id="3977">3977</a>
+<a href="#3978" id="3978">3978</a>
+<a href="#3979" id="3979">3979</a>
+<a href="#3980" id="3980">3980</a>
+<a href="#3981" id="3981">3981</a>
+<a href="#3982" id="3982">3982</a>
+<a href="#3983" id="3983">3983</a>
+<a href="#3984" id="3984">3984</a>
+<a href="#3985" id="3985">3985</a>
+<a href="#3986" id="3986">3986</a>
+<a href="#3987" id="3987">3987</a>
+<a href="#3988" id="3988">3988</a>
+<a href="#3989" id="3989">3989</a>
+<a href="#3990" id="3990">3990</a>
+<a href="#3991" id="3991">3991</a>
+<a href="#3992" id="3992">3992</a>
+<a href="#3993" id="3993">3993</a>
+<a href="#3994" id="3994">3994</a>
+<a href="#3995" id="3995">3995</a>
+<a href="#3996" id="3996">3996</a>
+<a href="#3997" id="3997">3997</a>
+<a href="#3998" id="3998">3998</a>
+<a href="#3999" id="3999">3999</a>
+<a href="#4000" id="4000">4000</a>
+<a href="#4001" id="4001">4001</a>
+<a href="#4002" id="4002">4002</a>
+<a href="#4003" id="4003">4003</a>
+<a href="#4004" id="4004">4004</a>
+<a href="#4005" id="4005">4005</a>
+<a href="#4006" id="4006">4006</a>
+<a href="#4007" id="4007">4007</a>
+<a href="#4008" id="4008">4008</a>
+<a href="#4009" id="4009">4009</a>
+<a href="#4010" id="4010">4010</a>
+<a href="#4011" id="4011">4011</a>
+<a href="#4012" id="4012">4012</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Main module defining the lexer and parser.
 
 </span><span class="kw">use </span><span class="kw">crate</span>::api::events::VarDefInfo;
@@ -3971,25 +4019,24 @@
     FnCallHashes, Ident, Namespace, OpAssignment, RangeCase, ScriptFnDef, Stmt, StmtBlock,
     StmtBlockContainer, SwitchCasesCollection,
 };
-<span class="kw">use </span><span class="kw">crate</span>::engine::{Precedence, KEYWORD_THIS, OP_CONTAINS};
+<span class="kw">use </span><span class="kw">crate</span>::engine::{Precedence, KEYWORD_THIS, OP_CONTAINS, OP_NOT};
 <span class="kw">use </span><span class="kw">crate</span>::eval::{Caches, GlobalRuntimeState};
 <span class="kw">use </span><span class="kw">crate</span>::func::{hashing::get_hasher, StraightHashMap};
 <span class="kw">use </span><span class="kw">crate</span>::tokenizer::{
-    is_keyword_function, is_valid_function_name, is_valid_identifier, Token, TokenStream,
+    is_reserved_keyword_or_symbol, is_valid_function_name, is_valid_identifier, Token, TokenStream,
     TokenizerControl,
 };
-<span class="kw">use </span><span class="kw">crate</span>::types::dynamic::AccessMode;
+<span class="kw">use </span><span class="kw">crate</span>::types::dynamic::{AccessMode, Union};
 <span class="kw">use </span><span class="kw">crate</span>::types::StringsInterner;
 <span class="kw">use crate</span>::{
-    calc_fn_hash, Dynamic, Engine, EvalAltResult, EvalContext, ExclusiveRange, Identifier,
-    ImmutableString, InclusiveRange, LexError, OptimizationLevel, ParseError, Position, Scope,
-    Shared, SmartString, StaticVec, AST, INT, PERR,
+    calc_fn_hash, Dynamic, Engine, EvalAltResult, EvalContext, ExclusiveRange, FnArgsVec,
+    Identifier, ImmutableString, InclusiveRange, LexError, OptimizationLevel, ParseError, Position,
+    Scope, Shared, SmartString, StaticVec, AST, PERR,
 };
 <span class="kw">use </span>bitflags::bitflags;
 <span class="attr">#[cfg(feature = <span class="string">&quot;no_std&quot;</span>)]
 </span><span class="kw">use </span>std::prelude::v1::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::{
-    collections::BTreeMap,
     convert::TryFrom,
     fmt,
     hash::{Hash, Hasher},
@@ -4006,9 +4053,6 @@
 <span class="doccomment">/// The message: `TokenStream` never ends
 </span><span class="kw">const </span>NEVER_ENDS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;`Token`&quot;</span>;
 
-<span class="doccomment">/// Unroll `switch` ranges no larger than this.
-</span><span class="kw">const </span>SMALL_SWITCH_RANGE: INT = <span class="number">16</span>;
-
 <span class="doccomment">/// _(internals)_ A type that encapsulates the current state of the parser.
 /// Exported under the `internals` feature only.
 </span><span class="kw">pub struct </span>ParseState&lt;<span class="lifetime">&#39;e</span>, <span class="lifetime">&#39;s</span>&gt; {
@@ -4019,7 +4063,7 @@
     <span class="doccomment">/// Strings interner.
     </span><span class="kw">pub </span>interned_strings: <span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span>StringsInterner,
     <span class="doccomment">/// External [scope][Scope] with constants.
-    </span><span class="kw">pub </span>scope: <span class="kw-2">&amp;</span><span class="lifetime">&#39;e </span>Scope&lt;<span class="lifetime">&#39;e</span>&gt;,
+    </span><span class="kw">pub </span>external_constants: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;e </span>Scope&lt;<span class="lifetime">&#39;e</span>&gt;&gt;,
     <span class="doccomment">/// Global runtime state.
     </span><span class="kw">pub </span>global: <span class="prelude-ty">Option</span>&lt;Box&lt;GlobalRuntimeState&gt;&gt;,
     <span class="doccomment">/// Encapsulates a local stack with variable names to simulate an actual runtime scope.
@@ -4029,11 +4073,13 @@
     <span class="doccomment">/// Tracks a list of external variables (variables that are not explicitly declared in the scope).
     </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
     </span><span class="kw">pub </span>external_vars: <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">crate</span>::FnArgsVec&lt;Ident&gt;&gt;&gt;,
-    <span class="doccomment">/// An indicator that disables variable capturing into externals one single time
-    /// up until the nearest consumed Identifier token.
-    /// If set to false the next call to [`access_var`][ParseState::access_var] will not capture the variable.
+    <span class="doccomment">/// An indicator that, when set to `false`, disables variable capturing into externals one
+    /// single time up until the nearest consumed Identifier token.
+    ///
+    /// If set to `false` the next call to [`access_var`][ParseState::access_var] will not capture
+    /// the variable.
+    ///
     /// All consequent calls to [`access_var`][ParseState::access_var] will not be affected.
-    </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
     </span><span class="kw">pub </span>allow_capture: bool,
     <span class="doccomment">/// Encapsulates a local stack with imported [module][crate::Module] names.
     </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
@@ -4051,7 +4097,7 @@
 
         f.field(<span class="string">&quot;tokenizer_control&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.tokenizer_control)
             .field(<span class="string">&quot;interned_strings&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.interned_strings)
-            .field(<span class="string">&quot;scope&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.scope)
+            .field(<span class="string">&quot;external_constants_scope&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.external_constants)
             .field(<span class="string">&quot;global&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.global)
             .field(<span class="string">&quot;stack&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.stack)
             .field(<span class="string">&quot;block_stack_len&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.block_stack_len);
@@ -4073,7 +4119,7 @@
     </span><span class="attr">#[inline]
     #[must_use]
     </span><span class="kw">pub fn </span>new(
-        scope: <span class="kw-2">&amp;</span><span class="lifetime">&#39;e </span>Scope,
+        external_constants: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;e </span>Scope&gt;,
         interned_strings: <span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span>StringsInterner,
         tokenizer_control: TokenizerControl,
     ) -&gt; <span class="self">Self </span>{
@@ -4082,10 +4128,9 @@
             expr_filter: |<span class="kw">_</span>| <span class="bool-val">true</span>,
             <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
             </span>external_vars: <span class="prelude-val">None</span>,
-            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-            </span>allow_capture: <span class="bool-val">true</span>,
+            allow_capture: <span class="bool-val">true</span>,
             interned_strings,
-            scope,
+            external_constants,
             global: <span class="prelude-val">None</span>,
             stack: <span class="prelude-val">None</span>,
             block_stack_len: <span class="number">0</span>,
@@ -4181,11 +4226,7 @@
             <span class="self">self</span>.allow_capture = <span class="bool-val">true</span>;
         }
 
-        <span class="kw">let </span>index = <span class="kw">if </span>hit_barrier {
-            <span class="prelude-val">None
-        </span>} <span class="kw">else </span>{
-            NonZeroUsize::new(index)
-        };
+        <span class="kw">let </span>index = (!hit_barrier).then(|| NonZeroUsize::new(index)).flatten();
 
         (index, is_func_name)
     }
@@ -4260,11 +4301,8 @@
         <span class="doccomment">/// Is the construct being parsed located at global level?
         </span><span class="kw">const </span>GLOBAL_LEVEL = <span class="number">0b0000_0001</span>;
         <span class="doccomment">/// Is the construct being parsed located inside a function definition?
-        </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
         </span><span class="kw">const </span>FN_SCOPE = <span class="number">0b0000_0010</span>;
         <span class="doccomment">/// Is the construct being parsed located inside a closure definition?
-        </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-        #[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
         </span><span class="kw">const </span>CLOSURE_SCOPE = <span class="number">0b0000_0100</span>;
         <span class="doccomment">/// Is the construct being parsed located inside a breakable loop?
         </span><span class="kw">const </span>BREAKABLE = <span class="number">0b0000_1000</span>;
@@ -4273,6 +4311,16 @@
         </span><span class="kw">const </span>DISALLOW_STATEMENTS_IN_BLOCKS = <span class="number">0b0001_0000</span>;
         <span class="doccomment">/// Disallow unquoted map properties?
         </span><span class="kw">const </span>DISALLOW_UNQUOTED_MAP_PROPERTIES = <span class="number">0b0010_0000</span>;
+    }
+}
+
+<span class="macro">bitflags! </span>{
+    <span class="doccomment">/// Bit-flags containing all status for parsing property/indexing/namespace chains.
+    </span><span class="kw">struct </span>ChainingFlags: u8 {
+        <span class="doccomment">/// Is the construct being parsed a property?
+        </span><span class="kw">const </span>PROPERTY = <span class="number">0b0000_0001</span>;
+        <span class="doccomment">/// Disallow namespaces?
+        </span><span class="kw">const </span>DISALLOW_NAMESPACES = <span class="number">0b0000_0010</span>;
     }
 }
 
@@ -4420,8 +4468,8 @@
 <span class="doccomment">/// Make sure that the next expression is not a mis-typed assignment (i.e. `a = b` instead of `a == b`).
 </span><span class="kw">fn </span>ensure_not_assignment(input: <span class="kw-2">&amp;mut </span>TokenStream) -&gt; ParseResult&lt;()&gt; {
     <span class="kw">match </span>input.peek().expect(NEVER_ENDS) {
-        (Token::Equals, pos) =&gt; <span class="prelude-val">Err</span>(LexError::ImproperSymbol(
-            <span class="string">&quot;=&quot;</span>.into(),
+        (token @ Token::Equals, pos) =&gt; <span class="prelude-val">Err</span>(LexError::ImproperSymbol(
+            token.literal_syntax().into(),
             <span class="string">&quot;Possibly a typo of &#39;==&#39;?&quot;</span>.into(),
         )
         .into_err(<span class="kw-2">*</span>pos)),
@@ -4523,7 +4571,7 @@
         };
 
         <span class="kw">let </span><span class="kw-2">mut </span>_namespace = namespace;
-        <span class="kw">let </span><span class="kw-2">mut </span>args = StaticVec::new_const();
+        <span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::new_const();
 
         <span class="kw">match </span>token {
             <span class="comment">// id( &lt;EOF&gt;
@@ -4581,9 +4629,9 @@
                 </span><span class="kw">let </span>hash = calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>id, <span class="number">0</span>);
 
                 <span class="kw">let </span>hashes = <span class="kw">if </span>is_valid_function_name(<span class="kw-2">&amp;</span>id) {
-                    hash.into()
+                    FnCallHashes::from_hash(hash)
                 } <span class="kw">else </span>{
-                    FnCallHashes::from_native(hash)
+                    FnCallHashes::from_native_only(hash)
                 };
 
                 args.shrink_to_fit();
@@ -4656,9 +4704,9 @@
                     </span><span class="kw">let </span>hash = calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>id, args.len());
 
                     <span class="kw">let </span>hashes = <span class="kw">if </span>is_valid_function_name(<span class="kw-2">&amp;</span>id) {
-                        hash.into()
+                        FnCallHashes::from_hash(hash)
                     } <span class="kw">else </span>{
-                        FnCallHashes::from_native(hash)
+                        FnCallHashes::from_native_only(hash)
                     };
 
                     args.shrink_to_fit();
@@ -4942,7 +4990,7 @@
         settings.pos = eat_token(input, Token::MapStart);
 
         <span class="kw">let </span><span class="kw-2">mut </span>map = StaticVec::&lt;(Ident, Expr)&gt;::new();
-        <span class="kw">let </span><span class="kw-2">mut </span>template = BTreeMap::&lt;Identifier, <span class="kw">crate</span>::Dynamic&gt;::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>template = std::collections::BTreeMap::&lt;Identifier, <span class="kw">crate</span>::Dynamic&gt;::new();
 
         <span class="kw">loop </span>{
             <span class="kw">const </span>MISSING_RBRACE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;to end this object map literal&quot;</span>;
@@ -5077,7 +5125,7 @@
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>expressions = StaticVec::&lt;ConditionalExpr&gt;::new();
-        <span class="kw">let </span><span class="kw-2">mut </span>cases = BTreeMap::&lt;u64, CaseBlocksList&gt;::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>cases = StraightHashMap::&lt;CaseBlocksList&gt;::default();
         <span class="kw">let </span><span class="kw-2">mut </span>ranges = StaticVec::&lt;RangeCase&gt;::new();
         <span class="kw">let </span><span class="kw-2">mut </span>def_case = <span class="prelude-val">None</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>def_case_pos = Position::NONE;
@@ -5172,7 +5220,6 @@
                     <span class="kw">let </span>stmt_block: StmtBlock = stmt.into();
                     (Expr::Stmt(stmt_block.into()), need_comma)
                 };
-            <span class="kw">let </span>has_condition = !<span class="macro">matches!</span>(condition, Expr::BoolConstant(<span class="bool-val">true</span>, ..));
 
             expressions.push((condition, action_expr).into());
             <span class="kw">let </span>index = expressions.len() - <span class="number">1</span>;
@@ -5196,29 +5243,28 @@
 
                     <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>r) = range_value {
                         <span class="kw">if </span>!r.is_empty() {
-                            <span class="comment">// Do not unroll ranges if there are previous non-unrolled ranges
-                            </span><span class="kw">if </span>!has_condition &amp;&amp; ranges.is_empty() &amp;&amp; r.len() &lt;= SMALL_SWITCH_RANGE
-                            {
-                                <span class="comment">// Unroll small range
-                                </span><span class="kw">for </span>n <span class="kw">in </span>r {
-                                    <span class="kw">let </span>hasher = <span class="kw-2">&amp;mut </span>get_hasher();
-                                    Dynamic::from_int(n).hash(hasher);
-                                    cases
-                                        .entry(hasher.finish())
-                                        .and_modify(|cases| cases.push(index))
-                                        .or_insert_with(|| [index].into());
-                                }
-                            } <span class="kw">else </span>{
-                                <span class="comment">// Other range
-                                </span>r.set_index(index);
-                                ranges.push(r);
-                            }
+                            <span class="comment">// Other range
+                            </span>r.set_index(index);
+                            ranges.push(r);
                         }
                         <span class="kw">continue</span>;
                     }
 
-                    <span class="kw">if </span>value.is_int() &amp;&amp; !ranges.is_empty() {
-                        <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::WrongSwitchIntegerCase.into_err(expr.start_position()));
+                    <span class="kw">if </span>!ranges.is_empty() {
+                        <span class="kw">let </span>forbidden = <span class="kw">match </span>value {
+                            Dynamic(Union::Int(..)) =&gt; <span class="bool-val">true</span>,
+                            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_float&quot;</span>))]
+                            </span>Dynamic(Union::Float(..)) =&gt; <span class="bool-val">true</span>,
+                            <span class="attr">#[cfg(feature = <span class="string">&quot;decimal&quot;</span>)]
+                            </span>Dynamic(Union::Decimal(..)) =&gt; <span class="bool-val">true</span>,
+                            <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
+                        };
+
+                        <span class="kw">if </span>forbidden {
+                            <span class="kw">return </span><span class="prelude-val">Err</span>(
+                                PERR::WrongSwitchIntegerCase.into_err(expr.start_position())
+                            );
+                        }
                     }
 
                     <span class="kw">let </span>hasher = <span class="kw-2">&amp;mut </span>get_hasher();
@@ -5255,6 +5301,10 @@
             }
         }
 
+        expressions.shrink_to_fit();
+        cases.shrink_to_fit();
+        ranges.shrink_to_fit();
+
         <span class="kw">let </span>cases = SwitchCasesCollection {
             expressions,
             cases,
@@ -5272,7 +5322,7 @@
         state: <span class="kw-2">&amp;mut </span>ParseState,
         lib: <span class="kw-2">&amp;mut </span>FnLib,
         settings: ParseSettings,
-        is_property: bool,
+        options: ChainingFlags,
     ) -&gt; ParseResult&lt;Expr&gt; {
         <span class="kw">let </span>(token, token_pos) = input.peek().expect(NEVER_ENDS);
 
@@ -5354,20 +5404,26 @@
                     </span>.into(),
             )),
             <span class="comment">// Loops are allowed to act as expressions
-            </span>Token::While | Token::Loop <span class="kw">if </span>settings.has_option(LangOptions::LOOP_EXPR) =&gt; {
+            </span>Token::While | Token::Loop
+                <span class="kw">if </span><span class="self">self</span>.allow_looping() &amp;&amp; settings.has_option(LangOptions::LOOP_EXPR) =&gt;
+            {
                 Expr::Stmt(Box::new(
                     <span class="self">self</span>.parse_while_loop(input, state, lib, settings.level_up()<span class="question-mark">?</span>)<span class="question-mark">?
                         </span>.into(),
                 ))
             }
-            Token::Do <span class="kw">if </span>settings.has_option(LangOptions::LOOP_EXPR) =&gt; Expr::Stmt(Box::new(
-                <span class="self">self</span>.parse_do(input, state, lib, settings.level_up()<span class="question-mark">?</span>)<span class="question-mark">?
-                    </span>.into(),
-            )),
-            Token::For <span class="kw">if </span>settings.has_option(LangOptions::LOOP_EXPR) =&gt; Expr::Stmt(Box::new(
-                <span class="self">self</span>.parse_for(input, state, lib, settings.level_up()<span class="question-mark">?</span>)<span class="question-mark">?
-                    </span>.into(),
-            )),
+            Token::Do <span class="kw">if </span><span class="self">self</span>.allow_looping() &amp;&amp; settings.has_option(LangOptions::LOOP_EXPR) =&gt; {
+                Expr::Stmt(Box::new(
+                    <span class="self">self</span>.parse_do(input, state, lib, settings.level_up()<span class="question-mark">?</span>)<span class="question-mark">?
+                        </span>.into(),
+                ))
+            }
+            Token::For <span class="kw">if </span><span class="self">self</span>.allow_looping() &amp;&amp; settings.has_option(LangOptions::LOOP_EXPR) =&gt; {
+                Expr::Stmt(Box::new(
+                    <span class="self">self</span>.parse_for(input, state, lib, settings.level_up()<span class="question-mark">?</span>)<span class="question-mark">?
+                        </span>.into(),
+                ))
+            }
             <span class="comment">// Switch statement is allowed to act as expressions
             </span>Token::Switch <span class="kw">if </span>settings.has_option(LangOptions::SWITCH_EXPR) =&gt; Expr::Stmt(Box::new(
                 <span class="self">self</span>.parse_switch(input, state, lib, settings.level_up()<span class="question-mark">?</span>)<span class="question-mark">?
@@ -5380,7 +5436,7 @@
                 <span class="comment">// Build new parse state
                 </span><span class="kw">let </span>new_interner = <span class="kw-2">&amp;mut </span>StringsInterner::new();
                 <span class="kw">let </span>new_state = <span class="kw-2">&amp;mut </span>ParseState::new(
-                    state.scope,
+                    state.external_constants,
                     new_interner,
                     state.tokenizer_control.clone(),
                 );
@@ -5408,16 +5464,14 @@
                 </span><span class="attr">#[cfg(feature = <span class="string">&quot;no_closure&quot;</span>)]
                 </span><span class="kw">let </span>options = <span class="self">self</span>.options | (settings.options &amp; LangOptions::STRICT_VAR);
 
-                <span class="comment">// Brand new flags, turn on function scope
+                <span class="comment">// Brand new flags, turn on function scope and closure scope
                 </span><span class="kw">let </span>flags = ParseSettingFlags::FN_SCOPE
+                    | ParseSettingFlags::CLOSURE_SCOPE
                     | (settings.flags
                         &amp; (ParseSettingFlags::DISALLOW_UNQUOTED_MAP_PROPERTIES
                             | ParseSettingFlags::DISALLOW_STATEMENTS_IN_BLOCKS));
 
-                <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-                </span><span class="kw">let </span>flags = flags | ParseSettingFlags::CLOSURE_SCOPE; <span class="comment">// turn on closure scope
-
-                </span><span class="kw">let </span>new_settings = ParseSettings {
+                <span class="kw">let </span>new_settings = ParseSettings {
                     flags,
                     options,
                     ..settings
@@ -5440,7 +5494,9 @@
                         &amp;&amp; index.is_none()
                         &amp;&amp; !settings.has_flag(ParseSettingFlags::CLOSURE_SCOPE)
                         &amp;&amp; settings.has_option(LangOptions::STRICT_VAR)
-                        &amp;&amp; !state.scope.contains(name)
+                        &amp;&amp; !state
+                            .external_constants
+                            .map_or(<span class="bool-val">false</span>, |scope| scope.contains(name))
                     {
                         <span class="comment">// If the parent scope is not inside another capturing closure
                         // then we can conclude that the captured variable doesn&#39;t exist.
@@ -5555,14 +5611,12 @@
                     token =&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;Token::Identifier expected but gets {:?}&quot;</span>, token),
                 };
 
-                <span class="kw">match </span>input.peek().expect(NEVER_ENDS).<span class="number">0 </span>{
+                <span class="kw">match </span>input.peek().expect(NEVER_ENDS) {
                     <span class="comment">// Function call
-                    </span>Token::LeftParen | Token::Bang | Token::Unit =&gt; {
-                        <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-                        </span>{
-                            <span class="comment">// Once the identifier consumed we must enable next variables capturing
-                            </span>state.allow_capture = <span class="bool-val">true</span>;
-                        }
+                    </span>(Token::LeftParen | Token::Bang | Token::Unit, <span class="kw">_</span>) =&gt; {
+                        <span class="comment">// Once the identifier consumed we must enable next variables capturing
+                        </span>state.allow_capture = <span class="bool-val">true</span>;
+
                         Expr::Variable(
                             (<span class="prelude-val">None</span>, ns, <span class="number">0</span>, state.get_interned_string(<span class="kw-2">*</span>s)).into(),
                             <span class="prelude-val">None</span>,
@@ -5571,12 +5625,18 @@
                     }
                     <span class="comment">// Namespace qualification
                     </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
-                    </span>Token::DoubleColon =&gt; {
-                        <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-                        </span>{
-                            <span class="comment">// Once the identifier consumed we must enable next variables capturing
-                            </span>state.allow_capture = <span class="bool-val">true</span>;
+                    </span>(token @ Token::DoubleColon, pos) =&gt; {
+                        <span class="kw">if </span>options.contains(ChainingFlags::DISALLOW_NAMESPACES) {
+                            <span class="kw">return </span><span class="prelude-val">Err</span>(LexError::ImproperSymbol(
+                                token.literal_syntax().into(),
+                                String::new(),
+                            )
+                            .into_err(<span class="kw-2">*</span>pos));
                         }
+
+                        <span class="comment">// Once the identifier consumed we must enable next variables capturing
+                        </span>state.allow_capture = <span class="bool-val">true</span>;
+
                         <span class="kw">let </span>name = state.get_interned_string(<span class="kw-2">*</span>s);
                         Expr::Variable((<span class="prelude-val">None</span>, ns, <span class="number">0</span>, name).into(), <span class="prelude-val">None</span>, settings.pos)
                     }
@@ -5584,11 +5644,13 @@
                     </span><span class="kw">_ </span>=&gt; {
                         <span class="kw">let </span>(index, is_func) = state.access_var(<span class="kw-2">&amp;</span>s, lib, settings.pos);
 
-                        <span class="kw">if </span>!is_property
+                        <span class="kw">if </span>!options.contains(ChainingFlags::PROPERTY)
                             &amp;&amp; !is_func
                             &amp;&amp; index.is_none()
                             &amp;&amp; settings.has_option(LangOptions::STRICT_VAR)
-                            &amp;&amp; !state.scope.contains(<span class="kw-2">&amp;</span>s)
+                            &amp;&amp; !state
+                                .external_constants
+                                .map_or(<span class="bool-val">false</span>, |scope| scope.contains(<span class="kw-2">&amp;</span>s))
                         {
                             <span class="kw">return </span><span class="prelude-val">Err</span>(
                                 PERR::VariableUndefined(s.to_string()).into_err(settings.pos)
@@ -5615,7 +5677,9 @@
 
                 <span class="kw">match </span>input.peek().expect(NEVER_ENDS).<span class="number">0 </span>{
                     <span class="comment">// Function call is allowed to have reserved keyword
-                    </span>Token::LeftParen | Token::Bang | Token::Unit <span class="kw">if </span>is_keyword_function(<span class="kw-2">&amp;</span>s).<span class="number">0 </span>=&gt; {
+                    </span>Token::LeftParen | Token::Bang | Token::Unit
+                        <span class="kw">if </span>is_reserved_keyword_or_symbol(<span class="kw-2">&amp;</span>s).<span class="number">1 </span>=&gt;
+                    {
                         Expr::Variable(
                             (<span class="prelude-val">None</span>, ns, <span class="number">0</span>, state.get_interned_string(<span class="kw-2">*</span>s)).into(),
                             <span class="prelude-val">None</span>,
@@ -5654,7 +5718,14 @@
             <span class="kw">return </span><span class="prelude-val">Ok</span>(root_expr);
         }
 
-        <span class="self">self</span>.parse_postfix(input, state, lib, settings, root_expr)
+        <span class="self">self</span>.parse_postfix(
+            input,
+            state,
+            lib,
+            settings,
+            root_expr,
+            ChainingFlags::empty(),
+        )
     }
 
     <span class="doccomment">/// Tail processing of all possible postfix operators of a primary expression.
@@ -5665,6 +5736,7 @@
         lib: <span class="kw-2">&amp;mut </span>FnLib,
         settings: ParseSettings,
         <span class="kw-2">mut </span>lhs: Expr,
+        _options: ChainingFlags,
     ) -&gt; ParseResult&lt;Expr&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>settings = settings;
 
@@ -5711,6 +5783,7 @@
 
                     <span class="kw">let </span>(.., ns, <span class="kw">_</span>, name) = <span class="kw-2">*</span>x;
                     settings.pos = pos;
+
                     <span class="self">self</span>.parse_fn_call(input, state, lib, settings, name, no_args, <span class="bool-val">true</span>, ns)<span class="question-mark">?
                 </span>}
                 <span class="comment">// Function call
@@ -5718,8 +5791,20 @@
                     <span class="kw">let </span>(.., ns, <span class="kw">_</span>, name) = <span class="kw-2">*</span>x;
                     <span class="kw">let </span>no_args = t == Token::Unit;
                     settings.pos = pos;
+
                     <span class="self">self</span>.parse_fn_call(input, state, lib, settings, name, no_args, <span class="bool-val">false</span>, ns)<span class="question-mark">?
                 </span>}
+                <span class="comment">// Disallowed module separator
+                </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
+                </span>(<span class="kw">_</span>, token @ Token::DoubleColon)
+                    <span class="kw">if </span>_options.contains(ChainingFlags::DISALLOW_NAMESPACES) =&gt;
+                {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(LexError::ImproperSymbol(
+                        token.literal_syntax().into(),
+                        String::new(),
+                    )
+                    .into_err(tail_pos))
+                }
                 <span class="comment">// module access
                 </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
                 </span>(Expr::Variable(x, .., pos), Token::DoubleColon) =&gt; {
@@ -5729,11 +5814,9 @@
 
                     namespace.push(var_name_def);
 
-                    Expr::Variable(
-                        (<span class="prelude-val">None</span>, namespace, <span class="number">0</span>, state.get_interned_string(id2)).into(),
-                        <span class="prelude-val">None</span>,
-                        pos2,
-                    )
+                    <span class="kw">let </span>var_name = state.get_interned_string(id2);
+
+                    Expr::Variable((<span class="prelude-val">None</span>, namespace, <span class="number">0</span>, var_name).into(), <span class="prelude-val">None</span>, pos2)
                 }
                 <span class="comment">// Indexing
                 </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_index&quot;</span>))]
@@ -5752,25 +5835,25 @@
                     <span class="comment">// Expression after dot must start with an identifier
                     </span><span class="kw">match </span>input.peek().expect(NEVER_ENDS) {
                         (Token::Identifier(..), ..) =&gt; {
-                            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_closure&quot;</span>))]
-                            </span>{
-                                <span class="comment">// Prevents capturing of the object properties as vars: xxx.&lt;var&gt;
-                                </span>state.allow_capture = <span class="bool-val">false</span>;
-                            }
+                            <span class="comment">// Prevents capturing of the object properties as vars: xxx.&lt;var&gt;
+                            </span>state.allow_capture = <span class="bool-val">false</span>;
                         }
-                        (Token::Reserved(s), ..) <span class="kw">if </span>is_keyword_function(s).<span class="number">1 </span>=&gt; (),
+                        (Token::Reserved(s), ..) <span class="kw">if </span>is_reserved_keyword_or_symbol(s).<span class="number">2 </span>=&gt; (),
                         (Token::Reserved(s), pos) =&gt; {
                             <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::Reserved(s.to_string()).into_err(<span class="kw-2">*</span>pos))
                         }
                         (.., pos) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::PropertyExpected.into_err(<span class="kw-2">*</span>pos)),
                     }
 
-                    <span class="kw">let </span>rhs = <span class="self">self</span>.parse_primary(input, state, lib, settings.level_up()<span class="question-mark">?</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
                     <span class="kw">let </span>op_flags = <span class="kw">match </span>op {
                         Token::Period =&gt; ASTFlags::NONE,
                         Token::Elvis =&gt; ASTFlags::NEGATED,
                         <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">&quot;`.` or `?.`&quot;</span>),
                     };
+                    <span class="kw">let </span>options = ChainingFlags::PROPERTY | ChainingFlags::DISALLOW_NAMESPACES;
+                    <span class="kw">let </span>rhs =
+                        <span class="self">self</span>.parse_primary(input, state, lib, settings.level_up()<span class="question-mark">?</span>, options)<span class="question-mark">?</span>;
+
                     <span class="self">Self</span>::make_dot_expr(state, expr, rhs, ASTFlags::NONE, op_flags, tail_pos)<span class="question-mark">?
                 </span>}
                 <span class="comment">// Unknown postfix operator
@@ -5876,14 +5959,14 @@
 
                     <span class="comment">// Call negative function
                     </span>expr =&gt; {
-                        <span class="kw">let </span><span class="kw-2">mut </span>args = StaticVec::new_const();
+                        <span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::new_const();
                         args.push(expr);
                         args.shrink_to_fit();
 
                         <span class="prelude-val">Ok</span>(FnCallExpr {
                             namespace: Namespace::NONE,
                             name: state.get_interned_string(<span class="string">&quot;-&quot;</span>),
-                            hashes: FnCallHashes::from_native(calc_fn_hash(<span class="prelude-val">None</span>, <span class="string">&quot;-&quot;</span>, <span class="number">1</span>)),
+                            hashes: FnCallHashes::from_native_only(calc_fn_hash(<span class="prelude-val">None</span>, <span class="string">&quot;-&quot;</span>, <span class="number">1</span>)),
                             args,
                             op_token: <span class="prelude-val">Some</span>(token),
                             capture_parent_scope: <span class="bool-val">false</span>,
@@ -5904,14 +5987,14 @@
 
                     <span class="comment">// Call plus function
                     </span>expr =&gt; {
-                        <span class="kw">let </span><span class="kw-2">mut </span>args = StaticVec::new_const();
+                        <span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::new_const();
                         args.push(expr);
                         args.shrink_to_fit();
 
                         <span class="prelude-val">Ok</span>(FnCallExpr {
                             namespace: Namespace::NONE,
                             name: state.get_interned_string(<span class="string">&quot;+&quot;</span>),
-                            hashes: FnCallHashes::from_native(calc_fn_hash(<span class="prelude-val">None</span>, <span class="string">&quot;+&quot;</span>, <span class="number">1</span>)),
+                            hashes: FnCallHashes::from_native_only(calc_fn_hash(<span class="prelude-val">None</span>, <span class="string">&quot;+&quot;</span>, <span class="number">1</span>)),
                             args,
                             op_token: <span class="prelude-val">Some</span>(token),
                             capture_parent_scope: <span class="bool-val">false</span>,
@@ -5925,14 +6008,14 @@
                 <span class="kw">let </span>token = token.clone();
                 <span class="kw">let </span>pos = eat_token(input, Token::Bang);
 
-                <span class="kw">let </span><span class="kw-2">mut </span>args = StaticVec::new_const();
+                <span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::new_const();
                 args.push(<span class="self">self</span>.parse_unary(input, state, lib, settings.level_up()<span class="question-mark">?</span>)<span class="question-mark">?</span>);
                 args.shrink_to_fit();
 
                 <span class="prelude-val">Ok</span>(FnCallExpr {
                     namespace: Namespace::NONE,
                     name: state.get_interned_string(<span class="string">&quot;!&quot;</span>),
-                    hashes: FnCallHashes::from_native(calc_fn_hash(<span class="prelude-val">None</span>, <span class="string">&quot;!&quot;</span>, <span class="number">1</span>)),
+                    hashes: FnCallHashes::from_native_only(calc_fn_hash(<span class="prelude-val">None</span>, <span class="string">&quot;!&quot;</span>, <span class="number">1</span>)),
                     args,
                     op_token: <span class="prelude-val">Some</span>(token),
                     capture_parent_scope: <span class="bool-val">false</span>,
@@ -5942,7 +6025,7 @@
             <span class="comment">// &lt;EOF&gt;
             </span>Token::EOF =&gt; <span class="prelude-val">Err</span>(PERR::UnexpectedEOF.into_err(settings.pos)),
             <span class="comment">// All other tokens
-            </span><span class="kw">_ </span>=&gt; <span class="self">self</span>.parse_primary(input, state, lib, settings, <span class="bool-val">false</span>),
+            </span><span class="kw">_ </span>=&gt; <span class="self">self</span>.parse_primary(input, state, lib, settings, ChainingFlags::empty()),
         }
     }
 
@@ -6041,11 +6124,13 @@
                 }
             }
             <span class="comment">// ??? &amp;&amp; ??? = rhs, ??? || ??? = rhs, xxx ?? xxx = rhs
-            </span>Expr::And(..) | Expr::Or(..) | Expr::Coalesce(..) =&gt; <span class="prelude-val">Err</span>(LexError::ImproperSymbol(
-                <span class="string">&quot;=&quot;</span>.into(),
-                <span class="string">&quot;Possibly a typo of &#39;==&#39;?&quot;</span>.into(),
-            )
-            .into_err(op_pos)),
+            </span>Expr::And(..) | Expr::Or(..) | Expr::Coalesce(..) <span class="kw">if </span>!op_info.is_op_assignment() =&gt; {
+                <span class="prelude-val">Err</span>(LexError::ImproperSymbol(
+                    Token::Equals.literal_syntax().into(),
+                    <span class="string">&quot;Possibly a typo of &#39;==&#39;?&quot;</span>.into(),
+                )
+                .into_err(op_pos))
+            }
             <span class="comment">// expr = rhs
             </span><span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(PERR::AssignmentToInvalidLHS(String::new()).into_err(lhs.position())),
         }
@@ -6062,8 +6147,10 @@
         op_pos: Position,
     ) -&gt; ParseResult&lt;Expr&gt; {
         <span class="kw">match </span>(lhs, rhs) {
-            <span class="comment">// lhs[idx_expr].rhs
-            </span>(Expr::Index(<span class="kw-2">mut </span>x, options, pos), rhs) =&gt; {
+            <span class="comment">// lhs[...][...].rhs
+            </span>(Expr::Index(<span class="kw-2">mut </span>x, options, pos), rhs)
+                <span class="kw">if </span>!parent_options.contains(ASTFlags::BREAK) =&gt;
+            {
                 <span class="kw">let </span>options = options | parent_options;
                 x.rhs = <span class="self">Self</span>::make_dot_expr(state, x.rhs, rhs, options, op_flags, op_pos)<span class="question-mark">?</span>;
                 <span class="prelude-val">Ok</span>(Expr::Index(x, ASTFlags::NONE, pos))
@@ -6107,14 +6194,21 @@
             <span class="comment">// lhs.func(...)
             </span>(lhs, Expr::FnCall(<span class="kw-2">mut </span>f, func_pos)) =&gt; {
                 <span class="comment">// Recalculate hash
-                </span>f.hashes = <span class="kw">if </span>is_valid_function_name(<span class="kw-2">&amp;</span>f.name) {
-                    FnCallHashes::from_all(
-                        <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                        </span>calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, f.args.len()),
-                        calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, f.args.len() + <span class="number">1</span>),
-                    )
+                </span><span class="kw">let </span>args_len = f.args.len() + <span class="number">1</span>;
+                f.hashes = <span class="kw">if </span>is_valid_function_name(<span class="kw-2">&amp;</span>f.name) {
+                    <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+                    </span>{
+                        FnCallHashes::from_script_and_native(
+                            calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, args_len - <span class="number">1</span>),
+                            calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, args_len),
+                        )
+                    }
+                    <span class="attr">#[cfg(feature = <span class="string">&quot;no_function&quot;</span>)]
+                    </span>{
+                        FnCallHashes::from_native_only(calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, args_len))
+                    }
                 } <span class="kw">else </span>{
-                    FnCallHashes::from_native(calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, f.args.len() + <span class="number">1</span>))
+                    FnCallHashes::from_native_only(calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, args_len))
                 };
 
                 <span class="kw">let </span>rhs = Expr::MethodCall(f, func_pos);
@@ -6155,14 +6249,23 @@
                     <span class="comment">// lhs.func().dot_rhs or lhs.func()[idx_rhs]
                     </span>Expr::FnCall(<span class="kw-2">mut </span>f, func_pos) =&gt; {
                         <span class="comment">// Recalculate hash
-                        </span>f.hashes = <span class="kw">if </span>is_valid_function_name(<span class="kw-2">&amp;</span>f.name) {
-                            FnCallHashes::from_all(
-                                <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
-                                </span>calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, f.args.len()),
-                                calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, f.args.len() + <span class="number">1</span>),
-                            )
+                        </span><span class="kw">let </span>args_len = f.args.len() + <span class="number">1</span>;
+                        f.hashes = <span class="kw">if </span>is_valid_function_name(<span class="kw-2">&amp;</span>f.name) {
+                            <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
+                            </span>{
+                                FnCallHashes::from_script_and_native(
+                                    calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, args_len - <span class="number">1</span>),
+                                    calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, args_len),
+                                )
+                            }
+                            <span class="attr">#[cfg(feature = <span class="string">&quot;no_function&quot;</span>)]
+                            </span>{
+                                FnCallHashes::from_native_only(calc_fn_hash(
+                                    <span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, args_len,
+                                ))
+                            }
                         } <span class="kw">else </span>{
-                            FnCallHashes::from_native(calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, f.args.len() + <span class="number">1</span>))
+                            FnCallHashes::from_native_only(calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>f.name, args_len))
                         };
 
                         <span class="kw">let </span>new_lhs = BinaryExpr {
@@ -6263,14 +6366,9 @@
 
             <span class="kw">let </span>op = op_token.to_string();
             <span class="kw">let </span>hash = calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>op, <span class="number">2</span>);
-            <span class="kw">let </span>is_valid_script_function = is_valid_function_name(<span class="kw-2">&amp;</span>op);
-            <span class="kw">let </span>operator_token = <span class="kw">if </span>is_valid_script_function {
-                <span class="prelude-val">None
-            </span>} <span class="kw">else </span>{
-                <span class="prelude-val">Some</span>(op_token.clone())
-            };
+            <span class="kw">let </span>native_only = !is_valid_function_name(<span class="kw-2">&amp;</span>op);
 
-            <span class="kw">let </span><span class="kw-2">mut </span>args = StaticVec::new_const();
+            <span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::new_const();
             args.push(root);
             args.push(rhs);
             args.shrink_to_fit();
@@ -6278,9 +6376,9 @@
             <span class="kw">let </span><span class="kw-2">mut </span>op_base = FnCallExpr {
                 namespace: Namespace::NONE,
                 name: state.get_interned_string(<span class="kw-2">&amp;</span>op),
-                hashes: FnCallHashes::from_native(hash),
+                hashes: FnCallHashes::from_native_only(hash),
                 args,
-                op_token: operator_token,
+                op_token: native_only.then(|| op_token.clone()),
                 capture_parent_scope: <span class="bool-val">false</span>,
             };
 
@@ -6321,7 +6419,7 @@
                     op_base.args.shrink_to_fit();
 
                     <span class="comment">// Convert into a call to `contains`
-                    </span>op_base.hashes = calc_fn_hash(<span class="prelude-val">None</span>, OP_CONTAINS, <span class="number">2</span>).into();
+                    </span>op_base.hashes = FnCallHashes::from_hash(calc_fn_hash(<span class="prelude-val">None</span>, OP_CONTAINS, <span class="number">2</span>));
                     op_base.name = state.get_interned_string(OP_CONTAINS);
                     <span class="kw">let </span>fn_call = op_base.into_fn_call_expr(pos);
 
@@ -6329,14 +6427,13 @@
                         fn_call
                     } <span class="kw">else </span>{
                         <span class="comment">// Put a `!` call in front
-                        </span><span class="kw">let </span>op = Token::Bang.literal_syntax();
-                        <span class="kw">let </span><span class="kw-2">mut </span>args = StaticVec::new_const();
+                        </span><span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::new_const();
                         args.push(fn_call);
 
                         <span class="kw">let </span>not_base = FnCallExpr {
                             namespace: Namespace::NONE,
-                            name: state.get_interned_string(op),
-                            hashes: FnCallHashes::from_native(calc_fn_hash(<span class="prelude-val">None</span>, op, <span class="number">1</span>)),
+                            name: state.get_interned_string(OP_NOT),
+                            hashes: FnCallHashes::from_native_only(calc_fn_hash(<span class="prelude-val">None</span>, OP_NOT, <span class="number">1</span>)),
                             args,
                             op_token: <span class="prelude-val">Some</span>(Token::Bang),
                             capture_parent_scope: <span class="bool-val">false</span>,
@@ -6353,10 +6450,10 @@
                         .and_then(|m| m.get(s.as_str()))
                         .map_or(<span class="bool-val">false</span>, Option::is_some) =&gt;
                 {
-                    op_base.hashes = <span class="kw">if </span>is_valid_script_function {
-                        calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>s, <span class="number">2</span>).into()
+                    op_base.hashes = <span class="kw">if </span>native_only {
+                        FnCallHashes::from_native_only(calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>s, <span class="number">2</span>))
                     } <span class="kw">else </span>{
-                        FnCallHashes::from_native(calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>s, <span class="number">2</span>))
+                        FnCallHashes::from_hash(calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>s, <span class="number">2</span>))
                     };
                     op_base.into_fn_call_expr(pos)
                 }
@@ -6696,7 +6793,7 @@
         };
 
         <span class="kw">if </span>!orig_breakable {
-            settings.flags &amp;= !ParseSettingFlags::BREAKABLE;
+            settings.flags.remove(ParseSettingFlags::BREAKABLE);
         }
 
         ensure_not_statement_expr(input, <span class="string">&quot;a boolean&quot;</span>)<span class="question-mark">?</span>;
@@ -6992,9 +7089,8 @@
         <span class="kw">let </span>(id, id_pos) = parse_var_name(input)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>(alias, alias_pos) = <span class="kw">if </span>match_token(input, Token::As).<span class="number">0 </span>{
-            <span class="kw">let </span>(name, pos) = parse_var_name(input)<span class="question-mark">?</span>;
-            (<span class="prelude-val">Some</span>(name), pos)
-        } <span class="kw">else </span>{
+            parse_var_name(input).map(|(name, pos)| (<span class="prelude-val">Some</span>(name), pos))<span class="question-mark">?
+        </span>} <span class="kw">else </span>{
             (<span class="prelude-val">None</span>, Position::NONE)
         };
 
@@ -7073,7 +7169,7 @@
             }
 
             <span class="comment">// Parse statements inside the block
-            </span>settings.flags &amp;= !ParseSettingFlags::GLOBAL_LEVEL;
+            </span>settings.flags.remove(ParseSettingFlags::GLOBAL_LEVEL);
 
             <span class="kw">let </span>stmt = <span class="self">self</span>.parse_stmt(input, state, lib, settings)<span class="question-mark">?</span>;
 
@@ -7262,7 +7358,7 @@
                     (Token::Fn, pos) =&gt; {
                         <span class="comment">// Build new parse state
                         </span><span class="kw">let </span>new_state = <span class="kw-2">&amp;mut </span>ParseState::new(
-                            state.scope,
+                            state.external_constants,
                             state.interned_strings,
                             state.tokenizer_control.clone(),
                         );
@@ -7487,7 +7583,9 @@
         <span class="comment">// try { try_block } catch ( var ) { catch_block }
         </span><span class="kw">let </span>branch = <span class="self">self</span>.parse_block(input, state, lib, settings)<span class="question-mark">?</span>.into();
 
-        <span class="kw">let </span>expr = <span class="kw">if </span>!catch_var.is_empty() {
+        <span class="kw">let </span>expr = <span class="kw">if </span>catch_var.is_empty() {
+            Expr::Unit(catch_var.pos)
+        } <span class="kw">else </span>{
             <span class="comment">// Remove the error variable from the stack
             </span>state.stack.as_deref_mut().unwrap().pop();
 
@@ -7496,12 +7594,10 @@
                 <span class="prelude-val">None</span>,
                 catch_var.pos,
             )
-        } <span class="kw">else </span>{
-            Expr::Unit(catch_var.pos)
         };
 
         <span class="prelude-val">Ok</span>(Stmt::TryCatch(
-            FlowControl { body, expr, branch }.into(),
+            FlowControl { expr, body, branch }.into(),
             settings.pos,
         ))
     }
@@ -7619,7 +7715,7 @@
         }
 
         <span class="kw">let </span>num_externals = externals.len();
-        <span class="kw">let </span><span class="kw-2">mut </span>args = StaticVec::with_capacity(externals.len() + <span class="number">1</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>args = FnArgsVec::with_capacity(externals.len() + <span class="number">1</span>);
 
         args.push(fn_expr);
 
@@ -7636,7 +7732,7 @@
         <span class="kw">let </span>expr = FnCallExpr {
             namespace: Namespace::NONE,
             name: state.get_interned_string(<span class="kw">crate</span>::engine::KEYWORD_FN_PTR_CURRY),
-            hashes: FnCallHashes::from_native(calc_fn_hash(
+            hashes: FnCallHashes::from_native_only(calc_fn_hash(
                 <span class="prelude-val">None</span>,
                 <span class="kw">crate</span>::engine::KEYWORD_FN_PTR_CURRY,
                 num_externals + <span class="number">1</span>,
@@ -7699,7 +7795,7 @@
                     (.., pos) =&gt; {
                         <span class="kw">return </span><span class="prelude-val">Err</span>(PERR::MissingToken(
                             Token::Pipe.into(),
-                            <span class="string">&quot;to close the parameters list of anonymous function&quot;</span>.into(),
+                            <span class="string">&quot;to close the parameters list of anonymous function or closure&quot;</span>.into(),
                         )
                         .into_err(pos))
                     }
@@ -7812,7 +7908,7 @@
 
         <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_optimize&quot;</span>))]
         </span><span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">self</span>.optimize_into_ast(
-            state.scope,
+            state.external_constants,
             statements,
             <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             </span>functions.into_iter().map(|(.., v)| v).collect(),
@@ -7898,7 +7994,7 @@
 
         <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_optimize&quot;</span>))]
         </span><span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">self</span>.optimize_into_ast(
-            state.scope,
+            state.external_constants,
             statements,
             <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
             </span>_lib,
@@ -7910,9 +8006,9 @@
         </span>{
             <span class="kw">let </span><span class="kw-2">mut </span>m = <span class="kw">crate</span>::Module::new();
 
-            <span class="kw">for </span>fn_def <span class="kw">in </span>_lib {
+            _lib.into_iter().for_each(|fn_def| {
                 m.set_script_fn(fn_def);
-            }
+            });
 
             <span class="kw">return </span><span class="prelude-val">Ok</span>(AST::new(statements, m));
         }
@@ -7927,4 +8023,4 @@
     }
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

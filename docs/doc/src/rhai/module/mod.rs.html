@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.12.0/src/module/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/rhai-1.13.0/src/module/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-be46fdc453a55015.css"><script src="../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../rhai/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2465,6 +2465,65 @@
 <a href="#2465" id="2465">2465</a>
 <a href="#2466" id="2466">2466</a>
 <a href="#2467" id="2467">2467</a>
+<a href="#2468" id="2468">2468</a>
+<a href="#2469" id="2469">2469</a>
+<a href="#2470" id="2470">2470</a>
+<a href="#2471" id="2471">2471</a>
+<a href="#2472" id="2472">2472</a>
+<a href="#2473" id="2473">2473</a>
+<a href="#2474" id="2474">2474</a>
+<a href="#2475" id="2475">2475</a>
+<a href="#2476" id="2476">2476</a>
+<a href="#2477" id="2477">2477</a>
+<a href="#2478" id="2478">2478</a>
+<a href="#2479" id="2479">2479</a>
+<a href="#2480" id="2480">2480</a>
+<a href="#2481" id="2481">2481</a>
+<a href="#2482" id="2482">2482</a>
+<a href="#2483" id="2483">2483</a>
+<a href="#2484" id="2484">2484</a>
+<a href="#2485" id="2485">2485</a>
+<a href="#2486" id="2486">2486</a>
+<a href="#2487" id="2487">2487</a>
+<a href="#2488" id="2488">2488</a>
+<a href="#2489" id="2489">2489</a>
+<a href="#2490" id="2490">2490</a>
+<a href="#2491" id="2491">2491</a>
+<a href="#2492" id="2492">2492</a>
+<a href="#2493" id="2493">2493</a>
+<a href="#2494" id="2494">2494</a>
+<a href="#2495" id="2495">2495</a>
+<a href="#2496" id="2496">2496</a>
+<a href="#2497" id="2497">2497</a>
+<a href="#2498" id="2498">2498</a>
+<a href="#2499" id="2499">2499</a>
+<a href="#2500" id="2500">2500</a>
+<a href="#2501" id="2501">2501</a>
+<a href="#2502" id="2502">2502</a>
+<a href="#2503" id="2503">2503</a>
+<a href="#2504" id="2504">2504</a>
+<a href="#2505" id="2505">2505</a>
+<a href="#2506" id="2506">2506</a>
+<a href="#2507" id="2507">2507</a>
+<a href="#2508" id="2508">2508</a>
+<a href="#2509" id="2509">2509</a>
+<a href="#2510" id="2510">2510</a>
+<a href="#2511" id="2511">2511</a>
+<a href="#2512" id="2512">2512</a>
+<a href="#2513" id="2513">2513</a>
+<a href="#2514" id="2514">2514</a>
+<a href="#2515" id="2515">2515</a>
+<a href="#2516" id="2516">2516</a>
+<a href="#2517" id="2517">2517</a>
+<a href="#2518" id="2518">2518</a>
+<a href="#2519" id="2519">2519</a>
+<a href="#2520" id="2520">2520</a>
+<a href="#2521" id="2521">2521</a>
+<a href="#2522" id="2522">2522</a>
+<a href="#2523" id="2523">2523</a>
+<a href="#2524" id="2524">2524</a>
+<a href="#2525" id="2525">2525</a>
+<a href="#2526" id="2526">2526</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Module defining external-loaded modules for Rhai.
 
 </span><span class="attr">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
@@ -2552,7 +2611,7 @@
     </span><span class="kw">pub </span>return_type: Identifier,
     <span class="doccomment">/// Comments.
     </span><span class="attr">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
-    </span><span class="kw">pub </span>comments: Box&lt;[Identifier]&gt;,
+    </span><span class="kw">pub </span>comments: Box&lt;[SmartString]&gt;,
 }
 
 <span class="doccomment">/// A type containing a single registered function.
@@ -2612,7 +2671,7 @@
     }
 }
 
-<span class="doccomment">/// _(internals)_ Calculate a non-zero [`u64`] hash key from a namespace-qualified function name and parameter types.
+<span class="doccomment">/// _(internals)_ Calculate a [`u64`] hash key from a namespace-qualified function name and parameter types.
 /// Exported under the `internals` feature only.
 ///
 /// Module names are passed in via `&amp;str` references from an iterator.
@@ -2700,7 +2759,7 @@
                     </span>.modules
                     .as_deref()
                     .into_iter()
-                    .flat_map(|m| m.keys())
+                    .flat_map(BTreeMap::keys)
                     .map(SmartString::as_str)
                     .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
             )
@@ -2757,6 +2816,11 @@
     </span><span class="kw">fn </span>add_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: M) {
         <span class="self">self</span>.combine(rhs.into());
     }
+}
+
+<span class="attr">#[inline(always)]
+</span><span class="kw">fn </span>new_hash_map&lt;T&gt;(size: usize) -&gt; StraightHashMap&lt;T&gt; {
+    StraightHashMap::with_capacity_and_hasher(size, Default::default())
 }
 
 <span class="kw">impl </span>Module {
@@ -2828,13 +2892,7 @@
     </span><span class="attr">#[inline(always)]
     </span><span class="kw">pub fn </span>set_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, id: <span class="kw">impl </span>Into&lt;ImmutableString&gt;) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">let </span>id = id.into();
-
-        <span class="kw">if </span>id.is_empty() {
-            <span class="self">self</span>.id = <span class="prelude-val">None</span>;
-        } <span class="kw">else </span>{
-            <span class="self">self</span>.id = <span class="prelude-val">Some</span>(id);
-        }
-
+        <span class="self">self</span>.id = (!id.is_empty()).then(|| id);
         <span class="self">self
     </span>}
 
@@ -2929,7 +2987,8 @@
         <span class="self">self</span>.dynamic_functions_filter = <span class="prelude-val">None</span>;
         <span class="self">self</span>.type_iterators = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_type_iterators = <span class="prelude-val">None</span>;
-        <span class="self">self</span>.flags &amp;= !ModuleFlags::INDEXED &amp; !ModuleFlags::INDEXED_GLOBAL_FUNCTIONS;
+        <span class="self">self</span>.flags
+            .remove(ModuleFlags::INDEXED | ModuleFlags::INDEXED_GLOBAL_FUNCTIONS);
     }
 
     <span class="doccomment">/// Map a custom type to a friendly display name.
@@ -3157,6 +3216,16 @@
 
         <span class="kw">if </span><span class="self">self</span>.is_indexed() {
             <span class="kw">let </span>hash_var = <span class="kw">crate</span>::calc_var_hash(<span class="prelude-val">Some</span>(<span class="string">&quot;&quot;</span>), <span class="kw-2">&amp;</span>ident);
+
+            <span class="comment">// Catch hash collisions in testing environment only.
+            </span><span class="attr">#[cfg(feature = <span class="string">&quot;testing-environ&quot;</span>)]
+            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw">_</span>) = <span class="self">self</span>.all_variables.as_ref().and_then(|f| f.get(<span class="kw-2">&amp;</span>hash_var)) {
+                <span class="macro">panic!</span>(
+                    <span class="string">&quot;Hash {} already exists when registering variable {}&quot;</span>,
+                    hash_var, ident
+                );
+            }
+
             <span class="self">self</span>.all_variables
                 .get_or_insert_with(Default::default)
                 .insert(hash_var, value.clone());
@@ -3187,12 +3256,21 @@
         <span class="comment">// None + function name + number of arguments.
         </span><span class="kw">let </span>num_params = fn_def.params.len();
         <span class="kw">let </span>hash_script = <span class="kw">crate</span>::calc_fn_hash(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>fn_def.name, num_params);
+
+        <span class="comment">// Catch hash collisions in testing environment only.
+        </span><span class="attr">#[cfg(feature = <span class="string">&quot;testing-environ&quot;</span>)]
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(f) = <span class="self">self</span>.functions.as_ref().and_then(|f| f.get(<span class="kw-2">&amp;</span>hash_script)) {
+            <span class="macro">panic!</span>(
+                <span class="string">&quot;Hash {} already exists when registering function {:#?}:\n{:#?}&quot;</span>,
+                hash_script, fn_def, f
+            );
+        }
+
         <span class="attr">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
         </span><span class="kw">let </span>params_info = fn_def.params.iter().map(Into::into).collect();
+
         <span class="self">self</span>.functions
-            .get_or_insert_with(|| {
-                StraightHashMap::with_capacity_and_hasher(FN_MAP_SIZE, Default::default())
-            })
+            .get_or_insert_with(|| new_hash_map(FN_MAP_SIZE))
             .insert(
                 hash_script,
                 FuncInfo {
@@ -3213,7 +3291,8 @@
                     func: fn_def.into(),
                 },
             );
-        <span class="self">self</span>.flags &amp;= !ModuleFlags::INDEXED &amp; !ModuleFlags::INDEXED_GLOBAL_FUNCTIONS;
+        <span class="self">self</span>.flags
+            .remove(ModuleFlags::INDEXED | ModuleFlags::INDEXED_GLOBAL_FUNCTIONS);
         hash_script
     }
 
@@ -3252,7 +3331,8 @@
         </span><span class="self">self</span>.all_functions = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_variables = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_type_iterators = <span class="prelude-val">None</span>;
-        <span class="self">self</span>.flags &amp;= !ModuleFlags::INDEXED &amp; !ModuleFlags::INDEXED_GLOBAL_FUNCTIONS;
+        <span class="self">self</span>.flags
+            .remove(ModuleFlags::INDEXED | ModuleFlags::INDEXED_GLOBAL_FUNCTIONS);
 
         <span class="self">self</span>.modules.get_or_insert_with(Default::default)
     }
@@ -3318,7 +3398,8 @@
         <span class="self">self</span>.modules
             .get_or_insert_with(Default::default)
             .insert(name.into(), sub_module.into());
-        <span class="self">self</span>.flags &amp;= !ModuleFlags::INDEXED &amp; !ModuleFlags::INDEXED_GLOBAL_FUNCTIONS;
+        <span class="self">self</span>.flags
+            .remove(ModuleFlags::INDEXED | ModuleFlags::INDEXED_GLOBAL_FUNCTIONS);
         <span class="self">self
     </span>}
 
@@ -3429,7 +3510,8 @@
     </span><span class="kw">pub fn </span>update_fn_namespace(<span class="kw-2">&amp;mut </span><span class="self">self</span>, hash_fn: u64, namespace: FnNamespace) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if let </span><span class="prelude-val">Some</span>(f) = <span class="self">self</span>.functions.as_mut().and_then(|m| m.get_mut(<span class="kw-2">&amp;</span>hash_fn)) {
             f.metadata.namespace = namespace;
-            <span class="self">self</span>.flags &amp;= !ModuleFlags::INDEXED &amp; !ModuleFlags::INDEXED_GLOBAL_FUNCTIONS;
+            <span class="self">self</span>.flags
+                .remove(ModuleFlags::INDEXED | ModuleFlags::INDEXED_GLOBAL_FUNCTIONS);
         }
         <span class="self">self
     </span>}
@@ -3453,7 +3535,7 @@
         type_id
     }
 
-    <span class="doccomment">/// Set a Rust function into the [`Module`], returning a non-zero hash key.
+    <span class="doccomment">/// Set a Rust function into the [`Module`], returning a [`u64`] hash key.
     ///
     /// If there is an existing Rust function of the same hash, it is replaced.
     ///
@@ -3514,6 +3596,15 @@
         <span class="kw">let </span>hash_script = calc_fn_hash(<span class="prelude-val">None</span>, name, param_types.len());
         <span class="kw">let </span>hash_fn = calc_fn_hash_full(hash_script, param_types.iter().copied());
 
+        <span class="comment">// Catch hash collisions in testing environment only.
+        </span><span class="attr">#[cfg(feature = <span class="string">&quot;testing-environ&quot;</span>)]
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(f) = <span class="self">self</span>.functions.as_ref().and_then(|f| f.get(<span class="kw-2">&amp;</span>hash_script)) {
+            <span class="macro">panic!</span>(
+                <span class="string">&quot;Hash {} already exists when registering function {}:\n{:#?}&quot;</span>,
+                hash_script, name, f
+            );
+        }
+
         <span class="kw">if </span>is_dynamic {
             <span class="self">self</span>.dynamic_functions_filter
                 .get_or_insert_with(Default::default)
@@ -3521,9 +3612,7 @@
         }
 
         <span class="self">self</span>.functions
-            .get_or_insert_with(|| {
-                StraightHashMap::with_capacity_and_hasher(FN_MAP_SIZE, Default::default())
-            })
+            .get_or_insert_with(|| new_hash_map(FN_MAP_SIZE))
             .insert(
                 hash_fn,
                 FuncInfo {
@@ -3545,12 +3634,13 @@
                 },
             );
 
-        <span class="self">self</span>.flags &amp;= !ModuleFlags::INDEXED &amp; !ModuleFlags::INDEXED_GLOBAL_FUNCTIONS;
+        <span class="self">self</span>.flags
+            .remove(ModuleFlags::INDEXED | ModuleFlags::INDEXED_GLOBAL_FUNCTIONS);
 
         hash_fn
     }
 
-    <span class="doccomment">/// _(metadata)_ Set a Rust function into the [`Module`], returning a non-zero hash key.
+    <span class="doccomment">/// _(metadata)_ Set a Rust function into the [`Module`], returning a [`u64`] hash key.
     /// Exported under the `metadata` feature only.
     ///
     /// If there is an existing Rust function of the same hash, it is replaced.
@@ -3605,7 +3695,7 @@
 
     <span class="doccomment">/// Set a Rust function taking a reference to the scripting [`Engine`][crate::Engine],
     /// the current set of functions, plus a list of mutable [`Dynamic`] references
-    /// into the [`Module`], returning a non-zero hash key.
+    /// into the [`Module`], returning a [`u64`] hash key.
     ///
     /// Use this to register a built-in function which must reference settings on the scripting
     /// [`Engine`][crate::Engine] (e.g. to prevent growing an array beyond the allowed maximum size),
@@ -3695,7 +3785,7 @@
         )
     }
 
-    <span class="doccomment">/// Set a Rust function into the [`Module`], returning a non-zero hash key.
+    <span class="doccomment">/// Set a Rust function into the [`Module`], returning a [`u64`] hash key.
     ///
     /// If there is a similar existing Rust function, it is replaced.
     ///
@@ -3748,7 +3838,7 @@
         )
     }
 
-    <span class="doccomment">/// Set a Rust getter function taking one mutable parameter, returning a non-zero hash key.
+    <span class="doccomment">/// Set a Rust getter function taking one mutable parameter, returning a [`u64`] hash key.
     /// This function is automatically exposed to the global namespace.
     ///
     /// If there is a similar existing Rust getter function, it is replaced.
@@ -3788,7 +3878,7 @@
     }
 
     <span class="doccomment">/// Set a Rust setter function taking two parameters (the first one mutable) into the [`Module`],
-    /// returning a non-zero hash key.
+    /// returning a [`u64`] hash key.
     /// This function is automatically exposed to the global namespace.
     ///
     /// If there is a similar existing setter Rust function, it is replaced.
@@ -3831,7 +3921,7 @@
         )
     }
 
-    <span class="doccomment">/// Set a pair of Rust getter and setter functions into the [`Module`], returning both non-zero hash keys.
+    <span class="doccomment">/// Set a pair of Rust getter and setter functions into the [`Module`], returning both [`u64`] hash keys.
     /// This is a short-hand for [`set_getter_fn`][Module::set_getter_fn] and [`set_setter_fn`][Module::set_setter_fn].
     ///
     /// These function are automatically exposed to the global namespace.
@@ -3879,7 +3969,7 @@
     }
 
     <span class="doccomment">/// Set a Rust index getter taking two parameters (the first one mutable) into the [`Module`],
-    /// returning a non-zero hash key.
+    /// returning a [`u64`] hash key.
     /// This function is automatically exposed to the global namespace.
     ///
     /// If there is a similar existing setter Rust function, it is replaced.
@@ -3940,7 +4030,7 @@
     }
 
     <span class="doccomment">/// Set a Rust index setter taking three parameters (the first one mutable) into the [`Module`],
-    /// returning a non-zero hash key.
+    /// returning a [`u64`] hash key.
     /// This function is automatically exposed to the global namespace.
     ///
     /// If there is a similar existing Rust function, it is replaced.
@@ -4000,7 +4090,7 @@
         )
     }
 
-    <span class="doccomment">/// Set a pair of Rust index getter and setter functions into the [`Module`], returning both non-zero hash keys.
+    <span class="doccomment">/// Set a pair of Rust index getter and setter functions into the [`Module`], returning both [`u64`] hash keys.
     /// This is a short-hand for [`set_indexer_get_fn`][Module::set_indexer_get_fn] and
     /// [`set_indexer_set_fn`][Module::set_indexer_set_fn].
     ///
@@ -4143,7 +4233,8 @@
         <span class="self">self</span>.all_functions = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_variables = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_type_iterators = <span class="prelude-val">None</span>;
-        <span class="self">self</span>.flags &amp;= !ModuleFlags::INDEXED &amp; !ModuleFlags::INDEXED_GLOBAL_FUNCTIONS;
+        <span class="self">self</span>.flags
+            .remove(ModuleFlags::INDEXED | ModuleFlags::INDEXED_GLOBAL_FUNCTIONS);
 
         <span class="attr">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
         </span><span class="kw">if </span>!other.doc.as_deref().map_or(<span class="bool-val">true</span>, SmartString::is_empty) {
@@ -4199,7 +4290,8 @@
         <span class="self">self</span>.all_functions = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_variables = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_type_iterators = <span class="prelude-val">None</span>;
-        <span class="self">self</span>.flags &amp;= !ModuleFlags::INDEXED &amp; !ModuleFlags::INDEXED_GLOBAL_FUNCTIONS;
+        <span class="self">self</span>.flags
+            .remove(ModuleFlags::INDEXED | ModuleFlags::INDEXED_GLOBAL_FUNCTIONS);
 
         <span class="attr">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
         </span><span class="kw">if </span>!other.doc.as_deref().map_or(<span class="bool-val">true</span>, SmartString::is_empty) {
@@ -4240,9 +4332,9 @@
             <span class="kw">let </span>others_len = functions.len();
 
             <span class="kw">for </span>(<span class="kw-2">&amp;</span>k, f) <span class="kw">in </span>functions.iter() {
-                <span class="kw">let </span>map = <span class="self">self</span>.functions.get_or_insert_with(|| {
-                    StraightHashMap::with_capacity_and_hasher(others_len, Default::default())
-                });
+                <span class="kw">let </span>map = <span class="self">self
+                    </span>.functions
+                    .get_or_insert_with(|| new_hash_map(FN_MAP_SIZE));
                 map.reserve(others_len);
                 map.entry(k).or_insert_with(|| f.clone());
             }
@@ -4264,7 +4356,8 @@
         <span class="self">self</span>.all_functions = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_variables = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_type_iterators = <span class="prelude-val">None</span>;
-        <span class="self">self</span>.flags &amp;= !ModuleFlags::INDEXED &amp; !ModuleFlags::INDEXED_GLOBAL_FUNCTIONS;
+        <span class="self">self</span>.flags
+            .remove(ModuleFlags::INDEXED | ModuleFlags::INDEXED_GLOBAL_FUNCTIONS);
 
         <span class="attr">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
         </span><span class="kw">if </span>!other.doc.as_deref().map_or(<span class="bool-val">true</span>, SmartString::is_empty) {
@@ -4347,7 +4440,8 @@
         <span class="self">self</span>.all_functions = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_variables = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_type_iterators = <span class="prelude-val">None</span>;
-        <span class="self">self</span>.flags &amp;= !ModuleFlags::INDEXED &amp; !ModuleFlags::INDEXED_GLOBAL_FUNCTIONS;
+        <span class="self">self</span>.flags
+            .remove(ModuleFlags::INDEXED | ModuleFlags::INDEXED_GLOBAL_FUNCTIONS);
 
         <span class="attr">#[cfg(feature = <span class="string">&quot;metadata&quot;</span>)]
         </span><span class="kw">if </span>!other.doc.as_deref().map_or(<span class="bool-val">true</span>, SmartString::is_empty) {
@@ -4390,7 +4484,8 @@
         <span class="self">self</span>.all_functions = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_variables = <span class="prelude-val">None</span>;
         <span class="self">self</span>.all_type_iterators = <span class="prelude-val">None</span>;
-        <span class="self">self</span>.flags &amp;= !ModuleFlags::INDEXED &amp; !ModuleFlags::INDEXED_GLOBAL_FUNCTIONS;
+        <span class="self">self</span>.flags
+            .remove(ModuleFlags::INDEXED | ModuleFlags::INDEXED_GLOBAL_FUNCTIONS);
         <span class="self">self
     </span>}
 
@@ -4539,9 +4634,10 @@
         ast: <span class="kw-2">&amp;</span><span class="kw">crate</span>::AST,
         engine: <span class="kw-2">&amp;</span><span class="kw">crate</span>::Engine,
     ) -&gt; RhaiResultOf&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>scope = scope;
         <span class="kw">let </span>global = <span class="kw-2">&amp;mut </span><span class="kw">crate</span>::eval::GlobalRuntimeState::new(engine);
 
-        <span class="self">Self</span>::eval_ast_as_new_raw(engine, scope, global, ast)
+        <span class="self">Self</span>::eval_ast_as_new_raw(engine, <span class="kw-2">&amp;mut </span>scope, global, ast)
     }
     <span class="doccomment">/// Create a new [`Module`] by evaluating an [`AST`][crate::AST].
     ///
@@ -4557,14 +4653,13 @@
     </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
     </span><span class="kw">pub fn </span>eval_ast_as_new_raw(
         engine: <span class="kw-2">&amp;</span><span class="kw">crate</span>::Engine,
-        scope: <span class="kw">crate</span>::Scope,
+        scope: <span class="kw-2">&amp;mut </span><span class="kw">crate</span>::Scope,
         global: <span class="kw-2">&amp;mut </span><span class="kw">crate</span>::eval::GlobalRuntimeState,
         ast: <span class="kw-2">&amp;</span><span class="kw">crate</span>::AST,
     ) -&gt; RhaiResultOf&lt;<span class="self">Self</span>&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>scope = scope;
-
         <span class="comment">// Save global state
-        </span><span class="kw">let </span>orig_imports_len = global.num_imports();
+        </span><span class="kw">let </span>orig_scope_len = scope.len();
+        <span class="kw">let </span>orig_imports_len = global.num_imports();
         <span class="kw">let </span>orig_source = global.source.clone();
 
         <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_function&quot;</span>))]
@@ -4576,7 +4671,7 @@
         <span class="comment">// Run the script
         </span><span class="kw">let </span>caches = <span class="kw-2">&amp;mut </span><span class="kw">crate</span>::eval::Caches::new();
 
-        <span class="kw">let </span>result = engine.eval_ast_with_scope_raw(global, caches, <span class="kw-2">&amp;mut </span>scope, ast);
+        <span class="kw">let </span>result = engine.eval_ast_with_scope_raw(global, caches, scope, ast);
 
         <span class="comment">// Create new module
         </span><span class="kw">let </span><span class="kw-2">mut </span>module = Module::new();
@@ -4618,7 +4713,9 @@
         });
 
         <span class="comment">// Variables with an alias left in the scope become module variables
-        </span><span class="kw">for </span>(_name, <span class="kw-2">mut </span>value, <span class="kw-2">mut </span>aliases) <span class="kw">in </span>scope {
+        </span><span class="kw">while </span>scope.len() &gt; orig_scope_len {
+            <span class="kw">let </span>(_name, <span class="kw-2">mut </span>value, <span class="kw-2">mut </span>aliases) = scope.pop_entry().expect(<span class="string">&quot;not empty&quot;</span>);
+
             value.deep_scan(|v| {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(fn_ptr) = v.downcast_mut::&lt;<span class="kw">crate</span>::FnPtr&gt;() {
                     fn_ptr.set_encapsulated_environ(<span class="prelude-val">Some</span>(environ.clone()));
@@ -4658,7 +4755,7 @@
                     environ: <span class="kw-2">ref mut </span>e, ..
                 } = f.func
                 {
-                    <span class="kw-2">*</span>e = <span class="prelude-val">Some</span>(environ.clone())
+                    <span class="kw-2">*</span>e = <span class="prelude-val">Some</span>(environ.clone());
                 }
             });
 
@@ -4713,6 +4810,16 @@
             </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>v) = module.variables {
                 <span class="kw">for </span>(var_name, value) <span class="kw">in </span>v.iter() {
                     <span class="kw">let </span>hash_var = <span class="kw">crate</span>::calc_var_hash(path.iter().copied(), var_name);
+
+                    <span class="comment">// Catch hash collisions in testing environment only.
+                    </span><span class="attr">#[cfg(feature = <span class="string">&quot;testing-environ&quot;</span>)]
+                    </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw">_</span>) = variables.get(<span class="kw-2">&amp;</span>hash_var) {
+                        <span class="macro">panic!</span>(
+                            <span class="string">&quot;Hash {} already exists when indexing variable {}&quot;</span>,
+                            hash_var, var_name
+                        );
+                    }
+
                     variables.insert(hash_var, value.clone());
                 }
             }
@@ -4728,6 +4835,15 @@
             </span><span class="kw">for </span>(<span class="kw-2">&amp;</span>hash, f) <span class="kw">in </span>module.functions.iter().flatten() {
                 <span class="kw">match </span>f.metadata.namespace {
                     FnNamespace::Global =&gt; {
+                        <span class="comment">// Catch hash collisions in testing environment only.
+                        </span><span class="attr">#[cfg(feature = <span class="string">&quot;testing-environ&quot;</span>)]
+                        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(fx) = functions.get(<span class="kw-2">&amp;</span>hash) {
+                            <span class="macro">panic!</span>(
+                                <span class="string">&quot;Hash {} already exists when indexing function {:#?}:\n{:#?}&quot;</span>,
+                                hash, f.func, fx
+                            );
+                        }
+
                         <span class="comment">// Flatten all functions with global namespace
                         </span>functions.insert(hash, f.func.clone());
                         contains_indexed_global_functions = <span class="bool-val">true</span>;
@@ -4745,6 +4861,16 @@
                         f.metadata.name.as_str(),
                         <span class="kw-2">&amp;</span>f.metadata.param_types,
                     );
+
+                    <span class="comment">// Catch hash collisions in testing environment only.
+                    </span><span class="attr">#[cfg(feature = <span class="string">&quot;testing-environ&quot;</span>)]
+                    </span><span class="kw">if let </span><span class="prelude-val">Some</span>(fx) = functions.get(<span class="kw-2">&amp;</span>hash_qualified_fn) {
+                        <span class="macro">panic!</span>(
+                            <span class="string">&quot;Hash {} already exists when indexing function {:#?}:\n{:#?}&quot;</span>,
+                            hash_qualified_fn, f.func, fx
+                        );
+                    }
+
                     functions.insert(hash_qualified_fn, f.func.clone());
                 } <span class="kw">else if </span><span class="macro">cfg!</span>(not(feature = <span class="string">&quot;no_function&quot;</span>)) {
                     <span class="kw">let </span>hash_qualified_script = <span class="kw">crate</span>::calc_fn_hash(
@@ -4752,6 +4878,16 @@
                         <span class="kw-2">&amp;</span>f.metadata.name,
                         f.metadata.num_params,
                     );
+
+                    <span class="comment">// Catch hash collisions in testing environment only.
+                    </span><span class="attr">#[cfg(feature = <span class="string">&quot;testing-environ&quot;</span>)]
+                    </span><span class="kw">if let </span><span class="prelude-val">Some</span>(fx) = functions.get(<span class="kw-2">&amp;</span>hash_qualified_script) {
+                        <span class="macro">panic!</span>(
+                            <span class="string">&quot;Hash {} already exists when indexing function {:#?}:\n{:#?}&quot;</span>,
+                            hash_qualified_script, f.func, fx
+                        );
+                    }
+
                     functions.insert(hash_qualified_script, f.func.clone());
                 }
             }
@@ -4761,19 +4897,14 @@
 
         <span class="kw">if </span>!<span class="self">self</span>.is_indexed() {
             <span class="kw">let </span><span class="kw-2">mut </span>path = Vec::with_capacity(<span class="number">4</span>);
-            <span class="kw">let </span><span class="kw-2">mut </span>variables = StraightHashMap::with_capacity_and_hasher(
-                <span class="self">self</span>.variables.as_deref().map_or(<span class="number">0</span>, BTreeMap::len),
-                Default::default(),
-            );
-            <span class="kw">let </span><span class="kw-2">mut </span>functions = StraightHashMap::with_capacity_and_hasher(
-                <span class="self">self</span>.functions.as_ref().map_or(<span class="number">0</span>, StraightHashMap::len),
-                Default::default(),
-            );
+            <span class="kw">let </span><span class="kw-2">mut </span>variables = new_hash_map(<span class="self">self</span>.variables.as_deref().map_or(<span class="number">0</span>, BTreeMap::len));
+            <span class="kw">let </span><span class="kw-2">mut </span>functions =
+                new_hash_map(<span class="self">self</span>.functions.as_ref().map_or(<span class="number">0</span>, StraightHashMap::len));
             <span class="kw">let </span><span class="kw-2">mut </span>type_iterators = BTreeMap::new();
 
             path.push(<span class="string">&quot;&quot;</span>);
 
-            <span class="kw">let </span>r = index_module(
+            <span class="kw">let </span>has_global_functions = index_module(
                 <span class="self">self</span>,
                 <span class="kw-2">&amp;mut </span>path,
                 <span class="kw-2">&amp;mut </span>variables,
@@ -4781,25 +4912,12 @@
                 <span class="kw-2">&amp;mut </span>type_iterators,
             );
 
-            <span class="kw">if </span>r {
-                <span class="self">self</span>.flags |= ModuleFlags::INDEXED_GLOBAL_FUNCTIONS;
-            }
+            <span class="self">self</span>.flags
+                .set(ModuleFlags::INDEXED_GLOBAL_FUNCTIONS, has_global_functions);
 
-            <span class="self">self</span>.all_variables = <span class="kw">if </span>variables.is_empty() {
-                <span class="prelude-val">None
-            </span>} <span class="kw">else </span>{
-                <span class="prelude-val">Some</span>(variables.into())
-            };
-            <span class="self">self</span>.all_functions = <span class="kw">if </span>functions.is_empty() {
-                <span class="prelude-val">None
-            </span>} <span class="kw">else </span>{
-                <span class="prelude-val">Some</span>(functions.into())
-            };
-            <span class="self">self</span>.all_type_iterators = <span class="kw">if </span>type_iterators.is_empty() {
-                <span class="prelude-val">None
-            </span>} <span class="kw">else </span>{
-                <span class="prelude-val">Some</span>(type_iterators.into())
-            };
+            <span class="self">self</span>.all_variables = (!variables.is_empty()).then(|| variables.into());
+            <span class="self">self</span>.all_functions = (!functions.is_empty()).then(|| functions.into());
+            <span class="self">self</span>.all_type_iterators = (!type_iterators.is_empty()).then(|| type_iterators.into());
 
             <span class="self">self</span>.flags |= ModuleFlags::INDEXED;
         }
@@ -4933,4 +5051,4 @@
 <span class="attr">#[cfg(not(feature = <span class="string">&quot;no_module&quot;</span>))]
 </span><span class="kw">pub use </span>resolvers::ModuleResolver;
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rhai" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

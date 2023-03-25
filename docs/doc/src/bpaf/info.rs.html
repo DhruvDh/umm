@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/bpaf-0.7.9/src/info.rs`."><title>info.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e5308b57e507db71.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-d59023bfa12059d2.css"><link rel="stylesheet" disabled href="../../static.files/dark-1ca41bb1e10af075.css"><link rel="stylesheet" disabled href="../../static.files/ayu-18b4181a2f3fb862.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../bpaf/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/dhruvdh/.cargo/registry/src/github.com-1ecc6299db9ec823/bpaf-0.7.10/src/info.rs`."><title>info.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../static.files/ayu-be46fdc453a55015.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../bpaf/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -624,95 +624,6 @@
 <a href="#624" id="624">624</a>
 <a href="#625" id="625">625</a>
 <a href="#626" id="626">626</a>
-<a href="#627" id="627">627</a>
-<a href="#628" id="628">628</a>
-<a href="#629" id="629">629</a>
-<a href="#630" id="630">630</a>
-<a href="#631" id="631">631</a>
-<a href="#632" id="632">632</a>
-<a href="#633" id="633">633</a>
-<a href="#634" id="634">634</a>
-<a href="#635" id="635">635</a>
-<a href="#636" id="636">636</a>
-<a href="#637" id="637">637</a>
-<a href="#638" id="638">638</a>
-<a href="#639" id="639">639</a>
-<a href="#640" id="640">640</a>
-<a href="#641" id="641">641</a>
-<a href="#642" id="642">642</a>
-<a href="#643" id="643">643</a>
-<a href="#644" id="644">644</a>
-<a href="#645" id="645">645</a>
-<a href="#646" id="646">646</a>
-<a href="#647" id="647">647</a>
-<a href="#648" id="648">648</a>
-<a href="#649" id="649">649</a>
-<a href="#650" id="650">650</a>
-<a href="#651" id="651">651</a>
-<a href="#652" id="652">652</a>
-<a href="#653" id="653">653</a>
-<a href="#654" id="654">654</a>
-<a href="#655" id="655">655</a>
-<a href="#656" id="656">656</a>
-<a href="#657" id="657">657</a>
-<a href="#658" id="658">658</a>
-<a href="#659" id="659">659</a>
-<a href="#660" id="660">660</a>
-<a href="#661" id="661">661</a>
-<a href="#662" id="662">662</a>
-<a href="#663" id="663">663</a>
-<a href="#664" id="664">664</a>
-<a href="#665" id="665">665</a>
-<a href="#666" id="666">666</a>
-<a href="#667" id="667">667</a>
-<a href="#668" id="668">668</a>
-<a href="#669" id="669">669</a>
-<a href="#670" id="670">670</a>
-<a href="#671" id="671">671</a>
-<a href="#672" id="672">672</a>
-<a href="#673" id="673">673</a>
-<a href="#674" id="674">674</a>
-<a href="#675" id="675">675</a>
-<a href="#676" id="676">676</a>
-<a href="#677" id="677">677</a>
-<a href="#678" id="678">678</a>
-<a href="#679" id="679">679</a>
-<a href="#680" id="680">680</a>
-<a href="#681" id="681">681</a>
-<a href="#682" id="682">682</a>
-<a href="#683" id="683">683</a>
-<a href="#684" id="684">684</a>
-<a href="#685" id="685">685</a>
-<a href="#686" id="686">686</a>
-<a href="#687" id="687">687</a>
-<a href="#688" id="688">688</a>
-<a href="#689" id="689">689</a>
-<a href="#690" id="690">690</a>
-<a href="#691" id="691">691</a>
-<a href="#692" id="692">692</a>
-<a href="#693" id="693">693</a>
-<a href="#694" id="694">694</a>
-<a href="#695" id="695">695</a>
-<a href="#696" id="696">696</a>
-<a href="#697" id="697">697</a>
-<a href="#698" id="698">698</a>
-<a href="#699" id="699">699</a>
-<a href="#700" id="700">700</a>
-<a href="#701" id="701">701</a>
-<a href="#702" id="702">702</a>
-<a href="#703" id="703">703</a>
-<a href="#704" id="704">704</a>
-<a href="#705" id="705">705</a>
-<a href="#706" id="706">706</a>
-<a href="#707" id="707">707</a>
-<a href="#708" id="708">708</a>
-<a href="#709" id="709">709</a>
-<a href="#710" id="710">710</a>
-<a href="#711" id="711">711</a>
-<a href="#712" id="712">712</a>
-<a href="#713" id="713">713</a>
-<a href="#714" id="714">714</a>
-<a href="#715" id="715">715</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Help message generation and rendering
 
 </span><span class="attr">#![allow(clippy::write_with_newline)]
@@ -721,8 +632,6 @@
 <span class="kw">use crate</span>::{
     args::{Args, Conflict},
     item::Item,
-    meta_help::render_help,
-    params::short,
     parsers::ParseCommand,
     Meta, ParseFailure, Parser,
 };
@@ -730,10 +639,10 @@
 <span class="doccomment">/// Unsuccessful command line parsing outcome, internal representation
 </span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub enum </span>Error {
-    <span class="doccomment">/// Terminate and print this to stdout
-    </span>Stdout(String),
-    <span class="doccomment">/// Terminate and print this to stderr
-    </span>Stderr(String),
+    <span class="doccomment">/// Parsing failed, it is still possible to improve the error message
+    </span>Message(String),
+    <span class="doccomment">/// Parsing failed and this is the final output
+    </span>ParseFailure(ParseFailure),
     <span class="doccomment">/// Expected one of those values
     ///
     /// Used internally to generate better error messages
@@ -746,12 +655,12 @@
         <span class="attr">#[allow(clippy::match_same_arms)]
         </span><span class="kw">match </span>(<span class="self">self</span>, other) {
             <span class="comment">// help output takes priority
-            </span>(a @ Error::Stdout(<span class="kw">_</span>), <span class="kw">_</span>) =&gt; a,
-            (<span class="kw">_</span>, b @ Error::Stdout(<span class="kw">_</span>)) =&gt; b,
+            </span>(a @ Error::ParseFailure(<span class="kw">_</span>), <span class="kw">_</span>) =&gt; a,
+            (<span class="kw">_</span>, b @ Error::ParseFailure(<span class="kw">_</span>)) =&gt; b,
 
             <span class="comment">// parsing failure takes priority
-            </span>(a @ Error::Stderr(<span class="kw">_</span>), <span class="kw">_</span>) =&gt; a,
-            (<span class="kw">_</span>, b @ Error::Stderr(<span class="kw">_</span>)) =&gt; b,
+            </span>(a @ Error::Message(<span class="kw">_</span>), <span class="kw">_</span>) =&gt; a,
+            (<span class="kw">_</span>, b @ Error::Message(<span class="kw">_</span>)) =&gt; b,
 
             <span class="comment">// combine missing elements
             </span>(Error::Missing(<span class="kw-2">mut </span>a), Error::Missing(<span class="kw-2">mut </span>b)) =&gt; {
@@ -780,20 +689,6 @@
     </span><span class="kw">pub </span>usage: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
 }
 
-<span class="kw">impl </span>Info {
-    <span class="kw">fn </span>help_parser(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Parser&lt;ExtraParams&gt; {
-        ParseExtraParams {
-            version: <span class="self">self</span>.version,
-        }
-    }
-}
-
-<span class="attr">#[derive(Clone, Debug)]
-</span><span class="kw">enum </span>ExtraParams {
-    Help,
-    Version(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str),
-}
-
 <span class="kw">fn </span>check_unexpected(args: <span class="kw-2">&amp;</span>Args) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
     <span class="kw">match </span>args.items_iter().next() {
         <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(()),
@@ -803,7 +698,7 @@
                 <span class="kw">use </span>std::fmt::Write;
                 <span class="macro">write!</span>(msg, <span class="string">&quot;: {} cannot be used at the same time as {}&quot;</span>, rej, acc).unwrap();
             }
-            <span class="prelude-val">Err</span>(Error::Stderr(msg))
+            <span class="prelude-val">Err</span>(Error::Message(msg))
         }
     }
 }
@@ -844,7 +739,7 @@
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
     {
-        <span class="kw">match </span><span class="self">self</span>.try_run() {
+        <span class="kw">match </span><span class="self">self</span>.run_inner(Args::current_args()) {
             <span class="prelude-val">Ok</span>(t) =&gt; t,
             <span class="prelude-val">Err</span>(err) =&gt; std::process::exit(err.exit_code()),
         }
@@ -891,39 +786,12 @@
     ///
     /// [`ParseFailure`] represents parsing errors, autocomplete results and generated `--help`
     /// output.
+    </span><span class="attr">#[deprecated = <span class="string">&quot;You should switch to equivalent parser.run_inner(Args::current_args())&quot;</span>]
     </span><span class="kw">pub fn </span>try_run(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;T, ParseFailure&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
     {
-        <span class="kw">let </span><span class="kw-2">mut </span>arg_vec = Vec::new();
-        <span class="attr">#[cfg(feature = <span class="string">&quot;autocomplete&quot;</span>)]
-        </span><span class="kw">let </span><span class="kw-2">mut </span>complete_vec = Vec::new();
-
-        <span class="kw">let </span><span class="kw-2">mut </span>args = std::env::args_os();
-
-        <span class="attr">#[allow(unused_variables)]
-        </span><span class="kw">let </span>name = args.next().expect(<span class="string">&quot;no command name from args_os?&quot;</span>);
-
-        <span class="attr">#[cfg(feature = <span class="string">&quot;autocomplete&quot;</span>)]
-        </span><span class="kw">for </span>arg <span class="kw">in </span>args {
-            <span class="kw">if </span>arg
-                .to_str()
-                .map_or(<span class="bool-val">false</span>, |s| s.starts_with(<span class="string">&quot;--bpaf-complete-&quot;</span>))
-            {
-                complete_vec.push(arg);
-            } <span class="kw">else </span>{
-                arg_vec.push(arg);
-            }
-        }
-        <span class="attr">#[cfg(not(feature = <span class="string">&quot;autocomplete&quot;</span>))]
-        </span>arg_vec.extend(args);
-
-        <span class="attr">#[cfg(feature = <span class="string">&quot;autocomplete&quot;</span>)]
-        </span><span class="kw">let </span>args = <span class="kw">crate</span>::complete_run::args_with_complete(name, <span class="kw-2">&amp;</span>arg_vec, <span class="kw-2">&amp;</span>complete_vec);
-        <span class="attr">#[cfg(not(feature = <span class="string">&quot;autocomplete&quot;</span>))]
-        </span><span class="kw">let </span>args = Args::from(arg_vec.as_slice());
-
-        <span class="self">self</span>.run_inner(args)
+        <span class="self">self</span>.run_inner(Args::current_args())
     }
 
     <span class="doccomment">/// Execute the [`OptionParser`] and produce a values for unit tests or manual processing
@@ -984,23 +852,32 @@
         <span class="kw">match </span><span class="self">self</span>.run_subparser(<span class="kw-2">&amp;mut </span>args) {
             <span class="prelude-val">Ok</span>(t) <span class="kw">if </span>args.is_empty() =&gt; <span class="prelude-val">Ok</span>(t),
             <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(ParseFailure::Stderr(<span class="macro">format!</span>(<span class="string">&quot;unexpected {:?}&quot;</span>, args))),
-            <span class="prelude-val">Err</span>(err) =&gt; <span class="kw">match </span>report_missing_items(err) {
-                Error::Stdout(msg) =&gt; <span class="prelude-val">Err</span>(ParseFailure::Stdout(msg)),
-                Error::Stderr(msg) =&gt; <span class="prelude-val">Err</span>(ParseFailure::Stderr(msg)),
-                Error::Missing(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
-            },
+            <span class="prelude-val">Err</span>(err) =&gt; <span class="prelude-val">Err</span>(err),
         }
     }
 
     <span class="doccomment">/// Run subparser, implementation detail
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_subparser(<span class="kw-2">&amp;</span><span class="self">self</span>, args: <span class="kw-2">&amp;mut </span>Args) -&gt; <span class="prelude-ty">Result</span>&lt;T, Error&gt; {
-        <span class="kw">let </span>depth = args.depth;
-        <span class="kw">let </span>res = <span class="self">self</span>.inner.eval(args);
-        <span class="kw">if let </span><span class="prelude-val">Err</span>(Error::Stdout(<span class="kw">_</span>)) = <span class="kw-2">&amp;</span>res {
-            <span class="kw">return </span>res;
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_subparser(<span class="kw-2">&amp;</span><span class="self">self</span>, args: <span class="kw-2">&amp;mut </span>Args) -&gt; <span class="prelude-ty">Result</span>&lt;T, ParseFailure&gt; {
+        <span class="comment">// process should work like this:
+        // - inner parser is evaluated, it returns Error
+        // - if error is finalized (ParseFailure) - it is simply propagated outwards,
+        //   otherwise we are making a few attempts at improving it after dealing with
+        //   autocomplete/help
+        //
+        // - generate autocomplete, if enabled
+        // - produce --help, --version
+        // - Try to improve error message and finalize it otherwise
+        //
+        // outer parser gets value in ParseFailure format
+
+        </span><span class="kw">let </span>res = <span class="self">self</span>.inner.eval(args);
+        <span class="kw">if let </span><span class="prelude-val">Err</span>(Error::ParseFailure(failure)) = res {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(failure);
         }
         <span class="attr">#[cfg(feature = <span class="string">&quot;autocomplete&quot;</span>)]
-        </span>args.check_complete()<span class="question-mark">?</span>;
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(comp) = args.check_complete() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(ParseFailure::Stdout(comp));
+        }
 
         <span class="kw">let </span>err = <span class="kw">match </span>res {
             <span class="prelude-val">Ok</span>(r) =&gt; {
@@ -1010,38 +887,14 @@
                     <span class="kw">return </span><span class="prelude-val">Ok</span>(r);
                 }
             }
-
-            <span class="comment">// Stderr means nested parser couldn&#39;t parse something, store it,
-            // report it if parsing --help and --version also fails
-            </span><span class="prelude-val">Err</span>(Error::Stderr(e)) =&gt; Error::Stderr(e),
-
-            <span class="comment">// Stdout usually means a happy path such as calling --help or --version on one of
-            // the nested commands
-            </span><span class="prelude-val">Err</span>(Error::Stdout(e)) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Stdout(e)),
             <span class="prelude-val">Err</span>(err) =&gt; err,
         };
-
-        <span class="kw">match </span><span class="self">self</span>.info.help_parser().eval(args) {
-            <span class="prelude-val">Ok</span>(ExtraParams::Help) =&gt; {
-                <span class="kw">let </span>msg = render_help(
-                    <span class="kw-2">&amp;</span><span class="self">self</span>.info,
-                    <span class="kw-2">&amp;</span><span class="self">self</span>.inner.meta(),
-                    <span class="kw-2">&amp;</span><span class="self">self</span>.info.help_parser().meta(),
-                )
-                .expect(<span class="string">&quot;Couldn&#39;t render help&quot;</span>);
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Stdout(msg));
-            }
-            <span class="prelude-val">Ok</span>(ExtraParams::Version(v)) =&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Stdout(<span class="macro">format!</span>(<span class="string">&quot;Version: {}\n&quot;</span>, v)));
-            }
-            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {}
-        }
-
-        <span class="kw">if </span><span class="kw">crate</span>::meta_youmean::should_suggest(<span class="kw-2">&amp;</span>err) &amp;&amp; args.depth == depth {
-            <span class="kw">crate</span>::meta_youmean::suggest(args, <span class="kw-2">&amp;</span><span class="self">self</span>.inner.meta())<span class="question-mark">?</span>;
-        }
-
-        <span class="prelude-val">Err</span>(report_missing_items(err))
+        <span class="prelude-val">Err</span>((args.improve_error.<span class="number">0</span>)(
+            args,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.info,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.inner.meta(),
+            err,
+        ))
     }
 
     <span class="doccomment">/// Get first line of description if Available
@@ -1356,17 +1209,24 @@
     }
 }
 
-<span class="kw">fn </span>report_missing_items(err: Error) -&gt; Error {
-    <span class="kw">match </span>err {
-        Error::Stdout(<span class="kw">_</span>) | Error::Stderr(<span class="kw">_</span>) =&gt; err,
-        Error::Missing(items) =&gt; Error::Stderr(<span class="macro">format!</span>(
-            <span class="string">&quot;Expected {}, pass --help for usage information&quot;</span>,
-            Meta::Or(items.into_iter().map(Meta::Item).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;())
-        )),
+<span class="kw">impl </span>From&lt;Error&gt; <span class="kw">for </span>ParseFailure {
+    <span class="kw">fn </span>from(value: Error) -&gt; <span class="self">Self </span>{
+        <span class="kw">match </span>value {
+            Error::Message(msg) =&gt; ParseFailure::Stderr(msg),
+            Error::ParseFailure(pf) =&gt; pf,
+            Error::Missing(items) =&gt; ParseFailure::Stderr(<span class="macro">format!</span>(
+                <span class="string">&quot;Expected {}, pass --help for usage information&quot;</span>,
+                Meta::Or(items.into_iter().map(Meta::Item).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;())
+            )),
+        }
     }
 }
 
-<span class="kw">fn </span>perform_invariant_check(meta: <span class="kw-2">&amp;</span>Meta, fresh: bool) {
+<span class="doccomment">/// do a nested invariant check
+
+/// the check itself is performed as part of `to_usage_meta` transformation `fresh` parameter
+/// is used to perform it only once for every command parser encountered
+</span><span class="kw">fn </span>perform_invariant_check(meta: <span class="kw-2">&amp;</span>Meta, fresh: bool) {
     <span class="kw">if </span>fresh {
         <span class="macro">println!</span>(<span class="string">&quot;Checking\n{:#?}&quot;</span>, meta);
         meta.to_usage_meta();
@@ -1382,51 +1242,13 @@
         }
         Meta::Item(i) =&gt; <span class="kw">match </span>i {
             Item::Command { meta, .. } =&gt; perform_invariant_check(meta, <span class="bool-val">true</span>),
-            Item::Positional { .. } | Item::Flag { .. } | Item::Argument { .. } =&gt; {}
+            Item::Positional { .. }
+            | Item::Flag { .. }
+            | Item::Argument { .. }
+            | Item::MultiArg { .. } =&gt; {}
         },
         Meta::Skip =&gt; {}
     }
 }
-
-<span class="kw">struct </span>ParseExtraParams {
-    version: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
-}
-
-<span class="kw">impl </span>Parser&lt;ExtraParams&gt; <span class="kw">for </span>ParseExtraParams {
-    <span class="kw">fn </span>eval(<span class="kw-2">&amp;</span><span class="self">self</span>, args: <span class="kw-2">&amp;mut </span>Args) -&gt; <span class="prelude-ty">Result</span>&lt;ExtraParams, Error&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Ok</span>(ok) = ParseExtraParams::help().eval(args) {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(ok);
-        }
-
-        <span class="kw">match </span><span class="self">self</span>.version {
-            <span class="prelude-val">Some</span>(ver) =&gt; <span class="self">Self</span>::ver(ver).eval(args),
-            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(Error::Stderr(String::from(<span class="string">&quot;Not a version or help flag&quot;</span>))),
-        }
-    }
-
-    <span class="kw">fn </span>meta(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Meta {
-        <span class="kw">match </span><span class="self">self</span>.version {
-            <span class="prelude-val">Some</span>(ver) =&gt; Meta::And(<span class="macro">vec!</span>[<span class="self">Self</span>::help().meta(), <span class="self">Self</span>::ver(ver).meta()]),
-            <span class="prelude-val">None </span>=&gt; <span class="self">Self</span>::help().meta(),
-        }
-    }
-}
-
-<span class="kw">impl </span>ParseExtraParams {
-    <span class="attr">#[inline(never)]
-    </span><span class="kw">fn </span>help() -&gt; <span class="kw">impl </span>Parser&lt;ExtraParams&gt; {
-        short(<span class="string">&#39;h&#39;</span>)
-            .long(<span class="string">&quot;help&quot;</span>)
-            .help(<span class="string">&quot;Prints help information&quot;</span>)
-            .req_flag(ExtraParams::Help)
-    }
-    <span class="attr">#[inline(never)]
-    </span><span class="kw">fn </span>ver(version: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="kw">impl </span>Parser&lt;ExtraParams&gt; {
-        short(<span class="string">&#39;V&#39;</span>)
-            .long(<span class="string">&quot;version&quot;</span>)
-            .help(<span class="string">&quot;Prints version information&quot;</span>)
-            .req_flag(ExtraParams::Version(version))
-    }
-}
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bpaf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (07c993eba 2023-02-23)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bpaf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (f63ccaf25 2023-03-06)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
