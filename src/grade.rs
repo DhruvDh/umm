@@ -360,7 +360,7 @@ pub fn get_source_context<T: Into<LineRef>>(
     context.truncate(PROMPT_TRUNCATE);
 
     Ok(ChatCompletionRequestMessage {
-        role:    Role::User,
+        role:    Role::System,
         content: context,
         name:    Some(String::from("Student")),
     })

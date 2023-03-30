@@ -351,10 +351,7 @@ impl File {
                     .query(INTERFACE_CONSTANTS_QUERY)
                     .unwrap_or_default()
                     .iter()
-                    .map(|c| {
-                        let name = c.get("constant").unwrap_or(&not_found);
-                        format!("`{}`", name)
-                    })
+                    .map(|c| c.get("constant").unwrap_or(&not_found).to_string())
                     .collect::<Vec<String>>()
                     .join("\n");
 
@@ -362,10 +359,7 @@ impl File {
                     .query(INTERFACE_METHODS_QUERY)
                     .unwrap_or_default()
                     .iter()
-                    .map(|m| {
-                        let sig = m.get("signature").unwrap_or(&not_found);
-                        format!("`{}`", sig)
-                    })
+                    .map(|m| m.get("signature").unwrap_or(&not_found).to_string())
                     .collect::<Vec<String>>()
                     .join("\n");
 
@@ -405,10 +399,7 @@ impl File {
                     .query(CLASS_FIELDS_QUERY)
                     .unwrap_or_default()
                     .iter()
-                    .map(|f| {
-                        let field = f.get("field").unwrap_or(&not_found);
-                        format!("`{}`", field)
-                    })
+                    .map(|f| f.get("field").unwrap_or(&not_found).to_string())
                     .collect::<Vec<String>>()
                     .join("\n");
 
@@ -428,8 +419,8 @@ impl File {
                             "[NOT FOUND]".to_string()
                         } else {
                             format!(
-                                "`{annotation} {modifier} {return_type} {identifier} {parameters} \
-                                 {throws}`",
+                                "{annotation} {modifier} {return_type} {identifier} {parameters} \
+                                 {throws}",
                             )
                         }
                     })
