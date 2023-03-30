@@ -327,7 +327,7 @@ pub fn get_source_context<T: Into<LineRef>>(
 :\n"
         .to_string(),
     );
-    let end_ticks = "```".to_string();
+    let end_ticks = "\n```".to_string();
 
     for re in &line_refs {
         if let Ok(file) = proj.identify(&re.file_name) {
@@ -751,7 +751,7 @@ impl ByUnitTestGrader {
                             },
                             ChatCompletionRequestMessage {
                                 role:    Role::User,
-                                content: format!("```\n{:#?}```", e),
+                                content: format!("```\n{:#?}\n```", e),
                                 name:    Some("Student".into()),
                             },
                             context,
