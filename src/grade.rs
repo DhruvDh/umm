@@ -845,12 +845,12 @@ impl ByUnitTestGrader {
                             content: user_message,
                             name:    Some("Student".into()),
                         },
+                        context,
                         ChatCompletionRequestMessage {
                             role:    Role::System,
                             content: SYSTEM_MESSAGE_OUTRO.to_string(),
                             name:    Some("Instructor".into()),
                         },
-                        context,
                     ];
                 }
 

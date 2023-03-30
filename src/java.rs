@@ -353,7 +353,7 @@ impl File {
                     .iter()
                     .map(|c| {
                         let name = c.get("constant").unwrap_or(&not_found);
-                        format!("\t\t- `{}`", name)
+                        format!("`{}`", name)
                     })
                     .collect::<Vec<String>>()
                     .join("\n");
@@ -364,31 +364,31 @@ impl File {
                     .iter()
                     .map(|m| {
                         let sig = m.get("signature").unwrap_or(&not_found);
-                        format!("\t\t- `{}`", sig)
+                        format!("`{}`", sig)
                     })
                     .collect::<Vec<String>>()
                     .join("\n");
 
                 let methods = if methods.trim().is_empty() {
-                    String::from("\t\t[NOT FOUND]")
+                    String::from("[NOT FOUND]")
                 } else {
                     methods
                 };
 
                 let mut result = vec![];
                 result.push(format!(
-                    "- Interface: `{proper_name} {parameters} {extends}`:\n"
+                    "Interface: {proper_name} {parameters} {extends}:\n"
                 ));
                 if !consts.trim().is_empty() || !consts.contains("NOT FOUND") {
-                    result.push(String::from("\t- Constants:"));
+                    result.push(String::from("Constants:"));
                     result.push(consts);
                 }
                 if !methods.trim().is_empty() || !methods.contains("NOT FOUND") {
-                    result.push(String::from("\t- Methods:"));
+                    result.push(String::from("Methods:"));
                     result.push(methods);
                 }
 
-                result.join("\n")
+                format!("```\n{r}\n```", r = result.join("\n"))
             }
             _ => {
                 let empty_dict = Dict::new();
@@ -407,7 +407,7 @@ impl File {
                     .iter()
                     .map(|f| {
                         let field = f.get("field").unwrap_or(&not_found);
-                        format!("\t\t- `{}`", field)
+                        format!("`{}`", field)
                     })
                     .collect::<Vec<String>>()
                     .join("\n");
@@ -425,11 +425,11 @@ impl File {
                         let throws = m.get("throws").unwrap_or(&empty);
 
                         if identifier.as_str() == not_found.as_str() {
-                            "\t\t- [NOT FOUND]".to_string()
+                            "[NOT FOUND]".to_string()
                         } else {
                             format!(
-                                "\t\t- `{annotation} {modifier} {return_type} {identifier} \
-                                 {parameters} {throws}`",
+                                "`{annotation} {modifier} {return_type} {identifier} {parameters} \
+                                 {throws}`",
                             )
                         }
                     })
@@ -448,12 +448,9 @@ impl File {
                         let throws = m.get("throws").unwrap_or(&empty);
 
                         if identifier.as_str() == not_found.as_str() {
-                            "\t\t- [NOT FOUND]".to_string()
+                            "[NOT FOUND]".to_string()
                         } else {
-                            format!(
-                                "\t\t- `{annotation} {modifier} {identifier} {parameters} \
-                                 {throws}`",
-                            )
+                            format!("{annotation} {modifier} {identifier} {parameters} {throws}",)
                         }
                     })
                     .collect::<Vec<String>>()
@@ -461,22 +458,22 @@ impl File {
 
                 let mut result = vec![];
                 result.push(format!(
-                    "- Class: `{proper_name} {parameters} {implements}`:\n"
+                    "Class: `{proper_name} {parameters} {implements}`:\n"
                 ));
                 if !fields.trim().is_empty() || !fields.contains("NOT FOUND") {
-                    result.push(String::from("\t- Fields:"));
+                    result.push(String::from("Fields:"));
                     result.push(fields);
                 }
                 if !constructors.trim().is_empty() || !constructors.contains("NOT FOUND") {
-                    result.push(String::from("\t- Constructors:"));
+                    result.push(String::from("Constructors:"));
                     result.push(constructors);
                 }
                 if !methods.trim().is_empty() || !methods.contains("NOT FOUND") {
-                    result.push(String::from("\t- Methods:"));
+                    result.push(String::from("Methods:"));
                     result.push(methods);
                 }
 
-                result.join("\n")
+                format!("```\n{r}\n```", r = result.join("\n"))
             }
         };
 
