@@ -509,8 +509,14 @@ impl DocsGrader {
         let context = get_source_context(all_diags, self.project, 1, 3)?;
 
         let prompt = if num_diags > 0 {
-            let mut outputs = outputs.join("\n\n---\n\n");
+            let mut outputs = outputs
+                .iter()
+                .map(|output| format!("```\n{output}\n```"))
+                .collect::<Vec<String>>()
+                .join("\n\n---\n\n");
+
             outputs.truncate(PROMPT_TRUNCATE);
+
             Some(vec![
                 ChatCompletionRequestMessage {
                     role:    Role::System,
