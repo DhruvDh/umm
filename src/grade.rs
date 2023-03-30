@@ -65,7 +65,8 @@ use crate::{
         ROOT_DIR,
         RUNTIME,
         SOURCE_DIR,
-        SYSTEM_MESSAGE,
+        SYSTEM_MESSAGE_INTRO,
+        SYSTEM_MESSAGE_OUTRO,
     },
     java::{
         FileType,
@@ -296,9 +297,14 @@ impl From<MutationDiagnostic> for LineRef {
 /// include contextual lines of code from the source
 ///
 /// * `line_refs`: a vector of LineRef objects
+/// * `proj`: a Project object
+/// * `start_offset`: the number of lines of code to include before the line
+/// * `num_lines`: the number of lines of code to include after the line
 pub fn get_source_context<T: Into<LineRef>>(
     line_refs: Vec<T>,
     proj: Project,
+    start_offset: u32,
+    num_lines: u32,
 ) -> Result<ChatCompletionRequestMessage> {
     let mut line_refs = line_refs
         .into_iter()
@@ -314,20 +320,26 @@ pub fn get_source_context<T: Into<LineRef>>(
     });
 
     let mut context = Vec::new();
-    context.push("Here are some relevant lines of code my submission:\n".to_string());
+    context.push(
+        "You cannot see all of the student's submission as you are an AI language model, with \
+         limited context length. Here are some snippets of code the stacktrace indicates might be \
+         relevant:
+:\n"
+        .to_string(),
+    );
     let end_ticks = "```".to_string();
 
     for re in &line_refs {
         if let Ok(file) = proj.identify(&re.file_name) {
             let start = match file.kind() {
-                FileType::Test => re.line_number.saturating_sub(6) as usize,
-                _ => re.line_number.saturating_sub(3) as usize,
+                FileType::Test => re.line_number.saturating_sub(num_lines) as usize,
+                _ => re.line_number.saturating_sub(start_offset) as usize,
             };
 
             context.push(format!(
                 "- Lines {} to {} from {} -\n```",
                 start,
-                start + 6,
+                start + num_lines as usize,
                 re.file_name
             ));
             context.append(
@@ -337,7 +349,7 @@ pub fn get_source_context<T: Into<LineRef>>(
                     .lines()
                     .skip(start)
                     .filter(|line| !line.trim().is_empty())
-                    .take(6)
+                    .take(num_lines as usize)
                     .map(|x| x.to_string().replace("\\\\", "\\").replace("\\\"", "\""))
                     .collect::<Vec<String>>(),
             );
@@ -494,7 +506,7 @@ impl DocsGrader {
                 .with(tabled::Style::modern())
         );
 
-        let context = get_source_context(all_diags, self.project)?;
+        let context = get_source_context(all_diags, self.project, 1, 3)?;
 
         let prompt = if num_diags > 0 {
             let mut outputs = outputs.join("\n\n---\n\n");
@@ -502,7 +514,7 @@ impl DocsGrader {
             Some(vec![
                 ChatCompletionRequestMessage {
                     role:    Role::System,
-                    content: SYSTEM_MESSAGE.to_string(),
+                    content: SYSTEM_MESSAGE_INTRO.to_string(),
                     name:    Some("Instructor".into()),
                 },
                 ChatCompletionRequestMessage {
@@ -514,6 +526,11 @@ impl DocsGrader {
                 ChatCompletionRequestMessage {
                     role:    Role::System,
                     content: include_str!("prompts/javadoc.md").to_string(),
+                    name:    Some("Instructor".into()),
+                },
+                ChatCompletionRequestMessage {
+                    role:    Role::System,
+                    content: SYSTEM_MESSAGE_OUTRO.to_string(),
                     name:    Some("Instructor".into()),
                 },
             ])
@@ -670,7 +687,7 @@ impl ByUnitTestGrader {
             let messages = vec![
                 ChatCompletionRequestMessage {
                     role:    Role::System,
-                    content: SYSTEM_MESSAGE.to_string(),
+                    content: SYSTEM_MESSAGE_INTRO.to_string(),
                     name:    Some("Instructor".into()),
                 },
                 ChatCompletionRequestMessage {
@@ -682,6 +699,11 @@ impl ByUnitTestGrader {
                     role:    Role::User,
                     content: reasons.clone(),
                     name:    Some("Student".into()),
+                },
+                ChatCompletionRequestMessage {
+                    role:    Role::System,
+                    content: SYSTEM_MESSAGE_OUTRO.to_string(),
+                    name:    Some("Instructor".into()),
                 },
             ];
             Ok(GradeResult {
@@ -714,12 +736,12 @@ impl ByUnitTestGrader {
                                 all_diags.push(diag);
                             }
                         }
-                        let context = get_source_context(all_diags, self.project.clone())?;
+                        let context = get_source_context(all_diags, self.project.clone(), 3, 6)?;
 
                         let messages = vec![
                             ChatCompletionRequestMessage {
                                 role:    Role::System,
-                                content: SYSTEM_MESSAGE.to_string(),
+                                content: SYSTEM_MESSAGE_INTRO.to_string(),
                                 name:    Some("Instructor".into()),
                             },
                             ChatCompletionRequestMessage {
@@ -733,6 +755,16 @@ impl ByUnitTestGrader {
                                 name:    Some("Student".into()),
                             },
                             context,
+                            // ChatCompletionRequestMessage {
+                            //     role:    Role::System,
+                            //     content: include_str!("prompts/unit_testing.md").to_string(),
+                            //     name:    Some("Instructor".into()),
+                            // },
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: SYSTEM_MESSAGE_OUTRO.to_string(),
+                                name:    Some("Instructor".into()),
+                            },
                         ];
                         return Ok(GradeResult {
                             requirement: req_name,
@@ -785,7 +817,7 @@ impl ByUnitTestGrader {
                         }
                     }
 
-                    let context = get_source_context(all_diags, self.project.clone())?;
+                    let context = get_source_context(all_diags, self.project.clone(), 3, 6)?;
 
                     let mut user_message = new_user_message.join("\n");
                     user_message.truncate(PROMPT_TRUNCATE);
@@ -794,7 +826,7 @@ impl ByUnitTestGrader {
                     messages = vec![
                         ChatCompletionRequestMessage {
                             role:    Role::System,
-                            content: SYSTEM_MESSAGE.to_string(),
+                            content: SYSTEM_MESSAGE_INTRO.to_string(),
                             name:    Some("Instructor".into()),
                         },
                         ChatCompletionRequestMessage {
@@ -806,6 +838,11 @@ impl ByUnitTestGrader {
                             role:    Role::User,
                             content: user_message,
                             name:    Some("Student".into()),
+                        },
+                        ChatCompletionRequestMessage {
+                            role:    Role::System,
+                            content: SYSTEM_MESSAGE_OUTRO.to_string(),
+                            name:    Some("Instructor".into()),
                         },
                         context,
                     ];
@@ -1032,7 +1069,7 @@ impl UnitTestGrader {
             eprintln!("Problematic mutation test failures printed about.");
 
             let prompt = if num_diags > 0 {
-                let context = get_source_context(diags.clone(), project.clone())?;
+                let context = get_source_context(diags.clone(), project.clone(), 3, 6)?;
 
                 let mut feedback = ExpandedDisplay::new(diags).to_string();
                 eprintln!("{feedback}");
@@ -1042,7 +1079,7 @@ impl UnitTestGrader {
                 Some(vec![
                     ChatCompletionRequestMessage {
                         role:    Role::System,
-                        content: SYSTEM_MESSAGE.to_string(),
+                        content: SYSTEM_MESSAGE_INTRO.to_string(),
                         name:    Some("Instructor".into()),
                     },
                     ChatCompletionRequestMessage {
@@ -1063,6 +1100,11 @@ impl UnitTestGrader {
                             test = target_test.join(", "),
                             class = target_class.join(", ")
                         ),
+                        name:    Some("Instructor".into()),
+                    },
+                    ChatCompletionRequestMessage {
+                        role:    Role::System,
+                        content: SYSTEM_MESSAGE_OUTRO.to_string(),
                         name:    Some("Instructor".into()),
                     },
                 ])
@@ -1089,7 +1131,7 @@ impl UnitTestGrader {
                 Some(vec![
                     ChatCompletionRequestMessage {
                         role:    Role::System,
-                        content: SYSTEM_MESSAGE.to_string(),
+                        content: SYSTEM_MESSAGE_INTRO.to_string(),
                         name:    Some("Instructor".into()),
                     },
                     ChatCompletionRequestMessage {
@@ -1109,6 +1151,11 @@ impl UnitTestGrader {
                             test = target_test.join(", "),
                             class = target_class.join(", ")
                         ),
+                        name:    Some("Instructor".into()),
+                    },
+                    ChatCompletionRequestMessage {
+                        role:    Role::System,
+                        content: SYSTEM_MESSAGE_OUTRO.to_string(),
                         name:    Some("Instructor".into()),
                     },
                 ])

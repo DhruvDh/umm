@@ -32,8 +32,10 @@ lazy_static! {
             .insert_header("apiKey", SUPABASE_KEY.clone());
     /// Runtime
     pub static ref RUNTIME: tokio::runtime::Runtime = tokio::runtime::Runtime::new().unwrap();
-    /// ChatGPT System Message
-    pub static ref SYSTEM_MESSAGE: String = include_str!("prompts/system_message.md").into();
+    /// ChatGPT System Message intro
+    pub static ref SYSTEM_MESSAGE_INTRO: String = include_str!("prompts/system_message_intro.md").into();
+    /// ChatGPT System Message outro
+    pub static ref SYSTEM_MESSAGE_OUTRO: String = include_str!("prompts/system_message_outro.md").into();
 
 }
 
