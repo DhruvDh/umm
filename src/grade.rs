@@ -55,6 +55,10 @@ use tabled::{
     Tabled,
     Width,
 };
+use termdiff::{
+    DrawDiff,
+    SignsTheme,
+};
 use typed_builder::TypedBuilder;
 use umm_derive::generate_rhai_variant;
 
@@ -78,7 +82,6 @@ use crate::{
         java_path,
     },
 };
-
 #[derive(Debug, Hash, PartialEq, Eq)]
 /// A struct representing a line in a stack trace
 pub struct LineRef {
@@ -1319,6 +1322,79 @@ pub fn show_result(results: Array) {
     );
 }
 
+#[derive(Clone, Default)]
+/// A grader that grades by diffing an `expected` string with an `actual`
+/// string. Any difference results in a `0` grade.
+pub struct DiffGrader {
+    /// name of requirement
+    pub req_name: String,
+    /// points to give if all tests pass
+    pub out_of:   f64,
+    /// the expected output
+    pub expected: String,
+    /// the actual output
+    pub actual:   String,
+}
+
+impl DiffGrader {
+    /// creates a new DiffGrader
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// gets the `req_name` field
+    pub fn req_name(&mut self) -> String {
+        self.req_name.clone()
+    }
+
+    /// sets the `req_name` field
+    pub fn set_req_name(mut self, req_name: String) -> Self {
+        self.req_name = req_name;
+        self
+    }
+
+    /// gets the `out_of` field
+    pub fn out_of(&mut self) -> f64 {
+        self.out_of
+    }
+
+    /// sets the `out_of` field
+    pub fn set_out_of(mut self, out_of: f64) -> Self {
+        self.out_of = out_of;
+        self
+    }
+
+    /// gets the `expected` field
+    pub fn expected(&mut self) -> String {
+        self.expected.clone()
+    }
+
+    /// sets the `expected` field
+    pub fn set_expected(mut self, expected: String) -> Self {
+        self.expected = expected;
+        self
+    }
+
+    /// gets the `actual` field
+    pub fn actual(&mut self) -> String {
+        self.actual.clone()
+    }
+
+    /// sets the `actual` field
+    pub fn set_actual(mut self, actual: String) -> Self {
+        self.actual = actual;
+        self
+    }
+
+    #[generate_rhai_variant(Fallible)]
+    /// Grades by diffing the `expected` and `actual` strings.
+    pub fn grade_by_diff(&mut self) -> Result<GradeResult> {
+        let theme = SignsTheme::default();
+        eprintln!("{}", DrawDiff::new(&self.expected, &self.actual, &theme));
+        Ok(GradeResult::default()) // TODO: implement
+    }
+}
+
 /// Schema for `prompts` table
 #[derive(Serialize, Debug)]
 pub struct PromptRow {
@@ -1527,5 +1603,26 @@ impl CustomType for ByHiddenTestGrader {
             .with_fn("req_name", Self::set_req_name)
             .with_fn("new_by_hidden_test_grader", Self::default)
             .with_fn("run", Self::grade_by_hidden_tests_script);
+    }
+}
+
+// Allowed because CustomType is not deprecated, just volatile
+#[allow(deprecated)]
+/// Allows registering custom types with Rhai.
+impl CustomType for DiffGrader {
+    /// Builds a custom type to be registered with Rhai.
+    fn build(mut builder: rhai::TypeBuilder<Self>) {
+        builder
+            .with_name("DiffGrader")
+            .with_fn("req_name", Self::req_name)
+            .with_fn("req_name", Self::set_req_name)
+            .with_fn("out_of", Self::out_of)
+            .with_fn("out_of", Self::set_out_of)
+            .with_fn("expected", Self::expected)
+            .with_fn("expected", Self::set_expected)
+            .with_fn("actual", Self::actual)
+            .with_fn("actual", Self::set_actual)
+            .with_fn("new_diff_grader", Self::default)
+            .with_fn("run", Self::grade_by_diff_script);
     }
 }

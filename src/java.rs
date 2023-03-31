@@ -503,7 +503,6 @@ impl File {
                 "-Xdiags:verbose",
                 "-Xdoclint",
                 // "-Xlint",
-                "-Xprefer:source",
             ])
             .output()
             .context("Failed to spawn javac process.")?;
@@ -534,7 +533,6 @@ impl File {
                 path.as_str(),
                 "-Xdiags:verbose",
                 // "-Xlint",
-                "-Xprefer:source",
             ])
             .output()
             .context("Failed to spawn javac process.");

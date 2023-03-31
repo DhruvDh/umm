@@ -62,6 +62,7 @@ pub fn grade(name_or_path: &str) -> Result<()> {
         .build_type::<ByUnitTestGrader>()
         .build_type::<UnitTestGrader>()
         .build_type::<ByHiddenTestGrader>()
+        .build_type::<DiffGrader>()
         .build_type::<Grade>()
         .build_type::<GradeResult>()
         .build_type::<Parser>()
