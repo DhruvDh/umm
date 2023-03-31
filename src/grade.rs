@@ -365,7 +365,7 @@ pub fn get_source_context<T: Into<LineRef>>(
     Ok(ChatCompletionRequestMessage {
         role:    Role::System,
         content: context,
-        name:    Some(String::from("Student")),
+        name:    Some(String::from("Instructor")),
     })
 }
 

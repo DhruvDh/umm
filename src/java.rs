@@ -344,8 +344,8 @@ impl File {
                     .unwrap_or_default();
                 let declaration = query_result.first().unwrap_or(&empty_dict);
 
-                let parameters = declaration.get("parameters").unwrap_or(&empty);
-                let extends = declaration.get("extends").unwrap_or(&empty);
+                let parameters = declaration.get("parameters").unwrap_or(&empty).trim();
+                let extends = declaration.get("extends").unwrap_or(&empty).trim();
 
                 let consts = parser
                     .query(INTERFACE_CONSTANTS_QUERY)
@@ -366,18 +366,25 @@ impl File {
                 let methods = if methods.trim().is_empty() {
                     String::from("[NOT FOUND]")
                 } else {
-                    methods
+                    methods.trim().to_string()
+                };
+
+                let consts = if consts.trim().is_empty() {
+                    String::from("[NOT FOUND]")
+                } else {
+                    consts.trim().to_string()
                 };
 
                 let mut result = vec![];
                 result.push(format!(
                     "Interface: {proper_name} {parameters} {extends}:\n"
                 ));
-                if !consts.trim().is_empty() || !consts.contains("NOT FOUND") {
+
+                if !consts.contains("NOT FOUND") {
                     result.push(String::from("Constants:"));
                     result.push(consts);
                 }
-                if !methods.trim().is_empty() || !methods.contains("NOT FOUND") {
+                if !methods.contains("NOT FOUND") {
                     result.push(String::from("Methods:"));
                     result.push(methods);
                 }
@@ -392,8 +399,8 @@ impl File {
                 let query_result = parser.query(CLASS_DECLARATION_QUERY).unwrap_or_default();
                 let declaration = query_result.first().unwrap_or(&empty_dict);
 
-                let parameters = declaration.get("typeParameters").unwrap_or(&empty);
-                let implements = declaration.get("interfaces").unwrap_or(&empty);
+                let parameters = declaration.get("typeParameters").unwrap_or(&empty).trim();
+                let implements = declaration.get("interfaces").unwrap_or(&empty).trim();
 
                 let fields = parser
                     .query(CLASS_FIELDS_QUERY)
@@ -447,19 +454,36 @@ impl File {
                     .collect::<Vec<String>>()
                     .join("\n");
 
+                let fields = if fields.trim().is_empty() {
+                    String::from("[NOT FOUND]")
+                } else {
+                    fields.trim().to_string()
+                };
+
+                let methods = if methods.trim().is_empty() {
+                    String::from("[NOT FOUND]")
+                } else {
+                    methods.trim().to_string()
+                };
+
+                let constructors = if constructors.trim().is_empty() {
+                    String::from("[NOT FOUND]")
+                } else {
+                    constructors.trim().to_string()
+                };
+
                 let mut result = vec![];
-                result.push(format!(
-                    "Class: `{proper_name} {parameters} {implements}`:\n"
-                ));
-                if !fields.trim().is_empty() || !fields.contains("NOT FOUND") {
+                result.push(format!("Class: {proper_name} {parameters} {implements}:\n"));
+
+                if !fields.contains("NOT FOUND") {
                     result.push(String::from("Fields:"));
                     result.push(fields);
                 }
-                if !constructors.trim().is_empty() || !constructors.contains("NOT FOUND") {
+                if !constructors.contains("NOT FOUND") {
                     result.push(String::from("Constructors:"));
                     result.push(constructors);
                 }
-                if !methods.trim().is_empty() || !methods.contains("NOT FOUND") {
+                if !methods.contains("NOT FOUND") {
                     result.push(String::from("Methods:"));
                     result.push(methods);
                 }
