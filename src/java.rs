@@ -632,7 +632,6 @@ impl File {
 
         let input = format!("{}\r\n", input.unwrap_or_default());
 
-        std::thread::sleep(std::time::Duration::from_millis(240));
         let mut stdin = child.stdin.take().unwrap();
 
         stdin.write_all(input.as_bytes())?;
