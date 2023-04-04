@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["count_lines","count_tabs","cut_str","cut_str_basic","get_lines","replace_tab","split_at_pos","spplit_str_at","string_trim","string_width","string_width_multiline","string_width_multiline_tab","string_width_tab"]};

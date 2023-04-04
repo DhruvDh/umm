@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["from_dynamic","to_dynamic"],"struct":["DynamicDeserializer","DynamicSerializer"]};

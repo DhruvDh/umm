@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["UpdateStatus"],"struct":["Release","ReleaseAsset"],"trait":["ReleaseUpdate"]};

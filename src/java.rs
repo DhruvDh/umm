@@ -600,8 +600,6 @@ impl File {
 
         Command::new(java_path()?)
             .stdin(Stdio::inherit())
-            .stdout(Stdio::inherit())
-            .stderr(Stdio::inherit())
             .args(["--class-path", classpath()?.as_str(), name.as_str()])
             .output()
             .context("Failed to spawn javac process.")
@@ -837,6 +835,12 @@ impl Project {
             Ok(self.files[i].clone())
         } else if let Some(i) = self.files.iter().position(|n| n.file_name == name) {
             Ok(self.files[i].clone())
+        } else if let Some(i) = self
+            .files
+            .iter()
+            .position(|n| n.file_name.replace(".java", "") == name)
+        {
+            Ok(self.files[i].clone())
         } else if let Some(i) = self.files.iter().position(|n| n.name.clone() == name) {
             Ok(self.files[i].clone())
         } else if let Some(i) = self
@@ -844,6 +848,8 @@ impl Project {
             .iter()
             .position(|n| n.path.display().to_string() == name)
         {
+            Ok(self.files[i].clone())
+        } else if let Some(i) = self.files.iter().position(|n| n.proper_name == name) {
             Ok(self.files[i].clone())
         } else {
             bail!("Could not find {} in the project", name)

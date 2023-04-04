@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["CellHeightIncrease","CellHeightLimit","Height","HeightList","TableHeightIncrease","TableHeightLimit"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["Builder","CustomRecords","IndexBuilder"]};

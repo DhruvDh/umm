@@ -25,6 +25,7 @@ use async_openai::types::{
     ChatCompletionRequestMessage,
     Role,
 };
+use colored::Colorize;
 use futures::{
     future::try_join_all,
     stream::FuturesUnordered,
@@ -44,6 +45,11 @@ use serde::{
     Deserialize,
     Serialize,
 };
+use similar::{
+    utils::diff_unicode_words,
+    Algorithm,
+    ChangeTag,
+};
 use snailquote::unescape;
 use tabled::{
     display::ExpandedDisplay,
@@ -54,10 +60,6 @@ use tabled::{
     TableIteratorExt,
     Tabled,
     Width,
-};
-use termdiff::{
-    DrawDiff,
-    SignsTheme,
 };
 use typed_builder::TypedBuilder;
 use umm_derive::generate_rhai_variant;
@@ -805,7 +807,7 @@ impl ByUnitTestGrader {
                     let mut new_user_message = Vec::new();
 
                     for line in user_message.lines() {
-                        if line.contains("MethodSource") {
+                        if line.contains("MethodSource") || line.contains("Native Method") {
                             continue;
                         }
 
@@ -1333,7 +1335,7 @@ pub struct DiffGrader {
     /// the expected output
     pub expected: String,
     /// the actual output
-    pub actual:   String,
+    pub input:    String,
 }
 
 impl DiffGrader {
@@ -1376,22 +1378,58 @@ impl DiffGrader {
     }
 
     /// gets the `actual` field
-    pub fn actual(&mut self) -> String {
-        self.actual.clone()
+    pub fn input(&mut self) -> String {
+        self.input.clone()
     }
 
     /// sets the `actual` field
-    pub fn set_actual(mut self, actual: String) -> Self {
-        self.actual = actual;
+    pub fn set_input(mut self, input: String) -> Self {
+        self.input = input;
         self
     }
 
     #[generate_rhai_variant(Fallible)]
     /// Grades by diffing the `expected` and `actual` strings.
     pub fn grade_by_diff(&mut self) -> Result<GradeResult> {
-        let theme = SignsTheme::default();
-        eprintln!("{}", DrawDiff::new(&self.expected, &self.actual, &theme));
-        Ok(GradeResult::default()) // TODO: implement
+        let diff = diff_unicode_words(Algorithm::Patience, &self.expected, &self.expected);
+
+        let mut expected = String::new();
+        let mut actual = String::new();
+
+        let mut is_equal = true;
+
+        for (change, value) in diff {
+            match change {
+                ChangeTag::Equal => {
+                    expected.push_str(value);
+                    actual.push_str(value);
+                }
+                ChangeTag::Insert => {
+                    actual.push_str(format!("{}", value.green()).as_str());
+                    is_equal = false;
+                }
+                ChangeTag::Delete => {
+                    expected.push_str(format!("{}", value.red()).as_str());
+                    is_equal = false;
+                }
+            }
+        }
+
+        if is_equal {
+            Ok(GradeResult {
+                requirement: self.req_name.clone(),
+                grade:       Grade {
+                    grade:  self.out_of,
+                    out_of: self.out_of,
+                },
+                reason:      "Got expected output".to_string(),
+                prompt:      None,
+            })
+        } else {
+            eprintln!("Expected: {}", expected);
+            eprintln!("Actual: {}", actual);
+            Ok(GradeResult::default()) // TODO: implement
+        }
     }
 }
 
@@ -1620,8 +1658,8 @@ impl CustomType for DiffGrader {
             .with_fn("out_of", Self::set_out_of)
             .with_fn("expected", Self::expected)
             .with_fn("expected", Self::set_expected)
-            .with_fn("actual", Self::actual)
-            .with_fn("actual", Self::set_actual)
+            .with_fn("actual", Self::input)
+            .with_fn("actual", Self::set_input)
             .with_fn("new_diff_grader", Self::default)
             .with_fn("run", Self::grade_by_diff_script);
     }

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["AlignmentHorizontal","AlignmentVertical","Entity","Offset"],"mod":["height","records","util","width"],"struct":["Border","Borders","EntityIterator","Formatting","Grid","GridConfig","HorizontalLine","Indent","Sides","VerticalLine"],"trait":["Estimate"],"type":["Margin","Padding","Position"]};

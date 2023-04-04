@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["cell_info","empty","vec_records"],"trait":["Records","RecordsMut","Resizable"]};
