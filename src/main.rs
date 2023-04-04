@@ -189,12 +189,6 @@ fn main() -> Result<()> {
         Cmd::Run(f) => {
             match Project::new()?.identify(f.as_str())?.run(None) {
                 Ok(out) => {
-                    let out = [
-                        String::from_utf8(out.stderr)?,
-                        String::from_utf8(out.stdout)?,
-                    ]
-                    .concat();
-
                     println!("{out}");
                 }
                 Err(e) => {

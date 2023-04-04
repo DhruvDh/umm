@@ -36,6 +36,8 @@ lazy_static! {
     pub static ref SYSTEM_MESSAGE_INTRO: String = include_str!("prompts/system_message_intro.md").into();
     /// ChatGPT System Message outro
     pub static ref SYSTEM_MESSAGE_OUTRO: String = include_str!("prompts/system_message_outro.md").into();
+    /// Entire ChatGPT System Message
+    pub static ref SYSTEM_MESSAGE: String = format!("{}\n{}", *SYSTEM_MESSAGE_INTRO, *SYSTEM_MESSAGE_OUTRO);
 
 }
 
@@ -114,3 +116,7 @@ pub const INTERFACE_CONSTANTS_QUERY: &str = include_str!("queries/interface_cons
 /// Tree-sitter query that returns interface methods signatures
 /// * `signature`: entire method signature
 pub const INTERFACE_METHODS_QUERY: &str = include_str!("queries/interface_methods.scm");
+
+/// Tree-sitter query that returns method call identifiers
+/// * `name`: method call identifier
+pub const METHOD_CALL_QUERY: &str = include_str!("queries/method_invocation.scm");

@@ -219,7 +219,7 @@ peg::parser! {
                 ")"
                 whitespace()?
                 {
-                    LineRef { line_number: d, file_name: c }
+                    LineRef { line_number: d as usize, file_name: c }
                 }
     }
 }

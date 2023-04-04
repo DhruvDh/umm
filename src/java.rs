@@ -3,6 +3,10 @@
 
 use std::{
     fmt::Formatter,
+    hash::{
+        Hash,
+        Hasher,
+    },
     io::Write,
     path::PathBuf,
     process::{
@@ -89,6 +93,23 @@ pub struct File {
     parser:       Parser,
     /// Conscise description of the file
     description:  String,
+}
+
+/// Two `File`s are equal if their paths are equal
+impl PartialEq for File {
+    fn eq(&self, other: &Self) -> bool {
+        self.path == other.path
+    }
+}
+
+/// Based on PartialEq
+impl Eq for File {}
+
+/// Hash based on path
+impl Hash for File {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.path.hash(state);
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -589,7 +610,7 @@ impl File {
     /// TODO: instead of printing javac output, return it.
     /// TODO: have all such methods have generated versions that display output
     /// instead of returning.
-    pub fn run(&self, input: Option<String>) -> Result<Output> {
+    pub fn run(&self, input: Option<String>) -> Result<String> {
         self.check()?;
 
         ensure!(
@@ -609,13 +630,31 @@ impl File {
             .spawn()
             .context("Failed to spawn javac process.")?;
 
+        let input = format!("{}\r\n", input.unwrap_or_default());
+
+        std::thread::sleep(std::time::Duration::from_millis(240));
         let mut stdin = child.stdin.take().unwrap();
-        let input = input.unwrap_or_default();
 
-        stdin.write_all(input.as_bytes()).unwrap();
+        stdin.write_all(input.as_bytes())?;
+        stdin.flush()?;
 
-        let output = child.wait_with_output()?;
-        Ok(output)
+        let out = child.wait_with_output();
+        match out {
+            Ok(out) => {
+                if out.status.success() {
+                    Ok([
+                        String::from_utf8(out.stderr)?,
+                        String::from_utf8(out.stdout)?,
+                    ]
+                    .concat())
+                } else {
+                    let output = String::from_utf8(out.stderr)?;
+
+                    Err(anyhow!(output).context("Something went wrong while running the file."))
+                }
+            }
+            Err(e) => Err(anyhow!(e)),
+        }
     }
 
     #[generate_rhai_variant(Fallible, Mut)]
@@ -737,6 +776,11 @@ impl File {
     /// Get a reference to the file's description.
     pub fn description(&self) -> String {
         self.description.clone()
+    }
+
+    /// Get the file's proper name.
+    pub fn proper_name(&self) -> String {
+        self.proper_name.clone()
     }
 }
 
