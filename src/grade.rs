@@ -18,6 +18,7 @@ use std::{
 
 use anyhow::{
     anyhow,
+    ensure,
     Context,
     Result,
 };
@@ -1332,10 +1333,14 @@ pub struct DiffGrader {
     pub req_name: String,
     /// points to give if all tests pass
     pub out_of:   f64,
+    /// the project to grade
+    pub project:  Project,
+    /// Java file to run
+    pub file:     String,
     /// the expected output
-    pub expected: String,
+    pub expected: Array,
     /// the actual output
-    pub input:    String,
+    pub input:    Array,
 }
 
 impl DiffGrader {
@@ -1367,55 +1372,123 @@ impl DiffGrader {
     }
 
     /// gets the `expected` field
-    pub fn expected(&mut self) -> String {
+    pub fn expected(&mut self) -> Array {
         self.expected.clone()
     }
 
     /// sets the `expected` field
-    pub fn set_expected(mut self, expected: String) -> Self {
+    pub fn set_expected(mut self, expected: Array) -> Self {
         self.expected = expected;
         self
     }
 
     /// gets the `actual` field
-    pub fn input(&mut self) -> String {
+    pub fn input(&mut self) -> Array {
         self.input.clone()
     }
 
     /// sets the `actual` field
-    pub fn set_input(mut self, input: String) -> Self {
+    pub fn set_input(mut self, input: Array) -> Self {
         self.input = input;
+        self
+    }
+
+    /// gets the `project` field
+    pub fn project(&mut self) -> Project {
+        self.project.clone()
+    }
+
+    /// sets the `project` field
+    pub fn set_project(mut self, project: Project) -> Self {
+        self.project = project;
+        self
+    }
+
+    /// gets the `file` field
+    pub fn file(&mut self) -> String {
+        self.file.clone()
+    }
+
+    /// sets the `file` field
+    pub fn set_file(mut self, file: String) -> Self {
+        self.file = file;
         self
     }
 
     #[generate_rhai_variant(Fallible)]
     /// Grades by diffing the `expected` and `actual` strings.
     pub fn grade_by_diff(&mut self) -> Result<GradeResult> {
-        let diff = diff_unicode_words(Algorithm::Patience, &self.expected, &self.expected);
+        ensure!(
+            !self.expected.is_empty() & !self.input.is_empty(),
+            "At least one test case (input-expected pair) must be provided"
+        );
+        ensure!(
+            self.expected.len() == self.input.len(),
+            "expected and input case arrays must be of the same length"
+        );
 
-        let mut expected = String::new();
-        let mut actual = String::new();
+        let file = self.project.identify(&self.file)?;
+        let mut prompts = vec![];
 
-        let mut is_equal = true;
+        for (expected, input) in self.expected.iter().zip(self.input.iter()) {
+            let expected = expected.clone().cast::<String>();
+            let input = input.clone().cast::<String>();
 
-        for (change, value) in diff {
-            match change {
-                ChangeTag::Equal => {
-                    expected.push_str(value);
-                    actual.push_str(value);
+            let actual_out = {
+                let out = file.run(Some(input.clone()))?;
+                [
+                    String::from_utf8(out.stderr)?,
+                    String::from_utf8(out.stdout)?,
+                ]
+                .concat()
+            };
+
+            let diff = diff_unicode_words(Algorithm::Patience, &expected, &actual_out);
+
+            let mut is_equal = true;
+            let mut expected = String::new();
+            let mut actual = String::new();
+
+            for (change, value) in diff {
+                match change {
+                    ChangeTag::Equal => {
+                        expected.push_str(value);
+                        actual.push_str(value);
+                    }
+                    ChangeTag::Insert => {
+                        actual.push_str(format!("{}", value.green()).as_str());
+                        if !value.trim().is_empty() {
+                            is_equal = false;
+                        }
+                    }
+                    ChangeTag::Delete => {
+                        expected.push_str(format!("{}", value.red()).as_str());
+                        if !value.trim().is_empty() {
+                            is_equal = false;
+                        }
+                    }
                 }
-                ChangeTag::Insert => {
-                    actual.push_str(format!("{}", value.green()).as_str());
-                    is_equal = false;
-                }
-                ChangeTag::Delete => {
-                    expected.push_str(format!("{}", value.red()).as_str());
-                    is_equal = false;
-                }
+            }
+
+            if !is_equal {
+                let prompt = format!(
+                    "Comparing expected and actual output for {}:{inp}\nExpected: {}\nActual: {}",
+                    file.file_name(),
+                    expected,
+                    actual,
+                    inp = if self.input.is_empty() {
+                        String::new()
+                    } else {
+                        format!("\n{}", input)
+                    },
+                );
+
+                eprintln!("{prompt}");
+                prompts.push(prompt);
             }
         }
 
-        if is_equal {
+        if prompts.is_empty() {
             Ok(GradeResult {
                 requirement: self.req_name.clone(),
                 grade:       Grade {
@@ -1426,9 +1499,36 @@ impl DiffGrader {
                 prompt:      None,
             })
         } else {
-            eprintln!("Expected: {}", expected);
-            eprintln!("Actual: {}", actual);
-            Ok(GradeResult::default()) // TODO: implement
+            let context = format!(
+                "```\n{prompt}\n```\n\nSource code:\n```java\n{code}\n```",
+                prompt = prompts.join("\n\n"),
+                code = file.parser().code()
+            );
+            Ok(GradeResult {
+                requirement: self.req_name.clone(),
+                grade:       Grade {
+                    grade:  0.0,
+                    out_of: self.out_of,
+                },
+                reason:      "See above.".to_string(),
+                prompt:      Some(vec![
+                    ChatCompletionRequestMessage {
+                        role:    Role::System,
+                        content: SYSTEM_MESSAGE_INTRO.to_string(),
+                        name:    Some("Instructor".into()),
+                    },
+                    ChatCompletionRequestMessage {
+                        role:    Role::User,
+                        content: context,
+                        name:    Some("Student".into()),
+                    },
+                    ChatCompletionRequestMessage {
+                        role:    Role::System,
+                        content: SYSTEM_MESSAGE_OUTRO.to_string(),
+                        name:    Some("Instructor".into()),
+                    },
+                ]),
+            })
         }
     }
 }
@@ -1658,8 +1758,12 @@ impl CustomType for DiffGrader {
             .with_fn("out_of", Self::set_out_of)
             .with_fn("expected", Self::expected)
             .with_fn("expected", Self::set_expected)
-            .with_fn("actual", Self::input)
-            .with_fn("actual", Self::set_input)
+            .with_fn("input", Self::input)
+            .with_fn("input", Self::set_input)
+            .with_fn("project", Self::project)
+            .with_fn("project", Self::set_project)
+            .with_fn("file", Self::file)
+            .with_fn("file", Self::set_file)
             .with_fn("new_diff_grader", Self::default)
             .with_fn("run", Self::grade_by_diff_script);
     }

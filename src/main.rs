@@ -187,7 +187,7 @@ fn main() -> Result<()> {
     // TODO: move this to a separate method and call that method in shell()
     match cmd {
         Cmd::Run(f) => {
-            match Project::new()?.identify(f.as_str())?.run() {
+            match Project::new()?.identify(f.as_str())?.run(None) {
                 Ok(out) => {
                     let out = [
                         String::from_utf8(out.stderr)?,

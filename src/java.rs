@@ -3,6 +3,7 @@
 
 use std::{
     fmt::Formatter,
+    io::Write,
     path::PathBuf,
     process::{
         Command,
@@ -278,7 +279,7 @@ impl File {
         let (kind, name) = 'outer: {
             let work = vec![
                 (FileType::Interface, INTERFACENAME_QUERY),
-                (FileType::ClassWithMain, MAIN_METHOD_QUERY),
+                (FileType::ClassWithMain, CLASSNAME_QUERY),
                 (FileType::Class, CLASSNAME_QUERY),
             ];
             for (kind, query) in work {
@@ -588,7 +589,7 @@ impl File {
     /// TODO: instead of printing javac output, return it.
     /// TODO: have all such methods have generated versions that display output
     /// instead of returning.
-    pub fn run(&self) -> Result<Output> {
+    pub fn run(&self, input: Option<String>) -> Result<Output> {
         self.check()?;
 
         ensure!(
@@ -596,13 +597,25 @@ impl File {
             "File you wish to run doesn't have a main method."
         );
 
-        let name = self.proper_name.clone();
+        let mut child = Command::new(java_path()?)
+            .args([
+                "--class-path",
+                classpath()?.as_str(),
+                self.proper_name.clone().as_str(),
+            ])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .context("Failed to spawn javac process.")?;
 
-        Command::new(java_path()?)
-            .stdin(Stdio::inherit())
-            .args(["--class-path", classpath()?.as_str(), name.as_str()])
-            .output()
-            .context("Failed to spawn javac process.")
+        let mut stdin = child.stdin.take().unwrap();
+        let input = input.unwrap_or_default();
+
+        stdin.write_all(input.as_bytes()).unwrap();
+
+        let output = child.wait_with_output()?;
+        Ok(output)
     }
 
     #[generate_rhai_variant(Fallible, Mut)]
