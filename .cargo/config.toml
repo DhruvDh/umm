@@ -1,2 +1,3 @@
 [build]
 rustdocflags = ["-Z", "unstable-options", "--enable-index-page"]
+rustflags = ["-Zproc-macro-backtrace"]

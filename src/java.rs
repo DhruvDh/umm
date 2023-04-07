@@ -11,7 +11,6 @@ use std::{
     path::PathBuf,
     process::{
         Command,
-        Output,
         Stdio,
     },
 };
@@ -19,7 +18,6 @@ use std::{
 use anyhow::{
     anyhow,
     bail,
-    ensure,
     Context,
     Result,
 };
@@ -41,6 +39,7 @@ use serde::{
     Deserialize,
     Serialize,
 };
+use snailquote::unescape;
 use tokio::io::AsyncWriteExt;
 use tree_sitter::{
     Query,
@@ -51,6 +50,11 @@ use umm_derive::generate_rhai_variant;
 
 use crate::{
     constants::*,
+    grade::{
+        JavacDiagnostic,
+        LineRef,
+    },
+    parsers::parser,
     util::*,
     vscode::{self,},
     Dict,
@@ -264,6 +268,42 @@ impl CustomType for Parser {
             .with_fn("set_code", Parser::set_code)
             .with_fn("query", Parser::query_mut_script);
     }
+}
+
+/// An enum to represent possible errors with a Java file
+#[derive(thiserror::Error, Debug)]
+pub enum JavaFileError {
+    /// An error while compiling a Java file (running
+    /// [fn@crate::java::File::check])
+    #[error("Something went wrong while compiling the Java file")]
+    CompilerError {
+        /// javac stacktrace
+        stacktrace: String,
+        /// javac stacktrace, parsed with
+        /// [fn@crate::parsers::parser::parse_diag]
+        diags:      Vec<JavacDiagnostic>,
+    },
+    /// An error while running a Java file (running
+    /// [fn@crate::java::File::run])
+    #[error("Something went wrong while running the Java file")]
+    RuntimeError {
+        /// java output
+        output: String,
+        /// java stacktrace, parsed with [parser::junit_stacktrace_line_ref]
+        diags:  Vec<LineRef>,
+    },
+    /// An error while testing a Java file (running
+    /// [fn@crate::java::File::test])
+    #[error("Something went wrong while testing the Java file")]
+    FailedTestError {
+        /// junit test results
+        test_results: String,
+        /// junit stacktrace, parsed with [parser::junit_stacktrace_line_ref]
+        diags:        Vec<LineRef>,
+    },
+    /// Unknown error
+    #[error(transparent)]
+    UnknownError(#[from] anyhow::Error),
 }
 
 impl File {
@@ -535,7 +575,7 @@ impl File {
     /// The method simply returns the output produced by javac as a String.
     /// There is a ['parse_diag method'][fn@crate::parsers::parser::parse_diag]
     /// that can parse these to yield useful information.
-    pub fn doc_check(&self) -> Result<String> {
+    pub fn doc_check(&self) -> Result<String, JavaFileError> {
         let child = Command::new(javac_path()?)
             .args([
                 "--source-path",
@@ -553,18 +593,21 @@ impl File {
             .output()
             .context("Failed to spawn javac process.")?;
 
-        let output = [
-            String::from_utf8(child.stderr)?,
-            String::from_utf8(child.stdout)?,
-        ]
-        .concat();
+        let output = unescape(
+            &[
+                String::from_utf8(child.stderr).context("Error when parsing stderr as utf8")?,
+                String::from_utf8(child.stdout).context("Error when parsing stdout as utf8")?,
+            ]
+            .concat(),
+        )
+        .context("Error when unescaping javac output.")?;
 
         Ok(output)
     }
 
     #[generate_rhai_variant(Fallible, Mut)]
     /// Utility method to check for syntax errors using javac flag.
-    pub fn check(&self) -> Result<String> {
+    pub fn check(&self) -> Result<String, JavaFileError> {
         let path = self.path.display().to_string();
 
         let out = Command::new(javac_path()?)
@@ -585,23 +628,32 @@ impl File {
 
         match out {
             Ok(out) => {
-                if out.status.success() {
-                    Ok([
-                        String::from_utf8(out.stderr)?,
-                        String::from_utf8(out.stdout)?,
+                let output = unescape(
+                    &[
+                        String::from_utf8(out.stderr).context("Error parsing stderr as utf8")?,
+                        String::from_utf8(out.stdout).context("Error parsing stdout as utf8")?,
                     ]
-                    .concat())
-                } else {
-                    let output = [
-                        String::from_utf8(out.stderr)?,
-                        String::from_utf8(out.stdout)?,
-                    ]
-                    .concat();
+                    .concat(),
+                )
+                .context("Error when unescaping javac output.")?;
 
-                    Err(anyhow!(output).context("Something went wrong while compiling the file."))
+                if out.status.success() {
+                    Ok(output)
+                } else {
+                    let mut diags = Vec::new();
+                    for line in output.lines() {
+                        if let Ok(diag) = parser::parse_diag(line) {
+                            diags.push(diag);
+                        }
+                    }
+
+                    Err(JavaFileError::CompilerError {
+                        stacktrace: output,
+                        diags,
+                    })
                 }
             }
-            Err(e) => Err(e),
+            Err(e) => Err(JavaFileError::UnknownError(e)),
         }
     }
 
@@ -610,13 +662,12 @@ impl File {
     /// TODO: instead of printing javac output, return it.
     /// TODO: have all such methods have generated versions that display output
     /// instead of returning.
-    pub fn run(&self, input: Option<String>) -> Result<String> {
+    pub fn run(&self, input: Option<String>) -> Result<String, JavaFileError> {
         self.check()?;
 
-        ensure!(
-            self.kind == FileType::ClassWithMain,
-            "File you wish to run doesn't have a main method."
-        );
+        if self.kind != FileType::ClassWithMain {
+            return Err(anyhow!("File you wish to run doesn't have a main method.").into());
+        }
 
         let mut child = Command::new(java_path()?)
             .args([
@@ -634,25 +685,43 @@ impl File {
 
         let mut stdin = child.stdin.take().unwrap();
 
-        stdin.write_all(input.as_bytes())?;
-        stdin.flush()?;
+        stdin
+            .write_all(input.as_bytes())
+            .context("Error when trying to write input to stdin")?;
+        stdin.flush().context("Error when trying to flush stdin")?;
 
         let out = child.wait_with_output();
         match out {
             Ok(out) => {
-                if out.status.success() {
-                    Ok([
-                        String::from_utf8(out.stderr)?,
-                        String::from_utf8(out.stdout)?,
+                let output = unescape(
+                    &[
+                        String::from_utf8(out.stderr)
+                            .context("Error when parsing stderr as utf8")?,
+                        String::from_utf8(out.stdout)
+                            .context("Error when parsing stdout as utf8")?,
                     ]
-                    .concat())
-                } else {
-                    let output = String::from_utf8(out.stderr)?;
+                    .concat(),
+                )
+                .context("Error when escaping java output.")?;
 
-                    Err(anyhow!(output).context("Something went wrong while running the file."))
+                if out.status.success() {
+                    Ok(output)
+                } else {
+                    let mut diags = Vec::new();
+
+                    for line in output.lines() {
+                        if let Ok(diag) = parser::junit_stacktrace_line_ref(line) {
+                            diags.push(diag);
+                        }
+                    }
+
+                    Err(JavaFileError::RuntimeError {
+                        output,
+                        diags,
+                    })
                 }
             }
-            Err(e) => Err(anyhow!(e)),
+            Err(e) => Err(anyhow!(e).into()),
         }
     }
 
@@ -666,7 +735,11 @@ impl File {
     ///
     /// * `tests`: list of strings (or types that implement
     /// `Into<String>`) meant to represent test method names,
-    pub fn test(&self, tests: Vec<&str>) -> Result<Output> {
+    pub fn test(
+        &self,
+        tests: Vec<&str>,
+        project: Option<&Project>,
+    ) -> Result<String, JavaFileError> {
         self.check()?;
 
         let tests = {
@@ -688,10 +761,7 @@ impl File {
             .collect::<Vec<String>>();
         let methods: Vec<&str> = tests.iter().map(String::as_str).collect();
 
-        Command::new(java_path()?)
-            // .stdin(Stdio::inherit())
-            // .stdout(Stdio::inherit())
-            // .stderr(Stdio::inherit())
+        let output = Command::new(java_path().context("Could not find `java` command on path.")?)
             .args(
                 [
                     [
@@ -709,8 +779,64 @@ impl File {
                 ]
                 .concat(),
             )
-            .output()
-            .context("Could not issue java command to run the tests for some reason.")
+            .output();
+
+        match output {
+            Ok(out) => {
+                let output = unescape(
+                    &[
+                        String::from_utf8(out.stderr)
+                            .context("Error when parsing stderr as utf8")?,
+                        String::from_utf8(out.stdout)
+                            .context("Error when parsing stdout as utf8")?,
+                    ]
+                    .concat(),
+                )
+                .context("Error when unescaping JUnit output.")?;
+
+                if out.status.success() {
+                    Ok(output)
+                } else {
+                    let mut diags = Vec::new();
+                    let mut new_output = Vec::new();
+
+                    for line in output.lines() {
+                        if line.contains("MethodSource") || line.contains("Native Method") {
+                            continue;
+                        }
+
+                        if line.contains("Test run finished after") {
+                            break;
+                        }
+
+                        if let Ok(diag) = parser::junit_stacktrace_line_ref(line) {
+                            if let Some(proj) = project && proj.identify(diag.file_name()).is_ok() {
+                                new_output.push(
+                                    line.replace("\\\\", "\\").replace("\\\"", "\"").to_string(),
+                                );
+                            }
+                            diags.push(diag);
+                        } else if let Ok(diag) = parser::parse_diag(line) {
+                            if let Some(proj) = project && proj.identify(diag.file_name()).is_ok() {
+                                new_output.push(
+                                    line.replace("\\\\", "\\").replace("\\\"", "\"").to_string(),
+                                );
+                            }
+                            diags.push(diag.into());
+                        } else {
+                            new_output
+                                .push(line.replace("\\\\", "\\").replace("\\\"", "\"").to_string());
+                        }
+                    }
+
+                    Err(JavaFileError::FailedTestError {
+                        test_results: new_output.join("\n"),
+                        diags,
+                    })
+                }
+            }
+            Err(e) => Err(anyhow!(e).into()),
+        }
     }
 
     /// Get a reference to the file's kind.
@@ -910,6 +1036,11 @@ impl Project {
         } else {
             bail!("Could not find {} in the project", name)
         }
+    }
+
+    /// Returns true if project contains a file with the given name.
+    pub fn contains(&self, name: &str) -> bool {
+        self.identify(name).is_ok()
     }
 
     /// Downloads certain libraries like JUnit if found in imports.

@@ -4,7 +4,7 @@
 use std::{
     collections::HashSet,
     fmt::Display,
-    fs::{self,},
+    fs,
     io::{
         BufRead,
         BufReader,
@@ -50,7 +50,6 @@ use similar::{
     Algorithm,
     ChangeTag,
 };
-use snailquote::unescape;
 use tabled::{
     display::ExpandedDisplay,
     object::Rows,
@@ -78,6 +77,7 @@ use crate::{
     java::{
         File,
         FileType,
+        JavaFileError,
         Parser,
         Project,
     },
@@ -95,6 +95,13 @@ pub struct LineRef {
     pub line_number: usize,
     /// The file name
     pub file_name:   String,
+}
+
+impl LineRef {
+    /// Returns the file name
+    pub fn file_name(&self) -> &str {
+        self.file_name.as_ref()
+    }
 }
 
 #[derive(Clone, Default)]
@@ -252,6 +259,13 @@ pub struct JavacDiagnostic {
     /// * `message`: the diagnostic message
     #[tabled(rename = "Message")]
     message:     String,
+}
+
+impl JavacDiagnostic {
+    /// Returns the file name
+    pub fn file_name(&self) -> &str {
+        self.file_name.as_ref()
+    }
 }
 
 impl From<JavacDiagnostic> for LineRef {
@@ -556,7 +570,55 @@ impl DocsGrader {
         let mut outputs = vec![];
         for name in &files {
             let file = self.project.identify(name)?;
-            let output = file.doc_check()?;
+            let output = match file.doc_check() {
+                Ok(o) => o,
+                Err(JavaFileError::CompilerError {
+                    stacktrace,
+                    diags,
+                }) => {
+                    let messages = vec![
+                        ChatCompletionRequestMessage {
+                            role:    Role::System,
+                            content: SYSTEM_MESSAGE.to_string(),
+                            name:    Some(String::from("Instructor")),
+                        },
+                        ChatCompletionRequestMessage {
+                            role:    Role::User,
+                            content: format!("Compiler error -\n```\n{}\n```", stacktrace),
+                            name:    Some(String::from("Student")),
+                        },
+                        get_source_context(diags, self.project, 1, 3, 6)?,
+                    ];
+
+                    return Ok(GradeResult {
+                        requirement: self.req_name,
+                        grade:       Grade::new(0.0, out_of),
+                        reason:      String::from("See above."),
+                        prompt:      Some(messages),
+                    });
+                }
+                Err(e) => {
+                    let messages = vec![
+                        ChatCompletionRequestMessage {
+                            role:    Role::System,
+                            content: SYSTEM_MESSAGE.to_string(),
+                            name:    Some(String::from("Instructor")),
+                        },
+                        ChatCompletionRequestMessage {
+                            role:    Role::User,
+                            content: format!("Unkown error -\n```\n{:?}\n```", e),
+                            name:    Some(String::from("Student")),
+                        },
+                    ];
+
+                    return Ok(GradeResult {
+                        requirement: self.req_name,
+                        grade:       Grade::new(0.0, out_of),
+                        reason:      String::from("See above."),
+                        prompt:      Some(messages),
+                    });
+                }
+            };
             outputs.push(output.clone());
             for line in output.lines() {
                 let result = parser::parse_diag(line);
@@ -603,9 +665,9 @@ impl DocsGrader {
                 .with(tabled::Style::modern())
         );
 
-        let context = get_source_context(all_diags, self.project, 1, 3, 6)?;
-
         let prompt = if num_diags > 0 {
+            let context = get_source_context(all_diags, self.project, 1, 3, 6)?;
+
             let mut outputs = outputs
                 .iter()
                 .map(|output| format!("```\n{output}\n```"))
@@ -811,48 +873,92 @@ impl ByUnitTestGrader {
             let mut messages = vec![];
 
             for test_file in test_files {
-                let res = match project.identify(test_file.as_str())?.test(Vec::new()) {
-                    Ok(res) => [
-                        String::from_utf8(res.stderr)?,
-                        String::from_utf8(res.stdout)?,
-                    ]
-                    .concat(),
-                    Err(e) => {
-                        let errors = match e.source() {
-                            Some(e) => unescape(&format!("{:#?}", e)).unwrap(),
-                            None => String::new(),
-                        };
-                        let mut all_diags = vec![];
+                let res = match project
+                    .identify(test_file.as_str())?
+                    .test(Vec::new(), Some(&self.project))
+                {
+                    Ok(res) => res,
 
-                        for line in errors.lines() {
-                            if let Ok(diag) = parser::parse_diag(line) {
-                                all_diags.push(diag);
-                            }
-                        }
-                        let context = get_source_context(all_diags, self.project, 3, 6, 6)?;
-
+                    Err(JavaFileError::FailedTestError {
+                        test_results,
+                        diags,
+                    }) => {
                         let messages = vec![
                             ChatCompletionRequestMessage {
                                 role:    Role::System,
                                 content: SYSTEM_MESSAGE.to_string(),
                                 name:    Some("Instructor".into()),
                             },
-                            // ChatCompletionRequestMessage {
-                            //     role:    Role::System,
-                            //     content: self.project.describe(),
-                            //     name:    Some("Instructor".into()),
-                            // },
                             ChatCompletionRequestMessage {
                                 role:    Role::User,
-                                content: format!("```\n{:#?}\n```", e),
+                                content: format!("Failed tests -\n```\n{}\n```", test_results),
                                 name:    Some("Student".into()),
                             },
-                            context,
-                            // ChatCompletionRequestMessage {
-                            //     role:    Role::System,
-                            //     content: include_str!("prompts/unit_testing.md").to_string(),
-                            //     name:    Some("Instructor".into()),
-                            // },
+                            get_source_context(diags, self.project, 3, 6, 6)?,
+                        ];
+                        return Ok(GradeResult {
+                            requirement: req_name,
+                            grade:       Grade::new(0.0, out_of),
+                            reason:      "Error running tests.".to_string(),
+                            prompt:      Some(messages),
+                        });
+                    }
+                    Err(JavaFileError::UnknownError(e)) => {
+                        let messages = vec![
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: SYSTEM_MESSAGE.to_string(),
+                                name:    Some("Instructor".into()),
+                            },
+                            ChatCompletionRequestMessage {
+                                role:    Role::User,
+                                content: format!("Unkown error -\n```\n{:#?}\n```", e),
+                                name:    Some("Student".into()),
+                            },
+                        ];
+                        return Ok(GradeResult {
+                            requirement: req_name,
+                            grade:       Grade::new(0.0, out_of),
+                            reason:      "Error running tests.".to_string(),
+                            prompt:      Some(messages),
+                        });
+                    }
+                    Err(JavaFileError::CompilerError {
+                        stacktrace,
+                        diags,
+                    }) => {
+                        let messages = vec![
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: SYSTEM_MESSAGE.to_string(),
+                                name:    Some("Instructor".into()),
+                            },
+                            ChatCompletionRequestMessage {
+                                role:    Role::User,
+                                content: format!("Compiler error -\n```\n{}\n```", stacktrace),
+                                name:    Some("Student".into()),
+                            },
+                            get_source_context(diags, self.project, 3, 6, 6)?,
+                        ];
+                        return Ok(GradeResult {
+                            requirement: req_name,
+                            grade:       Grade::new(0.0, out_of),
+                            reason:      "Error running tests.".to_string(),
+                            prompt:      Some(messages),
+                        });
+                    }
+                    Err(e) => {
+                        let messages = vec![
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: SYSTEM_MESSAGE.to_string(),
+                                name:    Some("Instructor".into()),
+                            },
+                            ChatCompletionRequestMessage {
+                                role:    Role::User,
+                                content: format!("Unkown Error -\n```\n{:#?}\n```", e),
+                                name:    Some("Student".into()),
+                            },
                         ];
                         return Ok(GradeResult {
                             requirement: req_name,
@@ -1518,20 +1624,10 @@ impl DiffGrader {
             let actual_out = {
                 let out = match file.run(Some(input.clone())) {
                     Ok(out) => out,
-                    Err(e) => {
-                        let errors = match e.source() {
-                            Some(e) => unescape(&format!("{}", e)).unwrap(),
-                            None => String::new(),
-                        };
-                        let mut all_diags = vec![];
-
-                        for line in errors.lines() {
-                            if let Ok(diag) = parser::junit_stacktrace_line_ref(line) {
-                                all_diags.push(diag);
-                            }
-                        }
-                        let context = get_source_context(all_diags, self.project.clone(), 3, 6, 6)?;
-
+                    Err(JavaFileError::RuntimeError {
+                        output,
+                        diags,
+                    }) => {
                         let messages = vec![
                             ChatCompletionRequestMessage {
                                 role:    Role::System,
@@ -1540,15 +1636,63 @@ impl DiffGrader {
                             },
                             ChatCompletionRequestMessage {
                                 role:    Role::User,
-                                content: format!("```\n{}\n```", errors),
+                                content: format!("Error while running -\n```\n{}\n```", output),
                                 name:    Some("Student".into()),
                             },
-                            context,
+                            get_source_context(diags, self.project.clone(), 3, 6, 6)?,
                         ];
                         return Ok(GradeResult {
                             requirement: self.req_name.clone(),
                             grade:       Grade::new(0.0, self.out_of),
                             reason:      "Error running file for some cases.".to_string(),
+                            prompt:      Some(messages),
+                        });
+                    }
+                    Err(JavaFileError::CompilerError {
+                        stacktrace,
+                        diags,
+                    }) => {
+                        let messages = vec![
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: SYSTEM_MESSAGE.to_string(),
+                                name:    Some("Instructor".into()),
+                            },
+                            ChatCompletionRequestMessage {
+                                role:    Role::User,
+                                content: format!(
+                                    "Error while compiling -\n```\n{}\n```",
+                                    stacktrace
+                                ),
+                                name:    Some("Student".into()),
+                            },
+                            get_source_context(diags, self.project.clone(), 3, 6, 6)?,
+                        ];
+                        return Ok(GradeResult {
+                            requirement: self.req_name.clone(),
+                            grade:       Grade::new(0.0, self.out_of),
+                            reason:      "Error compiling file for some cases.".to_string(),
+                            prompt:      Some(messages),
+                        });
+                    }
+                    Err(e) => {
+                        let messages = vec![
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: SYSTEM_MESSAGE.to_string(),
+                                name:    Some("Instructor".into()),
+                            },
+                            ChatCompletionRequestMessage {
+                                role:    Role::User,
+                                content: format!("Unkown error -\n```\n{:?}\n```", e),
+                                name:    Some("Student".into()),
+                            },
+                        ];
+                        return Ok(GradeResult {
+                            requirement: self.req_name.clone(),
+                            grade:       Grade::new(0.0, self.out_of),
+                            reason:      "Unknown error while running file for some cases."
+                                .to_string(),
                             prompt:      Some(messages),
                         });
                     }
@@ -1590,15 +1734,15 @@ impl DiffGrader {
 
             if !is_equal {
                 let prompt = format!(
-                    "Comparing expected and actual output for {}:{inp}```\nExpected: {}\nActual: \
-                     {}\n```",
+                    "Comparing expected and actual output for \
+                     {}:\n```{inp}Expected:\n{}\nActual:\n{}\n```\n",
                     file.file_name(),
                     expected,
                     actual,
                     inp = if self.input.is_empty() {
                         String::new()
                     } else {
-                        format!("\n`{}`", input)
+                        format!("\nInput:\n`{}`\n", input)
                     },
                 );
 
@@ -1619,10 +1763,12 @@ impl DiffGrader {
             })
         } else {
             let context = format!(
-                "{prompt}\n\nSource code:\n```java\n{code}\n```",
+                "{prompt}\n\nSource code:\n```java\n{code}\n```\nMy tests are failing due to the \
+                 above.",
                 prompt = prompts.join("\n\n"),
                 code = file.parser().code()
             );
+
             Ok(GradeResult {
                 requirement: self.req_name.clone(),
                 grade:       Grade {

@@ -206,17 +206,13 @@ fn main() -> Result<()> {
         },
         Cmd::Test(f, t) => {
             let out = if t.is_empty() {
-                Project::new()?.identify(f.as_str())?.test(vec![])?
+                let project = Project::new()?;
+                project.identify(f.as_str())?.test(vec![], Some(&project))?
             } else {
                 let t = t.iter().map(|i| i.as_str()).collect();
-                Project::new()?.identify(f.as_str())?.test(t)?
+                let project = Project::new()?;
+                project.identify(f.as_str())?.test(t, Some(&project))?
             };
-
-            let out = [
-                String::from_utf8(out.stderr)?,
-                String::from_utf8(out.stdout)?,
-            ]
-            .concat();
 
             println!("{out}");
         }

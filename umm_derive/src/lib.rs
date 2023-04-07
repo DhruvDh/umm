@@ -37,7 +37,6 @@ pub fn generate_rhai_variant(attr: TokenStream, input: TokenStream) -> TokenStre
     let mut new_fn_name = format_ident!("{}_script", fn_name);
 
     let sig_args = input.sig.inputs;
-
     let mut is_impl_self_fn = false;
 
     let mut args = Punctuated::<_, Token![,]>::new();
@@ -86,18 +85,35 @@ pub fn generate_rhai_variant(attr: TokenStream, input: TokenStream) -> TokenStre
             quote!(-> Result<(), Box<EvalAltResult>>)
         } else if output.starts_with("Result<") {
             if output.replace("Result<", "").starts_with("Vec<") {
-                let inner_type = format_ident!(
-                    "{}",
-                    output
+                let inner_type = if output.contains(',') {
+                    let o = output
                         .replace("Result<", "")
                         .replace("Vec<", "")
-                        .replace('>', "")
-                );
+                        .replace('>', "");
+                    let o = o.split_once(',').unwrap().0;
+                    format_ident!("{o}",)
+                } else {
+                    format_ident!(
+                        "{}",
+                        output
+                            .replace("Result<", "")
+                            .replace("Vec<", "")
+                            .replace('>', "")
+                    )
+                };
 
                 quote! {-> Result<Vec<#inner_type>, Box<EvalAltResult>>}
             } else {
-                let inner_type =
-                    format_ident!("{}", output.replace("Result<", "").replace('>', ""));
+                let inner_type = if output.contains(',') {
+                    let o = output
+                        .replace("Result<", "")
+                        .replace("Vec<", "")
+                        .replace('>', "");
+                    let o = o.split_once(',').unwrap().0;
+                    format_ident!("{o}",)
+                } else {
+                    format_ident!("{}", output.replace("Result<", "").replace('>', ""))
+                };
 
                 quote! {-> Result<#inner_type, Box<EvalAltResult>>}
             }
@@ -142,7 +158,6 @@ pub fn generate_rhai_variant(attr: TokenStream, input: TokenStream) -> TokenStre
         }
     };
 
-    println!("{expanded}");
     // Hand the output tokens back to the compiler
     expanded.into()
 }

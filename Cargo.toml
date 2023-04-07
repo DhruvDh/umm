@@ -43,6 +43,7 @@ snailquote = "0.3.1"
 similar = { version = "2.2.1", features = ["text", "inline", "unicode", "unicode-segmentation"] }
 colored = "2.0.0"
 itertools = "0.10.5"
+thiserror = "1.0.40"
 
 
 [profile.release-lto]
