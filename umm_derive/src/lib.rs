@@ -142,7 +142,7 @@ pub fn generate_rhai_variant(attr: TokenStream, input: TokenStream) -> TokenStre
             pub fn #new_fn_name(#sig_args) #output {
                 match #match_expr {
                     Ok(res) => Ok(res),
-                    Err(e) => Err(e.to_string().into()),
+                    Err(e) => Err(format!("{}", e).into()),
                 }
             }
         }

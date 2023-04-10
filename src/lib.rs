@@ -36,6 +36,7 @@ use constants::{
     POSTGREST_CLIENT,
     ROOT_DIR,
     RUNTIME,
+    SCRIPT_AST,
     TERM,
 };
 use grade::*;
@@ -54,8 +55,9 @@ use umm_derive::generate_rhai_variant;
 /// Defined for convenience
 type Dict = std::collections::HashMap<String, String>;
 
-/// Prints the result of grading
-pub fn grade(name_or_path: &str) -> Result<()> {
+/// Creates and returns a new `Engine` with all the types and functions
+/// registered
+pub fn create_engine() -> Engine {
     let mut engine = Engine::new();
     engine
         .register_type_with_name::<FileType>("JavaFileType")
@@ -68,10 +70,18 @@ pub fn grade(name_or_path: &str) -> Result<()> {
         .build_type::<GradeResult>()
         .build_type::<Parser>()
         .build_type::<File>()
+        .build_type::<Query>()
+        .build_type::<QueryGrader>()
         .build_type::<Project>()
         .register_fn("clean", clean_script)
         .register_fn("show_results", show_result)
         .register_fn("generate_feedback", generate_feedback_script);
+    engine
+}
+
+/// Prints the result of grading
+pub fn grade(name_or_path: &str) -> Result<()> {
+    let engine = create_engine();
 
     // println!("{}", engine.gen_fn_signatures(false).join("\n"));
     let script = match std::fs::read_to_string(name_or_path) {
@@ -113,9 +123,15 @@ pub fn grade(name_or_path: &str) -> Result<()> {
                 ))?
         }
     };
+    let ast = engine.compile(script)?;
+    {
+        let ast = std::sync::Arc::clone(&SCRIPT_AST);
+        let mut ast = ast.lock().unwrap();
+        *ast = ast.clone();
+    }
 
     // Run the script
-    engine.run(&script)?;
+    engine.run_ast(&ast)?;
 
     Ok(())
 }

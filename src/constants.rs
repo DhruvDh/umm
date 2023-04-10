@@ -1,10 +1,17 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-use std::path::PathBuf;
+use std::{
+    path::PathBuf,
+    sync::{
+        Arc,
+        Mutex,
+    },
+};
 
 use lazy_static::lazy_static;
 use postgrest::Postgrest;
+use rhai::AST;
 use tree_sitter;
 
 // TODO: replace with https://lib.rs/crates/state
@@ -38,7 +45,8 @@ lazy_static! {
     pub static ref SYSTEM_MESSAGE_OUTRO: String = include_str!("prompts/system_message_outro.md").into();
     /// Entire ChatGPT System Message
     pub static ref SYSTEM_MESSAGE: String = format!("{}\n{}", *SYSTEM_MESSAGE_INTRO, *SYSTEM_MESSAGE_OUTRO);
-
+    /// Rhai script as a AST, behind an mutex.
+    pub static ref SCRIPT_AST: Arc<Mutex<AST>> = Arc::new(Mutex::new(AST::empty()));
 }
 
 /// Current term. TODO: Move this to init script

@@ -213,7 +213,6 @@ impl Parser {
             .context("Treesitter could not parse code")?;
 
         let query = Query::new(self.lang, q).unwrap();
-
         let mut cursor = QueryCursor::new();
         let matches = cursor.matches(&query, tree.root_node(), self.code.as_bytes());
         let capture_names = query.capture_names();

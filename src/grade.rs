@@ -34,6 +34,7 @@ use reqwest::{
     Error,
     Response,
 };
+use rhai::FnPtr;
 #[allow(deprecated)]
 use rhai::{
     Array,
@@ -50,6 +51,7 @@ use similar::{
     Algorithm,
     ChangeTag,
 };
+use snailquote::unescape;
 use tabled::{
     display::ExpandedDisplay,
     object::Rows,
@@ -71,9 +73,11 @@ use crate::{
         PROMPT_TRUNCATE,
         ROOT_DIR,
         RUNTIME,
+        SCRIPT_AST,
         SOURCE_DIR,
         SYSTEM_MESSAGE,
     },
+    create_engine,
     java::{
         File,
         FileType,
@@ -1783,7 +1787,7 @@ impl DiffGrader {
                         name:    Some("Instructor".into()),
                     },
                     ChatCompletionRequestMessage {
-                        role:    Role::User,
+                        role:    Role::System,
                         content: context,
                         name:    Some("Student".into()),
                     },
@@ -1874,6 +1878,623 @@ pub fn generate_feedback(results: Array) -> Result<()> {
     }
 
     Ok(())
+}
+
+#[derive(Default, Debug, Clone)]
+/// A struct to represet a treesitter query.
+pub struct Query {
+    /// The query to run.
+    query:   String,
+    /// The capture to extract from the query.
+    capture: String,
+    /// A function pointer to filter the matches using. Must return a boolean.
+    filter:  Option<FnPtr>,
+}
+
+impl Query {
+    /// Creates a new query with default values (empty strings).
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Gets the query to run.
+    pub fn query(&self) -> String {
+        unescape(&format!("{:#?}", self.query)).unwrap()
+    }
+
+    /// Sets the query to run.
+    pub fn set_query(mut self, query: String) -> Self {
+        self.query = query;
+        self
+    }
+
+    /// Gets the captures to extract from the query.
+    pub fn capture(&self) -> String {
+        self.capture.clone()
+    }
+
+    /// Sets the captures to extract from the query.
+    pub fn set_capture(mut self, capture: String) -> Self {
+        self.capture = capture;
+        self
+    }
+
+    /// Gets the function to filter the results of the query.
+    pub fn filter(&self) -> Option<FnPtr> {
+        self.filter.clone()
+    }
+
+    /// Set the function to filter the results of the query.
+    pub fn set_filter(mut self, filter: FnPtr) -> Self {
+        self.filter = Some(filter);
+        self
+    }
+}
+
+/// An enum to represent possible errors when running a query.
+#[derive(thiserror::Error, Debug)]
+pub enum QueryError {
+    /// No file was selected to run the query on.
+    #[error("No file was selected to run the query on.")]
+    NoFileSelected,
+    /// No capture was selected to extract from the query.
+    #[error("No capture was selected to extract from the query: {0}")]
+    NoCaptureSelected(String),
+    /// No previous query to add capture or filter to.
+    #[error("No previous query to add capture or filter to.")]
+    NoPreviousQuery,
+    /// The file selected to run the query on does not exist.
+    #[error("The file selected (`{0}`) to run the query on could not be found.")]
+    FileNotFound(String),
+    /// The query could not be run.
+    #[error(
+        "This query could not be run, likely due to a syntax \
+         error.\nQuery:\n```\n{q}\n```\nError:\n```\n{e}\n```"
+    )]
+    QueryExecError {
+        /// The query that could not be run.
+        q: String,
+        /// The error that occurred.
+        e: String,
+    },
+    /// No matches found for a previously selected capture, all subsequent
+    /// queries will return nothing.
+    #[error(
+        "No matches found for a previously selected capture: `{0}`, all subsequent queries will \
+         return nothing."
+    )]
+    NoMatchesFound(String),
+    /// Unknown error.
+    #[error("Unknown error: {0}")]
+    UnkownError(#[from] anyhow::Error),
+}
+
+#[derive(Default, Clone)]
+/// An enum to represent the constraint of a query.
+pub enum QueryConstraint {
+    #[default]
+    /// The query must match at least once.
+    MustMatchAtLeastOnce,
+    /// The query must match exactly once.
+    MustMatchExactlyNTimes(usize),
+    /// Must not match.
+    MustNotMatch,
+}
+
+#[derive(Default, Clone)]
+/// A struct to represent a query grader.
+pub struct QueryGrader {
+    /// The name of the requirement.
+    req_name:   String,
+    /// The grade for the requirement.
+    out_of:     f64,
+    /// The queries to run.
+    queries:    Vec<Query>,
+    /// The input to run the queries on.
+    project:    Project,
+    /// The file to run the query on.
+    file:       String,
+    /// The constraint of the query.
+    constraint: QueryConstraint,
+    /// The reason to share with the student.
+    reason:     String,
+}
+
+impl QueryGrader {
+    /// Creates a new query grader with default values.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Gets the name of the requirement.
+    pub fn req_name(&self) -> &str {
+        &self.req_name
+    }
+
+    /// Sets the name of the requirement.
+    pub fn set_req_name(mut self, req_name: String) -> Self {
+        self.req_name = req_name;
+        self
+    }
+
+    /// Gets the "out of" grade for the requirement.
+    pub fn out_of(&self) -> f64 {
+        self.out_of
+    }
+
+    /// Sets the "out of" grade for the requirement.
+    pub fn set_out_of(mut self, out_of: f64) -> Self {
+        self.out_of = out_of;
+        self
+    }
+
+    /// Gets the file to run the query on.
+    pub fn file(&self) -> &str {
+        &self.file
+    }
+
+    /// Sets the file to run the query on.
+    pub fn set_file(mut self, file: String) -> Self {
+        self.file = file;
+        self
+    }
+
+    /// Gets the project to run the query on.
+    pub fn project(&self) -> &Project {
+        &self.project
+    }
+
+    /// Sets the project to run the query on.
+    pub fn set_project(mut self, project: Project) -> Self {
+        self.project = project;
+        self
+    }
+
+    /// Gets the queries to run.
+    pub fn queries(&self) -> Vec<Query> {
+        self.queries.clone()
+    }
+
+    /// Gets the constraint of the query.
+    pub fn constraint(&self) -> QueryConstraint {
+        self.constraint.clone()
+    }
+
+    /// Sets the constraint of the query to "must match at least once".
+    pub fn must_match_at_least_once(mut self) -> Self {
+        self.constraint = QueryConstraint::MustMatchAtLeastOnce;
+        self
+    }
+
+    /// Sets the constraint of the query to "must match exactly n times".
+    pub fn must_match_exactly_n_times(mut self, n: usize) -> Self {
+        self.constraint = QueryConstraint::MustMatchExactlyNTimes(n);
+        self
+    }
+
+    /// Sets the constraint of the query to "must not match".
+    pub fn must_not_match(mut self) -> Self {
+        self.constraint = QueryConstraint::MustNotMatch;
+        self
+    }
+
+    /// Gets the reason to share with the student.
+    pub fn reason(&self) -> &str {
+        &self.reason
+    }
+
+    /// Sets the reason to share with the student.
+    pub fn set_reason(mut self, reason: String) -> Self {
+        self.reason = reason;
+        self
+    }
+
+    #[generate_rhai_variant(Fallible)]
+    /// Adds a query to run.
+    /// If no file has been selected, this will throw an error.
+    pub fn query(mut self, q: String) -> Result<Self, QueryError> {
+        if self.file.is_empty() {
+            return Err(QueryError::NoFileSelected);
+        }
+
+        self.queries.push(Query {
+            query:   q,
+            capture: String::new(),
+            filter:  None,
+        });
+
+        Ok(self)
+    }
+
+    #[generate_rhai_variant(Fallible)]
+    /// Adds a capture to the last query.
+    /// If no queries have been added, this will throw an error.
+    pub fn capture(mut self, c: String) -> Result<Self, QueryError> {
+        if let Some(last) = self.queries.last_mut() {
+            *last = last.clone().set_capture(c);
+            Ok(self)
+        } else {
+            Err(QueryError::NoPreviousQuery)
+        }
+    }
+
+    #[generate_rhai_variant(Fallible)]
+    /// Adds a capture to the last query.
+    /// If no queries have been added, this will throw an error.
+    pub fn filter(mut self, f: FnPtr) -> Result<Self, QueryError> {
+        if let Some(last) = self.queries.last_mut() {
+            *last = last.clone().set_filter(f);
+            Ok(self)
+        } else {
+            Err(QueryError::NoPreviousQuery)
+        }
+    }
+
+    /// Selects entire method body and returns
+    pub fn method_body_with_name(mut self, method_name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(include_str!("queries/method_body.scm"), method_name),
+            capture: method_name,
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects and returns the entire main method
+    pub fn main_method(mut self) -> Self {
+        self.queries.push(Query {
+            query:   include_str!("queries/main_method.scm").to_string(),
+            capture: "body".to_string(),
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects entire class body with name
+    pub fn class_body_with_name(mut self, class_name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(include_str!("queries/class_with_name.scm"), class_name),
+            capture: "body".to_string(),
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects local variable declaration statements
+    pub fn local_variables(mut self) -> Self {
+        self.queries.push(Query {
+            query:   String::from("((local_variable_declaration) @var)"),
+            capture: "var".to_string(),
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects local variable declaration statements with supplied name
+    pub fn local_variables_with_name(mut self, name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(include_str!("queries/local_variable_with_name.scm"), name),
+            capture: name,
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects if statements (entire, including else if and else)
+    pub fn if_statements(mut self) -> Self {
+        self.queries.push(Query {
+            query:   String::from("((if_statement) @if)"),
+            capture: "if".to_string(),
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects for loops
+    pub fn for_loops(mut self) -> Self {
+        self.queries.push(Query {
+            query:   String::from("((for_statement) @for)"),
+            capture: "for".to_string(),
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects while loops
+    pub fn while_loops(mut self) -> Self {
+        self.queries.push(Query {
+            query:   String::from("((while_statement) @while)"),
+            capture: "while".to_string(),
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects method invocations
+    pub fn method_invocations(mut self) -> Self {
+        self.queries.push(Query {
+            query:   String::from("((method_invocation) @method)"),
+            capture: "method".to_string(),
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects method invocations with supplied name
+    pub fn method_invocations_with_name(mut self, name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(
+                include_str!("queries/method_invocations_with_name.scm"),
+                name
+            ),
+            capture: name,
+            filter:  None,
+        });
+        self
+    }
+
+    #[generate_rhai_variant(Fallible)]
+    /// Runs the queries, and returns the result.
+    pub fn run_query(&self) -> Result<Dynamic, QueryError> {
+        let engine = create_engine();
+        let ast = std::sync::Arc::clone(&SCRIPT_AST);
+        let ast = ast.lock().unwrap();
+
+        let first = self
+            .queries
+            .first()
+            .ok_or_else(|| QueryError::NoMatchesFound("No queries to run".to_string()))?;
+
+        let file = self
+            .project
+            .identify(self.file())
+            .map_err(|_| QueryError::FileNotFound(self.file().to_string()))?;
+
+        let mut matches: Vec<String> = match file.query(&first.query()) {
+            Ok(m) => {
+                if first.capture().is_empty() {
+                    return Err(QueryError::NoCaptureSelected(format!("{:#?}", first)));
+                }
+                let result = m
+                    .iter()
+                    .filter_map(|map| map.get(&first.capture()))
+                    .cloned();
+
+                let result: Vec<String> = if let Some(f) = first.filter() {
+                    result
+                        .filter(|x| f.call(&engine, &ast, (x.clone(),)).unwrap_or(false))
+                        .collect()
+                } else {
+                    result.collect()
+                };
+
+                if m.is_empty() {
+                    return Err(QueryError::NoMatchesFound(
+                        unescape(&format!("{:#?}", first)).context("Unescape error")?,
+                    ));
+                }
+                result
+            }
+            Err(e) => {
+                return Err(QueryError::QueryExecError {
+                    q: first.query(),
+                    e: format!("{:#?}", e),
+                })
+            }
+        };
+
+        if self.queries.len() == 1 {
+            return Ok(matches.into());
+        }
+
+        for (prev_q, q) in self.queries().into_iter().tuple_windows() {
+            if matches.is_empty() {
+                return Err(QueryError::NoMatchesFound(
+                    unescape(&format!("{:#?}", prev_q)).context("Unescape error")?,
+                ));
+            }
+
+            if q.capture().is_empty() {
+                return Err(QueryError::NoCaptureSelected(format!("{:#?}", q)));
+            }
+
+            let mut new_matches = vec![];
+
+            for code in matches {
+                let parser = Parser::new(code, *JAVA_TS_LANG).context(format!(
+                    "Failed to create parser for query: `{}`",
+                    q.query()
+                ))?;
+
+                match parser.query(&q.query()) {
+                    Ok(m) => {
+                        let result = m.iter().filter_map(|map| map.get(&q.capture())).cloned();
+
+                        let mut result: Vec<String> = if let Some(f) = q.filter() {
+                            result
+                                .filter(|x| f.call(&engine, &ast, (x.clone(),)).unwrap_or(false))
+                                .collect()
+                        } else {
+                            result.collect()
+                        };
+
+                        new_matches.append(&mut result)
+                    }
+                    Err(e) => {
+                        return Err(QueryError::QueryExecError {
+                            q: q.query(),
+                            e: format!("{:#?}", e),
+                        })
+                    }
+                };
+            }
+
+            matches = new_matches;
+        }
+
+        Ok(matches.into())
+    }
+
+    #[generate_rhai_variant(Fallible)]
+    /// Grades the file according to the supplied queries, captures, and
+    /// constraints.
+    pub fn grade_by_query(self) -> Result<GradeResult> {
+        let reason = if self.reason.trim().is_empty() {
+            eprintln!(
+                "Warning: No reason provided for query grading. Feedback to student will not be \
+                 very helpful."
+            );
+            match self.constraint {
+                QueryConstraint::MustMatchAtLeastOnce => {
+                    "Query Constraint: Must match at least once.".to_string()
+                }
+                QueryConstraint::MustMatchExactlyNTimes(n) => {
+                    format!("Query Constraint: Must match exactly {n} times.")
+                }
+                QueryConstraint::MustNotMatch => "Query Constraint: Must not match.".to_string(),
+            }
+        } else {
+            self.reason.to_string()
+        };
+
+        let result: Vec<String> = match self.run_query() {
+            Ok(r) => {
+                let r: Array = r.cast();
+                r.into_iter().map(|s| s.cast()).collect()
+            }
+            Err(e) => {
+                return Ok(GradeResult {
+                    requirement: self.req_name.clone(),
+                    grade: Grade {
+                        grade:  0.0,
+                        out_of: self.out_of,
+                    },
+                    reason,
+                    prompt: Some(vec![
+                        ChatCompletionRequestMessage {
+                            role:    Role::System,
+                            content: SYSTEM_MESSAGE.to_string(),
+                            name:    Some("Instructor".into()),
+                        },
+                        ChatCompletionRequestMessage {
+                            role:    Role::System,
+                            content: format!(
+                                "Something went wrong when using treesitter queries to grade \
+                                 `{}`. Error message:\n\n```\n{}\n```\n",
+                                self.file, e
+                            ),
+                            name:    Some("Instructor".into()),
+                        },
+                    ]),
+                })
+            }
+        };
+
+        match self.constraint {
+            QueryConstraint::MustMatchAtLeastOnce => {
+                if result.is_empty() {
+                    Ok(GradeResult {
+                        requirement: self.req_name.clone(),
+                        grade: Grade {
+                            grade:  0.0,
+                            out_of: self.out_of,
+                        },
+                        reason,
+                        prompt: Some(vec![
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: SYSTEM_MESSAGE.to_string(),
+                                name:    Some("Instructor".into()),
+                            },
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: format!("For file `{}`: {}.", self.file, self.reason),
+                                name:    Some("Instructor".into()),
+                            },
+                        ]),
+                    })
+                } else {
+                    Ok(GradeResult {
+                        requirement: self.req_name.clone(),
+                        grade: Grade {
+                            grade:  self.out_of,
+                            out_of: self.out_of,
+                        },
+                        reason,
+                        prompt: None,
+                    })
+                }
+            }
+            QueryConstraint::MustMatchExactlyNTimes(n) => {
+                if result.len() == n {
+                    Ok(GradeResult {
+                        requirement: self.req_name.clone(),
+                        grade: Grade {
+                            grade:  self.out_of,
+                            out_of: self.out_of,
+                        },
+                        reason,
+                        prompt: None,
+                    })
+                } else {
+                    Ok(GradeResult {
+                        requirement: self.req_name.clone(),
+                        grade: Grade {
+                            grade:  0.0,
+                            out_of: self.out_of,
+                        },
+                        reason,
+                        prompt: Some(vec![
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: SYSTEM_MESSAGE.to_string(),
+                                name:    Some("Instructor".into()),
+                            },
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: format!("For file `{}`: {}", self.file, self.reason),
+                                name:    Some("Instructor".into()),
+                            },
+                        ]),
+                    })
+                }
+            }
+            QueryConstraint::MustNotMatch => {
+                if result.is_empty() {
+                    Ok(GradeResult {
+                        requirement: self.req_name.clone(),
+                        grade: Grade {
+                            grade:  self.out_of,
+                            out_of: self.out_of,
+                        },
+                        reason,
+                        prompt: None,
+                    })
+                } else {
+                    Ok(GradeResult {
+                        requirement: self.req_name.clone(),
+                        grade: Grade {
+                            grade:  0.0,
+                            out_of: self.out_of,
+                        },
+                        reason,
+                        prompt: Some(vec![
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: SYSTEM_MESSAGE.to_string(),
+                                name:    Some("Instructor".into()),
+                            },
+                            ChatCompletionRequestMessage {
+                                role:    Role::System,
+                                content: format!("For file `{}`: {}", self.file, self.reason),
+                                name:    Some("Instructor".into()),
+                            },
+                        ]),
+                    })
+                }
+            }
+        }
+    }
 }
 
 // Allowed because CustomType is volatile, not deprecated
@@ -2028,5 +2649,68 @@ impl CustomType for DiffGrader {
             .with_fn("ignore_case", Self::set_ignore_case)
             .with_fn("new_diff_grader", Self::default)
             .with_fn("run", Self::grade_by_diff_script);
+    }
+}
+
+// Allowed because CustomType is not deprecated, just volatile
+#[allow(deprecated)]
+/// Allows registering custom types with Rhai.
+impl CustomType for Query {
+    /// Builds a custom type to be registered with Rhai.
+    fn build(mut builder: rhai::TypeBuilder<Self>) {
+        builder
+            .with_name("Query")
+            .with_fn("new_query", Self::new)
+            .with_fn("query", Self::query)
+            .with_fn("query", Self::set_query)
+            .with_fn("capture", Self::capture)
+            .with_fn("capture", Self::set_capture);
+    }
+}
+
+// Allowed because CustomType is not deprecated, just volatile
+#[allow(deprecated)]
+/// Allows registering custom types with Rhai.
+impl CustomType for QueryGrader {
+    /// Builds a custom type to be registered with Rhai.
+    fn build(mut builder: rhai::TypeBuilder<Self>) {
+        builder
+            .with_name("QueryGrader")
+            .with_fn("req_name", Self::req_name)
+            .with_fn("req_name", Self::set_req_name)
+            .with_fn("out_of", Self::out_of)
+            .with_fn("out_of", Self::set_out_of)
+            .with_fn("file", Self::file)
+            .with_fn("file", Self::set_file)
+            .with_fn("project", Self::project)
+            .with_fn("project", Self::set_project)
+            .with_fn("queries", Self::queries)
+            .with_fn("query", Self::query_script)
+            .with_fn("capture", Self::capture_script)
+            .with_fn("reason", Self::reason)
+            .with_fn("reason", Self::set_reason)
+            .with_fn("must_match_at_least_once", Self::must_match_at_least_once)
+            .with_fn(
+                "must_match_exactly_n_times",
+                Self::must_match_exactly_n_times,
+            )
+            .with_fn("must_not_match", Self::must_not_match)
+            .with_fn("method_body_with_name", Self::method_body_with_name)
+            .with_fn("main_method", Self::main_method)
+            .with_fn("class_body_with_name", Self::class_body_with_name)
+            .with_fn("local_variables", Self::local_variables)
+            .with_fn("local_variables_with_name", Self::local_variables_with_name)
+            .with_fn("if_statements", Self::if_statements)
+            .with_fn("for_loops", Self::for_loops)
+            .with_fn("while_loops", Self::while_loops)
+            .with_fn("method_invocations", Self::method_invocations)
+            .with_fn(
+                "method_invocations_with_name",
+                Self::method_invocations_with_name,
+            )
+            .with_fn("filter", Self::filter_script)
+            .with_fn("run_query", Self::run_query_script)
+            .with_fn("run", Self::grade_by_query_script)
+            .with_fn("new_query_grader", Self::default);
     }
 }

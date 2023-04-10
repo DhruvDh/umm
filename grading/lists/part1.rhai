@@ -24,7 +24,7 @@ let req_3 = new_by_hidden_test_grader()
     .run();
 
 
-let reqs = [req_1, req_2, req_3];
+let reqs = [req_1, req_3];
 
 show_results(reqs);
 
