@@ -16,7 +16,7 @@ A java build tool for novices, that doubles as a scriptable autograder.
 
 ## Documentation
 
-Rustdoc can be found at https://dhruvdh.github.io/umm/umm/index.html
+Rustdoc can be found at https://umm-docs.pages.dev/umm/
 
 ## Installation
 
