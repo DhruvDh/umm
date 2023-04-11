@@ -275,7 +275,7 @@ pub enum JavaFileError {
     /// An error while compiling a Java file (running
     /// [fn@crate::java::File::check])
     #[error("Something went wrong while compiling the Java file")]
-    CompilerError {
+    DuringCompilation {
         /// javac stacktrace
         stacktrace: String,
         /// javac stacktrace, parsed with
@@ -285,7 +285,7 @@ pub enum JavaFileError {
     /// An error while running a Java file (running
     /// [fn@crate::java::File::run])
     #[error("Something went wrong while running the Java file")]
-    RuntimeError {
+    AtRuntime {
         /// java output
         output: String,
         /// java stacktrace, parsed with [parser::junit_stacktrace_line_ref]
@@ -294,7 +294,7 @@ pub enum JavaFileError {
     /// An error while testing a Java file (running
     /// [fn@crate::java::File::test])
     #[error("Something went wrong while testing the Java file")]
-    FailedTestError {
+    FailedTests {
         /// junit test results
         test_results: String,
         /// junit stacktrace, parsed with [parser::junit_stacktrace_line_ref]
@@ -302,7 +302,7 @@ pub enum JavaFileError {
     },
     /// Unknown error
     #[error(transparent)]
-    UnknownError(#[from] anyhow::Error),
+    Unknown(#[from] anyhow::Error),
 }
 
 impl File {
@@ -478,6 +478,7 @@ impl File {
                     .map(|m| {
                         let modifier = m.get("modifier").unwrap_or(&empty);
                         let annotation = m.get("annotation").unwrap_or(&empty);
+                        let type_parameters = m.get("typeParameters").unwrap_or(&empty);
                         let return_type = m.get("returnType").unwrap_or(&not_found);
                         let identifier = m.get("identifier").unwrap_or(&not_found);
                         let parameters = m.get("parameters").unwrap_or(&empty);
@@ -487,8 +488,8 @@ impl File {
                             "[NOT FOUND]".to_string()
                         } else {
                             format!(
-                                "{annotation} {modifier} {return_type} {identifier} {parameters} \
-                                 {throws}",
+                                "{annotation} {modifier} {type_parameters} {return_type} \
+                                 {identifier} {parameters} {throws}",
                             )
                         }
                     })
@@ -646,13 +647,13 @@ impl File {
                         }
                     }
 
-                    Err(JavaFileError::CompilerError {
+                    Err(JavaFileError::DuringCompilation {
                         stacktrace: output,
                         diags,
                     })
                 }
             }
-            Err(e) => Err(JavaFileError::UnknownError(e)),
+            Err(e) => Err(JavaFileError::Unknown(e)),
         }
     }
 
@@ -714,7 +715,7 @@ impl File {
                         }
                     }
 
-                    Err(JavaFileError::RuntimeError {
+                    Err(JavaFileError::AtRuntime {
                         output,
                         diags,
                     })
@@ -828,7 +829,7 @@ impl File {
                         }
                     }
 
-                    Err(JavaFileError::FailedTestError {
+                    Err(JavaFileError::FailedTests {
                         test_results: new_output.join("\n"),
                         diags,
                     })

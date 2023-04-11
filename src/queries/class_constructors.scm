@@ -7,10 +7,10 @@
           (line_comment)*
           (constructor_declaration
 			(modifiers)* @modifier
-      (marker_annotation)* @annotation
-			(identifier) @identifier
-            (formal_parameters)* @parameters
-            (throws)* @throws
+      		(marker_annotation)* @annotation
+			    name: (_) @identifier
+          parameters: (_)* @parameters
+          (throws)* @throws
 			))*
       )
 	)

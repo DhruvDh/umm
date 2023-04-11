@@ -1,4 +1,4 @@
 (
     class_declaration
-    name: (identifier) @name
+    name: (_) @name
 )

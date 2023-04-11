@@ -1,18 +1,18 @@
 (method_declaration
 	(modifiers
         (annotation
-            name: (identifier) @annotation
-            arguments: (annotation_argument_list)
+            name: (_) @annotation
+            arguments: (_)
         )
     )
-    name: (identifier) @name
+    name: (_) @name
 )
 
 (method_declaration
 	(modifiers
 	(marker_annotation
-    	name: (identifier) @annotation)
+    	name: (_) @annotation)
     )
-    name: (identifier) @name
+    name: (_) @name
     (#eq? @annotation "Test")
 )

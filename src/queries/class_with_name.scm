@@ -1,5 +1,5 @@
 (
     class_declaration
-    name: (identifier) @name
+    name: (_) @name
     (#eq? @name {:?})
 ) @body

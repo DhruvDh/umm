@@ -442,7 +442,10 @@ pub fn get_source_context<T: Into<LineRef>>(
                             methods.insert(method_name.clone());
                         }
 
-                        let query = format!(include_str!("queries/method_body.scm"), &method_name);
+                        let query = format!(
+                            include_str!("queries/method_body_with_name.scm"),
+                            &method_name
+                        );
 
                         for f in proj.files() {
                             if *f.kind() == FileType::Class || *f.kind() == FileType::ClassWithMain
@@ -576,7 +579,7 @@ impl DocsGrader {
             let file = self.project.identify(name)?;
             let output = match file.doc_check() {
                 Ok(o) => o,
-                Err(JavaFileError::CompilerError {
+                Err(JavaFileError::DuringCompilation {
                     stacktrace,
                     diags,
                 }) => {
@@ -883,7 +886,7 @@ impl ByUnitTestGrader {
                 {
                     Ok(res) => res,
 
-                    Err(JavaFileError::FailedTestError {
+                    Err(JavaFileError::FailedTests {
                         test_results,
                         diags,
                     }) => {
@@ -907,7 +910,7 @@ impl ByUnitTestGrader {
                             prompt:      Some(messages),
                         });
                     }
-                    Err(JavaFileError::UnknownError(e)) => {
+                    Err(JavaFileError::Unknown(e)) => {
                         let messages = vec![
                             ChatCompletionRequestMessage {
                                 role:    Role::System,
@@ -927,7 +930,7 @@ impl ByUnitTestGrader {
                             prompt:      Some(messages),
                         });
                     }
-                    Err(JavaFileError::CompilerError {
+                    Err(JavaFileError::DuringCompilation {
                         stacktrace,
                         diags,
                     }) => {
@@ -1628,7 +1631,7 @@ impl DiffGrader {
             let actual_out = {
                 let out = match file.run(Some(input.clone())) {
                     Ok(out) => out,
-                    Err(JavaFileError::RuntimeError {
+                    Err(JavaFileError::AtRuntime {
                         output,
                         diags,
                     }) => {
@@ -1652,7 +1655,7 @@ impl DiffGrader {
                             prompt:      Some(messages),
                         });
                     }
-                    Err(JavaFileError::CompilerError {
+                    Err(JavaFileError::DuringCompilation {
                         stacktrace,
                         diags,
                     }) => {
@@ -1951,7 +1954,7 @@ pub enum QueryError {
         "This query could not be run, likely due to a syntax \
          error.\nQuery:\n```\n{q}\n```\nError:\n```\n{e}\n```"
     )]
-    QueryExecError {
+    DuringQueryExecution {
         /// The query that could not be run.
         q: String,
         /// The error that occurred.
@@ -1966,7 +1969,7 @@ pub enum QueryError {
     NoMatchesFound(String),
     /// Unknown error.
     #[error("Unknown error: {0}")]
-    UnkownError(#[from] anyhow::Error),
+    Unknown(#[from] anyhow::Error),
 }
 
 #[derive(Default, Clone)]
@@ -2092,7 +2095,7 @@ impl QueryGrader {
     #[generate_rhai_variant(Fallible)]
     /// Adds a query to run.
     /// If no file has been selected, this will throw an error.
-    pub fn query(mut self, q: String) -> Result<Self, QueryError> {
+    pub fn query(#[allow(unused_mut)] mut self, q: String) -> Result<Self, QueryError> {
         if self.file.is_empty() {
             return Err(QueryError::NoFileSelected);
         }
@@ -2109,7 +2112,7 @@ impl QueryGrader {
     #[generate_rhai_variant(Fallible)]
     /// Adds a capture to the last query.
     /// If no queries have been added, this will throw an error.
-    pub fn capture(mut self, c: String) -> Result<Self, QueryError> {
+    pub fn capture(#[allow(unused_mut)] mut self, c: String) -> Result<Self, QueryError> {
         if let Some(last) = self.queries.last_mut() {
             *last = last.clone().set_capture(c);
             Ok(self)
@@ -2121,7 +2124,7 @@ impl QueryGrader {
     #[generate_rhai_variant(Fallible)]
     /// Adds a capture to the last query.
     /// If no queries have been added, this will throw an error.
-    pub fn filter(mut self, f: FnPtr) -> Result<Self, QueryError> {
+    pub fn filter(#[allow(unused_mut)] mut self, f: FnPtr) -> Result<Self, QueryError> {
         if let Some(last) = self.queries.last_mut() {
             *last = last.clone().set_filter(f);
             Ok(self)
@@ -2133,8 +2136,24 @@ impl QueryGrader {
     /// Selects entire method body and returns
     pub fn method_body_with_name(mut self, method_name: String) -> Self {
         self.queries.push(Query {
-            query:   format!(include_str!("queries/method_body.scm"), method_name),
-            capture: method_name,
+            query:   format!(
+                include_str!("queries/method_body_with_name.scm"),
+                method_name
+            ),
+            capture: "body".to_string(),
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects entire method body and returns
+    pub fn method_body_with_return_type(mut self, return_type: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(
+                include_str!("queries/method_body_with_return_type.scm"),
+                return_type
+            ),
+            capture: "body".to_string(),
             filter:  None,
         });
         self
@@ -2174,7 +2193,20 @@ impl QueryGrader {
     pub fn local_variables_with_name(mut self, name: String) -> Self {
         self.queries.push(Query {
             query:   format!(include_str!("queries/local_variable_with_name.scm"), name),
-            capture: name,
+            capture: "body".to_string(),
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects local variable declaration statements with supplied type
+    pub fn local_variables_with_type(mut self, type_name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(
+                include_str!("queries/local_variable_with_type.scm"),
+                type_name
+            ),
+            capture: "body".to_string(),
             filter:  None,
         });
         self
@@ -2213,8 +2245,8 @@ impl QueryGrader {
     /// Selects method invocations
     pub fn method_invocations(mut self) -> Self {
         self.queries.push(Query {
-            query:   String::from("((method_invocation) @method)"),
-            capture: "method".to_string(),
+            query:   include_str!("queries/method_invocation.scm").to_string(),
+            capture: "body".to_string(),
             filter:  None,
         });
         self
@@ -2227,7 +2259,33 @@ impl QueryGrader {
                 include_str!("queries/method_invocations_with_name.scm"),
                 name
             ),
-            capture: name,
+            capture: "body".to_string(),
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects method invocations with supplied arguments
+    pub fn method_invocations_with_arguments(mut self, name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(
+                include_str!("queries/method_invocations_with_arguments.scm"),
+                name
+            ),
+            capture: "body".to_string(),
+            filter:  None,
+        });
+        self
+    }
+
+    /// Selects method invocations with supplied object
+    pub fn method_invocations_with_object(mut self, name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(
+                include_str!("queries/method_invocations_with_object.scm"),
+                name
+            ),
+            capture: "body".to_string(),
             filter:  None,
         });
         self
@@ -2235,6 +2293,9 @@ impl QueryGrader {
 
     #[generate_rhai_variant(Fallible)]
     /// Runs the queries, and returns the result.
+    /// TODO: Make it so that it doesn't parse a new peice of code, just filters
+    /// out the irrelevant line ranges. This performs better but more
+    /// importantly is more accurate.
     pub fn run_query(&self) -> Result<Dynamic, QueryError> {
         let engine = create_engine();
         let ast = std::sync::Arc::clone(&SCRIPT_AST);
@@ -2276,7 +2337,7 @@ impl QueryGrader {
                 result
             }
             Err(e) => {
-                return Err(QueryError::QueryExecError {
+                return Err(QueryError::DuringQueryExecution {
                     q: first.query(),
                     e: format!("{:#?}", e),
                 })
@@ -2321,7 +2382,7 @@ impl QueryGrader {
                         new_matches.append(&mut result)
                     }
                     Err(e) => {
-                        return Err(QueryError::QueryExecError {
+                        return Err(QueryError::DuringQueryExecution {
                             q: q.query(),
                             e: format!("{:#?}", e),
                         })
@@ -2696,10 +2757,15 @@ impl CustomType for QueryGrader {
             )
             .with_fn("must_not_match", Self::must_not_match)
             .with_fn("method_body_with_name", Self::method_body_with_name)
+            .with_fn(
+                "method_body_with_return_type",
+                Self::method_body_with_return_type,
+            )
             .with_fn("main_method", Self::main_method)
             .with_fn("class_body_with_name", Self::class_body_with_name)
             .with_fn("local_variables", Self::local_variables)
             .with_fn("local_variables_with_name", Self::local_variables_with_name)
+            .with_fn("local_variables_with_type", Self::local_variables_with_type)
             .with_fn("if_statements", Self::if_statements)
             .with_fn("for_loops", Self::for_loops)
             .with_fn("while_loops", Self::while_loops)
@@ -2707,6 +2773,14 @@ impl CustomType for QueryGrader {
             .with_fn(
                 "method_invocations_with_name",
                 Self::method_invocations_with_name,
+            )
+            .with_fn(
+                "method_invocations_with_arguments",
+                Self::method_invocations_with_arguments,
+            )
+            .with_fn(
+                "method_invocations_with_object",
+                Self::method_invocations_with_object,
             )
             .with_fn("filter", Self::filter_script)
             .with_fn("run_query", Self::run_query_script)

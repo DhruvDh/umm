@@ -2,8 +2,8 @@
   (block_comment)*
   (line_comment)*
   (class_declaration 
-  (identifier) @className
-  (type_parameters)* @typeParameters
-  (super_interfaces)* @interfaces
-)
+  name: (_) @className
+  type_parameters: (_)* @typeParameters
+  interfaces: (_)* @interfaces
+  )
 )
