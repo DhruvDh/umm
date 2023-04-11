@@ -1,6 +1,6 @@
 (method_invocation
 	object: (_)* @object
-	name: (_)
-  arguments: (_)
+	name: (_) @name 
+  arguments: (_) @arguments
   (#eq? @object {:?})
 ) @body
