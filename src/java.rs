@@ -11,6 +11,7 @@ use std::{
     path::PathBuf,
     process::{
         Command,
+        Output,
         Stdio,
     },
 };
@@ -568,15 +569,12 @@ impl File {
         })
     }
 
-    #[generate_rhai_variant(Fallible, Mut)]
-    /// Utility method to ask javac for documentation lints using the -Xdoclint
-    /// flag.
-    ///
-    /// The method simply returns the output produced by javac as a String.
-    /// There is a ['parse_diag method'][fn@crate::parsers::parser::parse_diag]
-    /// that can parse these to yield useful information.
-    pub fn doc_check(&self) -> Result<String, JavaFileError> {
-        let child = Command::new(javac_path()?)
+    /// Returns the inner doc check of this [`File`].
+    fn inner_doc_check(&self, err: Stdio, out: Stdio, in_: Stdio) -> Result<Output> {
+        Command::new(javac_path()?)
+            .stderr(err)
+            .stdout(out)
+            .stdin(in_)
             .args([
                 "--source-path",
                 sourcepath()?.as_str(),
@@ -591,7 +589,17 @@ impl File {
                 // "-Xlint",
             ])
             .output()
-            .context("Failed to spawn javac process.")?;
+            .context("Failed to spawn javac process.")
+    }
+
+    /// Utility method to ask javac for documentation lints using the -Xdoclint
+    /// flag.
+    ///
+    /// The method simply returns the output produced by javac as a String.
+    /// There is a ['parse_diag method'][fn@crate::parsers::parser::parse_diag]
+    /// that can parse these to yield useful information.
+    pub fn doc_check(&self) -> Result<String, JavaFileError> {
+        let child = self.inner_doc_check(Stdio::piped(), Stdio::piped(), Stdio::piped())?;
 
         let output = unescape(
             &[
@@ -605,12 +613,50 @@ impl File {
         Ok(output)
     }
 
-    #[generate_rhai_variant(Fallible, Mut)]
-    /// Utility method to check for syntax errors using javac flag.
-    pub fn check(&self) -> Result<String, JavaFileError> {
+    /// Utility method to ask javac for documentation lints using the -Xdoclint
+    /// flag.
+    ///
+    /// The method simply returns the output produced by javac as a String.
+    /// There is a ['parse_diag method'][fn@crate::parsers::parser::parse_diag]
+    /// that can parse these to yield useful information.
+    pub fn doc_check_mut_script(&self) -> Result<String, Box<EvalAltResult>> {
+        match self.inner_doc_check(Stdio::inherit(), Stdio::inherit(), Stdio::inherit()) {
+            Ok(child) => match unescape(
+                &[
+                    match String::from_utf8(child.stderr) {
+                        Ok(s) => s,
+                        Err(e) => {
+                            return Err(format!("{}", e).into());
+                        }
+                    },
+                    match String::from_utf8(child.stdout) {
+                        Ok(s) => s,
+                        Err(e) => {
+                            return Err(format!("{}", e).into());
+                        }
+                    },
+                ]
+                .concat(),
+            ) {
+                Ok(s) => Ok(s),
+                Err(e) => Err(format!("{}", e).into()),
+            },
+            Err(e) => Err(Box::new(
+                unescape(e.to_string().as_str())
+                    .unwrap_or_else(|_| format!("Could not unescape: {:?}", e))
+                    .into(),
+            )),
+        }
+    }
+
+    /// Returns the inner check of this [`File`].
+    fn inner_check(&self, err: Stdio, out: Stdio, in_: Stdio) -> Result<Output> {
         let path = self.path.display().to_string();
 
-        let out = Command::new(javac_path()?)
+        Command::new(javac_path()?)
+            .stderr(err)
+            .stdout(out)
+            .stdin(in_)
             .args([
                 "--source-path",
                 sourcepath()?.as_str(),
@@ -622,11 +668,15 @@ impl File {
                 path.as_str(),
                 "-Xdiags:verbose",
                 // "-Xlint",
+                "-Xprefer:source",
             ])
             .output()
-            .context("Failed to spawn javac process.");
+            .context("Failed to spawn javac process.")
+    }
 
-        match out {
+    /// Utility method to check for syntax errors using javac flag.
+    pub fn check(&self) -> Result<String, JavaFileError> {
+        match self.inner_check(Stdio::piped(), Stdio::piped(), Stdio::piped()) {
             Ok(out) => {
                 let output = unescape(
                     &[
@@ -657,41 +707,92 @@ impl File {
         }
     }
 
-    #[generate_rhai_variant(Fallible, Mut)]
-    /// Utility method to run a java file that has a main method.
-    /// TODO: instead of printing javac output, return it.
-    /// TODO: have all such methods have generated versions that display output
-    /// instead of returning.
-    pub fn run(&self, input: Option<String>) -> Result<String, JavaFileError> {
+    /// Utility method to check for syntax errors using javac flag.
+    pub fn check_mut_script(&self) -> Result<String, Box<EvalAltResult>> {
+        match self.inner_check(Stdio::inherit(), Stdio::inherit(), Stdio::inherit()) {
+            Ok(child) => match unescape(
+                &[
+                    match String::from_utf8(child.stderr) {
+                        Ok(s) => s,
+                        Err(e) => {
+                            return Err(format!("{}", e).into());
+                        }
+                    },
+                    match String::from_utf8(child.stdout) {
+                        Ok(s) => s,
+                        Err(e) => {
+                            return Err(format!("{}", e).into());
+                        }
+                    },
+                ]
+                .concat(),
+            ) {
+                Ok(s) => Ok(s),
+                Err(e) => Err(format!("{}", e).into()),
+            },
+            Err(e) => Err(Box::new(
+                unescape(e.to_string().as_str())
+                    .unwrap_or_else(|_| format!("Could not unescape: {:?}", e))
+                    .into(),
+            )),
+        }
+    }
+
+    /// Returns the inner run of this [`File`].
+    fn inner_run(&self, input: Option<String>, err: Stdio, out: Stdio) -> Result<Output> {
         self.check()?;
 
         if self.kind != FileType::ClassWithMain {
-            return Err(anyhow!("File you wish to run doesn't have a main method.").into());
+            Err(JavaFileError::DuringCompilation {
+                stacktrace: "The file you wish to run does not have a main method.".into(),
+                diags:      vec![],
+            })?;
         }
 
-        let mut child = Command::new(java_path()?)
-            .args([
-                "--class-path",
-                classpath()?.as_str(),
-                self.proper_name.clone().as_str(),
-            ])
-            .stdin(Stdio::piped())
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .spawn()
-            .context("Failed to spawn javac process.")?;
+        if let Some(input_str) = input {
+            let mut child = Command::new(java_path()?)
+                .args([
+                    "--class-path",
+                    classpath()?.as_str(),
+                    self.proper_name.clone().as_str(),
+                ])
+                .stdin(Stdio::piped())
+                .stdout(out)
+                .stderr(err)
+                .spawn()
+                .context("Failed to spawn javac process.")?;
 
-        let input = format!("{}\r\n", input.unwrap_or_default());
+            let input = format!("{}\r\n", input_str);
 
-        let mut stdin = child.stdin.take().unwrap();
+            let mut stdin = child.stdin.take().unwrap();
 
-        stdin
-            .write_all(input.as_bytes())
-            .context("Error when trying to write input to stdin")?;
-        stdin.flush().context("Error when trying to flush stdin")?;
+            stdin
+                .write_all(input.as_bytes())
+                .context("Error when trying to write input to stdin")?;
+            stdin.flush().context("Error when trying to flush stdin")?;
 
-        let out = child.wait_with_output();
-        match out {
+            child
+                .wait_with_output()
+                .context("Error when waiting for child process to finish")
+        } else {
+            Command::new(java_path()?)
+                .args([
+                    "--class-path",
+                    classpath()?.as_str(),
+                    self.proper_name.clone().as_str(),
+                ])
+                .stdin(Stdio::inherit())
+                .stdout(out)
+                .stderr(err)
+                .spawn()?
+                .wait_with_output()
+                .context("Failed to spawn javac process.")
+        }
+    }
+
+    /// Utility method to run a java file that has a main method.
+    pub fn run(&self, input: Option<String>) -> Result<String, JavaFileError> {
+        match self.inner_run(input, Stdio::piped(), Stdio::piped()) {
             Ok(out) => {
                 let output = unescape(
                     &[
@@ -725,21 +826,39 @@ impl File {
         }
     }
 
-    #[generate_rhai_variant(Fallible, Mut)]
-    /// A utility method that takes a list of strings (or types that implement
-    /// `Into<String>`) meant to represent test method names, and runs those
-    /// tests.
-    ///
-    /// Returns the output from JUnit as a string. There are parsers in
-    /// ['parsers module'][crate::parsers::parser] that helps parse this output.
-    ///
-    /// * `tests`: list of strings (or types that implement
-    /// `Into<String>`) meant to represent test method names,
-    pub fn test(
-        &self,
-        tests: Vec<&str>,
-        project: Option<&Project>,
-    ) -> Result<String, JavaFileError> {
+    /// Utility method to run a java file that has a main method.
+    pub fn run_mut_script(&self, input: Option<String>) -> Result<String, Box<EvalAltResult>> {
+        match self.inner_run(input, Stdio::inherit(), Stdio::inherit()) {
+            Ok(child) => match unescape(
+                &[
+                    match String::from_utf8(child.stderr) {
+                        Ok(s) => s,
+                        Err(e) => {
+                            return Err(format!("{}", e).into());
+                        }
+                    },
+                    match String::from_utf8(child.stdout) {
+                        Ok(s) => s,
+                        Err(e) => {
+                            return Err(format!("{}", e).into());
+                        }
+                    },
+                ]
+                .concat(),
+            ) {
+                Ok(s) => Ok(s),
+                Err(e) => Err(format!("{}", e).into()),
+            },
+            Err(e) => Err(Box::new(
+                unescape(e.to_string().as_str())
+                    .unwrap_or_else(|_| format!("Could not unescape: {:?}", e))
+                    .into(),
+            )),
+        }
+    }
+
+    /// Inner method to run tests.
+    fn inner_test(&self, tests: Vec<&str>, err: Stdio, out: Stdio, in_: Stdio) -> Result<Output> {
         self.check()?;
 
         let tests = {
@@ -761,7 +880,10 @@ impl File {
             .collect::<Vec<String>>();
         let methods: Vec<&str> = tests.iter().map(String::as_str).collect();
 
-        let output = Command::new(java_path().context("Could not find `java` command on path.")?)
+        Command::new(java_path().context("Could not find `java` command on path.")?)
+            .stderr(err)
+            .stdout(out)
+            .stdin(in_)
             .args(
                 [
                     [
@@ -779,9 +901,25 @@ impl File {
                 ]
                 .concat(),
             )
-            .output();
+            .output()
+            .context("Failed to spawn javac process.")
+    }
 
-        match output {
+    /// A utility method that takes a list of strings (or types that implement
+    /// `Into<String>`) meant to represent test method names, and runs those
+    /// tests.
+    ///
+    /// Returns the output from JUnit as a string. There are parsers in
+    /// ['parsers module'][crate::parsers::parser] that helps parse this output.
+    ///
+    /// * `tests`: list of strings (or types that implement
+    /// `Into<String>`) meant to represent test method names,
+    pub fn test(
+        &self,
+        tests: Vec<&str>,
+        project: Option<&Project>,
+    ) -> Result<String, JavaFileError> {
+        match self.inner_test(tests, Stdio::piped(), Stdio::piped(), Stdio::inherit()) {
             Ok(out) => {
                 let output = unescape(
                     &[
@@ -838,6 +976,46 @@ impl File {
             Err(e) => Err(anyhow!(e).into()),
         }
     }
+
+    /// A utility method that takes a list of strings (or types that implement
+    /// `Into<String>`) meant to represent test method names, and runs those
+    /// tests.
+    pub fn test_mut_script(&mut self, tests: Vec<&str>) -> Result<String, Box<EvalAltResult>> {
+        match self.inner_test(tests, Stdio::inherit(), Stdio::inherit(), Stdio::inherit()) {
+            Ok(child) => match unescape(
+                &[
+                    match String::from_utf8(child.stderr) {
+                        Ok(s) => s,
+                        Err(e) => {
+                            return Err(format!("{}", e).into());
+                        }
+                    },
+                    match String::from_utf8(child.stdout) {
+                        Ok(s) => s,
+                        Err(e) => {
+                            return Err(format!("{}", e).into());
+                        }
+                    },
+                ]
+                .concat(),
+            ) {
+                Ok(s) => Ok(s),
+                Err(e) => Err(format!("{}", e).into()),
+            },
+            Err(e) => Err(Box::new(
+                unescape(e.to_string().as_str())
+                    .unwrap_or_else(|_| format!("Could not unescape: {:?}", e))
+                    .into(),
+            )),
+        }
+    }
+
+    /// A utility method that takes a list of strings (or types that implement
+    /// `Into<String>`) meant to represent test method names, and runs those
+    /// tests.
+    ///
+    /// Returns the output from JUnit as a string. There are parsers in
+    /// ['parsers module'][crate::parsers::parser] that helps parse this output.
 
     /// Get a reference to the file's kind.
     pub fn kind(&self) -> &FileType {

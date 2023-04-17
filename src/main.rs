@@ -187,7 +187,7 @@ fn main() -> Result<()> {
     // TODO: move this to a separate method and call that method in shell()
     match cmd {
         Cmd::Run(f) => {
-            match Project::new()?.identify(f.as_str())?.run(None) {
+            match Project::new()?.identify(f.as_str())?.run_mut_script(None) {
                 Ok(out) => {
                     println!("{out}");
                 }
@@ -196,7 +196,7 @@ fn main() -> Result<()> {
                 }
             };
         }
-        Cmd::Check(f) => match Project::new()?.identify(f.as_str())?.check() {
+        Cmd::Check(f) => match Project::new()?.identify(f.as_str())?.check_mut_script() {
             Ok(out) => {
                 println!("{out}");
             }
@@ -206,18 +206,21 @@ fn main() -> Result<()> {
         },
         Cmd::Test(f, t) => {
             let out = if t.is_empty() {
-                let project = Project::new()?;
-                project.identify(f.as_str())?.test(vec![], Some(&project))?
+                Project::new()?
+                    .identify(f.as_str())?
+                    .test_mut_script(vec![])?
             } else {
-                let t = t.iter().map(|i| i.as_str()).collect();
-                let project = Project::new()?;
-                project.identify(f.as_str())?.test(t, Some(&project))?
+                Project::new()?
+                    .identify(f.as_str())?
+                    .test_mut_script(t.iter().map(|i| i.as_str()).collect())?
             };
 
             println!("{out}");
         }
         Cmd::DocCheck(f) => {
-            let out = Project::new()?.identify(f.as_str())?.doc_check()?;
+            let out = Project::new()?
+                .identify(f.as_str())?
+                .doc_check_mut_script()?;
             println!("{out}");
         }
         Cmd::Grade(g) => grade(&g)?,
