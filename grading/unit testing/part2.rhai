@@ -24,6 +24,7 @@ let req_2 = new_unit_test_grader()
 let reqs = [req_1, req_2];
 
 show_results(reqs);
+generate_feedback(reqs);
 
 let total = 0.0;
 let out_of = 0.0;
