@@ -15,7 +15,6 @@ use tokio::{
 use walkdir::WalkDir;
 
 use crate::{
-    clean,
     constants::{
         BUILD_DIR,
         LIB_DIR,
@@ -33,10 +32,8 @@ use crate::{
 impl Project {
     /// Checks the project for common CodingRooms errors
     pub fn check_health(&self) -> Result<()> {
-        tracing::info!("Resetting project metadata and libraries");
-        clean()?;
+        tracing::info!("Checking Project Health...");
         let project = Project::new()?;
-        tracing::info!("Done.");
 
         let rt = RUNTIME.handle().clone();
         let _guard = rt.enter();
