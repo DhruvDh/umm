@@ -153,7 +153,10 @@ impl Project {
         .into_iter()
         .collect::<Result<Vec<Vec<()>>, JoinError>>()?;
 
-        tracing::info!("If there are no warnings above, your project is healthy!");
+        tracing::info!(
+            "This is information an instructor can use to help you, please don't try to interpret \
+             it yourself or make any changes to your submission based on it."
+        );
         Ok(())
     }
 }
