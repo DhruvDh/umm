@@ -35,8 +35,15 @@ let reqs = [req_1, req_2, req_3, req_4];
 show_results(reqs);
 generate_feedback(reqs);
 
-if req_2.grade() >= 20 {
-    print("p;" + (req_1.grade() + 20).to_int())
+if (
+    project
+        .identify("UnitTesting.StudentTest")
+        .test_methods
+        .len() == 0
+) {
+    print("np");
+} else if req_2.grade() >= 20 {
+    print("p;" + (req_1.grade() + 20).to_int());
 } else {
-    print("np")
+    print("np");
 }

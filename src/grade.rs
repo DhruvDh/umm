@@ -1250,7 +1250,7 @@ impl UnitTestGrader {
 
                 match parse_result {
                     Ok(r) => {
-                        if r.result == "SURVIVED" || r.result == "NO_COVERAGE" {
+                        if r.result == "SURVIVED" {
                             diags.push(r);
                         }
                     }
