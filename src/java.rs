@@ -1594,32 +1594,24 @@ impl Project {
             );
         }
 
-        let resp = tokio::spawn(async {
-            POSTGREST_CLIENT
-                .from("grading_scripts")
-                .eq("course", COURSE)
-                .eq("term", TERM)
-                .select("assignment")
-                .execute()
-                .await?
-                .text()
-                .await
-                .context("Could not get grading scripts")
-        })
-        .await?;
+        let rhai_scripts = {
+            let scripts = find_files(".rhai", 3, &ROOT_DIR)?
+                .iter()
+                .map(|f| f.display().to_string())
+                .collect::<Vec<String>>();
 
-        let resp: serde_json::Value = serde_json::from_str(resp?.as_str())?;
-
-        let mut keys = vec![];
-        for val in resp.as_array().unwrap() {
-            keys.push(val.as_object().unwrap()["assignment"].to_string());
-        }
+            if scripts.is_empty() {
+                vec!["script.rhai".to_string()]
+            } else {
+                scripts
+            }
+        };
 
         inputs.push(vscode::Input::PickString {
             id:          "gradable_assignments".to_string(),
-            description: "Which assignment are you working on?".to_string(),
-            options:     keys.clone(),
-            default:     keys.first().unwrap().clone(),
+            description: "What script to use?".to_string(),
+            options:     rhai_scripts.clone(),
+            default:     rhai_scripts.first().unwrap().clone(),
         });
 
         tasks.push(

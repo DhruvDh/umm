@@ -52,7 +52,7 @@ serve(async (req) => {
     }
 
     const completionConfig: CreateChatCompletionRequest = {
-      model: "gpt-3.5-turbo",
+      model: "gpt-3.5-turbo-0613",
       temperature: 0,
       top_p: 1,
       n: 1,
