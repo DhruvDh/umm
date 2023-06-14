@@ -147,9 +147,23 @@ pub fn clean() -> Result<()> {
         std::fs::remove_dir_all(LIB_DIR.as_path())
             .with_context(|| format!("Could not delete {}", LIB_DIR.display()))?;
     }
-    if ROOT_DIR.join(".vscode").as_path().exists() {
-        std::fs::remove_dir_all(ROOT_DIR.join(".vscode").as_path())
-            .with_context(|| format!("Could not delete {}", ROOT_DIR.join(".vscode").display()))?;
+    if ROOT_DIR.join(".vscode/settings.json").as_path().exists() {
+        std::fs::remove_file(ROOT_DIR.join(".vscode/settings.json").as_path()).with_context(
+            || {
+                format!(
+                    "Could not delete {}",
+                    ROOT_DIR.join(".vscode/settings.json").display()
+                )
+            },
+        )?;
+    }
+    if ROOT_DIR.join(".vscode/tasks.json").as_path().exists() {
+        std::fs::remove_file(ROOT_DIR.join(".vscode/tasks.json").as_path()).with_context(|| {
+            format!(
+                "Could not delete {}",
+                ROOT_DIR.join(".vscode/tasks.json").display()
+            )
+        })?;
     }
 
     Ok(())

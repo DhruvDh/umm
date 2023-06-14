@@ -411,7 +411,7 @@ pub struct TasksFile {
 /// Struct representing vscode settings.json file
 /// Only the properties that we need.
 #[derive(Serialize, Deserialize, TypedBuilder)]
-pub struct SettingsFile {
+pub struct SettingsFile<'a> {
     /// javac source path
     #[serde(rename = "java.project.sourcePaths")]
     java_source_path:     Vec<String>,
@@ -428,4 +428,12 @@ pub struct SettingsFile {
     /// path to umm binary
     #[serde(rename = "ummBinaryPath")]
     umm_binary_path:      String,
+    /// word wrap setting
+    #[serde(rename = "editor.wordWrap")]
+    #[builder(default = "on")]
+    word_wrap:            &'a str,
+    /// minimap setting
+    #[serde(rename = "editor.minimap.enabled")]
+    #[builder(default = false)]
+    minimap:              bool,
 }
