@@ -740,8 +740,6 @@ impl File {
 
     /// Returns the inner run of this [`File`].
     fn inner_run(&self, input: Option<String>, err: Stdio, out: Stdio) -> Result<Output> {
-        self.check()?;
-
         if self.kind != FileType::ClassWithMain {
             Err(JavaFileError::DuringCompilation {
                 stacktrace: "The file you wish to run does not have a main method.".into(),
@@ -792,6 +790,8 @@ impl File {
 
     /// Utility method to run a java file that has a main method.
     pub fn run(&self, input: Option<String>) -> Result<String, JavaFileError> {
+        self.check()?;
+
         match self.inner_run(input, Stdio::piped(), Stdio::piped()) {
             Ok(out) => {
                 let output = unescape(
@@ -859,8 +859,6 @@ impl File {
 
     /// Inner method to run tests.
     fn inner_test(&self, tests: Vec<&str>, err: Stdio, out: Stdio, in_: Stdio) -> Result<Output> {
-        self.check()?;
-
         let tests = {
             let mut new_tests = Vec::<String>::new();
             for t in tests {
@@ -919,6 +917,8 @@ impl File {
         tests: Vec<&str>,
         project: Option<&Project>,
     ) -> Result<String, JavaFileError> {
+        self.check()?;
+
         match self.inner_test(tests, Stdio::piped(), Stdio::piped(), Stdio::inherit()) {
             Ok(out) => {
                 let output = unescape(
@@ -943,9 +943,9 @@ impl File {
                             continue;
                         }
 
-                        if line.contains("Test run finished after") {
-                            break;
-                        }
+                        // if line.contains("Test run finished after") {
+                        //     break;
+                        // }
 
                         if let Ok(diag) = parser::junit_stacktrace_line_ref(line) {
                             if let Some(proj) = project && proj.identify(diag.file_name()).is_ok() {

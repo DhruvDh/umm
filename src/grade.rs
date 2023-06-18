@@ -613,7 +613,7 @@ impl DocsGrader {
                         },
                         ChatCompletionRequestMessage {
                             role:    Role::User,
-                            content: format!("Unkown error -\n```\n{:?}\n```", e),
+                            content: format!("Unknown error -\n```\n{:?}\n```", e),
                             name:    Some(String::from("Student")),
                         },
                     ];
@@ -792,82 +792,72 @@ impl ByUnitTestGrader {
     /// Final grade is the same percentage of maximum grade as the number of
     /// tests passing.
     pub fn grade_by_tests(self) -> Result<GradeResult> {
-        let test_files = self.test_files;
-        let expected_tests = self.expected_tests;
+        let convert_to_string = |f: Vec<Dynamic>| -> Result<Vec<String>> {
+            f.iter()
+                .map(|f| match f.clone().into_string() {
+                    Ok(n) => Ok(n),
+                    Err(e) => Err(anyhow!(
+                        "test_files array has something that's not a string: {}",
+                        e
+                    )),
+                })
+                .try_collect()
+        };
+
         let project = self.project.clone();
         let out_of = self.out_of;
         let req_name = self.req_name;
+        let test_files: Vec<String> = convert_to_string(self.test_files)?;
+        let expected_tests: Vec<String> = convert_to_string(self.expected_tests)?;
 
-        let test_files: Vec<String> = test_files
-            .iter()
-            .map(|f| match f.clone().into_string() {
-                Ok(n) => Ok(n),
-                Err(e) => Err(anyhow!(
-                    "test_files array has something that's not a string: {}",
-                    e
-                )),
-            })
-            .try_collect()?;
+        let mut reasons = {
+            let mut reasons = vec![];
+            let mut actual_tests = vec![];
+            let mut expected_tests = expected_tests;
+            expected_tests.sort();
 
-        let expected_tests: Vec<String> = expected_tests
-            .iter()
-            .map(|f| match f.clone().into_string() {
-                Ok(n) => Ok(n),
-                Err(e) => Err(anyhow!(
-                    "expected_tests array has something that's not a string: {}",
-                    e
-                )),
-            })
-            .try_collect()?;
+            for test_file in &test_files {
+                let test_file = project.identify(test_file)?;
 
-        let mut actual_tests = vec![];
-        let mut expected_tests = expected_tests;
-        let mut reasons = vec![];
-        expected_tests.sort();
+                actual_tests.append(&mut test_file.test_methods());
+            }
+            actual_tests.sort();
 
-        for test_file in &test_files {
-            let test_file = project.identify(test_file)?;
+            if !expected_tests.is_empty() {
+                for expected in &expected_tests {
+                    let n = expected.split_once('#').unwrap().1;
+                    if !actual_tests.contains(expected) {
+                        reasons.push(format!("- {n} not found."));
+                    }
+                }
 
-            actual_tests.append(&mut test_file.test_methods());
-        }
-        actual_tests.sort();
-
-        if !expected_tests.is_empty() {
-            for expected in &expected_tests {
-                let n = expected.split_once('#').unwrap().1;
-                if !actual_tests.contains(expected) {
-                    reasons.push(format!("- {n} not found."));
+                for actual in &actual_tests {
+                    let n = actual.split_once('#').unwrap().1;
+                    if !expected_tests.contains(actual) {
+                        reasons.push(format!("- Unexpected test called {n}"));
+                    }
                 }
             }
 
-            for actual in &actual_tests {
-                let n = actual.split_once('#').unwrap().1;
-                if !expected_tests.contains(actual) {
-                    reasons.push(format!("- Unexpected test called {n}"));
-                }
-            }
-        }
+            reasons
+        };
+
+        let new_user_message = |content: String| ChatCompletionRequestMessage {
+            role: Role::User,
+            content,
+            name: Some("Student".into()),
+        };
+        let new_system_message = |content: String| ChatCompletionRequestMessage {
+            role: Role::System,
+            content,
+            name: Some("Instructor".into()),
+        };
+        let initial_message = new_system_message(SYSTEM_MESSAGE.to_string());
 
         if !reasons.is_empty() {
             reasons.push("Tests will not be run until above is fixed.".into());
             let reasons = reasons.join("\n");
-            let messages = vec![
-                ChatCompletionRequestMessage {
-                    role:    Role::System,
-                    content: SYSTEM_MESSAGE.to_string(),
-                    name:    Some("Instructor".into()),
-                },
-                // ChatCompletionRequestMessage {
-                //     role:    Role::System,
-                //     content: self.project.describe(),
-                //     name:    Some("Instructor".into()),
-                // },
-                ChatCompletionRequestMessage {
-                    role:    Role::User,
-                    content: reasons.clone(),
-                    name:    Some("Student".into()),
-                },
-            ];
+            let messages = vec![initial_message, new_user_message(reasons.clone())];
             Ok(GradeResult {
                 requirement: req_name,
                 grade:       Grade::new(0.0, out_of),
@@ -877,102 +867,51 @@ impl ByUnitTestGrader {
         } else {
             let mut num_tests_passed = 0.0;
             let mut num_tests_total = 0.0;
-            let mut messages = vec![];
+            let mut messages = vec![initial_message.clone()];
 
             for test_file in test_files {
                 let res = match project
                     .identify(test_file.as_str())?
-                    .test(Vec::new(), Some(&self.project))
+                    .test(Vec::new(), Some(&project))
                 {
                     Ok(res) => res,
-
                     Err(JavaFileError::FailedTests {
                         test_results,
                         diags,
                     }) => {
-                        let messages = vec![
-                            ChatCompletionRequestMessage {
-                                role:    Role::System,
-                                content: SYSTEM_MESSAGE.to_string(),
-                                name:    Some("Instructor".into()),
-                            },
-                            ChatCompletionRequestMessage {
-                                role:    Role::User,
-                                content: format!("Failed tests -\n```\n{}\n```", test_results),
-                                name:    Some("Student".into()),
-                            },
-                            get_source_context(diags, self.project, 3, 6, 6)?,
-                        ];
-                        return Ok(GradeResult {
-                            requirement: req_name,
-                            grade:       Grade::new(0.0, out_of),
-                            reason:      "Error running tests.".to_string(),
-                            prompt:      Some(messages),
-                        });
+                        messages.extend(vec![
+                            new_user_message(format!("Failed tests -\n```\n{}\n```", test_results)),
+                            get_source_context(diags, project.clone(), 3, 6, 6)?,
+                        ]);
+
+                        test_results
                     }
                     Err(JavaFileError::Unknown(e)) => {
-                        let messages = vec![
-                            ChatCompletionRequestMessage {
-                                role:    Role::System,
-                                content: SYSTEM_MESSAGE.to_string(),
-                                name:    Some("Instructor".into()),
-                            },
-                            ChatCompletionRequestMessage {
-                                role:    Role::User,
-                                content: format!("Unkown error -\n```\n{:#?}\n```", e),
-                                name:    Some("Student".into()),
-                            },
-                        ];
-                        return Ok(GradeResult {
-                            requirement: req_name,
-                            grade:       Grade::new(0.0, out_of),
-                            reason:      "Error running tests.".to_string(),
-                            prompt:      Some(messages),
-                        });
+                        let out = format!("Unknown error -\n```\n{:#?}\n```", e);
+                        messages.push(new_user_message(out.clone()));
+                        out
                     }
                     Err(JavaFileError::DuringCompilation {
                         stacktrace,
                         diags,
                     }) => {
-                        let messages = vec![
-                            ChatCompletionRequestMessage {
-                                role:    Role::System,
-                                content: SYSTEM_MESSAGE.to_string(),
-                                name:    Some("Instructor".into()),
-                            },
-                            ChatCompletionRequestMessage {
-                                role:    Role::User,
-                                content: format!("Compiler error -\n```\n{}\n```", stacktrace),
-                                name:    Some("Student".into()),
-                            },
-                            get_source_context(diags, self.project, 3, 6, 6)?,
-                        ];
-                        return Ok(GradeResult {
-                            requirement: req_name,
-                            grade:       Grade::new(0.0, out_of),
-                            reason:      "Error running tests.".to_string(),
-                            prompt:      Some(messages),
-                        });
+                        let out = format!("Compiler error -\n```\n{}\n```", stacktrace);
+                        messages.extend(vec![
+                            new_user_message(out.clone()),
+                            get_source_context(diags, project.clone(), 3, 6, 6)?,
+                        ]);
+                        out
                     }
-                    Err(e) => {
-                        let messages = vec![
-                            ChatCompletionRequestMessage {
-                                role:    Role::System,
-                                content: SYSTEM_MESSAGE.to_string(),
-                                name:    Some("Instructor".into()),
-                            },
-                            ChatCompletionRequestMessage {
-                                role:    Role::User,
-                                content: format!("Unkown Error -\n```\n{:#?}\n```", e),
-                                name:    Some("Student".into()),
-                            },
-                        ];
-                        return Ok(GradeResult {
-                            requirement: req_name,
-                            grade:       Grade::new(0.0, out_of),
-                            reason:      "Error running tests.".to_string(),
-                            prompt:      Some(messages),
-                        });
+                    Err(JavaFileError::AtRuntime {
+                        output,
+                        diags,
+                    }) => {
+                        let out = format!("Error at runtime -\n```\n{}\n```", output);
+                        messages.extend(vec![
+                            new_user_message(out.clone()),
+                            get_source_context(diags, project.clone(), 3, 6, 6)?,
+                        ]);
+                        out
                     }
                 };
                 let mut current_tests_passed = 0.0;
@@ -994,7 +933,7 @@ impl ByUnitTestGrader {
                 if current_tests_passed < current_tests_total {
                     let user_message = res.clone();
                     let mut all_diags = vec![];
-                    let mut new_user_message = Vec::new();
+                    let mut updated_user_message = Vec::new();
 
                     for line in user_message.lines() {
                         if line.contains("MethodSource") || line.contains("Native Method") {
@@ -1007,39 +946,26 @@ impl ByUnitTestGrader {
 
                         if let Ok(diag) = parser::junit_stacktrace_line_ref(line) {
                             if project.identify(&diag.file_name).is_ok() {
-                                new_user_message.push(
+                                updated_user_message.push(
                                     line.replace("\\\\", "\\").replace("\\\"", "\"").to_string(),
                                 );
                             }
                             all_diags.push(diag);
                         } else {
-                            new_user_message
+                            updated_user_message
                                 .push(line.replace("\\\\", "\\").replace("\\\"", "\"").to_string());
                         }
                     }
 
                     let context = get_source_context(all_diags, self.project.clone(), 3, 6, 6)?;
 
-                    let mut user_message = new_user_message.join("\n");
+                    let mut user_message = updated_user_message.join("\n");
                     user_message.truncate(PROMPT_TRUNCATE);
                     user_message = format!("```\n{user_message}\n```");
 
                     messages = vec![
-                        ChatCompletionRequestMessage {
-                            role:    Role::System,
-                            content: SYSTEM_MESSAGE.to_string(),
-                            name:    Some("Instructor".into()),
-                        },
-                        // ChatCompletionRequestMessage {
-                        //     role:    Role::System,
-                        //     content: self.project.describe(),
-                        //     name:    Some("Instructor".into()),
-                        // },
-                        ChatCompletionRequestMessage {
-                            role:    Role::User,
-                            content: user_message,
-                            name:    Some("Student".into()),
-                        },
+                        initial_message.clone(),
+                        new_user_message(user_message),
                         context,
                     ];
                 }
@@ -1691,7 +1617,7 @@ impl DiffGrader {
                             },
                             ChatCompletionRequestMessage {
                                 role:    Role::User,
-                                content: format!("Unkown error -\n```\n{:?}\n```", e),
+                                content: format!("Unknown error -\n```\n{:?}\n```", e),
                                 name:    Some("Student".into()),
                             },
                         ];
