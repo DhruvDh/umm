@@ -14,36 +14,50 @@ license = "MIT"
 
 [dependencies]
 umm_derive = { path = "./umm_derive" }
-anyhow = "1.0.69"
+anyhow = "1.0.71"
 lazy_static = "1.4.0"
 which = "4.4.0"
-bpaf = { version = "0.7.9", features = ["bright-color"] }
+bpaf = { version = "0.8.0", features = ["bright-color"] }
 glob = "0.3.1"
 peg = "0.8.1"
-tree-sitter = "0.20.9"
+tree-sitter = "0.20.10"
 # tree-sitter-java = { git = "https://github.com/tree-sitter/tree-sitter-java.git", rev = "39a11c8330d0b2ad75310456c378396785f79a4e" }
 tree-sitter-java = "0.20.0"
-serde = { version = "1.0.152", features = ["derive"] }
-serde_json = "1.0.94"
+serde = { version = "1.0.163", features = ["derive"] }
+serde_json = "1.0.96"
 tabled = "0.10.0"
-rhai = { version = "1.12.0", features = ["metadata", "decimal", "sync"] }
+rhai = { version = "1.14.0", features = ["metadata", "decimal", "sync"] }
 self_update = { version = "0.36.0", features = ["rustls"] }
 typed-builder = "0.14.0"
 postgrest = "1.5.0"
-reqwest = { version = "0.11.14", features = ["json"] }
-tokio = { version = "1.26.0", features = ["full"] }
-futures = "0.3.26"
+reqwest = { version = "0.11.17", features = ["json"] }
+openssl = { version = "0.10.52", features = ["vendored"] }
+tokio = { version = "1.28.1", features = ["full"] }
+futures = "0.3.28"
 tracing = "0.1.37"
-tracing-subscriber = "0.3.16"
-walkdir = "2.3.2"
-dotenvy = "0.15.6"
-async-openai = "0.10.0"
-uuid = { version = "1.3.0", features = ["std", "v4"] }
+tracing-subscriber = "0.3.17"
+walkdir = "2.3.3"
+dotenvy = "0.15.7"
+async-openai = "0.10.3"
+uuid = { version = "1.3.2", features = ["std", "v4"] }
 snailquote = "0.3.1"
-similar = { version = "2.2.1", features = ["text", "inline", "unicode", "unicode-segmentation"] }
+similar = { version = "2.2.1", features = [
+  "text",
+  "inline",
+  "unicode",
+  "unicode-segmentation",
+] }
 colored = "2.0.0"
 itertools = "0.10.5"
 thiserror = "1.0.40"
+comrak = { version = "0.18.0", features = [
+  "shell-words",
+  "syntect",
+  "xdg",
+  "arbitrary",
+  "emojis",
+  "shortcodes",
+] }
 
 
 [profile.release-lto]

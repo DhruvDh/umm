@@ -1674,6 +1674,50 @@ impl Project {
 
         Ok(())
     }
+
+    /// Generates an HTML report for the project containing project source code.
+    pub fn generate_html_report(&self) -> anyhow::Result<()> {
+        let mut markdown = format!(
+            "# Student Submission Source Code\n\n## Overview\n\n{}\n\n## Source Code\n\n",
+            self.describe()
+        );
+
+        for file in &self.files {
+            markdown.push_str(&format!(
+                "### {}\n\n```java\n{}\n```\n\n",
+                file.proper_name(),
+                file.parser().code()
+            ));
+        }
+        let html = comrak::markdown_to_html(&markdown, &comrak::ComrakOptions::default());
+        let html = format!(
+            r#"
+<!DOCTYPE html>
+<head>
+	<link href="https://unpkg.com/tailwindcss@0.7.4/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@tailwindcss/typography@0.3.1/dist/typography.min.css" rel="stylesheet">
+</head>
+
+<body>
+<article class="m-6 p-6 min-w-full prose">
+{}
+</article>
+</body>
+</html>
+"#,
+            html
+        );
+
+        let mut file = std::fs::OpenOptions::new()
+            .write(true)
+            .truncate(true)
+            .create(true)
+            .open(ROOT_DIR.join("report.html").as_path())?;
+
+        file.write_all(html.as_bytes())?;
+
+        Ok(())
+    }
 }
 
 // Allowed because CustomType is not deprecated, just volatile
