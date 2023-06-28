@@ -1722,8 +1722,16 @@ impl Project {
                     "Please open https://{}-3300.na.app.codingrooms.com/ to see project code.",
                     domain
                 );
+            } else if let Ok(vscode_proxy_uri) = std::env::var("VSCODE_PROXY_URI") {
+                println!(
+                    "Please open {} to see project code.",
+                    vscode_proxy_uri.replace(
+                        "vsc.na.app.codingrooms.com/proxy/{{port}}",
+                        "-3300.na.app.codingrooms.com/"
+                    )
+                );
             } else {
-                println!("Please open  http://localhost:3300/ ");
+                println!("Please open  http://localhost:3300/ to see project code.");
             }
             println!("Severing project code... press Ctrl-C to stop.");
             axum::Server::bind(&addr)
