@@ -58,6 +58,7 @@ comrak = { version = "0.18.0", features = [
   "emojis",
   "shortcodes",
 ] }
+axum = "0.6.18"
 
 
 [profile.release-lto]

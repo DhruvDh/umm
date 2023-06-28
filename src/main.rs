@@ -71,8 +71,8 @@ enum Cmd {
     Update,
     /// Checks project health
     CheckHealth,
-    /// Generates an HTML file containing source code
-    GenerateHTMLReport,
+    /// Starts and serves a web server that serves the project code
+    ServeProjectCode,
     /// Resets the project metadata, and redownloads libraries
     Reset,
     /// Exit the program
@@ -143,10 +143,10 @@ fn options() -> Cmd {
         .command("check-health")
         .help("Checks the health of the project");
 
-    let report = pure(Cmd::GenerateHTMLReport)
+    let serve = pure(Cmd::ServeProjectCode)
         .to_options()
-        .command("report")
-        .help("Generates an HTML file containing source code");
+        .command("serve-project-code")
+        .help("Starts and serves a web server that serves the project code");
 
     let reset = pure(Cmd::Reset)
         .to_options()
@@ -168,7 +168,7 @@ fn options() -> Cmd {
         info,
         update,
         check_health,
-        report,
+        serve,
         reset,
         exit
     ])
@@ -241,7 +241,7 @@ fn main() -> Result<()> {
             };
         }
         Cmd::CheckHealth => Project::new()?.check_health()?,
-        Cmd::GenerateHTMLReport => Project::new()?.generate_html_report()?,
+        Cmd::ServeProjectCode => Project::new()?.serve_project_code()?,
         Cmd::Reset => {
             clean()?;
             Project::new()?;

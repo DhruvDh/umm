@@ -1675,8 +1675,8 @@ impl Project {
         Ok(())
     }
 
-    /// Generates an HTML report for the project containing project source code.
-    pub fn generate_html_report(&self) -> anyhow::Result<()> {
+    /// Serves the project code as a static website.
+    pub fn serve_project_code(&self) -> anyhow::Result<()> {
         let mut markdown = format!(
             "# Student Submission Source Code\n\n## Overview\n\n{}\n\n## Source Code\n\n",
             self.describe()
@@ -1699,7 +1699,7 @@ impl Project {
 </head>
 
 <body>
-<article class="m-6 p-6 min-w-full prose">
+<article class="p-6 min-w-full prose">
 {}
 </article>
 </body>
@@ -1708,13 +1708,29 @@ impl Project {
             html
         );
 
-        let mut file = std::fs::OpenOptions::new()
-            .write(true)
-            .truncate(true)
-            .create(true)
-            .open(ROOT_DIR.join("report.html").as_path())?;
+        let rt = RUNTIME.handle().clone();
+        rt.block_on(async {
+            let app = axum::Router::new().route(
+                "/",
+                axum::routing::get(|| async { axum::response::Html::from(html) }),
+            );
 
-        file.write_all(html.as_bytes())?;
+            let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 3300));
+
+            if let Ok(domain) = std::env::var("CR_IO_EXT_DOMAIN") {
+                println!(
+                    "Please open https://{}-3300.na.app.codingrooms.com/ to see project code.",
+                    domain
+                );
+            } else {
+                println!("Please open  http://localhost:3300/ ");
+            }
+            println!("Severing project code... press Ctrl-C to stop.");
+            axum::Server::bind(&addr)
+                .serve(app.into_make_service())
+                .await
+                .unwrap();
+        });
 
         Ok(())
     }
