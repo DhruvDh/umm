@@ -1689,59 +1689,43 @@ impl Project {
                 file.parser().code()
             ));
         }
-        let html = comrak::markdown_to_html(&markdown, &comrak::ComrakOptions::default());
-        let html = format!(
-            r#"
-<!DOCTYPE html>
-<head>
-	<link href="https://unpkg.com/tailwindcss@0.7.4/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@tailwindcss/typography@0.3.1/dist/typography.min.css" rel="stylesheet">
-</head>
-
-<body>
-<article class="p-6 min-w-full prose">
-{}
-</article>
-</body>
-</html>
-"#,
-            html
-        );
+        let id = uuid::Uuid::new_v4().to_string();
+        let submission = serde_json::to_string(&SubmissionRow {
+            id:      id.clone(),
+            course:  COURSE.to_string(),
+            term:    TERM.to_string(),
+            content: markdown,
+        })?;
 
         let rt = RUNTIME.handle().clone();
         rt.block_on(async {
-            let app = axum::Router::new().route(
-                "/",
-                axum::routing::get(|| async { axum::response::Html::from(html) }),
-            );
-
-            let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 8070));
-
-            if let Ok(domain) = std::env::var("CR_IO_EXT_DOMAIN") {
-                println!(
-                    "Please open https://{}-8070.na.app.codingrooms.com/ to see project code.",
-                    domain
-                );
-            } else if let Ok(vscode_proxy_uri) = std::env::var("VSCODE_PROXY_URI") {
-                println!(
-                    "Please open {} to see project code.",
-                    vscode_proxy_uri.replace(
-                        "vsc.na.app.codingrooms.com/proxy/{{port}}",
-                        "-8070.na.app.codingrooms.com/"
-                    )
-                );
-            } else {
-                println!("Please open  http://localhost:8070/ to see project code.");
-            }
-            println!("Severing project code... press Ctrl-C to stop.");
-            axum::Server::bind(&addr)
-                .serve(app.into_make_service())
+            POSTGREST_CLIENT
+                .from("submissions")
+                .insert(submission)
+                .execute()
                 .await
-                .unwrap();
-        });
+        })?;
+
+        println!(
+            "Please visit https://feedback.dhruvdh.com/submissions/{} to see your submission code.",
+            id
+        );
 
         Ok(())
     }
+}
+
+/// Schema for `submissions` table
+#[derive(Serialize, Debug)]
+pub struct SubmissionRow {
+    /// UUID of data entry
+    id:      String,
+    /// Course the submission belongs to
+    course:  String,
+    /// Term of the course
+    term:    String,
+    /// Content of the submission
+    content: String,
 }
 
 // Allowed because CustomType is not deprecated, just volatile
