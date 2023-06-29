@@ -1715,11 +1715,11 @@ impl Project {
                 axum::routing::get(|| async { axum::response::Html::from(html) }),
             );
 
-            let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 3300));
+            let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 8070));
 
             if let Ok(domain) = std::env::var("CR_IO_EXT_DOMAIN") {
                 println!(
-                    "Please open https://{}-3300.na.app.codingrooms.com/ to see project code.",
+                    "Please open https://{}-8070.na.app.codingrooms.com/ to see project code.",
                     domain
                 );
             } else if let Ok(vscode_proxy_uri) = std::env::var("VSCODE_PROXY_URI") {
@@ -1727,11 +1727,11 @@ impl Project {
                     "Please open {} to see project code.",
                     vscode_proxy_uri.replace(
                         "vsc.na.app.codingrooms.com/proxy/{{port}}",
-                        "-3300.na.app.codingrooms.com/"
+                        "-8070.na.app.codingrooms.com/"
                     )
                 );
             } else {
-                println!("Please open  http://localhost:3300/ to see project code.");
+                println!("Please open  http://localhost:8070/ to see project code.");
             }
             println!("Severing project code... press Ctrl-C to stop.");
             axum::Server::bind(&addr)
