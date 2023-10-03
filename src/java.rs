@@ -1335,7 +1335,7 @@ impl Project {
         }
 
         // Do the same for extensions.json
-        if ROOT_DIR.join(".vscode/extensions.json").as_path().exists() {
+        if !ROOT_DIR.join(".vscode/extensions.json").as_path().exists() {
             let mut file = tokio::fs::OpenOptions::new()
                 .write(true)
                 .truncate(true)
