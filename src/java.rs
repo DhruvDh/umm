@@ -1334,6 +1334,34 @@ impl Project {
                 .await?;
         }
 
+        // Do the same for extensions.json
+        if ROOT_DIR.join(".vscode/extensions.json").as_path().exists() {
+            let mut file = tokio::fs::OpenOptions::new()
+                .write(true)
+                .truncate(true)
+                .create(true)
+                .open(ROOT_DIR.join(".vscode").join("extensions.json").as_path())
+                .await?;
+
+            let extensions = r#"
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
+	// Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
+
+	// List of extensions which should be recommended for users of this workspace.
+	"recommendations": [
+		"Codeium.codeium"
+	],
+	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
+	"unwantedRecommendations": [
+		
+	]
+}
+            "#;
+
+            file.write_all(extensions.as_bytes()).await?;
+        }
+
         Ok(())
     }
 
