@@ -51,6 +51,10 @@ use rhai::{
     EvalAltResult,
 };
 use umm_derive::generate_rhai_variant;
+use util::{
+    use_active_retrieval,
+    use_heuristic_retrieval,
+};
 
 /// Defined for convenience
 type Dict = std::collections::HashMap<String, String>;
@@ -75,7 +79,9 @@ pub fn create_engine() -> Engine {
         .build_type::<Project>()
         .register_fn("clean", clean_script)
         .register_fn("show_results", show_result)
-        .register_fn("generate_feedback", generate_feedback_script);
+        .register_fn("generate_feedback", generate_feedback_script)
+        .register_fn("use_active_retrieval", use_active_retrieval)
+        .register_fn("use_heuristic_retrieval", use_heuristic_retrieval);
     engine
 }
 

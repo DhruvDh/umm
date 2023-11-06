@@ -57,7 +57,9 @@ use crate::{
     },
     parsers::parser,
     util::*,
-    vscode::{self,},
+    vscode::{
+        self,
+    },
     Dict,
 };
 
@@ -351,7 +353,7 @@ impl File {
                         kind,
                         #[allow(clippy::or_fun_call)]
                         result
-                            .get(0)
+                            .first()
                             .ok_or(anyhow!(
                                 "Could not find a valid class/interface declaration for {} (vec \
                                  size is 0)",
@@ -468,90 +470,76 @@ impl File {
                     .query(CLASS_FIELDS_QUERY)
                     .unwrap_or_default()
                     .iter()
-                    .map(|f| f.get("field").unwrap_or(&not_found).to_string())
+                    .map(|f| f.get("field").unwrap_or(&not_found).trim().to_string())
                     .collect::<Vec<String>>()
-                    .join("\n");
+                    .join(", ");
 
                 let methods = parser
                     .query(CLASS_METHOD_QUERY)
                     .unwrap_or_default()
                     .iter()
                     .map(|m| {
-                        let modifier = m.get("modifier").unwrap_or(&empty);
-                        let annotation = m.get("annotation").unwrap_or(&empty);
-                        let type_parameters = m.get("typeParameters").unwrap_or(&empty);
-                        let return_type = m.get("returnType").unwrap_or(&not_found);
-                        let identifier = m.get("identifier").unwrap_or(&not_found);
+                        let identifier = m.get("identifier").unwrap_or(&not_found).trim();
                         let parameters = m.get("parameters").unwrap_or(&empty);
-                        let throws = m.get("throws").unwrap_or(&empty);
 
-                        if identifier.as_str() == not_found.as_str() {
+                        if identifier == not_found.as_str() {
                             "[NOT FOUND]".to_string()
                         } else {
-                            format!(
-                                "{annotation} {modifier} {type_parameters} {return_type} \
-                                 {identifier} {parameters} {throws}",
-                            )
+                            format!("{}{}", identifier.trim(), parameters.trim())
                         }
                     })
                     .collect::<Vec<String>>()
-                    .join("\n");
+                    .join(", ");
 
                 let constructors = parser
                     .query(CLASS_CONSTRUCTOR_QUERY)
                     .unwrap_or_default()
                     .iter()
                     .map(|m| {
-                        let modifier = m.get("modifier").unwrap_or(&empty);
-                        let annotation = m.get("annotation").unwrap_or(&empty);
-                        let identifier = m.get("identifier").unwrap_or(&not_found);
+                        let identifier = m.get("identifier").unwrap_or(&not_found).trim();
                         let parameters = m.get("parameters").unwrap_or(&empty);
-                        let throws = m.get("throws").unwrap_or(&empty);
 
-                        if identifier.as_str() == not_found.as_str() {
+                        if identifier == not_found.as_str() {
                             "[NOT FOUND]".to_string()
                         } else {
-                            format!("{annotation} {modifier} {identifier} {parameters} {throws}",)
+                            format!("{}{}", identifier.trim(), parameters.trim())
                         }
                     })
                     .collect::<Vec<String>>()
-                    .join("\n");
+                    .join(", ");
 
                 let fields = if fields.trim().is_empty() {
                     String::from("[NOT FOUND]")
                 } else {
-                    fields.trim().to_string()
+                    format!("\tFields: {}", fields)
                 };
 
                 let methods = if methods.trim().is_empty() {
                     String::from("[NOT FOUND]")
                 } else {
-                    methods.trim().to_string()
+                    format!("\tMethods: {}", methods)
                 };
 
                 let constructors = if constructors.trim().is_empty() {
                     String::from("[NOT FOUND]")
                 } else {
-                    constructors.trim().to_string()
+                    format!("\tConstructors: {}", constructors)
                 };
 
                 let mut result = vec![];
                 result.push(format!("Class: {proper_name} {parameters} {implements}:\n"));
 
                 if !fields.contains("NOT FOUND") {
-                    result.push(String::from("Fields:"));
                     result.push(fields);
                 }
                 if !constructors.contains("NOT FOUND") {
-                    result.push(String::from("Constructors:"));
                     result.push(constructors);
                 }
                 if !methods.contains("NOT FOUND") {
-                    result.push(String::from("Methods:"));
                     result.push(methods);
                 }
 
-                format!("```\n{r}\n```", r = result.join("\n"))
+                result.join("\n")
             }
         };
 
@@ -948,14 +936,18 @@ impl File {
                         // }
 
                         if let Ok(diag) = parser::junit_stacktrace_line_ref(line) {
-                            if let Some(proj) = project && proj.identify(diag.file_name()).is_ok() {
+                            if let Some(proj) = project
+                                && proj.identify(diag.file_name()).is_ok()
+                            {
                                 new_output.push(
                                     line.replace("\\\\", "\\").replace("\\\"", "\"").to_string(),
                                 );
                             }
                             diags.push(diag);
                         } else if let Ok(diag) = parser::parse_diag(line) {
-                            if let Some(proj) = project && proj.identify(diag.file_name()).is_ok() {
+                            if let Some(proj) = project
+                                && proj.identify(diag.file_name()).is_ok()
+                            {
                                 new_output.push(
                                     line.replace("\\\\", "\\").replace("\\\"", "\"").to_string(),
                                 );

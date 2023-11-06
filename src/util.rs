@@ -147,3 +147,15 @@ pub async fn download_to_json(url: &str) -> Result<HashMap<String, String>> {
         .await
         .context(format!("Failed to read response as json: {url}"))
 }
+
+/// Use active retrieval when retrieving context from student submission.
+pub fn use_active_retrieval() {
+    USE_ACTIVE_RETRIEVAL.set(true);
+    dbg!(USE_ACTIVE_RETRIEVAL.get());
+}
+
+/// Use hueristic based retrieval when retrieving context from student
+/// submission.
+pub fn use_heuristic_retrieval() {
+    USE_ACTIVE_RETRIEVAL.set(false);
+}

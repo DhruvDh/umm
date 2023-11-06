@@ -59,6 +59,7 @@ comrak = { version = "0.19.0", features = [
   "shortcodes",
 ] }
 axum = "0.6.20"
+state = "0.6.0"
 
 
 [profile.release-lto]

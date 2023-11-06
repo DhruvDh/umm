@@ -4,6 +4,7 @@ history.txt
 grading/**/**/*.java
 .env
 .envrc
+rustc-ice-*
 
 # Added by cargo
 

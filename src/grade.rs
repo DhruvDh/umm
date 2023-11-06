@@ -22,6 +22,7 @@ use anyhow::{
 };
 use async_openai::types::{
     ChatCompletionRequestMessage,
+    CreateChatCompletionResponse,
     Role,
 };
 use colored::Colorize;
@@ -71,11 +72,13 @@ use crate::{
         METHOD_CALL_QUERY,
         POSTGREST_CLIENT,
         PROMPT_TRUNCATE,
+        RETRIEVAL_MESSAGE_INTRO,
         ROOT_DIR,
         RUNTIME,
         SCRIPT_AST,
         SOURCE_DIR,
         SYSTEM_MESSAGE,
+        USE_ACTIVE_RETRIEVAL,
     },
     create_engine,
     java::{
@@ -320,6 +323,130 @@ impl From<MutationDiagnostic> for LineRef {
     }
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+/// `RetrievalFunctionCallParams` is a struct that holds the parameters for a
+/// retrieval function call.
+struct RetrievalFunctionCallParams {
+    /// A string that holds the name of the class.
+    class_name:  String,
+    ///  A string that holds the name of the method.
+    method_name: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+/// `RetrievalFunctionCallParamsArray` is a struct that holds an array of
+/// `RetrievalFunctionCallParams`.
+struct RetrievalFunctionCallParamsArray {
+    /// A vector of `RetrievalFunctionCallParams`.
+    params: Vec<RetrievalFunctionCallParams>,
+}
+
+/// Retrieves the active context for a retrieval operation.
+///
+/// This function takes a reference to a `Project` and an optional `String` as
+/// additional context. It ensures that the additional context is provided when
+/// using active retrieval. It then prepares a series of
+/// `ChatCompletionRequestMessage` and serializes them into a JSON string.
+///
+/// # Arguments
+///
+/// * `proj` - A reference to a `Project`.
+/// * `additional_context` - An optional `String` that provides additional
+///   context for the retrieval operation.
+///
+/// # Returns
+///
+/// * `Result<ChatCompletionRequestMessage>` - A `Result` that contains a
+///   `ChatCompletionRequestMessage` if the operation was successful, or an
+///   `Err` if it was not.
+pub fn get_active_retrieval_context(
+    proj: &Project,
+    active_retrieval_context: Option<String>,
+) -> Result<ChatCompletionRequestMessage> {
+    ensure!(
+        active_retrieval_context.is_some(),
+        "Additional context must be provided when using active retrieval."
+    );
+
+    print!("Trying to decide what to share with AI for feedback...");
+    let mut messages = Vec::new();
+
+    messages.push(ChatCompletionRequestMessage {
+        role:          Role::System,
+        content:       Some(RETRIEVAL_MESSAGE_INTRO.to_string()),
+        name:          Some(String::from("Instructor")),
+        function_call: None,
+    });
+    messages.push(ChatCompletionRequestMessage {
+        role:          Role::User,
+        content:       Some(format!(
+            "Here is the output (stdout and stderr) from running the auto-grader on my \
+             submission:\n```\n{}\n```",
+            active_retrieval_context.unwrap()
+        )),
+        name:          Some(String::from("Student")),
+        function_call: None,
+    });
+    messages.push(ChatCompletionRequestMessage {
+        role:          Role::System,
+        content:       Some(format!(
+            include_str!("prompts/retrieval_system_message_outro.md"),
+            JAVA_FILE_NAMES = proj.files().iter().map(File::proper_name).join(", "),
+            SYNTHESIZED_OUTLINE = proj.describe(),
+        )),
+        name:          Some(String::from("Instructor")),
+        function_call: None,
+    });
+    let messages = serde_json::to_string(&messages).expect("Failed to serialize messages array");
+
+    let client = reqwest::blocking::Client::new();
+    let response: CreateChatCompletionResponse = client
+        .post("https://umm-feedback-openai-func.deno.dev/")
+        .body(messages)
+        .send()?
+        .json()?;
+    let response = response.choices[0].message.clone();
+    println!(" done!");
+    ensure!(
+        response.function_call.is_some(),
+        "No function call found in response."
+    );
+    let function_call_args: RetrievalFunctionCallParamsArray =
+        serde_json::from_str(response.function_call.unwrap().arguments.as_str())?;
+
+    let mut context = Vec::new();
+    for function_call_arg in function_call_args.params {
+        let file = proj.identify(&function_call_arg.class_name)?;
+        let query = format!(
+            include_str!("queries/method_body_with_name.scm"),
+            &function_call_arg.method_name
+        );
+
+        let res = file
+            .query(&query)
+            .or_else(|_| Ok::<Vec<Dict>, anyhow::Error>(vec![]))
+            .unwrap();
+
+        for r in res {
+            let body = r.get("body").unwrap().to_string();
+            context.push(format!(
+                "Method body for `{}#{}`:",
+                file.proper_name(),
+                function_call_arg.method_name
+            ));
+            context.push(format!("\n```\n{}\n```\n", body));
+        }
+    }
+
+    Ok(ChatCompletionRequestMessage {
+        role:          Role::System,
+        content:       Some(context.join("\n")),
+        name:          Some(String::from("Instructor")),
+        function_call: None,
+    })
+}
+
 /// Returns a ChatCompletionRequestMessage with the given line references that
 /// include contextual lines of code from the source
 ///
@@ -329,23 +456,27 @@ impl From<MutationDiagnostic> for LineRef {
 /// * `num_lines`: the number of lines of code to include after the line
 /// * `max_line_refs`: the maximum number of _processed_ line references to
 ///   include in the final message
+/// * `try_use_active_retrieval`: whether to try to use active retrieval
+/// * `additional_context`: additional context to use for
 pub fn get_source_context<T: Into<LineRef>>(
     line_refs: Vec<T>,
     proj: Project,
     start_offset: usize,
     num_lines: usize,
     max_line_refs: usize,
+    try_use_active_retrieval: bool,
+    active_retrieval_context: Option<String>,
 ) -> Result<ChatCompletionRequestMessage> {
-    let line_refs = line_refs
-        .into_iter()
-        .map(|x| x.into())
-        .collect::<HashSet<LineRef>>()
-        .into_iter()
-        .collect::<Vec<LineRef>>();
+    if try_use_active_retrieval {
+        if let Ok(message) = get_active_retrieval_context(&proj, active_retrieval_context) {
+            return Ok(message);
+        }
+    }
 
     let mut line_refs: Vec<(File, LineRef, RangeInclusive<usize>)> = line_refs
         .into_iter()
         .map(|x| {
+            let x = x.into();
             let file = proj.identify(&x.file_name)?;
             let start = match file.kind() {
                 FileType::Test => x.line_number.saturating_sub(num_lines),
@@ -364,6 +495,7 @@ pub fn get_source_context<T: Into<LineRef>>(
             .cmp(&lhs.1.file_name)
             .then(lhs.1.line_number.cmp(&rhs.1.line_number))
     });
+    line_refs.dedup();
 
     let mut context = Vec::new();
     context.push(
@@ -373,7 +505,7 @@ pub fn get_source_context<T: Into<LineRef>>(
 :\n"
         .to_string(),
     );
-    let end_ticks = "\n```".to_string();
+    let end_ticks = "\n```\n".to_string();
     let mut methods: HashSet<String> = HashSet::new();
 
     line_refs
@@ -397,16 +529,14 @@ pub fn get_source_context<T: Into<LineRef>>(
         })
         .take(max_line_refs)
         .for_each(|(file, f, r)| {
-            let (len, _) = r.size_hint();
+            let num_lines = r.size_hint().0;
             let count = file.parser().code().lines().count();
 
-            let (f, r) = if len as f32 >= 0.6 * (count as f32) {
+            let (f, r) = if num_lines as f32 >= 0.6 * (count as f32) {
                 (f, 0..=count)
             } else {
                 (f, r)
             };
-
-            let (num_lines, _) = r.size_hint();
 
             context.push(format!(
                 "- Lines {} to {} from {} -\n```",
@@ -424,6 +554,7 @@ pub fn get_source_context<T: Into<LineRef>>(
                 .take(num_lines)
                 .map(|x| x.to_string().replace("\\\\", "\\").replace("\\\"", "\""))
                 .collect::<Vec<String>>();
+
             context.append(&mut (relevant_source.clone()));
             context.push(end_ticks.clone());
 
@@ -436,11 +567,7 @@ pub fn get_source_context<T: Into<LineRef>>(
 
                     for method in method_names {
                         let method_name = method.get("name").unwrap().to_string();
-                        if methods.contains(&method_name) {
-                            continue;
-                        } else {
-                            methods.insert(method_name.clone());
-                        }
+                        methods.insert(method_name.clone());
 
                         let query = format!(
                             include_str!("queries/method_body_with_name.scm"),
@@ -475,7 +602,10 @@ pub fn get_source_context<T: Into<LineRef>>(
         });
 
     let mut context = context.join("\n");
-    context.truncate(PROMPT_TRUNCATE);
+    if context.len() > PROMPT_TRUNCATE {
+        context.truncate(PROMPT_TRUNCATE);
+        context.push_str("...[TRUNCATED]");
+    }
 
     Ok(ChatCompletionRequestMessage {
         role:          Role::System,
@@ -598,7 +728,7 @@ impl DocsGrader {
                             name:          Some(String::from("Student")),
                             function_call: None,
                         },
-                        get_source_context(diags, self.project, 1, 3, 6)?,
+                        get_source_context(diags, self.project, 1, 3, 6, false, None)?,
                     ];
 
                     return Ok(GradeResult {
@@ -679,7 +809,7 @@ impl DocsGrader {
         );
 
         let prompt = if num_diags > 0 {
-            let context = get_source_context(all_diags, self.project, 1, 3, 6)?;
+            let context = get_source_context(all_diags, self.project, 1, 3, 6, false, None)?;
 
             let mut outputs = outputs
                 .iter()
@@ -687,7 +817,10 @@ impl DocsGrader {
                 .collect::<Vec<String>>()
                 .join("\n\n---\n\n");
 
-            outputs.truncate(PROMPT_TRUNCATE);
+            if outputs.len() > PROMPT_TRUNCATE {
+                outputs.truncate(PROMPT_TRUNCATE);
+                outputs.push_str("...[TRUNCATED]");
+            }
 
             Some(vec![
                 ChatCompletionRequestMessage {
@@ -851,11 +984,19 @@ impl ByUnitTestGrader {
             reasons
         };
 
-        let new_user_message = |content: String| ChatCompletionRequestMessage {
-            role:          Role::User,
-            content:       Some(content),
-            name:          Some("Student".into()),
-            function_call: None,
+        let new_user_message = |content: String| {
+            let mut content = content;
+            if content.len() > PROMPT_TRUNCATE {
+                content.truncate(PROMPT_TRUNCATE);
+                content.push_str("...[TRUNCATED]");
+            }
+
+            ChatCompletionRequestMessage {
+                role:          Role::User,
+                content:       Some(content),
+                name:          Some("Student".into()),
+                function_call: None,
+            }
         };
         let new_system_message = |content: String| ChatCompletionRequestMessage {
             role:          Role::System,
@@ -863,6 +1004,34 @@ impl ByUnitTestGrader {
             name:          Some("Instructor".into()),
             function_call: None,
         };
+        let process_junit_stacktrace = |stacktrace: String| {
+            let mut updated_stacktrace = Vec::new();
+            let mut all_diags = Vec::new();
+
+            for line in stacktrace.lines() {
+                if line.contains("MethodSource") || line.contains("Native Method") {
+                    continue;
+                }
+
+                if line.contains("Test run finished after") {
+                    break;
+                }
+
+                if let Ok(diag) = parser::junit_stacktrace_line_ref(line) {
+                    if project.identify(&diag.file_name).is_ok() {
+                        updated_stacktrace
+                            .push(line.replace("\\\\", "\\").replace("\\\"", "\"").to_string());
+                    }
+                    all_diags.push(diag);
+                } else {
+                    updated_stacktrace
+                        .push(line.replace("\\\\", "\\").replace("\\\"", "\"").to_string());
+                }
+            }
+
+            (updated_stacktrace, all_diags)
+        };
+
         let initial_message = new_system_message(SYSTEM_MESSAGE.to_string());
 
         if !reasons.is_empty() {
@@ -890,9 +1059,23 @@ impl ByUnitTestGrader {
                         test_results,
                         diags,
                     }) => {
+                        let (updated_stacktrace, _) =
+                            process_junit_stacktrace(test_results.clone());
+
                         messages.extend(vec![
-                            new_user_message(format!("Failed tests -\n```\n{}\n```", test_results)),
-                            get_source_context(diags, project.clone(), 3, 6, 6)?,
+                            new_user_message(format!(
+                                "Failed tests -\n```\n{}\n```",
+                                updated_stacktrace.join("\n")
+                            )),
+                            get_source_context(
+                                diags,
+                                project.clone(),
+                                3,
+                                6,
+                                6,
+                                *USE_ACTIVE_RETRIEVAL.try_get().unwrap_or(&false),
+                                Some(updated_stacktrace.join("\n")),
+                            )?,
                         ]);
 
                         test_results
@@ -909,7 +1092,7 @@ impl ByUnitTestGrader {
                         let out = format!("Compiler error -\n```\n{}\n```", stacktrace);
                         messages.extend(vec![
                             new_user_message(out.clone()),
-                            get_source_context(diags, project.clone(), 3, 6, 6)?,
+                            get_source_context(diags, project.clone(), 3, 6, 6, false, None)?,
                         ]);
                         out
                     }
@@ -920,7 +1103,7 @@ impl ByUnitTestGrader {
                         let out = format!("Error at runtime -\n```\n{}\n```", output);
                         messages.extend(vec![
                             new_user_message(out.clone()),
-                            get_source_context(diags, project.clone(), 3, 6, 6)?,
+                            get_source_context(diags, project.clone(), 3, 6, 6, false, None)?,
                         ]);
                         out
                     }
@@ -939,46 +1122,6 @@ impl ByUnitTestGrader {
                     if let Ok(n) = parse_result {
                         current_tests_total = n as f64;
                     }
-                }
-
-                if current_tests_passed < current_tests_total {
-                    let user_message = res.clone();
-                    let mut all_diags = vec![];
-                    let mut updated_user_message = Vec::new();
-
-                    for line in user_message.lines() {
-                        if line.contains("MethodSource") || line.contains("Native Method") {
-                            continue;
-                        }
-
-                        if line.contains("Test run finished after") {
-                            break;
-                        }
-
-                        if let Ok(diag) = parser::junit_stacktrace_line_ref(line) {
-                            if project.identify(&diag.file_name).is_ok() {
-                                updated_user_message.push(
-                                    line.replace("\\\\", "\\").replace("\\\"", "\"").to_string(),
-                                );
-                            }
-                            all_diags.push(diag);
-                        } else {
-                            updated_user_message
-                                .push(line.replace("\\\\", "\\").replace("\\\"", "\"").to_string());
-                        }
-                    }
-
-                    let context = get_source_context(all_diags, self.project.clone(), 3, 6, 6)?;
-
-                    let mut user_message = updated_user_message.join("\n");
-                    user_message.truncate(PROMPT_TRUNCATE);
-                    user_message = format!("```\n{user_message}\n```");
-
-                    messages = vec![
-                        initial_message.clone(),
-                        new_user_message(user_message),
-                        context,
-                    ];
                 }
 
                 num_tests_passed += current_tests_passed;
@@ -1153,7 +1296,7 @@ impl UnitTestGrader {
                 "--targetTests",
                 target_test.join(",").as_str(),
                 "--sourceDirs",
-                vec![
+                [
                     SOURCE_DIR.to_str().unwrap_or("."),
                     ROOT_DIR.to_str().unwrap_or("."),
                 ]
@@ -1202,12 +1345,15 @@ impl UnitTestGrader {
             eprintln!("Problematic mutation test failures printed about.");
 
             let prompt = if num_diags > 0 {
-                let context = get_source_context(diags.clone(), project, 3, 6, 6)?;
+                let context = get_source_context(diags.clone(), project, 3, 6, 6, false, None)?;
 
                 let mut feedback = ExpandedDisplay::new(diags).to_string();
                 eprintln!("{feedback}");
 
-                feedback.truncate(PROMPT_TRUNCATE);
+                if feedback.len() > PROMPT_TRUNCATE {
+                    feedback.truncate(PROMPT_TRUNCATE);
+                    feedback.push_str("...[TRUNCATED]");
+                }
 
                 Some(vec![
                     ChatCompletionRequestMessage {
@@ -1257,7 +1403,10 @@ impl UnitTestGrader {
             ]
             .concat();
             eprintln!("{output}");
-            output.truncate(PROMPT_TRUNCATE);
+            if output.len() > PROMPT_TRUNCATE {
+                output.truncate(PROMPT_TRUNCATE);
+                output.push_str("...[TRUNCATED]");
+            }
 
             let prompt = if !output.is_empty() {
                 Some(vec![
@@ -1597,7 +1746,7 @@ impl DiffGrader {
                                 name:          Some("Student".into()),
                                 function_call: None,
                             },
-                            get_source_context(diags, self.project.clone(), 3, 6, 6)?,
+                            get_source_context(diags, self.project.clone(), 3, 6, 6, false, None)?,
                         ];
                         return Ok(GradeResult {
                             requirement: self.req_name.clone(),
@@ -1627,7 +1776,7 @@ impl DiffGrader {
                                 name:          Some("Student".into()),
                                 function_call: None,
                             },
-                            get_source_context(diags, self.project.clone(), 3, 6, 6)?,
+                            get_source_context(diags, self.project.clone(), 3, 6, 6, false, None)?,
                         ];
                         return Ok(GradeResult {
                             requirement: self.req_name.clone(),

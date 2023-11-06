@@ -12,6 +12,7 @@ use std::{
 use lazy_static::lazy_static;
 use postgrest::Postgrest;
 use rhai::AST;
+use state::InitCell;
 use tree_sitter;
 
 // TODO: replace with https://lib.rs/crates/state
@@ -45,6 +46,10 @@ lazy_static! {
     pub static ref SYSTEM_MESSAGE_OUTRO: String = include_str!("prompts/system_message_outro.md").into();
     /// Entire ChatGPT System Message
     pub static ref SYSTEM_MESSAGE: String = format!("{}\n{}", *SYSTEM_MESSAGE_INTRO, *SYSTEM_MESSAGE_OUTRO);
+    /// Retrieval System Message intro
+    pub static ref RETRIEVAL_MESSAGE_INTRO: String = include_str!("prompts/retrieval_system_message_intro.md").into();
+    /// Retrieval System Message outro
+    pub static ref RETRIEVAL_MESSAGE_OUTRO: String = include_str!("prompts/retrieval_system_message_outro.md").into();
     /// Rhai script as a AST, behind an mutex.
     pub static ref SCRIPT_AST: Arc<Mutex<AST>> = Arc::new(Mutex::new(AST::empty()));
 }
@@ -128,3 +133,6 @@ pub const INTERFACE_METHODS_QUERY: &str = include_str!("queries/interface_method
 /// Tree-sitter query that returns method call identifiers
 /// * `name`: method call identifier
 pub const METHOD_CALL_QUERY: &str = include_str!("queries/method_invocation.scm");
+
+/// Whether to use active retrieval or heuristic based retrieval
+pub static USE_ACTIVE_RETRIEVAL: InitCell<bool> = InitCell::new();
