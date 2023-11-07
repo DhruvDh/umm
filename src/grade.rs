@@ -431,7 +431,7 @@ pub fn get_active_retrieval_context(
         for r in res {
             let body = r.get("body").unwrap().to_string();
             context.push(format!(
-                "Method body for `{}#{}`:",
+                "Method body from student's submission for `{}#{}`:",
                 file.proper_name(),
                 function_call_arg.method_name
             ));
@@ -585,7 +585,7 @@ pub fn get_source_context<T: Into<LineRef>>(
                                 for r in res {
                                     let body = r.get("body").unwrap().to_string();
                                     context.push(format!(
-                                        "Method body for `{}#{}`:",
+                                        "Method body from student's submission `{}#{}`:",
                                         f.proper_name(),
                                         method_name
                                     ));
