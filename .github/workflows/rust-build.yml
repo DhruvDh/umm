@@ -16,18 +16,8 @@ jobs:
         uses: rust-build/rust-build.action@v1.4.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MACOSX_DEPLOYMENT_TARGET: "10.8"
         with:
           RUSTTARGET: ${{ matrix.target }}
           TOOLCHAIN_VERSION: "nightly"
-          UPLOAD_MODE: none
           STATIC_LINKING: ${{ !contains(matrix.target, 'x86_64-apple-darwin') }}
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          prerelease: false
-          name: main
-          tag_name: summer_22
-          generate_release_notes: true
-          files: |
-            ${{ steps.compile.outputs.BUILT_ARCHIVE }}
-            ${{ steps.compile.outputs.BUILT_CHECKSUM }}
