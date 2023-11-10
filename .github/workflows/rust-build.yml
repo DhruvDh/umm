@@ -21,7 +21,6 @@ jobs:
           EXTRA_FILES: "README.md LICENSE"
           TOOLCHAIN_VERSION: "nightly"
           UPLOAD_MODE: none
-          STATIC_LINKING: false
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
