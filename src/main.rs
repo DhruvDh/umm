@@ -73,7 +73,7 @@ enum Cmd {
     CheckHealth,
     /// Starts and serves a web server that serves the project code
     ServeProjectCode,
-    /// Resets the project metadata, and redownloads libraries
+    /// Resets the project metadata, and re-downloads libraries
     Reset,
     /// Exit the program
     Exit,
@@ -151,7 +151,7 @@ fn options() -> Cmd {
     let reset = pure(Cmd::Reset)
         .to_options()
         .command("reset")
-        .help("Reset the project metadata, and redownload libraries");
+        .help("Reset the project metadata, and re-download libraries");
 
     let exit = pure(Cmd::Exit)
         .to_options()

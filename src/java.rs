@@ -98,7 +98,7 @@ pub struct File {
     #[serde(skip)]
     /// The parser for this file
     parser:       Parser,
-    /// Conscise description of the file
+    /// Concise description of the file
     description:  String,
 }
 
@@ -596,7 +596,7 @@ impl File {
             ]
             .concat(),
         )
-        .context("Error when unescaping javac output.")?;
+        .context("Error when un-escaping javac output.")?;
 
         Ok(output)
     }
@@ -673,7 +673,7 @@ impl File {
                     ]
                     .concat(),
                 )
-                .context("Error when unescaping javac output.")?;
+                .context("Error when un-escaping javac output.")?;
 
                 if out.status.success() {
                     Ok(output)
@@ -918,7 +918,7 @@ impl File {
                     ]
                     .concat(),
                 )
-                .context("Error when unescaping JUnit output.")?;
+                .context("Error when un-escaping JUnit output.")?;
 
                 if out.status.success() {
                     Ok(output)
@@ -1174,7 +1174,7 @@ impl Project {
     }
 
     #[generate_rhai_variant(Impl, Mut, Fallible)]
-    /// Attempts to identiy the correct file from the project from a partial or
+    /// Attempts to identify the correct file from the project from a partial or
     /// fully formed name as expected by a java compiler.
     ///
     /// Returns a reference to the identified file, if any.

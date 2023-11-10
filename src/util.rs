@@ -154,7 +154,7 @@ pub fn use_active_retrieval() {
     dbg!(USE_ACTIVE_RETRIEVAL.get());
 }
 
-/// Use hueristic based retrieval when retrieving context from student
+/// Use heuristic based retrieval when retrieving context from student
 /// submission.
 pub fn use_heuristic_retrieval() {
     USE_ACTIVE_RETRIEVAL.set(false);

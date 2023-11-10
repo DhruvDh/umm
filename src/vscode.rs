@@ -23,7 +23,7 @@ pub enum Type {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum ArgQuoting {
-    /// espace strings
+    /// escape strings
     Escape,
     /// ses the shell's strong quoting mechanism, which suppresses all
     /// evaluations inside the string. Under PowerShell and for shells under
@@ -51,7 +51,7 @@ pub struct Args {
 #[derive(Serialize, Deserialize, Clone, Copy)]
 #[serde(rename_all = "camelCase")]
 pub enum DependsOrder {
-    /// In parrallel with other tasks.
+    /// In parallel with other tasks.
     Parallel,
     /// In sequence with other tasks.
     Sequence,
@@ -343,7 +343,7 @@ fn run_task_action() -> Option<String> {
 
 /// default run task action
 fn when_keybindings() -> Option<String> {
-    Some("config:workspaceKeybindigs.ummTasksKeys.enabled".to_string())
+    Some("config:workspaceKeybindings.ummTasksKeys.enabled".to_string())
 }
 
 /// A struct to represent a keybinding for tasks in VSCode.
@@ -422,7 +422,7 @@ pub struct SettingsFile<'a> {
     #[serde(rename = "java.project.referencedLibraries")]
     java_referenced_libs: Vec<String>,
     /// whether to use keybindings or not
-    #[serde(rename = "workspaceKeybindigs.ummTasksKeys.enabled")]
+    #[serde(rename = "workspaceKeybindings.ummTasksKeys.enabled")]
     #[builder(default = true)]
     keybindings_enabled:  bool,
     /// path to umm binary

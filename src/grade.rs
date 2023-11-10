@@ -114,7 +114,7 @@ impl LineRef {
 #[derive(Clone, Default)]
 /// A struct representing a grade
 pub struct Grade {
-    /// The actual grade recieved
+    /// The actual grade received
     pub grade:  f64,
     /// The maximum grade possible
     pub out_of: f64,
@@ -122,7 +122,7 @@ pub struct Grade {
 
 impl Grade {
     /// Creates a new grade -
-    /// * `grade` - The actual grade recieved
+    /// * `grade` - The actual grade received
     /// * `out_of` - The maximum grade possible
     pub fn new(grade: f64, out_of: f64) -> Self {
         Self {
@@ -296,7 +296,7 @@ pub struct MutationDiagnostic {
     /// * `source_method`: name of the source method being mutated
     #[tabled(rename = "Source method mutated")]
     source_method:    String,
-    /// * `line_number`: source line number where mutation occured
+    /// * `line_number`: source line number where mutation occurred
     #[tabled(rename = "Line no. of mutation")]
     line_number:      u32,
     /// * `test_method`: name of the test examined
@@ -616,7 +616,7 @@ pub fn get_source_context<T: Into<LineRef>>(
 }
 
 #[derive(Clone, Default)]
-/// A struct representing arguements to grade_docs function
+/// A struct representing arguments to grade_docs function
 pub struct DocsGrader {
     /// * `project`: the project to grade
     pub project:  Project,
@@ -1284,7 +1284,7 @@ impl UnitTestGrader {
             .args([
                 "--class-path",
                 classpath()?.as_str(),
-                "org.pitest.mutationtest.commandline.MutationCoverageReport",
+                "org.pitest.mutation test.commandline.MutationCoverageReport",
                 "--reportDir",
                 "test_reports",
                 "--failWhenNoMutations",
@@ -1317,8 +1317,8 @@ impl UnitTestGrader {
             .context("Failed to spawn javac process.")?;
 
         if child.status.success() {
-            std::fs::create_dir_all("test_reports")?;
-            let file = std::fs::File::open(ROOT_DIR.join("test_reports").join("mutations.csv"))
+            fs::create_dir_all("test_reports")?;
+            let file = fs::File::open(ROOT_DIR.join("test_reports").join("mutations.csv"))
                 .context("Could not read ./test_reports/mutations.csv file".to_string())?;
             let reader = BufReader::new(file);
             let mut diags = vec![];
@@ -1393,7 +1393,7 @@ impl UnitTestGrader {
             Ok(GradeResult {
                 requirement: req_name,
                 grade: Grade::new((out_of as u32).saturating_sub(penalty).into(), out_of),
-                reason: format!("-{penalty} Penalty due to surviving muations"),
+                reason: format!("-{penalty} Penalty due to surviving mutations"),
                 prompt,
             })
         } else {
@@ -1528,13 +1528,13 @@ impl ByHiddenTestGrader {
             .context(format!("Failed to get response as bytes: {url}"))?;
 
         let path = ROOT_DIR.join(format!("{test_class_name}.java"));
-        let mut file = std::fs::File::create(&path)?;
+        let mut file = fs::File::create(&path)?;
         file.write_all(&test_source)?;
 
         let project = match Project::new() {
             Ok(a) => a,
             Err(e) => {
-                std::fs::remove_file(&path)?;
+                fs::remove_file(&path)?;
                 return Err(e);
             }
         };
@@ -1550,12 +1550,12 @@ impl ByHiddenTestGrader {
         let out = match grader.grade_by_tests() {
             Ok(o) => o,
             Err(e) => {
-                std::fs::remove_file(&path)?;
+                fs::remove_file(&path)?;
                 return Err(e);
             }
         };
 
-        std::fs::remove_file(&path)?;
+        fs::remove_file(&path)?;
         Ok(out)
     }
 }
@@ -1920,7 +1920,7 @@ pub struct PromptRow {
     reason:           String,
     /// Grade/out_of as a string
     grade:            String,
-    /// Status of prompt response generation - not_started, started, compeleted
+    /// Status of prompt response generation - not_started, started, completed
     status:           String,
 }
 
@@ -1991,7 +1991,7 @@ pub fn generate_feedback(results: Array) -> Result<()> {
 }
 
 #[derive(Default, Debug, Clone)]
-/// A struct to represet a treesitter query.
+/// A struct to represent a treesitter query.
 pub struct Query {
     /// The query to run.
     query:   String,
@@ -2400,7 +2400,7 @@ impl QueryGrader {
 
     #[generate_rhai_variant(Fallible)]
     /// Runs the queries, and returns the result.
-    /// TODO: Make it so that it doesn't parse a new peice of code, just filters
+    /// TODO: Make it so that it doesn't parse a new piece of code, just filters
     /// out the irrelevant line ranges. This performs better but more
     /// importantly is more accurate.
     pub fn run_query(&self) -> Result<Dynamic, QueryError> {

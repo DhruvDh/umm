@@ -7,7 +7,7 @@ use crate::grade::{
 peg::parser! {
     /// includes some useful grammars for parsing JUNit/javac/pitest outputs.
     pub grammar parser() for str {
-        /// matches any sequeuce of 1 or more numbers
+        /// matches any sequence of 1 or more numbers
         rule number() -> u32
             = n:$(['0'..='9']+) {? n.parse().or(Err("u32")) }
 
@@ -85,7 +85,7 @@ peg::parser! {
               whitespace()?
             { a.is_some() }
 
-        /// mactches anything, placed where diagnostic should be
+        /// matches anything, placed where diagnostic should be
         rule diagnostic() -> String
             = a:([_]+)
             { a.iter().collect::<String>() }
