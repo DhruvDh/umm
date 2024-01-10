@@ -5,6 +5,7 @@ grading/**/**/*.java
 .env
 .envrc
 rustc-ice-*
+.vs
 
 # Added by cargo
 
