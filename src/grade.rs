@@ -475,7 +475,7 @@ pub fn get_source_context<T: Into<LineRef>>(
 
     let mut line_refs: Vec<(File, LineRef, RangeInclusive<usize>)> = line_refs
         .into_iter()
-        .map(|x| {
+        .flat_map(|x| {
             let x = x.into();
             let file = proj.identify(&x.file_name)?;
             let start = match file.kind() {
@@ -485,8 +485,6 @@ pub fn get_source_context<T: Into<LineRef>>(
             let end = start + num_lines;
             Ok::<(File, LineRef, RangeInclusive<usize>), anyhow::Error>((file, x, start..=end))
         })
-        .filter(Result::is_ok)
-        .map(Result::unwrap)
         .collect();
 
     line_refs.sort_by(|lhs, rhs| {
@@ -1560,37 +1558,270 @@ impl ByHiddenTestGrader {
     }
 }
 
+/// Represents output format settings for Gradescope submissions.
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum GradescopeOutputFormat {
+    /// Plain text format.
+    Text,
+    /// HTML format.
+    Html,
+    /// This is very similar to the "html" format option but will also convert
+    /// \n into <br /> and \n\n+ into a page break.
+    SimpleFormat,
+    /// Markdown format.
+    Md,
+    /// ANSI format for including ANSI escape codes (often used in terminal
+    /// outputs).
+    Ansi,
+}
+
+/// Represents visibility settings for Gradescope submissions and test cases.
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum GradescopeVisibility {
+    /// Hidden from students.
+    Hidden,
+    /// Visible after the due date of the assignment.
+    AfterDueDate,
+    /// Visible after the grades are published.
+    AfterPublished,
+    /// Always visible to students.
+    Visible,
+}
+
+/// Represents the status of a test case in Gradescope submissions.
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum GradescopeStatus {
+    /// Indicates the test case passed successfully.
+    Passed,
+    /// Indicates the test case failed.
+    Failed,
+}
+
+/// Represents the overall submission data.
+#[derive(Serialize, Deserialize, Debug, TypedBuilder)]
+#[builder(field_defaults(default, setter(into)))]
+#[builder(doc)]
+pub struct GradescopeSubmission {
+    /// Optional overall score. Overrides total of test cases if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub score: Option<f64>,
+
+    /// Optional execution time in seconds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub execution_time: Option<u32>,
+
+    /// Optional text relevant to the entire submission.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub output: Option<String>,
+
+    /// Optional output format settings.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub output_format: Option<GradescopeOutputFormat>,
+
+    /// Optional default output format for test case outputs.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_output_format: Option<GradescopeOutputFormat>,
+
+    /// Optional default output format for test case names.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_name_format: Option<GradescopeOutputFormat>,
+
+    /// Optional visibility setting.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visibility: Option<GradescopeVisibility>,
+
+    /// Optional stdout visibility setting.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stdout_visibility: Option<GradescopeVisibility>,
+
+    /// Optional extra data to be stored.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_data: Option<serde_json::Value>,
+
+    /// Optional test cases.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tests: Option<Vec<GradescopeTestCase>>,
+
+    /// Optional leaderboard setup.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub leaderboard: Option<Vec<GradescopeLeaderboardEntry>>,
+}
+
+/// Represents an individual test case.
+#[derive(Serialize, Deserialize, Debug, TypedBuilder)]
+#[builder(field_defaults(default, setter(into)))]
+#[builder(doc)]
+pub struct GradescopeTestCase {
+    /// Optional score for the test case.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub score: Option<f64>,
+
+    /// Optional maximum score for the test case.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_score: Option<f64>,
+
+    /// Optional status of the test case.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<GradescopeStatus>,
+
+    /// Optional name of the test case.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    /// Optional formatting for the test case name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name_format: Option<GradescopeOutputFormat>,
+
+    /// Optional number for the test case.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number: Option<String>,
+
+    /// Optional detailed output for the test case.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub output: Option<String>,
+
+    /// Optional formatting for the test case output.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub output_format: Option<GradescopeOutputFormat>,
+
+    /// Optional tags associated with the test case.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tags: Option<Vec<String>>,
+
+    /// Optional visibility setting for the test case.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visibility: Option<GradescopeVisibility>,
+
+    /// Optional extra data to be stored with the test case.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_data: Option<serde_json::Value>,
+}
+
+/// Represents an entry in the leaderboard.
+#[derive(Serialize, Deserialize, Debug, TypedBuilder)]
+#[builder(field_defaults(default, setter(into)))]
+#[builder(doc)]
+pub struct GradescopeLeaderboardEntry {
+    /// Name of the leaderboard metric.
+    pub name: String,
+
+    /// Value of the leaderboard metric.
+    pub value: serde_json::Value,
+
+    /// Optional ordering for the leaderboard metric.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub order: Option<String>,
+}
+
+#[generate_rhai_variant(Fallible)]
 /// Print grade result
 ///
 /// * `results`: array of GradeResults to print in a table.
-pub fn show_result(results: Array) {
+pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
     let results: Vec<GradeResult> = results
         .iter()
         .map(|f| f.clone().cast::<GradeResult>())
         .collect();
+    let show_table = gradescope_config
+        .get("show_table")
+        .unwrap_or(&Dynamic::from(true))
+        .clone()
+        .cast::<bool>();
+    let gradescope_json = gradescope_config
+        .get("results_json")
+        .unwrap_or(&Dynamic::from(false))
+        .clone()
+        .cast::<bool>();
+    let gradescope_feedback = gradescope_config
+        .get("feedback")
+        .unwrap_or(&Dynamic::from(false))
+        .clone()
+        .cast::<bool>();
+    let gradescope_leaderboard = gradescope_config
+        .get("leaderboard")
+        .unwrap_or(&Dynamic::from(false))
+        .clone()
+        .cast::<bool>();
+    let gradescope_debug = gradescope_config
+        .get("debug")
+        .unwrap_or(&Dynamic::from(false))
+        .clone()
+        .cast::<bool>();
 
-    let (grade, out_of) = results.iter().fold((0f64, 0f64), |acc, r| {
-        (acc.0 + r.grade.grade, acc.1 + r.grade.out_of)
-    });
-    eprintln!(
-        "{}",
-        results
-            .table()
-            .with(Panel::header("Grading Overview"))
-            .with(Panel::footer(format!("Total: {grade:.2}/{out_of:.2}")))
-            .with(Modify::new(Rows::new(1..)).with(Width::wrap(24).keep_words()))
-            .with(
-                Modify::new(Rows::first())
-                    .with(Alignment::center())
-                    .with(Alignment::center_vertical()),
-            )
-            .with(
-                Modify::new(Rows::last())
-                    .with(Alignment::center())
-                    .with(Alignment::center_vertical()),
-            )
-            .with(tabled::Style::modern())
-    );
+    if show_table {
+        let (grade, out_of) = results.iter().fold((0f64, 0f64), |acc, r| {
+            (acc.0 + r.grade.grade, acc.1 + r.grade.out_of)
+        });
+        eprintln!(
+            "{}",
+            results
+                .clone()
+                .table()
+                .with(Panel::header("Grading Overview"))
+                .with(Panel::footer(format!("Total: {grade:.2}/{out_of:.2}")))
+                .with(Modify::new(Rows::new(1..)).with(Width::wrap(24).keep_words()))
+                .with(
+                    Modify::new(Rows::first())
+                        .with(Alignment::center())
+                        .with(Alignment::center_vertical()),
+                )
+                .with(
+                    Modify::new(Rows::last())
+                        .with(Alignment::center())
+                        .with(Alignment::center_vertical()),
+                )
+                .with(tabled::Style::modern())
+        );
+    }
+
+    if gradescope_json {
+        let mut test_cases = vec![];
+        for result in results {
+            let mut result = result.clone();
+
+            let feedback = if gradescope_feedback {
+                String::from("Test feedback.")
+            } else {
+                String::new()
+            };
+
+            let test_case = GradescopeTestCase::builder()
+                .name(result.requirement())
+                .name_format(GradescopeOutputFormat::Text)
+                .max_score(result.out_of())
+                .score(result.grade())
+                .status(if result.grade() > 0.7 * result.out_of() {
+                    GradescopeStatus::Passed
+                } else {
+                    GradescopeStatus::Failed
+                })
+                .output(feedback)
+                .output_format(GradescopeOutputFormat::Md)
+                .build();
+
+            test_cases.push(test_case);
+        }
+
+        let submission = GradescopeSubmission::builder()
+            .tests(Some(test_cases))
+            .test_output_format(GradescopeOutputFormat::Md)
+            .test_name_format(GradescopeOutputFormat::Text)
+            .stdout_visibility(GradescopeVisibility::Visible)
+            .visibility(GradescopeVisibility::Visible)
+            .build();
+
+        let mut file = fs::File::create(if gradescope_debug {
+            "./results.json"
+        } else {
+            "/autograder/results/results.json"
+        })?;
+        file.write_all(serde_json::to_string_pretty(&submission)?.as_bytes())?;
+    }
+
+    Ok(())
 }
 
 #[derive(Clone, Default)]

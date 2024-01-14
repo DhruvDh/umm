@@ -14,6 +14,8 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
+use std::path::PathBuf;
+
 use anyhow::Result;
 use bpaf::*;
 use dotenvy::dotenv;
@@ -32,6 +34,7 @@ use umm::{
     grade,
     java::Project,
 };
+use zip_extensions::zip_create_from_directory;
 
 /// Updates binary based on github releases
 fn update() -> Result<()> {
@@ -63,6 +66,8 @@ enum Cmd {
     DocCheck(String),
     /// Grade a file
     Grade(String),
+    /// Create a submission zip
+    CreateSubmission(String),
     /// Clean the project artifacts
     Clean,
     /// Print information about the project
@@ -98,6 +103,13 @@ fn options() -> Cmd {
         positional("NAME/PATH").help("Name of assignment in database or path to grading script")
     }
 
+    /// parses path to project root folder
+    fn h() -> impl Parser<String> {
+        positional("PATH")
+            .help("Path to project root folder. Defaults to current directory")
+            .fallback(format!("{}", std::env::current_dir().unwrap().display()))
+    }
+
     let run = construct!(Cmd::Run(f()))
         .to_options()
         .command("run")
@@ -122,6 +134,11 @@ fn options() -> Cmd {
         .to_options()
         .command("grade")
         .help("Grade your work");
+
+    let create_submission = construct!(Cmd::CreateSubmission(h()))
+        .to_options()
+        .command("create-submission")
+        .help("Create a submission zip");
 
     let clean = pure(Cmd::Clean)
         .to_options()
@@ -164,6 +181,7 @@ fn options() -> Cmd {
         test,
         doc_check,
         grade,
+        create_submission,
         clean,
         info,
         update,
@@ -232,6 +250,14 @@ fn main() -> Result<()> {
             println!("{out}");
         }
         Cmd::Grade(g) => grade(&g)?,
+        Cmd::CreateSubmission(p) => {
+            println!("Creating submission zip... {p}");
+            zip_create_from_directory(
+                &PathBuf::from(format!("submission-{}.zip", chrono::offset::Local::now())),
+                &PathBuf::from(p),
+            )?;
+            println!("Submission zip created!");
+        }
         Cmd::Clean => clean()?,
         Cmd::Info => Project::new()?.info()?,
         Cmd::Update => {

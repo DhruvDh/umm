@@ -9,6 +9,8 @@ version = "0.2.0"
 edition = "2021"
 default-run = "umm"
 license = "MIT"
+description = "A java build tool and scriptable autograder that generates feedback."
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -47,9 +49,9 @@ similar = { version = "2.3.0", features = [
   "unicode-segmentation",
 ] }
 colored = "2.0.4"
-itertools = "0.11.0"
+itertools = "0.12.0"
 thiserror = "1.0.50"
-comrak = { version = "0.19.0", features = [
+comrak = { version = "0.20.0", features = [
   "shell-words",
   "syntect",
   "xdg",
@@ -57,8 +59,11 @@ comrak = { version = "0.19.0", features = [
   "emojis",
   "shortcodes",
 ] }
-axum = "0.6.20"
+axum = "0.7.3"
 state = "0.6.0"
+zip = "0.6.6"
+zip-extensions = "0.6.2"
+chrono = "0.4.19"
 
 [target.x86_64-unknown-linux-gnu.dependencies]
 openssl = { version = "0.10.59", features = ["vendored"] }
@@ -69,3 +74,10 @@ reqwest = { version = "0.11.22", features = ["json"] }
 inherits = "release"
 lto = "fat"
 codegen-units = 1
+
+[package.metadata.bundle]
+name = "umm"
+identifier = "io.github.dhruvdh.umm"
+version = "0.2.0-spring24"
+short-description = "A java build tool and scriptable autograder that generates feedback."
+category = "public.app-category.developer-tools"
