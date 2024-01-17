@@ -26,15 +26,7 @@ use async_openai::types::{
     Role,
 };
 use colored::Colorize;
-use futures::{
-    future::try_join_all,
-    stream::FuturesUnordered,
-};
 use itertools::Itertools;
-use reqwest::{
-    Error,
-    Response,
-};
 use rhai::FnPtr;
 #[allow(deprecated)]
 use rhai::{
@@ -1740,7 +1732,7 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
         .unwrap_or(&Dynamic::from(false))
         .clone()
         .cast::<bool>();
-    let gradescope_leaderboard = gradescope_config
+    let _gradescope_leaderboard = gradescope_config
         .get("leaderboard")
         .unwrap_or(&Dynamic::from(false))
         .clone()
@@ -1783,7 +1775,7 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
             let mut result = result.clone();
 
             let feedback = if gradescope_feedback {
-                String::from("Test feedback.")
+                generate_single_feedback(&result)?
             } else {
                 String::new()
             };
@@ -2156,57 +2148,61 @@ pub struct PromptRow {
 }
 
 #[generate_rhai_variant(Fallible)]
-/// Generates a FEEDBACK file after prompting ChatGPT for feedback.
-pub fn generate_feedback(results: Array) -> Result<()> {
+/// Generates feedback for a single `GradeResult` and posts it to the database.
+fn generate_single_feedback(result: &GradeResult) -> Result<String> {
     let rt = RUNTIME.handle().clone();
-    let mut handles = vec![];
-    let mut names = vec![];
-    let mut ids = vec![];
 
-    for res in results.iter().map(|f| f.clone().cast::<GradeResult>()) {
-        let mut res = res.clone();
+    if result.grade.grade < result.grade.out_of {
+        let id = uuid::Uuid::new_v4().to_string();
+        let mut result = result.clone();
+        let body = PromptRow {
+            id:               id.clone(),
+            messages:         result.prompt(),
+            requirement_name: result.requirement(),
+            reason:           result.reason(),
+            grade:            result.grade.to_string(),
+            status:           "not_started".into(),
+        };
 
-        if res.grade.grade < res.grade.out_of {
-            let id = uuid::Uuid::new_v4().to_string();
-            let body = PromptRow {
-                id:               id.clone(),
-                messages:         res.prompt(),
-                requirement_name: res.requirement(),
-                reason:           res.reason(),
-                grade:            res.grade.to_string(),
-                status:           "not_started".into(),
-            };
+        let messages = serde_json::to_string(&body)?;
 
-            let messages = serde_json::to_string(&body)?;
+        // Post to the database
+        rt.block_on(async {
+            POSTGREST_CLIENT
+                .from("prompts")
+                .insert(messages)
+                .execute()
+                .await
+        })?;
 
-            names.push(res.requirement());
-            ids.push(id);
-            handles.push(rt.spawn(async {
-                POSTGREST_CLIENT
-                    .from("prompts")
-                    .insert(messages)
-                    .execute()
-                    .await
-            }));
+        // Return feedback URL
+        Ok(format!(
+            "- For explanation and feedback on `{}` (refer rubric), please \
+             see this link - https://feedback.dhruvdh.com/{}",
+            result.requirement(),
+            id
+        ))
+    } else {
+        Ok(String::from(
+            "Feedback cannot currently be generated for submissions without penalty.",
+        ))
+    }
+}
+
+#[generate_rhai_variant(Fallible)]
+/// Generates a FEEDBACK file after prompting ChatGPT for feedback on an array
+/// of results.
+pub fn generate_feedback(results: Array) -> Result<()> {
+    let mut feedback = vec!["## Understanding Your Autograder Results\n".to_string()];
+
+    for result in results.iter().map(|f| f.clone().cast::<GradeResult>()) {
+        match generate_single_feedback(&result) {
+            Ok(fb) => feedback.push(fb),
+            Err(e) => eprintln!("Error generating feedback: {}", e),
         }
     }
 
-    if !handles.is_empty() {
-        let handles = FuturesUnordered::from_iter(handles);
-        rt.block_on(async { try_join_all(handles).await })?
-            .into_iter()
-            .collect::<Result<Vec<Response>, Error>>()?;
-
-        let mut feedback = vec![];
-        feedback.push("## Understanding Your Autograder Results\n".to_string());
-
-        for (name, id) in names.into_iter().zip(ids.into_iter()) {
-            feedback.push(format!(
-                "- For explanation and feedback on `{name}` (refer rubric), please \
-                 see this link - https://feedback.dhruvdh.com/{id}",
-            ));
-        }
-
+    if !feedback.is_empty() {
         let feedback = feedback.join("\n");
         fs::write("FEEDBACK", &feedback).context("Something went wrong writing FEEDBACK file.")?;
         eprintln!("{}", &feedback);
