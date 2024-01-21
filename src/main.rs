@@ -42,7 +42,6 @@ fn update() -> Result<()> {
         .repo_owner("dhruvdh")
         .repo_name("umm")
         .bin_name((format!("umm-{}", self_update::get_target())).as_str())
-        .bin_path_in_archive("bin/umm")
         .no_confirm(true)
         .target_version_tag("spring_24")
         .show_download_progress(true)

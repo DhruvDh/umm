@@ -23,37 +23,37 @@ jobs:
             os: ubuntu-latest
             target: x86_64-unknown-linux-musl
             bin: umm
-            name: umm-x86_64-unknown-linux-musl.tar.gz
+            name: umm-x86_64-unknown-linux-musl
 
           - os_name: Windows-aarch64
             os: windows-latest
             target: aarch64-pc-windows-msvc
             bin: umm.exe
-            name: umm-aarch64-pc-windows-msvc.zip
+            name: umm-aarch64-pc-windows-msvc
 
           - os_name: Windows-x86_64
             os: windows-latest
             target: x86_64-pc-windows-msvc
             bin: umm.exe
-            name: umm-x86_64-pc-windows-msvc.zip
+            name: umm-x86_64-pc-windows-msvc
 
           - os_name: Windows-x86_64-GNU
             os: windows-latest
             target: x86_64-pc-windows-gnu
             bin: umm.exe
-            name: umm-x86_64-pc-windows-gnu.zip
+            name: umm-x86_64-pc-windows-gnu
 
           - os_name: macOS-x86_64
             os: macOS-latest
             target: x86_64-apple-darwin
             bin: umm
-            name: umm-x86_64-apple-darwin.tar.gz
+            name: umm-x86_64-apple-darwin
 
           - os_name: macOS-aarch64
             os: macOS-latest
             target: aarch64-apple-darwin
             bin: umm
-            name: umm-aarch64-apple-darwin.tar.gz
+            name: umm-aarch64-apple-darwin
 
         toolchain:
           - nightly
@@ -80,14 +80,7 @@ jobs:
         shell: bash
         run: |
           cd target/${{ matrix.platform.target }}/release
-          mkdir -p bin
-          mv ${{ matrix.platform.bin }} bin/${{ matrix.platform.bin }}
-
-          if [[ "${{ matrix.platform.os }}" == "windows-latest" ]]; then
-            7z a ../../../${{ matrix.platform.name }} bin/${{ matrix.platform.bin }}
-          else
-            tar czvf ../../../${{ matrix.platform.name }} bin/${{ matrix.platform.bin }}
-          fi
+          mv ../../../${{ matrix.platform.name }} ./${{ matrix.platform.bin }}
           cd -
 
       - name: Publish release artifacts
