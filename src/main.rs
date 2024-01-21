@@ -14,7 +14,6 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-
 use std::path::PathBuf;
 
 use anyhow::Result;
@@ -42,14 +41,15 @@ fn update() -> Result<()> {
     let status = self_update::backends::github::Update::configure()
         .repo_owner("dhruvdh")
         .repo_name("umm")
-        .bin_name("umm")
-        .target_version_tag("summer_22")
+        .bin_name((format!("umm-{}", self_update::get_target())).as_str())
+        .no_confirm(false)
+        .target_version_tag("spring_24")
         .show_download_progress(true)
         .show_output(false)
         .current_version(cargo_crate_version!())
-        .no_confirm(true)
         .build()?
         .update()?;
+
     eprintln!("Update status: `{}`!", status.version());
     Ok(())
 }
