@@ -591,18 +591,22 @@ pub fn get_source_context<T: Into<LineRef>>(
                                             .find_position(|x| {
                                                 x.contains(body_lines.first().unwrap().trim())
                                             })
-                                            .unwrap()
+                                            .unwrap_or((0, &String::new()))
                                             .0;
 
                                         let body = body_lines
                                             .iter()
                                             .enumerate()
                                             .map(|(line_n, x)| {
-                                                format!(
-                                                    "{:width$}|{}",
-                                                    start_line_number + line_n + 1,
-                                                    x
-                                                )
+                                                if start_line_number != 0 {
+                                                    format!(
+                                                        "{:width$}|{}",
+                                                        start_line_number + line_n + 1,
+                                                        x
+                                                    )
+                                                } else {
+                                                    x.to_string()
+                                                }
                                             })
                                             .collect::<Vec<String>>()
                                             .join("\n");
