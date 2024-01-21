@@ -535,14 +535,23 @@ pub fn get_source_context<T: Into<LineRef>>(
                 f.file_name
             ));
 
-            let relevant_source = file
-                .parser()
-                .code()
-                .lines()
+            let width = (count as f32).log10().ceil() as usize;
+
+            let source_code_lines: Vec<String> =
+                file.parser().code().lines().map(String::from).collect();
+
+            let relevant_source = source_code_lines
+                .clone()
+                .iter()
                 .skip(*r.start())
                 .filter(|line| !line.trim().is_empty())
                 .take(num_lines)
-                .map(|x| x.to_string().replace("\\\\", "\\").replace("\\\"", "\""))
+                .enumerate()
+                .map(|(line_n, x)| {
+                    format!("{:width$}|{}", *r.start() + line_n, x)
+                        .replace("\\\\", "\\")
+                        .replace("\\\"", "\"")
+                })
                 .collect::<Vec<String>>();
 
             context.append(&mut (relevant_source.clone()));
@@ -574,12 +583,37 @@ pub fn get_source_context<T: Into<LineRef>>(
 
                                 for r in res {
                                     let body = r.get("body").unwrap().to_string();
-                                    context.push(format!(
-                                        "Method body from student's submission `{}#{}`:",
-                                        f.proper_name(),
-                                        method_name
-                                    ));
-                                    context.push(format!("\n```\n{}\n```\n", body));
+                                    let body_lines =
+                                        body.lines().map(String::from).collect::<Vec<_>>();
+                                    if body_lines.first().is_some() {
+                                        let start_line_number = source_code_lines
+                                            .iter()
+                                            .find_position(|x| {
+                                                x.contains(body_lines.first().unwrap().trim())
+                                            })
+                                            .unwrap()
+                                            .0;
+
+                                        let body = body_lines
+                                            .iter()
+                                            .enumerate()
+                                            .map(|(line_n, x)| {
+                                                format!(
+                                                    "{:width$}|{}",
+                                                    start_line_number + line_n + 1,
+                                                    x
+                                                )
+                                            })
+                                            .collect::<Vec<String>>()
+                                            .join("\n");
+
+                                        context.push(format!(
+                                            "Method body from student's submission `{}#{}`:",
+                                            f.proper_name(),
+                                            method_name
+                                        ));
+                                        context.push(format!("\n```\n{}\n```\n", body));
+                                    }
                                 }
                             }
                         }

@@ -14,6 +14,7 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
+
 use std::path::PathBuf;
 
 use anyhow::Result;
@@ -252,10 +253,14 @@ fn main() -> Result<()> {
         Cmd::Grade(g) => grade(&g)?,
         Cmd::CreateSubmission(p) => {
             println!("Creating submission zip... {p}");
-            zip_create_from_directory(
-                &PathBuf::from(format!("submission-{}.zip", chrono::offset::Local::now())),
-                &PathBuf::from(p),
-            )?;
+            let mut archive_path = PathBuf::new();
+            archive_path.set_file_name(format!(
+                "submission-{}",
+                chrono::offset::Local::now().format("%Y-%m-%d-%H-%M-%S")
+            ));
+            archive_path.set_extension("zip");
+
+            zip_create_from_directory(&archive_path, &PathBuf::from(p))?;
             println!("Submission zip created!");
         }
         Cmd::Clean => clean()?,
