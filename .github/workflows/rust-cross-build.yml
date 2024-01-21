@@ -27,17 +27,11 @@ jobs:
 
           - os_name: Windows-aarch64
             os: windows-latest
-            target: aarch64-pc-windows-msvc
+            target: aarch64-pc-windows-gnu
             bin: umm.exe
-            name: umm-aarch64-pc-windows-msvc
+            name: umm-aarch64-pc-windows-gnu
 
           - os_name: Windows-x86_64
-            os: windows-latest
-            target: x86_64-pc-windows-msvc
-            bin: umm.exe
-            name: umm-x86_64-pc-windows-msvc
-
-          - os_name: Windows-x86_64-GNU
             os: windows-latest
             target: x86_64-pc-windows-gnu
             bin: umm.exe
