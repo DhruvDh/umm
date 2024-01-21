@@ -80,7 +80,7 @@ jobs:
         shell: bash
         run: |
           cd target/${{ matrix.platform.target }}/release
-          mv ../../../${{ matrix.platform.name }} ./${{ matrix.platform.bin }}
+          mv ./${{ matrix.platform.bin }} ../../../${{ matrix.platform.name }}
           cd -
 
       - name: Publish release artifacts
