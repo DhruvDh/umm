@@ -544,7 +544,6 @@ pub fn get_source_context<T: Into<LineRef>>(
                 .clone()
                 .iter()
                 .skip(*r.start())
-                .filter(|line| !line.trim().is_empty())
                 .take(num_lines)
                 .enumerate()
                 .map(|(line_n, x)| {
