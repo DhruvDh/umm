@@ -1,8 +1,6 @@
 # .github/workflows/release.yml
 
-on:
-  release:
-    types: [published created edited released]
+on: [workflow_dispatch]
 
 jobs:
   release:
@@ -11,14 +9,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [x86_64-pc-windows-gnu, x86_64-unknown-linux-musl, x86_64-apple-darwin]
+        target:
+          [
+            x86_64-unknown-linux-musl,
+            x86_64-pc-windows-gnu,
+            x86_64-apple-darwin,
+          ]
     steps:
       - uses: actions/checkout@master
       - name: Compile
         uses: rust-build/rust-build.action@v1.4.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MACOSX_DEPLOYMENT_TARGET: "10.8"
+          MACOSX_DEPLOYMENT_TARGET: "10.14"
         with:
           RUSTTARGET: ${{ matrix.target }}
           TOOLCHAIN_VERSION: "nightly"
