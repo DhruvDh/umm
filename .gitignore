@@ -10,5 +10,3 @@ rustc-ice-*
 # Added by cargo
 
 target
-Cargo.lock
-umm_derive/Cargo.lock
