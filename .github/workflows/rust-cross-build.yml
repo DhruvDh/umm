@@ -68,7 +68,7 @@ jobs:
           command: "build"
           target: ${{ matrix.platform.target }}
           toolchain: ${{ matrix.toolchain }}
-          args: "--locked --profile=release-lto"
+          args: "--profile=release-lto"
 
       - name: Package as archive
         shell: bash
