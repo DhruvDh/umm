@@ -29,14 +29,7 @@ serde = { version = "1.0.195", features = ["derive"] }
 serde_json = "1.0.111"
 tabled = "0.10.0"
 rhai = { version = "1.16.3", features = ["metadata", "decimal", "sync"] }
-self_update = { version = "0.39.0", features = [
-  "rustls",
-  "archive-tar",
-  "archive-zip",
-  "compression-flate2",
-  "compression-zip-deflate",
-  "compression-zip-bzip2",
-] }
+self_update = { version = "0.39.0", features = ["rustls"] }
 typed-builder = "0.18.1"
 postgrest = "1.6.0"
 reqwest = { version = "0.11.23", features = ["json", "rustls-tls"] }

@@ -38,10 +38,10 @@ use zip_extensions::zip_create_from_directory;
 
 /// Updates binary based on github releases
 fn update() -> Result<()> {
-    let status = self_update::backends::github::Update::configure()
+    self_update::backends::github::Update::configure()
         .repo_owner("dhruvdh")
         .repo_name("umm")
-        .bin_name((format!("umm-{}", self_update::get_target())).as_str())
+        .bin_name("umm")
         .no_confirm(true)
         .target_version_tag("spring_24")
         .show_download_progress(true)
@@ -50,7 +50,7 @@ fn update() -> Result<()> {
         .build()?
         .update()?;
 
-    eprintln!("Update status: `{}`!", status.version());
+    eprintln!("Update done!");
     Ok(())
 }
 
