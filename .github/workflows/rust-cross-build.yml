@@ -19,6 +19,12 @@ jobs:
       fail-fast: false
       matrix:
         platform:
+          - os_name: Linux-aaarch64
+            os: ubuntu-latest
+            target: aarch64-unknown-linux-musl
+            bin: umm
+            name: umm-aarch64-unknown-linux-musl
+
           - os_name: Linux-x86_64
             os: ubuntu-latest
             target: x86_64-unknown-linux-musl
