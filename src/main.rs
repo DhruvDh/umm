@@ -14,7 +14,13 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-use std::path::PathBuf;
+use std::{
+    io::{
+        Read,
+        Write,
+    },
+    path::PathBuf,
+};
 
 use anyhow::Result;
 use bpaf::*;
@@ -31,10 +37,16 @@ use tracing_subscriber::{
 };
 use umm::{
     clean,
+    constants::{
+        LIB_DIR,
+        ROOT_DIR,
+        SOURCE_DIR,
+        TEST_DIR,
+    },
     grade,
     java::Project,
 };
-use zip_extensions::zip_create_from_directory;
+use walkdir::WalkDir;
 
 /// Updates binary based on github releases
 fn update() -> Result<()> {
@@ -253,14 +265,56 @@ fn main() -> Result<()> {
         Cmd::Grade(g) => grade(&g)?,
         Cmd::CreateSubmission(p) => {
             println!("Creating submission zip... {p}");
-            let mut archive_path = PathBuf::new();
-            archive_path.set_file_name(format!(
-                "submission-{}",
-                chrono::offset::Local::now().format("%Y-%m-%d-%H-%M-%S")
-            ));
-            archive_path.set_extension("zip");
+            let zip_file = {
+                let mut archive_path = PathBuf::new();
+                archive_path.set_file_name(format!(
+                    "submission-{}",
+                    chrono::offset::Local::now().format("%Y-%m-%d-%H-%M-%S")
+                ));
+                archive_path.set_extension("zip");
+                std::fs::File::create(archive_path)?
+            };
 
-            zip_create_from_directory(&archive_path, &PathBuf::from(p))?;
+            let all_walkdir = {
+                let source_walkdir = WalkDir::new(SOURCE_DIR.as_path()).into_iter();
+                let lib_walkdir = WalkDir::new(LIB_DIR.as_path()).into_iter();
+                let test_walkdir = WalkDir::new(TEST_DIR.as_path()).into_iter();
+                source_walkdir.chain(lib_walkdir).chain(test_walkdir)
+            };
+
+            let mut zip = zip::ZipWriter::new(zip_file);
+            let options = zip::write::FileOptions::default()
+                .compression_method(zip::CompressionMethod::Deflated)
+                .unix_permissions(0o755);
+            let mut buffer = Vec::new();
+
+            for entry in all_walkdir {
+                let entry = entry?;
+                let path = entry.path();
+                // change root parent of path to ROOT_DIR
+
+                let mut name = PathBuf::from(ROOT_DIR.as_path());
+                name.push(path);
+
+                if path.is_file() {
+                    println!("adding file {path:?} as {name:?} ...");
+                    #[allow(deprecated)]
+                    zip.start_file_from_path(name.as_path(), options)?;
+                    let mut f = std::fs::File::open(path)?;
+
+                    f.read_to_end(&mut buffer)?;
+                    zip.write_all(&buffer)?;
+                    buffer.clear();
+                } else if !name.as_os_str().is_empty() {
+                    // Only if not root! Avoids path spec / warning
+                    // and mapname conversion failed error on unzip
+                    println!("adding dir {path:?} as {name:?} ...");
+                    #[allow(deprecated)]
+                    zip.add_directory_from_path(name.as_path(), options)?;
+                }
+            }
+
+            zip.finish()?;
             println!("Submission zip created!");
         }
         Cmd::Clean => clean()?,
