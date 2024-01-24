@@ -280,15 +280,16 @@ fn main() -> Result<()> {
                 let source_walkdir = WalkDir::new(SOURCE_DIR.as_path()).max_depth(8).into_iter();
                 let lib_walkdir = WalkDir::new(LIB_DIR.as_path()).max_depth(8).into_iter();
                 let test_walkdir = WalkDir::new(TEST_DIR.as_path()).max_depth(8).into_iter();
-                let all_java_files = WalkDir::new(ROOT_DIR.as_path())
-                    .max_depth(8)
-                    .follow_links(true)
-                    .into_iter();
+                // let all_java_files = WalkDir::new(ROOT_DIR.as_path())
+                //     .max_depth(8)
+                //     .follow_links(true)
+                //     .into_iter()
+                //     .filter_entry(|e| {
+                //         !e.file_name().to_str().unwrap_or_default().ends_with("java")
+                //     });
 
-                source_walkdir
-                    .chain(lib_walkdir)
-                    .chain(test_walkdir)
-                    .chain(all_java_files)
+                source_walkdir.chain(lib_walkdir).chain(test_walkdir)
+                // .chain(all_java_files)
             };
 
             let mut zip = zip::ZipWriter::new(zip_file);
