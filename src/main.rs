@@ -15,6 +15,7 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use std::{
+    collections::HashSet,
     io::{
         Read,
         Write,
@@ -276,10 +277,18 @@ fn main() -> Result<()> {
             };
 
             let all_walkdir = {
-                let source_walkdir = WalkDir::new(SOURCE_DIR.as_path()).into_iter();
-                let lib_walkdir = WalkDir::new(LIB_DIR.as_path()).into_iter();
-                let test_walkdir = WalkDir::new(TEST_DIR.as_path()).into_iter();
-                source_walkdir.chain(lib_walkdir).chain(test_walkdir)
+                let source_walkdir = WalkDir::new(SOURCE_DIR.as_path()).max_depth(8).into_iter();
+                let lib_walkdir = WalkDir::new(LIB_DIR.as_path()).max_depth(8).into_iter();
+                let test_walkdir = WalkDir::new(TEST_DIR.as_path()).max_depth(8).into_iter();
+                let all_java_files = WalkDir::new(ROOT_DIR.as_path())
+                    .max_depth(8)
+                    .follow_links(true)
+                    .into_iter();
+
+                source_walkdir
+                    .chain(lib_walkdir)
+                    .chain(test_walkdir)
+                    .chain(all_java_files)
             };
 
             let mut zip = zip::ZipWriter::new(zip_file);
@@ -288,10 +297,16 @@ fn main() -> Result<()> {
                 .unix_permissions(0o755);
             let mut buffer = Vec::new();
 
+            let mut already_added = HashSet::<PathBuf>::new();
             for entry in all_walkdir {
                 let entry = entry?;
-                let path = entry.path();
-                // change root parent of path to ROOT_DIR
+                let path = entry.path().strip_prefix(ROOT_DIR.as_path())?;
+
+                if already_added.contains(path) {
+                    continue;
+                } else {
+                    already_added.insert(path.to_path_buf());
+                }
 
                 let mut name = PathBuf::from(ROOT_DIR.as_path());
                 name.push(path);
