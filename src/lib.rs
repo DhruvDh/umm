@@ -8,6 +8,7 @@
 #![feature(iterator_try_collect)]
 #![feature(stmt_expr_attributes)]
 #![feature(let_chains)]
+#![feature(iter_collect_into)]
 
 /// A module defining a bunch of constant values to be used throughout
 pub mod constants;

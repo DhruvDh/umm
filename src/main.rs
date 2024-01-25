@@ -276,20 +276,34 @@ fn main() -> Result<()> {
                 std::fs::File::create(archive_path)?
             };
 
-            let all_walkdir = {
-                let source_walkdir = WalkDir::new(SOURCE_DIR.as_path()).max_depth(8).into_iter();
-                let lib_walkdir = WalkDir::new(LIB_DIR.as_path()).max_depth(8).into_iter();
-                let test_walkdir = WalkDir::new(TEST_DIR.as_path()).max_depth(8).into_iter();
-                // let all_java_files = WalkDir::new(ROOT_DIR.as_path())
-                //     .max_depth(8)
-                //     .follow_links(true)
-                //     .into_iter()
-                //     .filter_entry(|e| {
-                //         !e.file_name().to_str().unwrap_or_default().ends_with("java")
-                //     });
+            let all_files = {
+                let source_walkdir: Vec<_> = WalkDir::new(SOURCE_DIR.as_path())
+                    .into_iter()
+                    .filter_map(|e| e.ok())
+                    .collect();
+                let lib_walkdir: Vec<_> = WalkDir::new(LIB_DIR.as_path())
+                    .into_iter()
+                    .filter_map(|e| e.ok())
+                    .collect();
 
-                source_walkdir.chain(lib_walkdir).chain(test_walkdir)
-                // .chain(all_java_files)
+                let test_walkdir: Vec<_> = WalkDir::new(TEST_DIR.as_path())
+                    .into_iter()
+                    .filter_map(|e| e.ok())
+                    .collect();
+
+                let all_java_files: Vec<_> = WalkDir::new(ROOT_DIR.as_path())
+                    .into_iter()
+                    .filter_map(|e| {
+                        e.ok()
+                            .filter(|x| x.path().extension().unwrap_or_default() == "java")
+                    })
+                    .collect();
+
+                source_walkdir
+                    .into_iter()
+                    .chain(lib_walkdir)
+                    .chain(test_walkdir)
+                    .chain(all_java_files)
             };
 
             let mut zip = zip::ZipWriter::new(zip_file);
@@ -299,8 +313,7 @@ fn main() -> Result<()> {
             let mut buffer = Vec::new();
 
             let mut already_added = HashSet::<PathBuf>::new();
-            for entry in all_walkdir {
-                let entry = entry?;
+            for entry in all_files {
                 let path = entry.path().strip_prefix(ROOT_DIR.as_path())?;
 
                 if already_added.contains(path) {
