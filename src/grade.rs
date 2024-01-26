@@ -1777,6 +1777,43 @@ enum SLOFileType {
 /// Print grade result
 ///
 /// * `results`: array of GradeResults to print in a table.
+/// * `gradescope_config`: map of gradescope configuration options, which can
+///   contain:
+///     - `source_files`: array of source files to provide feedback on in the
+///       submission. Defaults to empty array.
+///     - `test_files`: array of test files to provide feedback on in the
+///       submission. Defaults to empty array.
+///     - `project_title`: title of the project. Defaults to empty string.
+///     - `project_description`: description of the project. Defaults to empty
+///       string.
+///     - `pass_threshold`: threshold for passing the project. Defaults to 0.7.
+///     - `show_table`: whether to show the grading table. Defaults to true.
+///     - `results_json`: whether to write the gradescope results in JSON
+///       format. Defaults to false.
+///     - `feedback`: whether to provide feedback on penalties to students.
+///       Defaults to false.
+///     - `leaderboard`: whether to produce leaderboard entries. Also produces
+///       relevant SLO feedback. Defaults to false.
+///     - `debug`: whether to write gradescope JSON within the current
+///       directory. Defaults to false.
+///     - `slo_algorithmic_solutions`: whether to provide feedback on
+///       Algorithmic Solutions SLO. Defaults to false.
+///     - `slo_code_readability`: whether to provide feedback on Code
+///       Readability and Formatting SLO. Defaults to false.
+///     - `slo_comments`: whether to provide feedback on Comments SLO. Defaults
+///       to false.
+///     - `slo_error_handling`: whether to provide feedback on Error Handling
+///       SLO. Defaults to false.
+///     - `slo_logic`: whether to provide feedback on Logic SLO. Defaults to
+///       false.
+///     - `slo_naming_conventions`: whether to provide feedback on Naming
+///       Conventions SLO. Defaults to false.
+///     - `slo_oop_programming`: whether to provide feedback on Object Oriented
+///       Programming SLO. Defaults to false.
+///     - `slo_syntax`: whether to provide feedback on Syntax SLO. Defaults to
+///       false.
+///     - `slo_testing`: whether to provide feedback on Testing SLO. Defaults to
+///       false.
 pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
     let results: Vec<GradeResult> = results
         .iter()
@@ -1786,12 +1823,19 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
         .get("source_files")
         .unwrap_or(&Dynamic::from(Array::new()))
         .clone()
-        .cast::<Vec<String>>();
+        .cast::<Array>()
+        .iter()
+        .map(|f| f.clone().cast::<String>())
+        .collect::<Vec<String>>();
+
     let test_files = gradescope_config
         .get("test_files")
         .unwrap_or(&Dynamic::from(Array::new()))
         .clone()
-        .cast::<Vec<String>>();
+        .cast::<Array>()
+        .iter()
+        .map(|f| f.clone().cast::<String>())
+        .collect::<Vec<String>>();
 
     let project_title = gradescope_config
         .get("project_title")
@@ -1952,24 +1996,23 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
                 let mut slo_requests = Vec::new();
 
                 for (slo_key, slo_name, slo_system_message, slo_file_type) in slos {
-                    let relevant_files = if get_or_default(slo_key, false) {
-                        match slo_file_type {
-                            SLOFileType::Source => source_files
-                                .iter()
-                                .filter_map(|x| project.identify(x).ok())
-                                .collect(),
-                            SLOFileType::Test => test_files
-                                .iter()
-                                .filter_map(|x| project.identify(x).ok())
-                                .collect(),
-                            SLOFileType::SourceAndTest => source_files
-                                .iter()
-                                .chain(test_files.clone().iter())
-                                .filter_map(|x| project.identify(x).ok())
-                                .collect(),
-                        }
-                    } else {
-                        Vec::new()
+                    if !get_or_default(slo_key, false) {
+                        continue;
+                    }
+                    let relevant_files: Vec<File> = match slo_file_type {
+                        SLOFileType::Source => source_files
+                            .iter()
+                            .filter_map(|x| project.identify(x).ok())
+                            .collect(),
+                        SLOFileType::Test => test_files
+                            .iter()
+                            .filter_map(|x| project.identify(x).ok())
+                            .collect(),
+                        SLOFileType::SourceAndTest => source_files
+                            .iter()
+                            .chain(test_files.clone().iter())
+                            .filter_map(|x| project.identify(x).ok())
+                            .collect(),
                     };
 
                     let relevant_file_codes: Vec<String> = relevant_files
@@ -2019,7 +2062,7 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
                     slo_requests.push(runtime.spawn(async move {
                         let together_client = async_openai::Client::with_config(
                             OpenAIConfig::new()
-                                .with_api_base("https://api.together.xyz/inference")
+                                .with_api_base("https://api.together.xyz/v1")
                                 .with_api_key(
                                     std::env::var("TOGETHER_API_KEY")
                                         .expect("TOGETHER_API_KEY must be set for SLO feedback"),
