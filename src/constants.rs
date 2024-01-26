@@ -52,6 +52,24 @@ lazy_static! {
     pub static ref RETRIEVAL_MESSAGE_OUTRO: String = include_str!("prompts/retrieval_system_message_outro.md").into();
     /// Rhai script as a AST, behind an mutex.
     pub static ref SCRIPT_AST: Arc<Mutex<AST>> = Arc::new(Mutex::new(AST::empty()));
+    /// System Message for Algorithmic Solutions SLO
+    pub static ref ALGORITHMIC_SOLUTIONS_SLO: String = format!(include_str!("prompts/slos/system_message_intro.md"), SLO_DESCRIPTION = include_str!("prompts/slos/algorithmic_solutions_quant.md"));
+    /// System Message for Code Readability SLO
+    pub static ref CODE_READABILITY_SLO: String = format!(include_str!("prompts/slos/system_message_intro.md"), SLO_DESCRIPTION = include_str!("prompts/slos/code_readability_written_com.md"));
+    /// System Message for Comments Written SLO
+    pub static ref COMMENTS_WRITTEN_SLO: String = format!(include_str!("prompts/slos/system_message_intro.md"), SLO_DESCRIPTION = include_str!("prompts/slos/comments_written_com.md"));
+    /// System Message for Error Handling SLO
+    pub static ref ERROR_HANDLING_SLO: String = format!(include_str!("prompts/slos/system_message_intro.md"), SLO_DESCRIPTION = include_str!("prompts/slos/error_handling_verification.md"));
+    /// System Message for Logic SLO
+    pub static ref LOGIC_SLO: String = format!(include_str!("prompts/slos/system_message_intro.md"), SLO_DESCRIPTION = include_str!("prompts/slos/logic_programming.md"));
+    /// System Message for Naming Conventions SLO
+    pub static ref NAMING_CONVENTIONS_SLO: String = format!(include_str!("prompts/slos/system_message_intro.md"), SLO_DESCRIPTION = include_str!("prompts/slos/naming_written_com.md"));
+    /// System Message for Object Oriented Programming SLO
+    pub static ref OBJECT_ORIENTED_PROGRAMMING_SLO: String = format!(include_str!("prompts/slos/system_message_intro.md"), SLO_DESCRIPTION = include_str!("prompts/slos/oop_programming.md"));
+    /// System Message for Syntax SLO
+    pub static ref SYNTAX_SLO: String = format!(include_str!("prompts/slos/system_message_intro.md"), SLO_DESCRIPTION = include_str!("prompts/slos/syntax_programming.md"));
+    /// System Message for Testing SLO
+    pub static ref TESTING_SLO: String = format!(include_str!("prompts/slos/system_message_intro.md"), SLO_DESCRIPTION = include_str!("prompts/slos/testing_verification.md"));
 }
 
 /// Current term. TODO: Move this to init script

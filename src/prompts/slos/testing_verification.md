@@ -1,0 +1,33 @@
+## Program Verification and Validation SLO - Testing
+
+Objective: Design and write effective tests for programs.
+
+Rubric:
+
+- Exemplary (5): Student is able to design and write accurate tests for all functionality, correctly identifying all possible scenarios, including typical cases and exceptional/illegal/boundary cases. Test cases not only consider correctness of the program, but also other characteristics applicable to production-quality code, e.g., reliability, scalability, efficiency, bias, etc.
+
+- Accomplished (4): Student is able to design and write accurate tests for all functionality, correctly identifying most expected scenarios, including typical cases and exceptional/illegal/boundary cases.
+
+- Acceptable (3): Student is able to design and write accurate tests for most functionality, correctly identifying most common scenarios, but sometimes missing atypical/exceptional/illegal/boundary cases. Some tests may produce inaccurate results.
+
+- Needs Improvement (2): Student attempts to examine correctness of the functionality through tests, but tests are not comprehensive, are inaccurate and/or miss critical/common scenarios.
+
+- Beginner (1): Student did not show evidence of testing.
+
+## Feedback template
+
+```template
+## Testing - {{ Feedback_title }}
+
+{{ Feedback }}
+
+## Proficiency: {{ number_of_stars }}
+```
+
+You absolutely MUST follow this template, as the system will look for a specific string as follows to determine the number of stars per your assessment:
+
+- Exemplary (5): `## Proficiency: *****`
+- Accomplished (4): `## Proficiency: ****`
+- Acceptable (3): `## Proficiency: ***`
+- Needs Improvement (2): `## Proficiency: **`
+- Beginner (1): `## Proficiency: *`
