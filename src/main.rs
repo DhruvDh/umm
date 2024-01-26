@@ -121,7 +121,7 @@ fn options() -> Cmd {
     fn h() -> impl Parser<String> {
         positional("PATH")
             .help("Path to project root folder. Defaults to current directory")
-            .fallback(format!("{}", std::env::current_dir().unwrap().display()))
+            .fallback(String::from("."))
     }
 
     let run = construct!(Cmd::Run(f()))
@@ -265,16 +265,11 @@ fn main() -> Result<()> {
         }
         Cmd::Grade(g) => grade(&g)?,
         Cmd::CreateSubmission(p) => {
-            println!("Creating submission zip... {p}");
-            let zip_file = {
-                let mut archive_path = PathBuf::new();
-                archive_path.set_file_name(format!(
-                    "submission-{}",
-                    chrono::offset::Local::now().format("%Y-%m-%d-%H-%M-%S")
-                ));
-                archive_path.set_extension("zip");
-                std::fs::File::create(archive_path)?
-            };
+            let zip_file_name = format!(
+                "submission-{}.zip",
+                chrono::offset::Local::now().format("%Y-%m-%d-%H-%M-%S")
+            );
+            let zip_file = std::fs::File::create(PathBuf::from(zip_file_name.clone()))?;
 
             let all_files = {
                 let source_walkdir: Vec<_> = WalkDir::new(SOURCE_DIR.as_path())
@@ -291,7 +286,7 @@ fn main() -> Result<()> {
                     .filter_map(|e| e.ok())
                     .collect();
 
-                let all_java_files: Vec<_> = WalkDir::new(ROOT_DIR.as_path())
+                let all_java_files: Vec<_> = WalkDir::new(PathBuf::from(p).as_path())
                     .into_iter()
                     .filter_map(|e| {
                         e.ok()
@@ -311,10 +306,13 @@ fn main() -> Result<()> {
                 .compression_method(zip::CompressionMethod::Deflated)
                 .unix_permissions(0o755);
             let mut buffer = Vec::new();
-
             let mut already_added = HashSet::<PathBuf>::new();
+
             for entry in all_files {
-                let path = entry.path().strip_prefix(ROOT_DIR.as_path())?;
+                let path = match entry.path().strip_prefix(ROOT_DIR.as_path()) {
+                    Ok(path) => path,
+                    Err(_) => entry.path(),
+                };
 
                 if already_added.contains(path) {
                     continue;
@@ -326,7 +324,6 @@ fn main() -> Result<()> {
                 name.push(path);
 
                 if path.is_file() {
-                    println!("adding file {path:?} as {name:?} ...");
                     #[allow(deprecated)]
                     zip.start_file_from_path(name.as_path(), options)?;
                     let mut f = std::fs::File::open(path)?;
@@ -337,14 +334,13 @@ fn main() -> Result<()> {
                 } else if !name.as_os_str().is_empty() {
                     // Only if not root! Avoids path spec / warning
                     // and mapname conversion failed error on unzip
-                    println!("adding dir {path:?} as {name:?} ...");
                     #[allow(deprecated)]
                     zip.add_directory_from_path(name.as_path(), options)?;
                 }
             }
 
             zip.finish()?;
-            println!("Submission zip created!");
+            println!("Submission zip created - {}", zip_file_name);
         }
         Cmd::Clean => clean()?,
         Cmd::Info => Project::new()?.info()?,
