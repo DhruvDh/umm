@@ -2090,7 +2090,6 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
 
                 let slo_requests = slo_requests.into_iter().collect::<FuturesUnordered<_>>();
                 let slo_responses = runtime.block_on(async { try_join_all(slo_requests).await })?;
-                let mut slo_feedback = Vec::new();
 
                 for (name, resp) in slo_responses {
                     let resp = resp?
@@ -2101,7 +2100,6 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
                         .content
                         .clone()
                         .unwrap_or_default();
-                    slo_feedback.push(resp.clone());
 
                     let proficiency = if resp.contains("### Proficiency: *****") {
                         String::from("*****")
@@ -2123,28 +2121,34 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
                             .value(proficiency)
                             .build(),
                     );
-                }
 
-                test_cases.push(
-                    GradescopeTestCase::builder()
-                        .name("SLO Feedback".to_string())
-                        .name_format(GradescopeOutputFormat::Text)
-                        .output(slo_feedback.join("\n\n\n"))
-                        .output_format(GradescopeOutputFormat::Md)
-                        .max_score(0f64)
-                        .score(0f64)
-                        .build(),
-                );
+                    test_cases.push(
+                        GradescopeTestCase::builder()
+                            .name(name.to_string())
+                            .name_format(GradescopeOutputFormat::Text)
+                            .output(resp.clone())
+                            .output_format(GradescopeOutputFormat::Md)
+                            .max_score(0f64)
+                            .score(0f64)
+                            .build(),
+                    );
+                }
 
                 Some(leaderboard_entries)
             } else {
                 Some(
                     slos.iter()
-                        .map(|(_, slo_name, _, _)| {
-                            GradescopeLeaderboardEntry::builder()
-                                .name(slo_name.to_string())
-                                .value(String::new())
-                                .build()
+                        .filter_map(|(slo_key, slo_name, _, _)| {
+                            if get_or_default(slo_key, false) {
+                                Some(
+                                    GradescopeLeaderboardEntry::builder()
+                                        .name(slo_name.to_string())
+                                        .value(String::new())
+                                        .build(),
+                                )
+                            } else {
+                                None
+                            }
                         })
                         .collect::<Vec<GradescopeLeaderboardEntry>>(),
                 )
@@ -2541,7 +2545,7 @@ fn generate_single_feedback(result: &GradeResult) -> Result<String> {
         ))
     } else {
         Ok(String::from(
-            "Feedback cannot currently be generated for submissions without penalty.",
+            "This type of feedback cannot be generated for submissions without penalty.",
         ))
     }
 }
@@ -2566,7 +2570,7 @@ pub fn generate_feedback(results: Array) -> Result<()> {
     } else {
         fs::write(
             "FEEDBACK",
-            "Feedback cannot currently be generated for submissions without penalty.",
+            "This type of feedback cannot be generated for submissions without penalty.",
         )
         .context("Something went wrong writing FEEDBACK file.")?;
     }
