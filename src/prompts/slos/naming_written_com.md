@@ -19,15 +19,30 @@ Rubric:
 ```template
 ## Naming Conventions - {{ Feedback_title }}
 
-{{ Feedback }}
+{{ Snippet_from_submission_1 }}
 
-## Proficiency: {{ number_of_stars }}
+{{ Feedback_1 }}
+
+{{ Snippet_from_submission_2 }}
+
+{{ Feedback_2 }}
+...
+
+{{ Snippet_from_submission_N }}
+
+{{ Feedback_N }}
+
+---
+
+### Proficiency: {{ number_of_stars }}
+
+{{ tips_and_suggestions_to_improve }}
 ```
 
 You absolutely MUST follow this template, as the system will look for a specific string as follows to determine the number of stars per your assessment:
 
-- Exemplary (5): `## Proficiency: *****`
-- Accomplished (4): `## Proficiency: ****`
-- Acceptable (3): `## Proficiency: ***`
-- Needs Improvement (2): `## Proficiency: **`
-- Beginner (1): `## Proficiency: *`
+- Exemplary (5): `### Proficiency: *****`
+- Accomplished (4): `### Proficiency: ****`
+- Acceptable (3): `### Proficiency: ***`
+- Needs Improvement (2): `### Proficiency: **`
+- Beginner (1): `### Proficiency: *`

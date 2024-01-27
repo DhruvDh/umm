@@ -2090,7 +2090,7 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
 
                 let slo_requests = slo_requests.into_iter().collect::<FuturesUnordered<_>>();
                 let slo_responses = runtime.block_on(async { try_join_all(slo_requests).await })?;
-                let mut slo_feedback = vec![String::from("## SLO Feedback")];
+                let mut slo_feedback = Vec::new();
 
                 for (name, resp) in slo_responses {
                     let resp = resp?
@@ -2103,15 +2103,15 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
                         .unwrap_or_default();
                     slo_feedback.push(resp.clone());
 
-                    let proficiency = if resp.contains("## Proficiency: *****") {
+                    let proficiency = if resp.contains("### Proficiency: *****") {
                         String::from("*****")
-                    } else if resp.contains("## Proficiency: ****") {
+                    } else if resp.contains("### Proficiency: ****") {
                         String::from("****")
-                    } else if resp.contains("## Proficiency: ***") {
+                    } else if resp.contains("### Proficiency: ***") {
                         String::from("***")
-                    } else if resp.contains("## Proficiency: **") {
+                    } else if resp.contains("### Proficiency: **") {
                         String::from("**")
-                    } else if resp.contains("## Proficiency: *") {
+                    } else if resp.contains("### Proficiency: *") {
                         String::from("*")
                     } else {
                         String::from("")
@@ -2129,7 +2129,7 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
                     GradescopeTestCase::builder()
                         .name("SLO Feedback".to_string())
                         .name_format(GradescopeOutputFormat::Text)
-                        .output(slo_feedback.join("\n\n"))
+                        .output(slo_feedback.join("\n\n\n"))
                         .output_format(GradescopeOutputFormat::Md)
                         .max_score(0f64)
                         .score(0f64)
