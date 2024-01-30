@@ -2062,10 +2062,13 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
                     slo_requests.push(runtime.spawn(async move {
                         let together_client = async_openai::Client::with_config(
                             OpenAIConfig::new()
-                                .with_api_base("https://api.together.xyz/v1")
+                                .with_api_base(
+                                    std::env::var("OPENAI_ENDPOINT")
+                                        .expect("OPENAI_ENDPOINT must be set for SLO feedback"),
+                                )
                                 .with_api_key(
-                                    std::env::var("TOGETHER_API_KEY")
-                                        .expect("TOGETHER_API_KEY must be set for SLO feedback"),
+                                    std::env::var("OPENAI_API_KEY_SLO")
+                                        .expect("OPENAI_API_KEY_SLO must be set for SLO feedback"),
                                 ),
                         );
                         let together_client = together_client.chat();
@@ -2074,13 +2077,14 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
                             slo_name,
                             together_client
                                 .create(CreateChatCompletionRequest {
-                                    model: "mistralai/Mixtral-8x7B-Instruct-v0.1".to_string(),
+                                    model: std::env::var("OPENAI_MODEL")
+                                        .expect("OPENAI_MODEL must be set for SLO feedback"),
                                     messages: messages.clone(),
                                     temperature: Some(0.0),
                                     top_p: Some(1.0),
                                     n: Some(1),
                                     stream: Some(false),
-                                    max_tokens: Some(3072),
+                                    // max_tokens: Some(3072),
                                     ..Default::default()
                                 })
                                 .await,
