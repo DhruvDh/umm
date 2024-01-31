@@ -1292,8 +1292,8 @@ impl Project {
 
             let handle7 = tokio::spawn(async {
                 download(
-                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/commons-lang3-3.14.0.jar",
-                        &LIB_DIR.join("commons-lang3-3.14.0.jar"),
+                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/commons-text-1.11.0.jar",
+                        &LIB_DIR.join("commons-text-1.11.0.jar"),
                         false,
                     )
                     .await
