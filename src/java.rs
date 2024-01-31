@@ -1238,7 +1238,7 @@ impl Project {
 
             let handle1 = tokio::spawn(async {
                 download(
-                    "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-platform-console-standalone-1.9.0-RC1.jar",
+                    "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/junit-platform-console-standalone-1.10.1.jar",
                     &LIB_DIR.join(JUNIT_PLATFORM),
                 false
                         )
@@ -1256,7 +1256,7 @@ impl Project {
 
             let handle3 = tokio::spawn(async {
                 download(
-                    "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-1.9.5.jar",
+                    "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-1.15.6.jar",
                     &LIB_DIR.join("pitest.jar"),
                     false,
                 )
@@ -1265,7 +1265,7 @@ impl Project {
 
             let handle4 = tokio::spawn(async {
                 download(
-                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-command-line-1.9.5.jar",
+                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-command-line-1.15.6.jar",
                         &LIB_DIR.join("pitest-command-line.jar"),
                         false,
                     )
@@ -1274,7 +1274,7 @@ impl Project {
 
             let handle5 = tokio::spawn(async {
                 download(
-                    "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-entry-1.9.5.jar",
+                    "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-entry-1.15.6.jar",
                     &LIB_DIR.join("pitest-entry.jar"),
                     false,
                 )
@@ -1283,15 +1283,25 @@ impl Project {
 
             let handle6 = tokio::spawn(async {
                 download(
-                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-junit5-plugin-1.0.0.jar",
+                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/pitest-junit5-plugin-1.2.1.jar",
                         &LIB_DIR.join("pitest-junit5-plugin.jar"),
                         false,
                     )
                     .await
             });
 
-            let handles =
-                FuturesUnordered::from_iter([handle1, handle2, handle3, handle4, handle5, handle6]);
+            let handle7 = tokio::spawn(async {
+                download(
+                        "https://ummfiles.fra1.digitaloceanspaces.com/jar_files/commons-lang3-3.14.0.jar",
+                        &LIB_DIR.join("commons-lang3-3.14.0.jar"),
+                        false,
+                    )
+                    .await
+            });
+
+            let handles = FuturesUnordered::from_iter([
+                handle1, handle2, handle3, handle4, handle5, handle6, handle7,
+            ]);
 
             futures::future::try_join_all(handles).await?;
         }

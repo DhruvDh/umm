@@ -1328,7 +1328,7 @@ impl UnitTestGrader {
             .args([
                 "--class-path",
                 classpath()?.as_str(),
-                "org.pitest.mutation test.commandline.MutationCoverageReport",
+                "org.pitest.mutationtest.commandline.MutationCoverageReport",
                 "--reportDir",
                 "test_reports",
                 "--failWhenNoMutations",
@@ -1386,7 +1386,7 @@ impl UnitTestGrader {
             let penalty = diags.len() as u32 * 4;
             eprintln!("Ran mutation tests for {} -", target_test.join(", "));
             let num_diags = diags.len();
-            eprintln!("Problematic mutation test failures printed about.");
+            eprintln!("Problematic mutation test failures printed above.");
 
             let prompt = if num_diags > 0 {
                 let context = get_source_context(diags.clone(), project, 3, 6, 6, false, None)?;
