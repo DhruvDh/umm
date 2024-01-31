@@ -2119,13 +2119,6 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
                         String::from("")
                     };
 
-                    leaderboard_entries.push(
-                        GradescopeLeaderboardEntry::builder()
-                            .name(name.to_string())
-                            .value(proficiency)
-                            .build(),
-                    );
-
                     test_cases.push(
                         GradescopeTestCase::builder()
                             .name(name.to_string())
@@ -2134,6 +2127,13 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
                             .output_format(GradescopeOutputFormat::Md)
                             .max_score(0f64)
                             .score(0f64)
+                            .build(),
+                    );
+
+                    leaderboard_entries.push(
+                        GradescopeLeaderboardEntry::builder()
+                            .name(name.to_string())
+                            .value(proficiency)
                             .build(),
                     );
                 }

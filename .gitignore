@@ -6,6 +6,7 @@ grading/**/**/*.java
 .envrc
 rustc-ice-*
 .vs
+*.patch
 
 # Added by cargo
 

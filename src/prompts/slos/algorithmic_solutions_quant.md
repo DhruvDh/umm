@@ -39,10 +39,12 @@ Rubric:
 {{ tips_and_suggestions_to_improve }}
 ```
 
-You absolutely MUST follow this template, as the system will look for a specific string as follows to determine the number of stars per your assessment:
+`number_of_stars` here must be formatted as `***` for Acceptable (3). You absolutely MUST follow this template, as the system will look for these specific strings as shown below to determine the proficiency level for the student.
 
 - Exemplary (5): `### Proficiency: *****`
 - Accomplished (4): `### Proficiency: ****`
 - Acceptable (3): `### Proficiency: ***`
 - Needs Improvement (2): `### Proficiency: **`
 - Beginner (1): `### Proficiency: *`
+
+If the template includes `### Proficiency: ***`, the system will automatically assess the student as having met the Acceptable (3) level of proficiency.
