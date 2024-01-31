@@ -280,12 +280,10 @@ fn main() -> Result<()> {
                     .into_iter()
                     .filter_map(|e| e.ok())
                     .collect();
-
                 let test_walkdir: Vec<_> = WalkDir::new(TEST_DIR.as_path())
                     .into_iter()
                     .filter_map(|e| e.ok())
                     .collect();
-
                 let all_java_files: Vec<_> = WalkDir::new(PathBuf::from(p).as_path())
                     .into_iter()
                     .filter_map(|e| {
