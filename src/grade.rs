@@ -1895,7 +1895,7 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
             "slo_logic",
             "Logic",
             LOGIC_SLO.as_str(),
-            SLOFileType::Source,
+            SLOFileType::SourceAndTest,
         ),
         (
             "slo_naming_conventions",
@@ -1907,7 +1907,7 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
             "slo_oop_programming",
             "Object Oriented Programming",
             OBJECT_ORIENTED_PROGRAMMING_SLO.as_str(),
-            SLOFileType::Source,
+            SLOFileType::SourceAndTest,
         ),
         (
             "slo_sytax",
