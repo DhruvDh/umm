@@ -1673,7 +1673,7 @@ impl Project {
                 .build(),
         );
 
-        if !ROOT_DIR.join(".vscode").as_path().is_dir() {
+        if !ROOT_DIR.join(".vscode").as_path().exists() {
             tokio::fs::create_dir(ROOT_DIR.join(".vscode").as_path())
                 .await
                 .unwrap();
