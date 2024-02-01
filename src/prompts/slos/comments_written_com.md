@@ -18,6 +18,8 @@ Rubric:
 
 ## Feedback template
 
+> Note that feedback is to be shared as a valid Markdown file. The begining "```template " and the ending "``` " are not part of the feedback, but are used to denote the start and end of the template.
+
 ```template
 ## Comments and Documentation - {{ Feedback_title }}
 

@@ -44,6 +44,8 @@ In addition to the default formatters, you can find extensions on the Marketplac
 
 ## Feedback template
 
+> Note that feedback is to be shared as a valid Markdown file. The begining "```template " and the ending "``` " are not part of the feedback, but are used to denote the start and end of the template.
+
 ```template
 ## Code Readability and Formatting - {{ Feedback_title }}
 
