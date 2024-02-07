@@ -14,11 +14,6 @@ Rubric:
 
 - Beginner (1): Program does not demonstrate a grasp of object-oriented principles, and the code lacks any meaningful application of abstraction, encapsulation, inheritance, or polymorphism.
 
-## Feedback template
-
-> Note that feedback is to be shared as a valid Markdown file. The begining "```template " and the ending "``` " are not part of the feedback, but are used to denote the start and end of the template.
-
-```template
 ## Object-Oriented Programming - {{ Feedback_title }}
 
 {{ Snippet_from_submission_1 }}
@@ -39,14 +34,3 @@ Rubric:
 ### Proficiency: {{ number_of_stars }}
 
 {{ tips_and_suggestions_to_improve }}
-```
-
-`number_of_stars` here must be formatted as `***` for Acceptable (3). You absolutely MUST follow this template, as the system will look for these specific strings as shown below to determine the proficiency level for the student.
-
-- Exemplary (5): `### Proficiency: *****`
-- Accomplished (4): `### Proficiency: ****`
-- Acceptable (3): `### Proficiency: ***`
-- Needs Improvement (2): `### Proficiency: **`
-- Beginner (1): `### Proficiency: *`
-
-If the template includes `### Proficiency: ***`, the system will automatically assess the student as having met the Acceptable (3) level of proficiency.
