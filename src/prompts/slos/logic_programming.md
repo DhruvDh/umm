@@ -4,9 +4,9 @@ Objective: The logical flow and chosen control structures of the program are app
 
 Rubric:
 
-- Exemplary (5): The program demonstrates a clear and optimal logical flow, with well-chosen control structures. The program considers factors beyond what is expected (e.g., concurrency, bias, privacy, security, modularity, maintainability, avoiding redudancy).
+- Exemplary (5): The program demonstrates a clear and optimal logical flow, with well-chosen control structures. The program considers factors beyond what is expected (e.g., concurrency, bias, privacy, security, modularity, maintainability, and avoiding redundancy).
 
-- Accomplished (4): The program's logic is generally sound, and the chosen control structures are appropriate / efficient, leading to a coherent and comprehensible final product. Examples: the program avoids unnecessary operations / convoluted logic, utilizes loops when relevant, avoids unnecessary nesting of control structures.
+- Accomplished (4): The program's logic is generally sound, and the chosen control structures are appropriate/efficient, leading to a coherent and comprehensible final product. Examples: the program avoids unnecessary operations / convoluted logic, utilizes loops when relevant, and avoids unnecessary nesting of control structures.
 
 - Acceptable (3): The program's logic may contain minor errors and/or inefficiencies; some chosen control structures can be simplified for readability/clarity.
 
@@ -32,20 +32,11 @@ Rubric:
 
 ## Feedback template
 
+<!-- Template starts from here -->
+
 ## Logic - {{ Feedback_title }}
 
-{{ Snippet_from_submission_1 }}
-
-{{ Feedback_1 }}
-
-{{ Snippet_from_submission_2 }}
-
-{{ Feedback_2 }}
-...
-
-{{ Snippet_from_submission_N }}
-
-{{ Feedback_N }}
+{{ feedback_content }}
 
 ---
 

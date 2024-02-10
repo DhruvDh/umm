@@ -4,16 +4,17 @@ Objective: Code formatting, organization, and other stylistic choices support re
 
 Rubric:
 
-- Exemplary (5): Not only is each individual program file easy to understand by reading it, but the student is able to make larger projects or projects designed for advanced architectures easy to navigate and understand as a whole. (For example, through clear, succinct, comprehensive README files within a project.)
+- Exemplary (5): Not only is each program file easy to understand by reading it, but the student can make larger projects or projects designed for advanced architectures easy to navigate and understand as a whole. (For example, through clear, succinct, comprehensive README files within a project.)
 
-- Accomplished (4): Others can easily understand the code through reading it. Examples: There is appropriate and consistent use of white space, indentation, etc. The code format adheres to standard language conventions. The *written* structure of the code is well-organized (all imports at the beginning of a file, all declarations at the beginning of a file / function body, separate files for each class in Java, reasonable ordering of function / object / main code blocks in Python, etc.). Maximum line length is conducive to readability. Minimal use of unnecessary hard-coded or global values that make the program more challenging to read, understand, and maintain.
+- Accomplished (4): Others can easily understand the code by reading it. Examples: There is appropriate and consistent use of white space, indentation, etc. The code format adheres to standard language conventions. The *written* structure of the code is well-organized (all imports at the beginning of a file, all declarations at the beginning of a file/function body, separate files for each class in Java, reasonable ordering of function/object/main code blocks in Python, etc.). Maximum line length is conducive to readability. Minimal use of unnecessary hard-coded or global values that make the program more challenging to read, understand, and maintain.
 
-- Acceptable (3): Others can understand most of the code through reading it, but some portions have inconsistent use of white space, indentation, etc. or do not adhere to standard language conventions.
-- Needs Improvement (2): Program has comments, but they need improvement in one or more of the following areas: comments are not clear and meaningful; comments are inconsistent; comments do not adhere to standard language conventions; important code blocks that need explanation do not have sufficient comments; some in-line comments are redundant or unhelpful, etc.
+- Acceptable (3): Others can understand most of the code by reading it, but some portions have inconsistent use of white space, indentation, etc., or do not adhere to standard language conventions.
+
+- Needs Improvement (2): The program has comments, but they need improvement in one or more of the following areas: comments are not clear and meaningful; comments are inconsistent; comments do not adhere to standard language conventions; important code blocks that need explanation do not have sufficient comments; some in-line comments are redundant or unhelpful, etc.
 
 - Needs Improvement (2): It is often difficult for others to understand the code through reading it because of inconsistent use of white space, indentation, etc.
--
-- Beginner (1): It is very difficult for others to understand the code through reading it because of highly inconsistent use of white space, indentation, etc.
+
+- Beginner (1): It is very difficult for others to understand the code through reading it because of the highly inconsistent use of white space, indentation, etc.
 
 ## Formatting in VS Code
 
@@ -60,20 +61,11 @@ In addition to the default formatters, you can find extensions on the Marketplac
 
 ## Feedback template
 
+<!-- Template starts from here -->
+
 ## Code Readability and Formatting - {{ Feedback_title }}
 
-{{ Snippet_from_submission_1 }}
-
-{{ Feedback_1 }}
-
-{{ Snippet_from_submission_2 }}
-
-{{ Feedback_2 }}
-...
-
-{{ Snippet_from_submission_N }}
-
-{{ Feedback_N }}
+{{ feedback_content }}
 
 ---
 

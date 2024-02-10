@@ -4,13 +4,13 @@ Objective: Design and write effective tests for programs.
 
 Rubric:
 
-- Exemplary (5): Student is able to design and write accurate tests for all functionality, correctly identifying all possible scenarios, including typical cases and exceptional/illegal/boundary cases. Test cases not only consider correctness of the program, but also other characteristics applicable to production-quality code, e.g., reliability, scalability, efficiency, bias, etc.
+- Exemplary (5): Students can design and write accurate tests for all functionality, correctly identifying all possible scenarios, including typical cases and exceptional/illegal/boundary cases. Test cases not only consider the correctness of the program but also other characteristics applicable to production-quality code, e.g., reliability, scalability, efficiency, bias, etc.
 
-- Accomplished (4): Student is able to design and write accurate tests for all functionality, correctly identifying most expected scenarios, including typical cases and exceptional/illegal/boundary cases.
+- Accomplished (4): Student can design and write accurate tests for all functionality, correctly identifying most expected scenarios, including typical cases and exceptional/illegal/boundary cases.
 
-- Acceptable (3): Student is able to design and write accurate tests for most functionality, correctly identifying most common scenarios, but sometimes missing atypical/exceptional/illegal/boundary cases. Some tests may produce inaccurate results.
+- Acceptable (3): Student can design and write accurate tests for most functionality, correctly identifying most common scenarios, but sometimes missing atypical/exceptional/illegal/boundary cases. Some tests may produce inaccurate results.
 
-- Needs Improvement (2): Student attempts to examine correctness of the functionality through tests, but tests are not comprehensive, are inaccurate and/or miss critical/common scenarios.
+- Needs Improvement (2): Student attempts to examine the correctness of the functionality through tests, but tests are not comprehensive, are inaccurate, and/or miss critical/common scenarios.
 
 - Beginner (1): Student did not show evidence of testing.
 
@@ -32,20 +32,11 @@ Rubric:
 
 ## Feedback template
 
+<!-- Template starts from here -->
+
 ## Testing - {{ Feedback_title }}
 
-{{ Snippet_from_submission_1 }}
-
-{{ Feedback_1 }}
-
-{{ Snippet_from_submission_2 }}
-
-{{ Feedback_2 }}
-...
-
-{{ Snippet_from_submission_N }}
-
-{{ Feedback_N }}
+{{ feedback_content }}
 
 ---
 

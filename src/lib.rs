@@ -114,6 +114,7 @@ pub fn grade(name_or_path: &str) -> Result<()> {
                         "Could not get grading script for {assignment_name}"
                     ))
             });
+
             let resp: serde_json::Value = serde_json::from_str(resp?.as_str())?;
             let resp = resp.as_object().unwrap();
 

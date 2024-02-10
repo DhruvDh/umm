@@ -4,7 +4,7 @@ Objective: Variable, function, and object names are meaningful, consistent, and 
 
 Rubric:
 
-- Exemplary (5): Coding style reflects advanced level of understanding of language conventions beyond conventions related to naming (of variables, functions, objects, etc).
+- Exemplary (5): Coding style reflects an advanced level of understanding of language conventions beyond conventions related to naming (of variables, functions, objects, etc).
 
 - Accomplished (4): All variable, function, and object names are meaningful, consistent, and follow standard language conventions.
 
@@ -14,20 +14,29 @@ Rubric:
 
 - Beginner (1): Variable, function, and object names are not meaningful or consistent and do not follow standard language conventions.
 
+## Feedback Guidelines
+
+1. `number_of_stars` in the template must be formatted as described below. You absolutely MUST follow this template, as the system will look for these specific strings as shown below to determine the proficiency level for the student.
+
+   - Exemplary (5): `### Proficiency: *****`
+   - Accomplished (4): `### Proficiency: ****`
+   - Acceptable (3): `### Proficiency: ***`
+   - Needs Improvement (2): `### Proficiency: **`
+   - Beginner (1): `### Proficiency: *`
+
+   If the template includes `### Proficiency: ***`, the system will automatically assess the student as having met the Acceptable (3) level of proficiency.
+
+2. The snippets you include as described in the template must not be the entire submission, but rather a specific section of the submission that you are providing feedback on.
+
+3. Include as many snippets and feedback sections as you feel are necessary to provide a comprehensive review.
+
+## Feedback template
+
+<!-- Template starts from here -->
+
 ## Naming Conventions - {{ Feedback_title }}
 
-{{ Snippet_from_submission_1 }}
-
-{{ Feedback_1 }}
-
-{{ Snippet_from_submission_2 }}
-
-{{ Feedback_2 }}
-...
-
-{{ Snippet_from_submission_N }}
-
-{{ Feedback_N }}
+{{ feedback_content }}
 
 ---
 
