@@ -875,6 +875,7 @@ impl File {
                     [
                         "-jar",
                         LIB_DIR.join(JUNIT_PLATFORM).as_path().to_str().unwrap(),
+                        "execute",
                         "--disable-banner",
                         "--disable-ansi-colors",
                         "--details-theme=unicode",
