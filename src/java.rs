@@ -152,7 +152,7 @@ impl Default for Parser {
         let mut parser = tree_sitter::Parser::new();
         let code = String::new();
         parser
-            .set_language(tree_sitter_java::language())
+            .set_language(&tree_sitter_java::language())
             .expect("Error loading Java grammar");
         let tree = parser.parse(code, None);
 
@@ -180,7 +180,7 @@ impl Parser {
         let mut parser = tree_sitter::Parser::new();
 
         parser
-            .set_language(tree_sitter_java::language())
+            .set_language(&tree_sitter_java::language())
             .expect("Error loading Java grammar");
         let tree = parser
             .parse(source_code.clone(), None)
