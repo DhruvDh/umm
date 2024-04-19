@@ -152,14 +152,14 @@ impl Default for Parser {
         let mut parser = tree_sitter::Parser::new();
         let code = String::new();
         parser
-            .set_language(*JAVA_TS_LANG)
+            .set_language(tree_sitter_java::language())
             .expect("Error loading Java grammar");
         let tree = parser.parse(code, None);
 
         Self {
             code:  String::new(),
             _tree: tree,
-            lang:  *JAVA_TS_LANG,
+            lang:  tree_sitter_java::language(),
         }
     }
 }
@@ -176,20 +176,20 @@ impl Parser {
     ///
     /// * `source_code`: the source code to be parsed
     /// * `lang`: the tree-sitter grammar to use
-    pub fn new(source_code: String, lang: tree_sitter::Language) -> Result<Self> {
+    pub fn new(source_code: String) -> Result<Self> {
         let mut parser = tree_sitter::Parser::new();
 
         parser
-            .set_language(lang)
+            .set_language(tree_sitter_java::language())
             .expect("Error loading Java grammar");
         let tree = parser
             .parse(source_code.clone(), None)
             .context("Error parsing Java code")?;
 
         Ok(Self {
-            code: source_code,
+            code:  source_code,
             _tree: Some(tree),
-            lang,
+            lang:  tree_sitter_java::language(),
         })
     }
 
@@ -215,7 +215,7 @@ impl Parser {
             .as_ref()
             .context("Treesitter could not parse code")?;
 
-        let query = Query::new(self.lang, q).unwrap();
+        let query = Query::new(&self.lang, q).unwrap();
         let mut cursor = QueryCursor::new();
         let matches = cursor.matches(&query, tree.root_node(), self.code.as_bytes());
         let capture_names = query.capture_names();
@@ -250,7 +250,7 @@ impl Parser {
                         )
                     })?;
 
-                result.insert(name.clone(), value.to_string());
+                result.insert(name.to_string(), value.to_string());
             }
             results.push(result);
         }
@@ -317,7 +317,7 @@ impl File {
         let parser = {
             let source_code = std::fs::read_to_string(&path)
                 .with_context(|| format!("Could not read file: {:?}", &path))?;
-            Parser::new(source_code, *JAVA_TS_LANG)?
+            Parser::new(source_code)?
         };
 
         let imports = {

@@ -24,9 +24,10 @@ use async_openai::{
     config::OpenAIConfig,
     types::{
         ChatCompletionRequestMessage,
+        ChatCompletionRequestSystemMessageArgs,
+        ChatCompletionRequestUserMessageArgs,
         CreateChatCompletionRequest,
         CreateChatCompletionResponse,
-        Role,
     },
 };
 use colored::Colorize;
@@ -72,7 +73,6 @@ use crate::{
         CODE_READABILITY_SLO,
         COMMENTS_WRITTEN_SLO,
         ERROR_HANDLING_SLO,
-        JAVA_TS_LANG,
         LOGIC_SLO,
         METHOD_CALL_QUERY,
         NAMING_CONVENTIONS_SLO,
@@ -379,34 +379,33 @@ pub fn get_active_retrieval_context(
     );
 
     print!("Trying to decide what to share with AI for feedback...");
-    let mut messages = Vec::new();
 
-    messages.push(ChatCompletionRequestMessage {
-        role:          Role::System,
-        content:       Some(RETRIEVAL_MESSAGE_INTRO.to_string()),
-        name:          Some(String::from("Instructor")),
-        function_call: None,
-    });
-    messages.push(ChatCompletionRequestMessage {
-        role:          Role::User,
-        content:       Some(format!(
-            "Here is the output (stdout and stderr) from running the auto-grader on my \
-             submission:\n```\n{}\n```",
-            active_retrieval_context.unwrap()
-        )),
-        name:          Some(String::from("Student")),
-        function_call: None,
-    });
-    messages.push(ChatCompletionRequestMessage {
-        role:          Role::System,
-        content:       Some(format!(
-            include_str!("prompts/retrieval_system_message_outro.md"),
-            JAVA_FILE_NAMES = proj.files().iter().map(File::proper_name).join(", "),
-            SYNTHESIZED_OUTLINE = proj.describe(),
-        )),
-        name:          Some(String::from("Instructor")),
-        function_call: None,
-    });
+    let messages: Vec<ChatCompletionRequestMessage> = vec![
+        ChatCompletionRequestSystemMessageArgs::default()
+            .content(RETRIEVAL_MESSAGE_INTRO.to_string())
+            .name("Instructor".to_string())
+            .build()?
+            .into(),
+        ChatCompletionRequestUserMessageArgs::default()
+            .content(format!(
+                "Here is the output (stdout and stderr) from running the auto-grader on my \
+                 submission:\n```\n{}\n```",
+                active_retrieval_context.unwrap()
+            ))
+            .name("Student".to_string())
+            .build()?
+            .into(),
+        ChatCompletionRequestSystemMessageArgs::default()
+            .content(format!(
+                include_str!("prompts/retrieval_system_message_outro.md"),
+                JAVA_FILE_NAMES = proj.files().iter().map(File::proper_name).join(", "),
+                SYNTHESIZED_OUTLINE = proj.describe(),
+            ))
+            .name("Instructor".to_string())
+            .build()?
+            .into(),
+    ];
+
     let messages = serde_json::to_string(&messages).expect("Failed to serialize messages array");
 
     let client = reqwest::blocking::Client::new();
@@ -418,11 +417,19 @@ pub fn get_active_retrieval_context(
     let response = response.choices[0].message.clone();
     println!(" done!");
     ensure!(
-        response.function_call.is_some(),
+        response.tool_calls.is_some(),
         "No function call found in response."
     );
-    let function_call_args: RetrievalFunctionCallParamsArray =
-        serde_json::from_str(response.function_call.unwrap().arguments.as_str())?;
+    let function_call_args: RetrievalFunctionCallParamsArray = serde_json::from_str(
+        response
+            .tool_calls
+            .unwrap()
+            .first()
+            .unwrap()
+            .function
+            .arguments
+            .as_str(),
+    )?;
 
     let mut context = Vec::new();
     for function_call_arg in function_call_args.params {
@@ -448,12 +455,11 @@ pub fn get_active_retrieval_context(
         }
     }
 
-    Ok(ChatCompletionRequestMessage {
-        role:          Role::System,
-        content:       Some(context.join("\n")),
-        name:          Some(String::from("Instructor")),
-        function_call: None,
-    })
+    Ok(ChatCompletionRequestSystemMessageArgs::default()
+        .content(context.join("\n"))
+        .name("Instructor".to_string())
+        .build()?
+        .into())
 }
 
 /// Returns a ChatCompletionRequestMessage with the given line references that
@@ -477,8 +483,11 @@ pub fn get_source_context<T: Into<LineRef>>(
     active_retrieval_context: Option<String>,
 ) -> Result<ChatCompletionRequestMessage> {
     if try_use_active_retrieval {
-        if let Ok(message) = get_active_retrieval_context(&proj, active_retrieval_context) {
-            return Ok(message);
+        match get_active_retrieval_context(&proj, active_retrieval_context) {
+            Ok(message) => return Ok(message),
+            Err(e) => {
+                eprintln!("Failed to get active retrieval context: {e}");
+            }
         }
     }
 
@@ -573,7 +582,7 @@ pub fn get_source_context<T: Into<LineRef>>(
             context.append(&mut (relevant_source.clone()));
             context.push(end_ticks.clone());
 
-            match Parser::new(relevant_source.join("\n"), *JAVA_TS_LANG) {
+            match Parser::new(relevant_source.join("\n")) {
                 Ok(parser) => {
                     let method_names: Vec<Dict> = parser
                         .query(METHOD_CALL_QUERY)
@@ -651,12 +660,11 @@ pub fn get_source_context<T: Into<LineRef>>(
         context.push_str("...[TRUNCATED]");
     }
 
-    Ok(ChatCompletionRequestMessage {
-        role:          Role::System,
-        content:       Some(context),
-        name:          Some(String::from("Instructor")),
-        function_call: None,
-    })
+    Ok(ChatCompletionRequestSystemMessageArgs::default()
+        .content(context)
+        .name("Instructor".to_string())
+        .build()?
+        .into())
 }
 
 #[derive(Clone, Default)]
@@ -759,19 +767,16 @@ impl DocsGrader {
                     diags,
                 }) => {
                     let messages = vec![
-                        ChatCompletionRequestMessage {
-                            role:          Role::System,
-                            content:       Some(SYSTEM_MESSAGE.to_string()),
-                            name:          Some(String::from("Instructor")),
-                            function_call: None,
-                        },
-                        ChatCompletionRequestMessage {
-                            role:          Role::User,
-                            content:       format!("Compiler error -\n```\n{}\n```", stacktrace)
-                                .into(),
-                            name:          Some(String::from("Student")),
-                            function_call: None,
-                        },
+                        ChatCompletionRequestSystemMessageArgs::default()
+                            .content(SYSTEM_MESSAGE.to_string())
+                            .name("Instructor".to_string())
+                            .build()?
+                            .into(),
+                        ChatCompletionRequestUserMessageArgs::default()
+                            .content(format!("Compiler error -\n```\n{}\n```", stacktrace))
+                            .name("Student".to_string())
+                            .build()?
+                            .into(),
                         get_source_context(diags, self.project, 1, 3, 6, false, None)?,
                     ];
 
@@ -784,18 +789,16 @@ impl DocsGrader {
                 }
                 Err(e) => {
                     let messages = vec![
-                        ChatCompletionRequestMessage {
-                            role:          Role::System,
-                            content:       SYSTEM_MESSAGE.to_string().into(),
-                            name:          Some(String::from("Instructor")),
-                            function_call: None,
-                        },
-                        ChatCompletionRequestMessage {
-                            role:          Role::User,
-                            content:       format!("Unknown error -\n```\n{:?}\n```", e).into(),
-                            name:          Some(String::from("Student")),
-                            function_call: None,
-                        },
+                        ChatCompletionRequestSystemMessageArgs::default()
+                            .content(SYSTEM_MESSAGE.to_string())
+                            .name("Instructor".to_string())
+                            .build()?
+                            .into(),
+                        ChatCompletionRequestUserMessageArgs::default()
+                            .content(format!("Unknown error -\n```\n{:?}\n```", e))
+                            .name("Student".to_string())
+                            .build()?
+                            .into(),
                     ];
 
                     return Ok(GradeResult {
@@ -867,25 +870,22 @@ impl DocsGrader {
             }
 
             Some(vec![
-                ChatCompletionRequestMessage {
-                    role:          Role::System,
-                    content:       SYSTEM_MESSAGE.to_string().into(),
-                    name:          Some("Instructor".into()),
-                    function_call: None,
-                },
-                ChatCompletionRequestMessage {
-                    role:          Role::User,
-                    content:       outputs.into(),
-                    name:          Some("Student".into()),
-                    function_call: None,
-                },
+                ChatCompletionRequestSystemMessageArgs::default()
+                    .content(SYSTEM_MESSAGE.to_string())
+                    .name("Instructor".to_string())
+                    .build()?
+                    .into(),
+                ChatCompletionRequestUserMessageArgs::default()
+                    .content(outputs)
+                    .name("Student".to_string())
+                    .build()?
+                    .into(),
                 context,
-                ChatCompletionRequestMessage {
-                    role:          Role::System,
-                    content:       include_str!("prompts/javadoc.md").to_string().into(),
-                    name:          Some("Instructor".into()),
-                    function_call: None,
-                },
+                ChatCompletionRequestSystemMessageArgs::default()
+                    .content(include_str!("prompts/javadoc.md").to_string())
+                    .name("Instructor".to_string())
+                    .build()?
+                    .into(),
             ])
         } else {
             None
@@ -1035,19 +1035,22 @@ impl ByUnitTestGrader {
                 content.push_str("...[TRUNCATED]");
             }
 
-            ChatCompletionRequestMessage {
-                role:          Role::User,
-                content:       Some(content),
-                name:          Some("Student".into()),
-                function_call: None,
-            }
+            ChatCompletionRequestUserMessageArgs::default()
+                .content(content)
+                .name("Student".to_string())
+                .build()
+                .unwrap()
+                .into()
         };
-        let new_system_message = |content: String| ChatCompletionRequestMessage {
-            role:          Role::System,
-            content:       Some(content),
-            name:          Some("Instructor".into()),
-            function_call: None,
+        let new_system_message = |content: String| {
+            ChatCompletionRequestSystemMessageArgs::default()
+                .content(content)
+                .name("Instructor".to_string())
+                .build()
+                .unwrap()
+                .into()
         };
+
         let process_junit_stacktrace = |stacktrace: String| {
             let mut updated_stacktrace = Vec::new();
             let mut all_diags = Vec::new();
@@ -1400,35 +1403,29 @@ impl UnitTestGrader {
                 }
 
                 Some(vec![
-                    ChatCompletionRequestMessage {
-                        role:          Role::System,
-                        content:       SYSTEM_MESSAGE.to_string().into(),
-                        name:          Some("Instructor".into()),
-                        function_call: None,
-                    },
-                    // ChatCompletionRequestMessage {
-                    //     role:    Role::System,
-                    //     content: project.describe(),
-                    //     name:    Some("Instructor".into()),
-                    // },
-                    ChatCompletionRequestMessage {
-                        role:          Role::User,
-                        content:       feedback.into(),
-                        name:          Some("Student".into()),
-                        function_call: None,
-                    },
+                    ChatCompletionRequestSystemMessageArgs::default()
+                        .content(SYSTEM_MESSAGE.to_string())
+                        .name("Instructor".to_string())
+                        .build()
+                        .context("Failed to build system message")?
+                        .into(),
+                    ChatCompletionRequestUserMessageArgs::default()
+                        .content(feedback)
+                        .name("Student".to_string())
+                        .build()
+                        .context("Failed to build user message")?
+                        .into(),
                     context,
-                    ChatCompletionRequestMessage {
-                        role:          Role::System,
-                        content:       format!(
+                    ChatCompletionRequestSystemMessageArgs::default()
+                        .content(format!(
                             include_str!("prompts/mutation_testing.md"),
                             test = target_test.join(", "),
                             class = target_class.join(", ")
-                        )
+                        ))
+                        .name("Instructor".to_string())
+                        .build()
+                        .context("Failed to build system message")?
                         .into(),
-                        name:          Some("Instructor".into()),
-                        function_call: None,
-                    },
                 ])
             } else {
                 None
@@ -1454,34 +1451,28 @@ impl UnitTestGrader {
 
             let prompt = if !output.is_empty() {
                 Some(vec![
-                    ChatCompletionRequestMessage {
-                        role:          Role::System,
-                        content:       SYSTEM_MESSAGE.to_string().into(),
-                        name:          Some("Instructor".into()),
-                        function_call: None,
-                    },
-                    // ChatCompletionRequestMessage {
-                    //     role:    Role::System,
-                    //     content: project.describe(),
-                    //     name:    Some("Instructor".into()),
-                    // },
-                    ChatCompletionRequestMessage {
-                        role:          Role::User,
-                        content:       Some(output),
-                        name:          Some("Student".into()),
-                        function_call: None,
-                    },
-                    ChatCompletionRequestMessage {
-                        role:          Role::System,
-                        content:       format!(
+                    ChatCompletionRequestSystemMessageArgs::default()
+                        .content(SYSTEM_MESSAGE.to_string())
+                        .name("Instructor".to_string())
+                        .build()
+                        .context("Failed to build system message")?
+                        .into(),
+                    ChatCompletionRequestUserMessageArgs::default()
+                        .content(output)
+                        .name("Student".to_string())
+                        .build()
+                        .context("Failed to build user message")?
+                        .into(),
+                    ChatCompletionRequestSystemMessageArgs::default()
+                        .content(format!(
                             include_str!("prompts/mutation_testing_2.md"),
                             test = target_test.join(", "),
                             class = target_class.join(", ")
-                        )
+                        ))
+                        .name("Instructor".to_string())
+                        .build()
+                        .context("Failed to build system message")?
                         .into(),
-                        name:          Some("Instructor".into()),
-                        function_call: None,
-                    },
                 ])
             } else {
                 None
@@ -2045,18 +2036,18 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
 
                     let student_message = student_message.join("\n\n");
                     let messages = vec![
-                        ChatCompletionRequestMessage {
-                            role:          Role::System,
-                            content:       slo_system_message.to_string().into(),
-                            name:          Some("Instructor".into()),
-                            function_call: None,
-                        },
-                        ChatCompletionRequestMessage {
-                            role:          Role::User,
-                            content:       student_message.into(),
-                            name:          Some("Student".into()),
-                            function_call: None,
-                        },
+                        ChatCompletionRequestSystemMessageArgs::default()
+                            .content(slo_system_message.to_string())
+                            .name("Instructor".to_string())
+                            .build()
+                            .context("Failed to build system message")?
+                            .into(),
+                        ChatCompletionRequestUserMessageArgs::default()
+                            .content(student_message)
+                            .name("Student".to_string())
+                            .build()
+                            .context("Failed to build user message")?
+                            .into(),
                     ];
 
                     slo_requests.push(runtime.spawn(async move {
@@ -2318,22 +2309,18 @@ impl DiffGrader {
                         diags,
                     }) => {
                         let messages = vec![
-                            ChatCompletionRequestMessage {
-                                role:          Role::System,
-                                content:       SYSTEM_MESSAGE.to_string().into(),
-                                name:          Some("Instructor".into()),
-                                function_call: None,
-                            },
-                            ChatCompletionRequestMessage {
-                                role:          Role::User,
-                                content:       format!(
-                                    "Error while running -\n```\n{}\n```",
-                                    output
-                                )
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(SYSTEM_MESSAGE.to_string())
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
                                 .into(),
-                                name:          Some("Student".into()),
-                                function_call: None,
-                            },
+                            ChatCompletionRequestUserMessageArgs::default()
+                                .content(format!("Error while running -\n```\n{}\n```", output))
+                                .name("Student".to_string())
+                                .build()
+                                .context("Failed to build user message")?
+                                .into(),
                             get_source_context(diags, self.project.clone(), 3, 6, 6, false, None)?,
                         ];
                         return Ok(GradeResult {
@@ -2348,22 +2335,21 @@ impl DiffGrader {
                         diags,
                     }) => {
                         let messages = vec![
-                            ChatCompletionRequestMessage {
-                                role:          Role::System,
-                                content:       SYSTEM_MESSAGE.to_string().into(),
-                                name:          Some("Instructor".into()),
-                                function_call: None,
-                            },
-                            ChatCompletionRequestMessage {
-                                role:          Role::User,
-                                content:       format!(
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(SYSTEM_MESSAGE.to_string())
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
+                            ChatCompletionRequestUserMessageArgs::default()
+                                .content(format!(
                                     "Error while compiling -\n```\n{}\n```",
                                     stacktrace
-                                )
+                                ))
+                                .name("Student".to_string())
+                                .build()
+                                .context("Failed to build user message")?
                                 .into(),
-                                name:          Some("Student".into()),
-                                function_call: None,
-                            },
                             get_source_context(diags, self.project.clone(), 3, 6, 6, false, None)?,
                         ];
                         return Ok(GradeResult {
@@ -2375,18 +2361,18 @@ impl DiffGrader {
                     }
                     Err(e) => {
                         let messages = vec![
-                            ChatCompletionRequestMessage {
-                                role:          Role::System,
-                                content:       SYSTEM_MESSAGE.to_string().into(),
-                                name:          Some("Instructor".into()),
-                                function_call: None,
-                            },
-                            ChatCompletionRequestMessage {
-                                role:          Role::User,
-                                content:       format!("Unknown error -\n```\n{:?}\n```", e).into(),
-                                name:          Some("Student".into()),
-                                function_call: None,
-                            },
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(SYSTEM_MESSAGE.to_string())
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
+                            ChatCompletionRequestUserMessageArgs::default()
+                                .content(format!("Unknown error -\n```\n{:?}\n```", e))
+                                .name("Student".to_string())
+                                .build()
+                                .context("Failed to build user message")?
+                                .into(),
                         ];
                         return Ok(GradeResult {
                             requirement: self.req_name.clone(),
@@ -2477,18 +2463,18 @@ impl DiffGrader {
                 },
                 reason:      "See above.".to_string(),
                 prompt:      Some(vec![
-                    ChatCompletionRequestMessage {
-                        role:          Role::System,
-                        content:       SYSTEM_MESSAGE.to_string().into(),
-                        name:          Some("Instructor".into()),
-                        function_call: None,
-                    },
-                    ChatCompletionRequestMessage {
-                        role:          Role::System,
-                        content:       Some(context),
-                        name:          Some("Student".into()),
-                        function_call: None,
-                    },
+                    ChatCompletionRequestSystemMessageArgs::default()
+                        .content(SYSTEM_MESSAGE.to_string())
+                        .name("Instructor".to_string())
+                        .build()
+                        .context("Failed to build system message")?
+                        .into(),
+                    ChatCompletionRequestSystemMessageArgs::default()
+                        .content(context)
+                        .name("Student".to_string())
+                        .build()
+                        .context("Failed to build system message")?
+                        .into(),
                 ]),
             })
         }
@@ -3061,7 +3047,7 @@ impl QueryGrader {
             let mut new_matches = vec![];
 
             for code in matches {
-                let parser = Parser::new(code, *JAVA_TS_LANG).context(format!(
+                let parser = Parser::new(code).context(format!(
                     "Failed to create parser for query: `{}`",
                     q.query()
                 ))?;
@@ -3131,23 +3117,22 @@ impl QueryGrader {
                     },
                     reason,
                     prompt: Some(vec![
-                        ChatCompletionRequestMessage {
-                            role:          Role::System,
-                            content:       SYSTEM_MESSAGE.to_string().into(),
-                            name:          Some("Instructor".into()),
-                            function_call: None,
-                        },
-                        ChatCompletionRequestMessage {
-                            role:          Role::System,
-                            content:       format!(
+                        ChatCompletionRequestSystemMessageArgs::default()
+                            .content(SYSTEM_MESSAGE.to_string())
+                            .name("Instructor".to_string())
+                            .build()
+                            .context("Failed to build system message")?
+                            .into(),
+                        ChatCompletionRequestSystemMessageArgs::default()
+                            .content(format!(
                                 "Something went wrong when using treesitter queries to grade \
                                  `{}`. Error message:\n\n```\n{}\n```\n",
                                 self.file, e
-                            )
+                            ))
+                            .name("Instructor".to_string())
+                            .build()
+                            .context("Failed to build system message")?
                             .into(),
-                            name:          Some("Instructor".into()),
-                            function_call: None,
-                        },
                     ]),
                 })
             }
@@ -3164,22 +3149,18 @@ impl QueryGrader {
                         },
                         reason,
                         prompt: Some(vec![
-                            ChatCompletionRequestMessage {
-                                role:          Role::System,
-                                content:       SYSTEM_MESSAGE.to_string().into(),
-                                name:          Some("Instructor".into()),
-                                function_call: None,
-                            },
-                            ChatCompletionRequestMessage {
-                                role:          Role::System,
-                                content:       format!(
-                                    "For file `{}`: {}.",
-                                    self.file, self.reason
-                                )
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(SYSTEM_MESSAGE.to_string())
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
                                 .into(),
-                                name:          Some("Instructor".into()),
-                                function_call: None,
-                            },
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(format!("For file `{}`: {}.", self.file, self.reason))
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
                         ]),
                     })
                 } else {
@@ -3214,19 +3195,18 @@ impl QueryGrader {
                         },
                         reason,
                         prompt: Some(vec![
-                            ChatCompletionRequestMessage {
-                                role:          Role::System,
-                                content:       SYSTEM_MESSAGE.to_string().into(),
-                                name:          Some("Instructor".into()),
-                                function_call: None,
-                            },
-                            ChatCompletionRequestMessage {
-                                role:          Role::System,
-                                content:       format!("For file `{}`: {}", self.file, self.reason)
-                                    .into(),
-                                name:          Some("Instructor".into()),
-                                function_call: None,
-                            },
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(SYSTEM_MESSAGE.to_string())
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(format!("For file `{}`: {}", self.file, self.reason))
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
                         ]),
                     })
                 }
@@ -3251,19 +3231,18 @@ impl QueryGrader {
                         },
                         reason,
                         prompt: Some(vec![
-                            ChatCompletionRequestMessage {
-                                role:          Role::System,
-                                content:       SYSTEM_MESSAGE.to_string().into(),
-                                name:          Some("Instructor".into()),
-                                function_call: None,
-                            },
-                            ChatCompletionRequestMessage {
-                                role:          Role::System,
-                                content:       format!("For file `{}`: {}", self.file, self.reason)
-                                    .into(),
-                                name:          Some("Instructor".into()),
-                                function_call: None,
-                            },
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(SYSTEM_MESSAGE.to_string())
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(format!("For file `{}`: {}", self.file, self.reason))
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
                         ]),
                     })
                 }

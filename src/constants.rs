@@ -13,7 +13,6 @@ use lazy_static::lazy_static;
 use postgrest::Postgrest;
 use rhai::AST;
 use state::InitCell;
-use tree_sitter;
 
 // TODO: replace with https://lib.rs/crates/state
 lazy_static! {
@@ -31,8 +30,6 @@ lazy_static! {
     pub static ref UMM_DIR: PathBuf = PathBuf::from(".").join(".umm");
     /// Platform specific separator character for javac paths
     pub static ref SEPARATOR: &'static str = if cfg!(windows) { ";" } else { ":" };
-    /// Reference to treesitter language struct
-    pub static ref JAVA_TS_LANG: tree_sitter::Language = tree_sitter_java::language();
     /// Supabase public api key
     pub static ref SUPABASE_KEY: String = String::from("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5YW5jenRtempsZWtvamVwcm9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjA4NDA1NzgsImV4cCI6MTk3NjQxNjU3OH0.yMvOYM0AM61v6MRsHUSgO0BPrQHTde2AiKzE0b4H4lo");
     /// PostGrest client
@@ -79,7 +76,7 @@ pub const TERM: &str = "Fall 2022";
 pub const COURSE: &str = "ITSC 2214";
 
 /// Prompt truncation length
-pub const PROMPT_TRUNCATE: usize = 6000;
+pub const PROMPT_TRUNCATE: usize = 15000;
 
 /// file name for JUnit platform console standard jar
 pub const JUNIT_PLATFORM: &str = "junit-platform-console-standalone-1.9.0-RC1.jar";
