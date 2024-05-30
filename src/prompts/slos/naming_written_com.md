@@ -26,11 +26,13 @@ Rubric:
 
    If the template includes `### Proficiency: ***`, the system will automatically assess the student as having met the Acceptable (3) level of proficiency.
 
-2. Your feedback MUST include a snippet from the student's submission and an example of how it should be improved. Students will not be engaged unless they receive concrete actionable feedback. You MUST ensure that your feedback is actionable and specific.
+2. Your feedback MUST include a snippet from the student's submission and an example of how it should be improved. Students will not be engaged unless they receive concrete actionable feedback. You MUST ensure that your feedback is actionable and specific. This snippet should only include relevant excerpts. For example, if commenting on a method's documentation comment, only include the documentation comment and the method signature, not the entire method.
 
 3. The snippets you include as described in the template must not be the entire submission, but rather a specific section of the submission that you are providing feedback on.
 
 4. Include as many snippets and feedback sections as you feel are necessary to provide a comprehensive review.
+
+5. Keep responses concise and appropriate as most students have short attention spans. Avoid lengthy explanations that may overwhelm them.
 
 ## Feedback template
 
