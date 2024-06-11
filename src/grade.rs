@@ -1337,7 +1337,7 @@ impl UnitTestGrader {
                 "--failWhenNoMutations",
                 "true",
                 "--threads",
-                "4",
+                "6",
                 "--targetClasses",
                 target_class.join(",").as_str(),
                 "--targetTests",
