@@ -2071,7 +2071,7 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
                                     model: std::env::var("OPENAI_MODEL")
                                         .expect("OPENAI_MODEL must be set for SLO feedback"),
                                     messages: messages.clone(),
-                                    temperature: Some(0.0),
+                                    temperature: Some(0.6),
                                     top_p: Some(1.0),
                                     n: Some(1),
                                     stream: Some(false),
