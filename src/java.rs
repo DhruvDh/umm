@@ -1361,7 +1361,6 @@ impl Project {
 
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
-		"Codeium.codeium",
         "vscjava.vscode-java-pack",
         "ms-vsliveshare.vsliveshare"
 	],
