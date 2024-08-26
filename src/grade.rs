@@ -1810,7 +1810,11 @@ async fn generate_combined_slo_report(
                  that combines feedback from multiple Student Learning Outcomes (SLOs). Your goal \
                  is to provide a comprehensive overview of the student's performance across all \
                  SLOs, highlighting strengths, areas for improvement, and specific \
-                 recommendations.",
+                 recommendations.
+                 
+                 The report should also serve as an effective code review, offering actionable \
+                 insights that the student can use to enhance their code quality and programming \
+                 skills.",
             )
             .name("Instructor")
             .build()?
