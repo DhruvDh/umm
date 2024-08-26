@@ -1814,7 +1814,13 @@ async fn generate_combined_slo_report(
                  
                  The report should also serve as an effective code review, offering actionable \
                  insights that the student can use to enhance their code quality and programming \
-                 skills.",
+                 skills.
+                 
+                 The student is the intended audience for this report, so talk directly to them in \
+                 a friendly, constructive manner. Use clear, concise language and provide \
+                 specific code examples to support your feedback. Especially when making \
+                 recommendations, explain the reasoning behind your suggestions and offer \
+                 guidance on how the student can implement them effectively.",
             )
             .name("Instructor")
             .build()?
