@@ -22,6 +22,7 @@ use anyhow::{
 };
 use async_openai::{
     config::OpenAIConfig,
+    error::OpenAIError,
     types::{
         ChatCompletionRequestMessage,
         ChatCompletionRequestSystemMessageArgs,
@@ -29,12 +30,9 @@ use async_openai::{
         CreateChatCompletionRequest,
         CreateChatCompletionResponse,
     },
+    Client as OpenAIClient,
 };
 use colored::Colorize;
-use futures::{
-    future::try_join_all,
-    stream::FuturesUnordered,
-};
 use itertools::Itertools;
 use rhai::FnPtr;
 #[allow(deprecated)]
@@ -1764,6 +1762,269 @@ enum SLOFileType {
     SourceAndTest,
 }
 
+async fn generate_combined_slo_report(
+    slo_responses: Vec<(&str, Result<CreateChatCompletionResponse, OpenAIError>)>,
+) -> Result<String> {
+    let mut individual_feedbacks = Vec::new();
+
+    for (name, resp) in slo_responses {
+        match resp {
+            Ok(response) => {
+                let content = response
+                    .choices
+                    .first()
+                    .and_then(|choice| choice.message.content.clone())
+                    .unwrap_or_default();
+
+                individual_feedbacks.push(format!("SLO: {}\n\n{}", name, content));
+            }
+            Err(e) => {
+                // Log the error or handle it as appropriate for your use case
+                eprintln!("Error processing SLO '{}': {:?}", name, e);
+                individual_feedbacks.push(format!(
+                    "SLO: {}\n\nError: Unable to process this SLO.",
+                    name
+                ));
+            }
+        }
+    }
+
+    let combined_feedback = individual_feedbacks.join("\n\n---\n\n");
+
+    let openai_client = OpenAIClient::with_config(
+        OpenAIConfig::new()
+            .with_api_base(
+                std::env::var("OPENAI_ENDPOINT")
+                    .context("OPENAI_ENDPOINT must be set for SLO feedback")?,
+            )
+            .with_api_key(
+                std::env::var("OPENAI_API_KEY_SLO")
+                    .context("OPENAI_API_KEY_SLO must be set for SLO feedback")?,
+            ),
+    );
+
+    let messages = vec![
+        ChatCompletionRequestSystemMessageArgs::default()
+            .content(
+                "You are an AI assistant tasked with creating a concise, well-structured report \
+                 that combines feedback from multiple Student Learning Outcomes (SLOs). Your goal \
+                 is to provide a comprehensive overview of the student's performance across all \
+                 SLOs, highlighting strengths, areas for improvement, and specific \
+                 recommendations.",
+            )
+            .name("Instructor")
+            .build()?
+            .into(),
+        ChatCompletionRequestUserMessageArgs::default()
+            .content(format!(
+                "Please create a combined report based on the following individual SLO \
+                 feedbacks:\n\n{}",
+                combined_feedback
+            ))
+            .name("Student")
+            .build()?
+            .into(),
+    ];
+
+    let response = openai_client
+        .chat()
+        .create(CreateChatCompletionRequest {
+            model: std::env::var("OPENAI_MODEL")
+                .context("OPENAI_MODEL must be set for SLO feedback")?,
+            messages,
+            temperature: Some(0.0),
+            top_p: Some(1.0),
+            n: Some(1),
+            stream: Some(false),
+            ..Default::default()
+        })
+        .await?;
+
+    response
+        .choices
+        .first()
+        .and_then(|choice| choice.message.content.clone())
+        .ok_or_else(|| anyhow::anyhow!("No content in OpenAI response"))
+}
+
+/// Generates SLO responses for a given project.
+///
+/// # Arguments
+///
+/// * `project` - The project for which to generate SLO responses.
+/// * `source_files` - A list of source files in the project.
+/// * `test_files` - A list of test files in the project.
+/// * `project_title` - The title of the project.
+/// * `project_description` - A description of the project.
+///
+/// # Returns
+///
+/// A vector of tuples containing the SLO name and the result of the SLO
+/// response.
+async fn generate_slo_responses(
+    project: &Project,
+    source_files: &[String],
+    test_files: &[String],
+    project_title: &str,
+    project_description: &str,
+    enabled_slos: &HashSet<String>, // New parameter
+) -> Result<
+    Vec<(
+        &'static str,
+        Result<CreateChatCompletionResponse, OpenAIError>,
+    )>,
+> {
+    let slos = vec![
+        (
+            "slo_algorithmic_solutions",
+            "Algorithmic Solutions",
+            ALGORITHMIC_SOLUTIONS_SLO.as_str(),
+            SLOFileType::Source,
+        ),
+        (
+            "slo_code_readability",
+            "Code Readability and Formatting",
+            CODE_READABILITY_SLO.as_str(),
+            SLOFileType::SourceAndTest,
+        ),
+        (
+            "slo_comments",
+            "Comments",
+            COMMENTS_WRITTEN_SLO.as_str(),
+            SLOFileType::SourceAndTest,
+        ),
+        (
+            "slo_error_handling",
+            "Error Handling",
+            ERROR_HANDLING_SLO.as_str(),
+            SLOFileType::SourceAndTest,
+        ),
+        (
+            "slo_logic",
+            "Logic",
+            LOGIC_SLO.as_str(),
+            SLOFileType::SourceAndTest,
+        ),
+        (
+            "slo_naming_conventions",
+            "Naming Conventions",
+            NAMING_CONVENTIONS_SLO.as_str(),
+            SLOFileType::SourceAndTest,
+        ),
+        (
+            "slo_oop_programming",
+            "Object Oriented Programming",
+            OBJECT_ORIENTED_PROGRAMMING_SLO.as_str(),
+            SLOFileType::SourceAndTest,
+        ),
+        (
+            "slo_syntax",
+            "Syntax",
+            SYNTAX_SLO.as_str(),
+            SLOFileType::SourceAndTest,
+        ),
+        (
+            "slo_testing",
+            "Testing",
+            TESTING_SLO.as_str(),
+            SLOFileType::Test,
+        ),
+    ];
+
+    let mut slo_requests = Vec::new();
+
+    for (slo_key, slo_name, slo_system_message, slo_file_type) in slos {
+        if !enabled_slos.contains(slo_key) {
+            continue;
+        }
+
+        let relevant_files: Vec<File> = match slo_file_type {
+            SLOFileType::Source => source_files
+                .iter()
+                .filter_map(|x| project.identify(x).ok())
+                .collect(),
+            SLOFileType::Test => test_files
+                .iter()
+                .filter_map(|x| project.identify(x).ok())
+                .collect(),
+            SLOFileType::SourceAndTest => source_files
+                .iter()
+                .chain(test_files.iter())
+                .filter_map(|x| project.identify(x).ok())
+                .collect(),
+        };
+
+        let relevant_file_codes: Vec<String> =
+            relevant_files.iter().map(|x| x.parser().code()).collect();
+
+        ensure!(
+            !relevant_file_codes.is_empty(),
+            "No relevant files ({:?}) with source code found for SLO {}",
+            slo_file_type,
+            slo_name
+        );
+
+        let mut student_message = vec![format!(
+            "# Submission for {project_title}\n\nDescription: {project_description}"
+        )];
+
+        for (file, code) in relevant_files.iter().zip(relevant_file_codes.iter()) {
+            student_message.push(format!(
+                "\n\n## Contents of {file_name}\n\n```java\n{code}\n```",
+                file_name = file.proper_name(),
+                code = code
+            ));
+        }
+
+        let student_message = student_message.join("\n\n");
+        let messages = vec![
+            ChatCompletionRequestSystemMessageArgs::default()
+                .content(slo_system_message.to_string())
+                .name("Instructor".to_string())
+                .build()?
+                .into(),
+            ChatCompletionRequestUserMessageArgs::default()
+                .content(student_message)
+                .name("Student".to_string())
+                .build()?
+                .into(),
+        ];
+
+        slo_requests.push(async move {
+            let openai_client = OpenAIClient::with_config(
+                OpenAIConfig::new()
+                    .with_api_base(
+                        std::env::var("OPENAI_ENDPOINT")
+                            .expect("OPENAI_ENDPOINT must be set for SLO feedback"),
+                    )
+                    .with_api_key(
+                        std::env::var("OPENAI_API_KEY_SLO")
+                            .expect("OPENAI_API_KEY_SLO must be set for SLO feedback"),
+                    ),
+            );
+
+            let response = openai_client
+                .chat()
+                .create(CreateChatCompletionRequest {
+                    model: std::env::var("OPENAI_MODEL")
+                        .expect("OPENAI_MODEL must be set for SLO feedback"),
+                    messages: messages.clone(),
+                    temperature: Some(0.0),
+                    top_p: Some(1.0),
+                    n: Some(1),
+                    stream: Some(false),
+                    ..Default::default()
+                })
+                .await;
+
+            (slo_name, response)
+        });
+    }
+
+    let slo_responses = futures::future::join_all(slo_requests).await;
+    Ok(slo_responses)
+}
+
 #[generate_rhai_variant(Fallible)]
 /// Print grade result
 ///
@@ -1854,65 +2115,23 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
     let show_table = get_or_default("show_table", true);
     let gradescope_json = get_or_default("results_json", false);
     let gradescope_feedback = get_or_default("feedback", false);
-    let gradescope_leaderboard = get_or_default("leaderboard", false);
     let gradescope_debug = get_or_default("debug", false);
 
-    let slos = vec![
-        (
-            "slo_algorithmic_solutions",
-            "Algorithmic Solutions",
-            ALGORITHMIC_SOLUTIONS_SLO.as_str(),
-            SLOFileType::Source,
-        ),
-        (
-            "slo_code_readability",
-            "Code Readability and Formatting",
-            CODE_READABILITY_SLO.as_str(),
-            SLOFileType::SourceAndTest,
-        ),
-        (
-            "slo_comments",
-            "Comments",
-            COMMENTS_WRITTEN_SLO.as_str(),
-            SLOFileType::SourceAndTest,
-        ),
-        (
-            "slo_error_handling",
-            "Error Handling",
-            ERROR_HANDLING_SLO.as_str(),
-            SLOFileType::SourceAndTest,
-        ),
-        (
-            "slo_logic",
-            "Logic",
-            LOGIC_SLO.as_str(),
-            SLOFileType::SourceAndTest,
-        ),
-        (
-            "slo_naming_conventions",
-            "Naming Conventions",
-            NAMING_CONVENTIONS_SLO.as_str(),
-            SLOFileType::SourceAndTest,
-        ),
-        (
-            "slo_oop_programming",
-            "Object Oriented Programming",
-            OBJECT_ORIENTED_PROGRAMMING_SLO.as_str(),
-            SLOFileType::SourceAndTest,
-        ),
-        (
-            "slo_sytax",
-            "Syntax",
-            SYNTAX_SLO.as_str(),
-            SLOFileType::SourceAndTest,
-        ),
-        (
-            "slo_testing",
-            "Testing",
-            TESTING_SLO.as_str(),
-            SLOFileType::Test,
-        ),
-    ];
+    let enabled_slos: HashSet<String> = vec![
+        "slo_algorithmic_solutions",
+        "slo_code_readability",
+        "slo_comments",
+        "slo_error_handling",
+        "slo_logic",
+        "slo_naming_conventions",
+        "slo_oop_programming",
+        "slo_syntax",
+        "slo_testing",
+    ]
+    .into_iter()
+    .filter(|&slo| get_or_default(slo, false))
+    .map(String::from)
+    .collect();
 
     let (grade, out_of) = results.iter().fold((0f64, 0f64), |acc, r| {
         (acc.0 + r.grade.grade, acc.1 + r.grade.out_of)
@@ -1970,195 +2189,50 @@ pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
             test_cases.push(test_case);
         }
 
-        let leaderboard_entries = if gradescope_leaderboard {
+        if grade > pass_threshold * out_of && !enabled_slos.is_empty() {
             let runtime = RUNTIME.handle().clone();
 
-            if grade > pass_threshold * out_of {
-                ensure!(
-                    !project_title.is_empty(),
-                    "Project title must be specified to generate SLO feedback",
-                );
-                ensure!(
-                    !project_description.is_empty(),
-                    "Project description must be specified to generate SLO feedback",
-                );
+            ensure!(
+                !project_title.is_empty(),
+                "Project title must be specified to generate SLO feedback"
+            );
+            ensure!(
+                !project_description.is_empty(),
+                "Project description must be specified to generate SLO feedback"
+            );
 
-                let mut leaderboard_entries = Vec::new();
-                let mut slo_requests = Vec::new();
-
-                for (slo_key, slo_name, slo_system_message, slo_file_type) in slos {
-                    if !get_or_default(slo_key, false) {
-                        continue;
-                    }
-                    let relevant_files: Vec<File> = match slo_file_type {
-                        SLOFileType::Source => source_files
-                            .iter()
-                            .filter_map(|x| project.identify(x).ok())
-                            .collect(),
-                        SLOFileType::Test => test_files
-                            .iter()
-                            .filter_map(|x| project.identify(x).ok())
-                            .collect(),
-                        SLOFileType::SourceAndTest => source_files
-                            .iter()
-                            .chain(test_files.clone().iter())
-                            .filter_map(|x| project.identify(x).ok())
-                            .collect(),
-                    };
-
-                    let relevant_file_codes: Vec<String> = relevant_files
-                        .clone()
-                        .into_iter()
-                        .map(|x| x.parser().code())
-                        .collect();
-
-                    ensure!(
-                        !relevant_file_codes.is_empty(),
-                        "No relevant files ({:?}) with source code found for SLO {}",
-                        slo_file_type,
-                        slo_key
-                    );
-
-                    let mut student_message = vec![format!(
-                        "# Submission for {project_title}\n\nDescription: {project_description}"
-                    )];
-
-                    relevant_files
-                        .into_iter()
-                        .zip(relevant_file_codes)
-                        .for_each(|(file, code)| {
-                            student_message.push(format!(
-                                "\n\n## Contents of {file_name}\n\n```java\n{code}\n```",
-                                file_name = file.proper_name(),
-                                code = code
-                            ));
-                        });
-
-                    let student_message = student_message.join("\n\n");
-                    let messages = vec![
-                        ChatCompletionRequestSystemMessageArgs::default()
-                            .content(slo_system_message.to_string())
-                            .name("Instructor".to_string())
-                            .build()
-                            .context("Failed to build system message")?
-                            .into(),
-                        ChatCompletionRequestUserMessageArgs::default()
-                            .content(student_message)
-                            .name("Student".to_string())
-                            .build()
-                            .context("Failed to build user message")?
-                            .into(),
-                    ];
-
-                    slo_requests.push(runtime.spawn(async move {
-                        let together_client = async_openai::Client::with_config(
-                            OpenAIConfig::new()
-                                .with_api_base(
-                                    std::env::var("OPENAI_ENDPOINT")
-                                        .expect("OPENAI_ENDPOINT must be set for SLO feedback"),
-                                )
-                                .with_api_key(
-                                    std::env::var("OPENAI_API_KEY_SLO")
-                                        .expect("OPENAI_API_KEY_SLO must be set for SLO feedback"),
-                                ),
-                        );
-                        let together_client = together_client.chat();
-
-                        (
-                            slo_name,
-                            together_client
-                                .create(CreateChatCompletionRequest {
-                                    model: std::env::var("OPENAI_MODEL")
-                                        .expect("OPENAI_MODEL must be set for SLO feedback"),
-                                    messages: messages.clone(),
-                                    temperature: Some(0.6),
-                                    top_p: Some(1.0),
-                                    n: Some(1),
-                                    stream: Some(false),
-                                    // max_tokens: Some(3072),
-                                    ..Default::default()
-                                })
-                                .await,
-                        )
-                    }));
-                }
-
-                let slo_requests = slo_requests.into_iter().collect::<FuturesUnordered<_>>();
-                let slo_responses = runtime.block_on(async { try_join_all(slo_requests).await })?;
-
-                for (name, resp) in slo_responses {
-                    let resp = resp?
-                        .choices
-                        .first()
-                        .unwrap()
-                        .message
-                        .content
-                        .clone()
-                        .unwrap_or_default();
-
-                    let proficiency = if resp.contains("### Proficiency: *****") {
-                        String::from("*****")
-                    } else if resp.contains("### Proficiency: ****") {
-                        String::from("****")
-                    } else if resp.contains("### Proficiency: ***") {
-                        String::from("***")
-                    } else if resp.contains("### Proficiency: **") {
-                        String::from("**")
-                    } else if resp.contains("### Proficiency: *") {
-                        String::from("*")
-                    } else {
-                        String::from("")
-                    };
-
-                    test_cases.push(
-                        GradescopeTestCase::builder()
-                            .name(name.to_string())
-                            .name_format(GradescopeOutputFormat::Text)
-                            .output(resp.clone())
-                            .output_format(GradescopeOutputFormat::Md)
-                            .max_score(0f64)
-                            .score(0f64)
-                            .build(),
-                    );
-
-                    leaderboard_entries.push(
-                        GradescopeLeaderboardEntry::builder()
-                            .name(name.to_string())
-                            .value(proficiency)
-                            .build(),
-                    );
-                }
-
-                Some(leaderboard_entries)
-            } else {
-                Some(
-                    slos.iter()
-                        .filter_map(|(slo_key, slo_name, _, _)| {
-                            if get_or_default(slo_key, false) {
-                                Some(
-                                    GradescopeLeaderboardEntry::builder()
-                                        .name(slo_name.to_string())
-                                        .value(String::new())
-                                        .build(),
-                                )
-                            } else {
-                                None
-                            }
-                        })
-                        .collect::<Vec<GradescopeLeaderboardEntry>>(),
+            let slo_responses = runtime.block_on(async {
+                generate_slo_responses(
+                    &project,
+                    &source_files,
+                    &test_files,
+                    &project_title,
+                    &project_description,
+                    &enabled_slos,
                 )
-            }
-        } else {
-            None
-        };
+                .await
+            })?;
 
+            let combined_report =
+                runtime.block_on(async { generate_combined_slo_report(slo_responses).await })?;
+
+            test_cases.push(
+                GradescopeTestCase::builder()
+                    .name("Student Learning Outcomes (SLOs) Feedback".to_string())
+                    .name_format(GradescopeOutputFormat::Text)
+                    .output(combined_report)
+                    .output_format(GradescopeOutputFormat::Md)
+                    .max_score(0f64)
+                    .score(0f64)
+                    .build(),
+            );
+        }
         let submission = GradescopeSubmission::builder()
             .tests(Some(test_cases))
             .test_output_format(GradescopeOutputFormat::Md)
             .test_name_format(GradescopeOutputFormat::Text)
             .stdout_visibility(GradescopeVisibility::Visible)
             .visibility(GradescopeVisibility::Visible)
-            .leaderboard(leaderboard_entries)
             .build();
 
         let mut file = fs::File::create(if gradescope_debug {

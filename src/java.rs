@@ -898,8 +898,8 @@ impl File {
     /// Returns the output from JUnit as a string. There are parsers in
     /// ['parsers module'][crate::parsers::parser] that helps parse this output.
     ///
-    /// * `tests`: list of strings (or types that implement
-    /// `Into<String>`) meant to represent test method names,
+    /// * `tests`: list of strings (or types that implement `Into<String>`)
+    ///   meant to represent test method names,
     pub fn test(
         &self,
         tests: Vec<&str>,
