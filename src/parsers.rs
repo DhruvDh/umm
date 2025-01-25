@@ -1,8 +1,4 @@
-use crate::grade::{
-    JavacDiagnostic,
-    LineRef,
-    MutationDiagnostic,
-};
+use crate::grade::{JavacDiagnostic, LineRef, MutationDiagnostic};
 
 peg::parser! {
     /// includes some useful grammars for parsing JUNit/javac/pitest outputs.

@@ -3,10 +3,7 @@
 
 use std::{
     path::PathBuf,
-    sync::{
-        Arc,
-        Mutex,
-    },
+    sync::{Arc, Mutex},
 };
 
 use lazy_static::lazy_static;

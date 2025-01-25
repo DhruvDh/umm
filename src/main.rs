@@ -16,10 +16,7 @@
 
 use std::{
     collections::HashSet,
-    io::{
-        Read,
-        Write,
-    },
+    io::{Read, Write},
     path::PathBuf,
 };
 
@@ -27,23 +24,11 @@ use anyhow::Result;
 use bpaf::*;
 use dotenvy::dotenv;
 use self_update::cargo_crate_version;
-use tracing::{
-    metadata::LevelFilter,
-    Level,
-};
-use tracing_subscriber::{
-    fmt,
-    prelude::*,
-    util::SubscriberInitExt,
-};
+use tracing::{metadata::LevelFilter, Level};
+use tracing_subscriber::{fmt, prelude::*, util::SubscriberInitExt};
 use umm::{
     clean,
-    constants::{
-        LIB_DIR,
-        ROOT_DIR,
-        SOURCE_DIR,
-        TEST_DIR,
-    },
+    constants::{LIB_DIR, ROOT_DIR, SOURCE_DIR, TEST_DIR},
     grade,
     java::Project,
 };
@@ -51,17 +36,16 @@ use walkdir::WalkDir;
 
 /// Updates binary based on github releases
 fn update() -> Result<()> {
-    self_update::backends::github::Update::configure()
-        .repo_owner("dhruvdh")
-        .repo_name("umm")
-        .bin_name("umm")
-        .no_confirm(true)
-        .target_version_tag("spring_24")
-        .show_download_progress(true)
-        .show_output(false)
-        .current_version(cargo_crate_version!())
-        .build()?
-        .update()?;
+    self_update::backends::github::Update::configure().repo_owner("dhruvdh")
+                                                      .repo_name("umm")
+                                                      .bin_name("umm")
+                                                      .no_confirm(true)
+                                                      .target_version_tag("spring_24")
+                                                      .show_download_progress(true)
+                                                      .show_output(false)
+                                                      .current_version(cargo_crate_version!())
+                                                      .build()?
+                                                      .update()?;
 
     eprintln!("Update done!");
     Ok(())
@@ -102,9 +86,8 @@ enum Cmd {
 fn options() -> Cmd {
     /// parses test names
     fn t() -> impl Parser<Vec<String>> {
-        positional("TESTNAME")
-            .help("Name of JUnit test to run")
-            .many()
+        positional("TESTNAME").help("Name of JUnit test to run")
+                              .many()
     }
 
     /// parsers file name
@@ -119,92 +102,78 @@ fn options() -> Cmd {
 
     /// parses path to project root folder
     fn h() -> impl Parser<String> {
-        positional("PATH")
-            .help("Path to project root folder. Defaults to current directory")
-            .fallback(String::from("."))
+        positional("PATH").help("Path to project root folder. Defaults to current directory")
+                          .fallback(String::from("."))
     }
 
-    let run = construct!(Cmd::Run(f()))
-        .to_options()
-        .command("run")
-        .help("Run a java file with a main method");
+    let run = construct!(Cmd::Run(f())).to_options()
+                                       .command("run")
+                                       .help("Run a java file with a main method");
 
-    let check = construct!(Cmd::Check(f()))
-        .to_options()
-        .command("check")
-        .help("Check for syntax errors");
+    let check = construct!(Cmd::Check(f())).to_options()
+                                           .command("check")
+                                           .help("Check for syntax errors");
 
-    let test = construct!(Cmd::Test(f(), t()))
-        .to_options()
-        .command("test")
-        .help("Run JUnit tests");
+    let test = construct!(Cmd::Test(f(), t())).to_options()
+                                              .command("test")
+                                              .help("Run JUnit tests");
 
-    let doc_check = construct!(Cmd::DocCheck(f()))
-        .to_options()
-        .command("doc-check")
-        .help("Check a file for missing javadoc");
+    let doc_check = construct!(Cmd::DocCheck(f())).to_options()
+                                                  .command("doc-check")
+                                                  .help("Check a file for missing javadoc");
 
-    let grade = construct!(Cmd::Grade(g()))
-        .to_options()
-        .command("grade")
-        .help("Grade your work");
+    let grade = construct!(Cmd::Grade(g())).to_options()
+                                           .command("grade")
+                                           .help("Grade your work");
 
-    let create_submission = construct!(Cmd::CreateSubmission(h()))
-        .to_options()
-        .command("create-submission")
-        .help("Create a submission zip");
+    let create_submission = construct!(Cmd::CreateSubmission(h())).to_options()
+                                                                  .command("create-submission")
+                                                                  .help("Create a submission zip");
 
-    let clean = pure(Cmd::Clean)
-        .to_options()
-        .command("clean")
-        .help("Cleans the build folder, library folder, and vscode settings");
+    let clean =
+        pure(Cmd::Clean).to_options()
+                        .command("clean")
+                        .help("Cleans the build folder, library folder, and vscode settings");
 
-    let info = pure(Cmd::Info)
-        .to_options()
-        .command("info")
-        .help("Prints a JSON description of the project as parsed");
+    let info = pure(Cmd::Info).to_options()
+                              .command("info")
+                              .help("Prints a JSON description of the project as parsed");
 
-    let update = pure(Cmd::Update)
-        .to_options()
-        .command("update")
-        .help("Update the umm command");
+    let update = pure(Cmd::Update).to_options()
+                                  .command("update")
+                                  .help("Update the umm command");
 
-    let check_health = pure(Cmd::CheckHealth)
-        .to_options()
-        .command("check-health")
-        .help("Checks the health of the project");
+    let check_health = pure(Cmd::CheckHealth).to_options()
+                                             .command("check-health")
+                                             .help("Checks the health of the project");
 
-    let serve = pure(Cmd::ServeProjectCode)
-        .to_options()
-        .command("serve-project-code")
-        .help("Starts and serves a web server that serves the project code");
+    let serve =
+        pure(Cmd::ServeProjectCode).to_options()
+                                   .command("serve-project-code")
+                                   .help("Starts and serves a web server that serves the project \
+                                          code");
 
-    let reset = pure(Cmd::Reset)
-        .to_options()
-        .command("reset")
-        .help("Reset the project metadata, and re-download libraries");
+    let reset = pure(Cmd::Reset).to_options()
+                                .command("reset")
+                                .help("Reset the project metadata, and re-download libraries");
 
-    let exit = pure(Cmd::Exit)
-        .to_options()
-        .command("exit")
-        .help("Exit the program");
+    let exit = pure(Cmd::Exit).to_options()
+                              .command("exit")
+                              .help("Exit the program");
 
-    let cmd = construct!([
-        run,
-        check,
-        test,
-        doc_check,
-        grade,
-        create_submission,
-        clean,
-        info,
-        update,
-        check_health,
-        serve,
-        reset,
-        exit
-    ])
-    .fallback(Cmd::Exit);
+    let cmd = construct!([run,
+                          check,
+                          test,
+                          doc_check,
+                          grade,
+                          create_submission,
+                          clean,
+                          info,
+                          update,
+                          check_health,
+                          serve,
+                          reset,
+                          exit]).fallback(Cmd::Exit);
 
     cmd.to_options().descr("Build tool for novices").run()
 }
@@ -212,15 +181,13 @@ fn options() -> Cmd {
 fn main() -> Result<()> {
     dotenv().ok();
 
-    let fmt = fmt::layer()
-        .without_time()
-        .with_file(false)
-        .with_line_number(false);
+    let fmt = fmt::layer().without_time()
+                          .with_file(false)
+                          .with_line_number(false);
     let filter_layer = LevelFilter::from_level(Level::INFO);
-    tracing_subscriber::registry()
-        .with(fmt)
-        .with(filter_layer)
-        .init();
+    tracing_subscriber::registry().with(fmt)
+                                  .with(filter_layer)
+                                  .init();
 
     let cmd = options();
 
@@ -246,57 +213,53 @@ fn main() -> Result<()> {
         },
         Cmd::Test(f, t) => {
             let out = if t.is_empty() {
-                Project::new()?
-                    .identify(f.as_str())?
-                    .test_mut_script(vec![])?
+                Project::new()?.identify(f.as_str())?
+                               .test_mut_script(vec![])?
             } else {
-                Project::new()?
-                    .identify(f.as_str())?
-                    .test_mut_script(t.iter().map(|i| i.as_str()).collect())?
+                Project::new()?.identify(f.as_str())?
+                               .test_mut_script(t.iter().map(|i| i.as_str()).collect())?
             };
 
             println!("{out}");
         }
         Cmd::DocCheck(f) => {
-            let out = Project::new()?
-                .identify(f.as_str())?
-                .doc_check_mut_script()?;
+            let out = Project::new()?.identify(f.as_str())?
+                                     .doc_check_mut_script()?;
             println!("{out}");
         }
         Cmd::Grade(g) => grade(&g)?,
         Cmd::CreateSubmission(p) => {
-            let zip_file_name = format!(
-                "submission-{}.zip",
-                chrono::offset::Local::now().format("%Y-%m-%d-%H-%M-%S")
-            );
+            let zip_file_name = format!("submission-{}.zip",
+                                        chrono::offset::Local::now().format("%Y-%m-%d-%H-%M-%S"));
             let zip_file = std::fs::File::create(PathBuf::from(zip_file_name.clone()))?;
 
             let all_files = {
-                let source_walkdir: Vec<_> = WalkDir::new(SOURCE_DIR.as_path())
-                    .into_iter()
-                    .filter_map(|e| e.ok())
-                    .collect();
-                let lib_walkdir: Vec<_> = WalkDir::new(LIB_DIR.as_path())
-                    .into_iter()
-                    .filter_map(|e| e.ok())
-                    .collect();
-                let test_walkdir: Vec<_> = WalkDir::new(TEST_DIR.as_path())
-                    .into_iter()
-                    .filter_map(|e| e.ok())
-                    .collect();
-                let all_java_files: Vec<_> = WalkDir::new(PathBuf::from(p).as_path())
-                    .into_iter()
-                    .filter_map(|e| {
-                        e.ok()
-                            .filter(|x| x.path().extension().unwrap_or_default() == "java")
-                    })
-                    .collect();
+                let source_walkdir: Vec<_> =
+                    WalkDir::new(SOURCE_DIR.as_path()).into_iter()
+                                                      .filter_map(|e| e.ok())
+                                                      .collect();
+                let lib_walkdir: Vec<_> = WalkDir::new(LIB_DIR.as_path()).into_iter()
+                                                                         .filter_map(|e| e.ok())
+                                                                         .collect();
+                let test_walkdir: Vec<_> = WalkDir::new(TEST_DIR.as_path()).into_iter()
+                                                                           .filter_map(|e| e.ok())
+                                                                           .collect();
+                let all_java_files: Vec<_> =
+                    WalkDir::new(PathBuf::from(p).as_path()).into_iter()
+                                                            .filter_map(|e| {
+                                                                e.ok().filter(|x| {
+                                                                          x.path()
+                                                                           .extension()
+                                                                           .unwrap_or_default()
+                                                                          == "java"
+                                                                      })
+                                                            })
+                                                            .collect();
 
-                source_walkdir
-                    .into_iter()
-                    .chain(lib_walkdir)
-                    .chain(test_walkdir)
-                    .chain(all_java_files)
+                source_walkdir.into_iter()
+                              .chain(lib_walkdir)
+                              .chain(test_walkdir)
+                              .chain(all_java_files)
             };
 
             let mut zip = zip::ZipWriter::new(zip_file);

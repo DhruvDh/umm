@@ -1,10 +1,7 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-use serde::{
-    Deserialize,
-    Serialize,
-};
+use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
 /// Enum for VSCode task's type.
