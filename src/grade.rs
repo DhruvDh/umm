@@ -117,7 +117,7 @@ impl Grade {
     pub fn set_out_of(mut self,
                       out_of: f64)
                       -> Self {
-        self.grade = out_of;
+        self.out_of = out_of;
         self
     }
 }
