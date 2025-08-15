@@ -42,25 +42,26 @@ type Dict = std::collections::HashMap<String, String>;
 /// registered
 pub fn create_engine() -> Engine {
     let mut engine = Engine::new();
-    engine.register_type_with_name::<FileType>("JavaFileType")
-          .build_type::<DocsGrader>()
-          .build_type::<ByUnitTestGrader>()
-          .build_type::<UnitTestGrader>()
-          .build_type::<ByHiddenTestGrader>()
-          .build_type::<DiffGrader>()
-          .build_type::<Grade>()
-          .build_type::<GradeResult>()
-          .build_type::<Parser>()
-          .build_type::<File>()
-          .build_type::<Query>()
-          .build_type::<QueryGrader>()
-          .build_type::<Project>()
-          .register_fn("clean", clean_script)
-          .register_fn("show_results", show_result_script)
-          .register_fn("generate_single_feedback", generate_single_feedback_script)
-          .register_fn("generate_feedback", generate_feedback_script)
-          .register_fn("use_active_retrieval", use_active_retrieval)
-          .register_fn("use_heuristic_retrieval", use_heuristic_retrieval);
+    engine
+        .register_type_with_name::<FileType>("JavaFileType")
+        .build_type::<DocsGrader>()
+        .build_type::<ByUnitTestGrader>()
+        .build_type::<UnitTestGrader>()
+        .build_type::<ByHiddenTestGrader>()
+        .build_type::<DiffGrader>()
+        .build_type::<Grade>()
+        .build_type::<GradeResult>()
+        .build_type::<Parser>()
+        .build_type::<File>()
+        .build_type::<Query>()
+        .build_type::<QueryGrader>()
+        .build_type::<Project>()
+        .register_fn("clean", clean_script)
+        .register_fn("show_results", show_result_script)
+        .register_fn("generate_single_feedback", generate_single_feedback_script)
+        .register_fn("generate_feedback", generate_feedback_script)
+        .register_fn("use_active_retrieval", use_active_retrieval)
+        .register_fn("use_heuristic_retrieval", use_heuristic_retrieval);
     engine
 }
 
@@ -76,19 +77,19 @@ pub fn grade(name_or_path: &str) -> Result<()> {
             let rt = RUNTIME.handle().clone();
 
             let resp = rt.block_on(async {
-                             POSTGREST_CLIENT.from("grading_scripts")
-                                             .eq("course", COURSE)
-                                             .eq("term", TERM)
-                                             .eq("assignment", &assignment_name)
-                                             .select("url")
-                                             .single()
-                                             .execute()
-                                             .await?
-                                             .text()
-                                             .await
-                                             .context(format!("Could not get grading script for \
-                                                               {assignment_name}"))
-                         });
+                POSTGREST_CLIENT
+                    .from("grading_scripts")
+                    .eq("course", COURSE)
+                    .eq("term", TERM)
+                    .eq("assignment", &assignment_name)
+                    .select("url")
+                    .single()
+                    .execute()
+                    .await?
+                    .text()
+                    .await
+                    .context(format!("Could not get grading script for {assignment_name}"))
+            });
 
             let resp: serde_json::Value = serde_json::from_str(resp?.as_str())?;
             let resp = resp.as_object().unwrap();
@@ -99,10 +100,10 @@ pub fn grade(name_or_path: &str) -> Result<()> {
 
             let script_url = resp.get("url").unwrap().as_str().unwrap();
 
-            reqwest::blocking::get(script_url).context(format!("Cannot get url: {script_url}"))?
-                                              .text()
-                                              .context(format!("Could not parse the response \
-                                                                from {script_url} to text."))?
+            reqwest::blocking::get(script_url)
+                .context(format!("Cannot get url: {script_url}"))?
+                .text()
+                .context(format!("Could not parse the response from {script_url} to text."))?
         }
     };
     let compiled_ast = engine.compile(script)?;
@@ -122,34 +123,22 @@ pub fn grade(name_or_path: &str) -> Result<()> {
 /// Deletes all java compiler artefacts
 pub fn clean() -> Result<()> {
     if BUILD_DIR.as_path().exists() {
-        std::fs::remove_dir_all(BUILD_DIR.as_path()).with_context(|| {
-                                                        format!("Could not delete {}",
-                                                                BUILD_DIR.display())
-                                                    })?;
+        std::fs::remove_dir_all(BUILD_DIR.as_path())
+            .with_context(|| format!("Could not delete {}", BUILD_DIR.display()))?;
     }
     if LIB_DIR.as_path().exists() {
-        std::fs::remove_dir_all(LIB_DIR.as_path()).with_context(|| {
-                                                      format!("Could not delete {}",
-                                                              LIB_DIR.display())
-                                                  })?;
+        std::fs::remove_dir_all(LIB_DIR.as_path())
+            .with_context(|| format!("Could not delete {}", LIB_DIR.display()))?;
     }
     if ROOT_DIR.join(".vscode/settings.json").as_path().exists() {
         std::fs::remove_file(ROOT_DIR.join(".vscode/settings.json").as_path()).with_context(
-            || {
-                format!(
-                    "Could not delete {}",
-                    ROOT_DIR.join(".vscode/settings.json").display()
-                )
-            },
+            || format!("Could not delete {}", ROOT_DIR.join(".vscode/settings.json").display()),
         )?;
     }
     if ROOT_DIR.join(".vscode/tasks.json").as_path().exists() {
         std::fs::remove_file(ROOT_DIR.join(".vscode/tasks.json").as_path()).with_context(|| {
-                                                                               format!(
-                "Could not delete {}",
-                ROOT_DIR.join(".vscode/tasks.json").display()
-            )
-                                                                           })?;
+            format!("Could not delete {}", ROOT_DIR.join(".vscode/tasks.json").display())
+        })?;
     }
 
     Ok(())

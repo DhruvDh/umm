@@ -16,9 +16,7 @@ use syn::{FnArg, Token, parse_macro_input, punctuated::Punctuated};
 /// returns an EvalAltResult instead.
 ///
 /// * `input`: a token stream for a function that returns an anyhow::Result
-pub fn generate_rhai_variant(attr: TokenStream,
-                             input: TokenStream)
-                             -> TokenStream {
+pub fn generate_rhai_variant(attr: TokenStream, input: TokenStream) -> TokenStream {
     let attr = attr.to_string();
     let mut is_impl_fn = attr.contains("Impl");
     let is_fallible_fn = attr.contains("Fallible");
@@ -79,24 +77,29 @@ pub fn generate_rhai_variant(attr: TokenStream,
         } else if output.starts_with("Result<") {
             if output.replace("Result<", "").starts_with("Vec<") {
                 let inner_type = if output.contains(',') {
-                    let o = output.replace("Result<", "")
-                                  .replace("Vec<", "")
-                                  .replace('>', "");
+                    let o = output
+                        .replace("Result<", "")
+                        .replace("Vec<", "")
+                        .replace('>', "");
                     let o = o.split_once(',').unwrap().0;
                     format_ident!("{o}",)
                 } else {
-                    format_ident!("{}",
-                                  output.replace("Result<", "")
-                                        .replace("Vec<", "")
-                                        .replace('>', ""))
+                    format_ident!(
+                        "{}",
+                        output
+                            .replace("Result<", "")
+                            .replace("Vec<", "")
+                            .replace('>', "")
+                    )
                 };
 
                 quote! {-> Result<Vec<#inner_type>, Box<EvalAltResult>>}
             } else {
                 let inner_type = if output.contains(',') {
-                    let o = output.replace("Result<", "")
-                                  .replace("Vec<", "")
-                                  .replace('>', "");
+                    let o = output
+                        .replace("Result<", "")
+                        .replace("Vec<", "")
+                        .replace('>', "");
                     let o = o.split_once(',').unwrap().0;
                     format_ident!("{o}",)
                 } else {

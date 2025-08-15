@@ -78,9 +78,7 @@ impl Grade {
     /// Creates a new grade -
     /// * `grade` - The actual grade received
     /// * `out_of` - The maximum grade possible
-    pub fn new(grade: f64,
-               out_of: f64)
-               -> Self {
+    pub fn new(grade: f64, out_of: f64) -> Self {
         Self { grade, out_of }
     }
 
@@ -89,10 +87,10 @@ impl Grade {
     /// * `grade_string` - A string in the format `grade/out_of`, eg. `10/20`
     pub fn grade_from_string(grade_string: String) -> Result<Grade> {
         let (grade, out_of) = grade_string.split_once('/').unwrap_or(("0", "0"));
-        Ok(Grade::new(grade.parse::<f64>()
-                           .context("Failed to parse grade")?,
-                      out_of.parse::<f64>()
-                            .context("Failed to parse out of")?))
+        Ok(Grade::new(
+            grade.parse::<f64>().context("Failed to parse grade")?,
+            out_of.parse::<f64>().context("Failed to parse out of")?,
+        ))
     }
 
     /// a getter for the grade
@@ -106,26 +104,20 @@ impl Grade {
     }
 
     /// a setter for the grade
-    pub fn set_grade(mut self,
-                     grade: f64)
-                     -> Self {
+    pub fn set_grade(mut self, grade: f64) -> Self {
         self.grade = grade;
         self
     }
 
     /// a setter for the out_of
-    pub fn set_out_of(mut self,
-                      out_of: f64)
-                      -> Self {
+    pub fn set_out_of(mut self, out_of: f64) -> Self {
         self.out_of = out_of;
         self
     }
 }
 
 impl Display for Grade {
-    fn fmt(&self,
-           f: &mut std::fmt::Formatter<'_>)
-           -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{:.2}/{:.2}", self.grade, self.out_of)
     }
 }
@@ -154,9 +146,7 @@ impl GradeResult {
     }
 
     /// a setter for Requirement
-    pub fn set_requirement(mut self,
-                           requirement: String)
-                           -> Self {
+    pub fn set_requirement(mut self, requirement: String) -> Self {
         self.requirement = requirement;
         self
     }
@@ -167,9 +157,7 @@ impl GradeResult {
     }
 
     /// a setter for Reason
-    pub fn set_reason(mut self,
-                      reason: String)
-                      -> Self {
+    pub fn set_reason(mut self, reason: String) -> Self {
         self.reason = reason;
         self
     }
@@ -185,17 +173,13 @@ impl GradeResult {
     }
 
     /// a setter for the self.grade.grade
-    pub fn set_grade(mut self,
-                     grade: f64)
-                     -> Self {
+    pub fn set_grade(mut self, grade: f64) -> Self {
         self.grade = self.grade.set_grade(grade);
         self
     }
 
     /// a setter for the self.grade.out_of
-    pub fn set_out_of(mut self,
-                      out_of: f64)
-                      -> Self {
+    pub fn set_out_of(mut self, out_of: f64) -> Self {
         self.grade = self.grade.set_out_of(out_of);
         self
     }
@@ -206,9 +190,7 @@ impl GradeResult {
     }
 
     /// a setter for the prompt
-    pub fn set_prompt(mut self,
-                      prompt: Option<Vec<ChatCompletionRequestMessage>>)
-                      -> Self {
+    pub fn set_prompt(mut self, prompt: Option<Vec<ChatCompletionRequestMessage>>) -> Self {
         self.prompt = prompt;
         self
     }
@@ -247,8 +229,10 @@ impl JavacDiagnostic {
 impl From<JavacDiagnostic> for LineRef {
     /// Converts a JavacDiagnostic to a LineRef
     fn from(val: JavacDiagnostic) -> Self {
-        LineRef { file_name:   val.file_name,
-                  line_number: val.line_number as usize, }
+        LineRef {
+            file_name:   val.file_name,
+            line_number: val.line_number as usize,
+        }
     }
 }
 
@@ -283,8 +267,10 @@ pub struct MutationDiagnostic {
 impl From<MutationDiagnostic> for LineRef {
     /// Converts a MutationDiagnostic to a LineRef
     fn from(val: MutationDiagnostic) -> Self {
-        LineRef { file_name:   val.source_file_name,
-                  line_number: val.line_number as usize, }
+        LineRef {
+            file_name:   val.source_file_name,
+            line_number: val.line_number as usize,
+        }
     }
 }
 
@@ -325,11 +311,14 @@ struct RetrievalFunctionCallParamsArray {
 /// * `Result<ChatCompletionRequestMessage>` - A `Result` that contains a
 ///   `ChatCompletionRequestMessage` if the operation was successful, or an
 ///   `Err` if it was not.
-pub fn get_active_retrieval_context(proj: &Project,
-                                    active_retrieval_context: Option<String>)
-                                    -> Result<ChatCompletionRequestMessage> {
-    ensure!(active_retrieval_context.is_some(),
-            "Additional context must be provided when using active retrieval.");
+pub fn get_active_retrieval_context(
+    proj: &Project,
+    active_retrieval_context: Option<String>,
+) -> Result<ChatCompletionRequestMessage> {
+    ensure!(
+        active_retrieval_context.is_some(),
+        "Additional context must be provided when using active retrieval."
+    );
 
     print!("Trying to decide what to share with AI for feedback...");
 
@@ -362,47 +351,54 @@ pub fn get_active_retrieval_context(proj: &Project,
     let messages = serde_json::to_string(&messages).expect("Failed to serialize messages array");
 
     let client = reqwest::blocking::Client::new();
-    let response: CreateChatCompletionResponse =
-        client.post("https://umm-feedback-openai-func.deno.dev/")
-              .body(messages)
-              .send()?
-              .json()?;
+    let response: CreateChatCompletionResponse = client
+        .post("https://umm-feedback-openai-func.deno.dev/")
+        .body(messages)
+        .send()?
+        .json()?;
     let response = response.choices[0].message.clone();
     println!(" done!");
-    ensure!(response.tool_calls.is_some(),
-            "No function call found in response.");
-    let function_call_args: RetrievalFunctionCallParamsArray =
-        serde_json::from_str(response.tool_calls
-                                     .unwrap()
-                                     .first()
-                                     .unwrap()
-                                     .function
-                                     .arguments
-                                     .as_str())?;
+    ensure!(response.tool_calls.is_some(), "No function call found in response.");
+    let function_call_args: RetrievalFunctionCallParamsArray = serde_json::from_str(
+        response
+            .tool_calls
+            .unwrap()
+            .first()
+            .unwrap()
+            .function
+            .arguments
+            .as_str(),
+    )?;
 
     let mut context = Vec::new();
     for function_call_arg in function_call_args.params {
         let file = proj.identify(&function_call_arg.class_name)?;
-        let query = format!(include_str!("queries/method_body_with_name.scm"),
-                            &function_call_arg.method_name);
+        let query = format!(
+            include_str!("queries/method_body_with_name.scm"),
+            &function_call_arg.method_name
+        );
 
-        let res = file.query(&query)
-                      .or_else(|_| Ok::<Vec<Dict>, anyhow::Error>(vec![]))
-                      .unwrap();
+        let res = file
+            .query(&query)
+            .or_else(|_| Ok::<Vec<Dict>, anyhow::Error>(vec![]))
+            .unwrap();
 
         for r in res {
             let body = r.get("body").unwrap().to_string();
-            context.push(format!("Method body from student's submission for `{}#{}`:",
-                                 file.proper_name(),
-                                 function_call_arg.method_name));
+            context.push(format!(
+                "Method body from student's submission for `{}#{}`:",
+                file.proper_name(),
+                function_call_arg.method_name
+            ));
             context.push(format!("\n```\n{}\n```\n", body));
         }
     }
 
-    Ok(ChatCompletionRequestSystemMessageArgs::default().content(context.join("\n"))
-                                                        .name("Instructor".to_string())
-                                                        .build()?
-                                                        .into())
+    Ok(ChatCompletionRequestSystemMessageArgs::default()
+        .content(context.join("\n"))
+        .name("Instructor".to_string())
+        .build()?
+        .into())
 }
 
 /// Returns a ChatCompletionRequestMessage with the given line references that
@@ -416,14 +412,15 @@ pub fn get_active_retrieval_context(proj: &Project,
 ///   include in the final message
 /// * `try_use_active_retrieval`: whether to try to use active retrieval
 /// * `additional_context`: additional context to use for
-pub fn get_source_context<T: Into<LineRef>>(line_refs: Vec<T>,
-                                            proj: Project,
-                                            start_offset: usize,
-                                            num_lines: usize,
-                                            max_line_refs: usize,
-                                            try_use_active_retrieval: bool,
-                                            active_retrieval_context: Option<String>)
-                                            -> Result<ChatCompletionRequestMessage> {
+pub fn get_source_context<T: Into<LineRef>>(
+    line_refs: Vec<T>,
+    proj: Project,
+    start_offset: usize,
+    num_lines: usize,
+    max_line_refs: usize,
+    try_use_active_retrieval: bool,
+    active_retrieval_context: Option<String>,
+) -> Result<ChatCompletionRequestMessage> {
     if try_use_active_retrieval {
         match get_active_retrieval_context(&proj, active_retrieval_context) {
             Ok(message) => return Ok(message),
@@ -433,165 +430,168 @@ pub fn get_source_context<T: Into<LineRef>>(line_refs: Vec<T>,
         }
     }
 
-    let mut line_refs: Vec<(File, LineRef, RangeInclusive<usize>)> =
-        line_refs.into_iter()
-                 .flat_map(|x| {
-                     let x = x.into();
-                     let file = proj.identify(&x.file_name)?;
-                     let start = match file.kind() {
-                         FileType::Test => x.line_number.saturating_sub(num_lines),
-                         _ => x.line_number.saturating_sub(start_offset),
-                     };
-                     let end = start + num_lines;
-                     Ok::<(File, LineRef, RangeInclusive<usize>), anyhow::Error>((file,
-                                                                                  x,
-                                                                                  start..=end))
-                 })
-                 .collect();
+    let mut line_refs: Vec<(File, LineRef, RangeInclusive<usize>)> = line_refs
+        .into_iter()
+        .flat_map(|x| {
+            let x = x.into();
+            let file = proj.identify(&x.file_name)?;
+            let start = match file.kind() {
+                FileType::Test => x.line_number.saturating_sub(num_lines),
+                _ => x.line_number.saturating_sub(start_offset),
+            };
+            let end = start + num_lines;
+            Ok::<(File, LineRef, RangeInclusive<usize>), anyhow::Error>((file, x, start..=end))
+        })
+        .collect();
 
     line_refs.sort_by(|lhs, rhs| {
-                 rhs.1
-                    .file_name
-                    .cmp(&lhs.1.file_name)
-                    .then(lhs.1.line_number.cmp(&rhs.1.line_number))
-             });
+        rhs.1
+            .file_name
+            .cmp(&lhs.1.file_name)
+            .then(lhs.1.line_number.cmp(&rhs.1.line_number))
+    });
     line_refs.dedup();
 
     let mut context = Vec::new();
     context.push(
-                 "You cannot see all of the student's submission as you are an AI language \
-                  model, with limited context length. Here are some snippets of code the \
-                  stacktrace indicates might be relevant:
-:\n".to_string(),
+        "You cannot see all of the student's submission as you are an AI language model, with \
+         limited context length. Here are some snippets of code the stacktrace indicates might be \
+         relevant:
+:\n"
+        .to_string(),
     );
     let end_ticks = "\n```\n".to_string();
     let mut methods: HashSet<String> = HashSet::new();
 
-    line_refs.into_iter()
-             .coalesce(|lhs, rhs| {
-                 if lhs.0 == rhs.0 {
-                     let lhs_start = *lhs.2.start();
-                     let lhs_end = *lhs.2.end();
-                     let rhs_start = *rhs.2.start();
-                     let rhs_end = *rhs.2.end();
-                     let expanded_range =
-                         rhs_start.saturating_sub(num_lines)..=(rhs_end + num_lines);
+    line_refs
+        .into_iter()
+        .coalesce(|lhs, rhs| {
+            if lhs.0 == rhs.0 {
+                let lhs_start = *lhs.2.start();
+                let lhs_end = *lhs.2.end();
+                let rhs_start = *rhs.2.start();
+                let rhs_end = *rhs.2.end();
+                let expanded_range = rhs_start.saturating_sub(num_lines)..=(rhs_end + num_lines);
 
-                     if expanded_range.contains(&lhs_start) || expanded_range.contains(&lhs_end) {
-                         Ok((lhs.0, lhs.1, lhs_start..=rhs_end))
-                     } else {
-                         Err((lhs, rhs))
-                     }
-                 } else {
-                     Err((lhs, rhs))
-                 }
-             })
-             .take(max_line_refs)
-             .for_each(|(file, f, r)| {
-                 let num_lines = r.size_hint().0;
-                 let count = file.parser().code().lines().count();
+                if expanded_range.contains(&lhs_start) || expanded_range.contains(&lhs_end) {
+                    Ok((lhs.0, lhs.1, lhs_start..=rhs_end))
+                } else {
+                    Err((lhs, rhs))
+                }
+            } else {
+                Err((lhs, rhs))
+            }
+        })
+        .take(max_line_refs)
+        .for_each(|(file, f, r)| {
+            let num_lines = r.size_hint().0;
+            let count = file.parser().code().lines().count();
 
-                 let (f, r) = if num_lines as f32 >= 0.6 * (count as f32) {
-                     (f, 0..=count)
-                 } else {
-                     (f, r)
-                 };
+            let (f, r) = if num_lines as f32 >= 0.6 * (count as f32) {
+                (f, 0..=count)
+            } else {
+                (f, r)
+            };
 
-                 context.push(format!("- Lines {} to {} from {} -\n```",
-                                      *r.start(),
-                                      *r.end(),
-                                      f.file_name));
+            context.push(format!(
+                "- Lines {} to {} from {} -\n```",
+                *r.start(),
+                *r.end(),
+                f.file_name
+            ));
 
-                 let width = (count as f32).log10().ceil() as usize;
+            let width = (count as f32).log10().ceil() as usize;
 
-                 let source_code_lines: Vec<String> =
-                     file.parser().code().lines().map(String::from).collect();
+            let source_code_lines: Vec<String> =
+                file.parser().code().lines().map(String::from).collect();
 
-                 let relevant_source = source_code_lines.clone()
-                                                        .iter()
-                                                        .skip(*r.start())
-                                                        .take(num_lines)
-                                                        .enumerate()
-                                                        .map(|(line_n, x)| {
-                                                            format!("{:width$}|{}",
-                                                                    *r.start() + line_n,
-                                                                    x).replace("\\\\", "\\")
-                                                                      .replace("\\\"", "\"")
-                                                        })
-                                                        .collect::<Vec<String>>();
+            let relevant_source = source_code_lines
+                .clone()
+                .iter()
+                .skip(*r.start())
+                .take(num_lines)
+                .enumerate()
+                .map(|(line_n, x)| {
+                    format!("{:width$}|{}", *r.start() + line_n, x)
+                        .replace("\\\\", "\\")
+                        .replace("\\\"", "\"")
+                })
+                .collect::<Vec<String>>();
 
-                 context.append(&mut (relevant_source.clone()));
-                 context.push(end_ticks.clone());
+            context.append(&mut (relevant_source.clone()));
+            context.push(end_ticks.clone());
 
-                 match Parser::new(relevant_source.join("\n")) {
-                     Ok(parser) => {
-                         let method_names: Vec<Dict> =
-                             parser.query(METHOD_CALL_QUERY)
-                                   .or_else(|_| Ok::<Vec<Dict>, anyhow::Error>(vec![]))
-                                   .unwrap();
+            match Parser::new(relevant_source.join("\n")) {
+                Ok(parser) => {
+                    let method_names: Vec<Dict> = parser
+                        .query(METHOD_CALL_QUERY)
+                        .or_else(|_| Ok::<Vec<Dict>, anyhow::Error>(vec![]))
+                        .unwrap();
 
-                         for method in method_names {
-                             let method_name = method.get("name").unwrap().to_string();
-                             methods.insert(method_name.clone());
+                    for method in method_names {
+                        let method_name = method.get("name").unwrap().to_string();
+                        methods.insert(method_name.clone());
 
-                             let query = format!(include_str!("queries/method_body_with_name.scm"),
-                                                 &method_name);
+                        let query = format!(
+                            include_str!("queries/method_body_with_name.scm"),
+                            &method_name
+                        );
 
-                             for f in proj.files() {
-                                 if *f.kind() == FileType::Class
-                                    || *f.kind() == FileType::ClassWithMain
-                                 {
-                                     let res = f.query(&query)
-                                                .or_else(|_| Ok::<Vec<Dict>, anyhow::Error>(vec![]))
-                                                .unwrap();
+                        for f in proj.files() {
+                            if *f.kind() == FileType::Class || *f.kind() == FileType::ClassWithMain
+                            {
+                                let res = f
+                                    .query(&query)
+                                    .or_else(|_| Ok::<Vec<Dict>, anyhow::Error>(vec![]))
+                                    .unwrap();
 
-                                     for r in res {
-                                         let body = r.get("body").unwrap().to_string();
-                                         let body_lines =
-                                             body.lines().map(String::from).collect::<Vec<_>>();
-                                         if !body_lines.is_empty() {
-                                             let start_line_number =
-                                                 source_code_lines.iter()
-                                                                  .find_position(|x| {
-                                                                      x.contains(body_lines.first()
-                                                                                           .unwrap()
-                                                                                           .trim())
-                                                                  })
-                                                                  .unwrap_or((0, &String::new()))
-                                                                  .0;
+                                for r in res {
+                                    let body = r.get("body").unwrap().to_string();
+                                    let body_lines =
+                                        body.lines().map(String::from).collect::<Vec<_>>();
+                                    if !body_lines.is_empty() {
+                                        let start_line_number = source_code_lines
+                                            .iter()
+                                            .find_position(|x| {
+                                                x.contains(body_lines.first().unwrap().trim())
+                                            })
+                                            .unwrap_or((0, &String::new()))
+                                            .0;
 
-                                             let body = body_lines.iter()
-                                                                  .enumerate()
-                                                                  .map(|(line_n, x)| {
-                                                                      if start_line_number != 0 {
-                                                                          format!("{:width$}|{}",
-                                                                                  start_line_number
-                                                                                  + line_n
-                                                                                  + 1,
-                                                                                  x)
-                                                                      } else {
-                                                                          x.to_string()
-                                                                      }
-                                                                  })
-                                                                  .collect::<Vec<String>>()
-                                                                  .join("\n");
+                                        let body = body_lines
+                                            .iter()
+                                            .enumerate()
+                                            .map(|(line_n, x)| {
+                                                if start_line_number != 0 {
+                                                    format!(
+                                                        "{:width$}|{}",
+                                                        start_line_number + line_n + 1,
+                                                        x
+                                                    )
+                                                } else {
+                                                    x.to_string()
+                                                }
+                                            })
+                                            .collect::<Vec<String>>()
+                                            .join("\n");
 
-                                             context.push(format!("Method body from student's \
-                                                                   submission `{}#{}`:",
-                                                                  f.proper_name(),
-                                                                  method_name));
-                                             context.push(format!("\n```\n{}\n```\n", body));
-                                         }
-                                     }
-                                 }
-                             }
-                         }
-                     }
-                     Err(e) => {
-                         eprintln!("Error parsing partial source context: {e}");
-                     }
-                 };
-             });
+                                        context.push(format!(
+                                            "Method body from student's submission `{}#{}`:",
+                                            f.proper_name(),
+                                            method_name
+                                        ));
+                                        context.push(format!("\n```\n{}\n```\n", body));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Error parsing partial source context: {e}");
+                }
+            };
+        });
 
     let mut context = context.join("\n");
     if context.len() > PROMPT_TRUNCATE {
@@ -599,10 +599,11 @@ pub fn get_source_context<T: Into<LineRef>>(line_refs: Vec<T>,
         context.push_str("...[TRUNCATED]");
     }
 
-    Ok(ChatCompletionRequestSystemMessageArgs::default().content(context)
-                                                        .name("Instructor".to_string())
-                                                        .build()?
-                                                        .into())
+    Ok(ChatCompletionRequestSystemMessageArgs::default()
+        .content(context)
+        .name("Instructor".to_string())
+        .build()?
+        .into())
 }
 
 #[derive(Clone, Default)]
@@ -628,9 +629,7 @@ impl DocsGrader {
     }
 
     /// Setter for project
-    pub fn set_project(mut self,
-                       project: Project)
-                       -> Self {
+    pub fn set_project(mut self, project: Project) -> Self {
         self.project = project;
         self
     }
@@ -641,9 +640,7 @@ impl DocsGrader {
     }
 
     /// Setter for files
-    pub fn set_files(mut self,
-                     files: Array)
-                     -> Self {
+    pub fn set_files(mut self, files: Array) -> Self {
         self.files = files;
         self
     }
@@ -654,9 +651,7 @@ impl DocsGrader {
     }
 
     /// Setter for out_of
-    pub fn set_out_of(mut self,
-                      out_of: f64)
-                      -> Self {
+    pub fn set_out_of(mut self, out_of: f64) -> Self {
         self.out_of = out_of;
         self
     }
@@ -667,9 +662,7 @@ impl DocsGrader {
     }
 
     /// Setter for req_name
-    pub fn set_req_name(mut self,
-                        req_name: String)
-                        -> Self {
+    pub fn set_req_name(mut self, req_name: String) -> Self {
         self.req_name = req_name;
         self
     }
@@ -680,9 +673,7 @@ impl DocsGrader {
     }
 
     /// Setter for penalty
-    pub fn set_penalty(mut self,
-                       penalty: f64)
-                       -> Self {
+    pub fn set_penalty(mut self, penalty: f64) -> Self {
         self.penalty = penalty;
         self
     }
@@ -693,14 +684,14 @@ impl DocsGrader {
     pub fn grade_docs(self) -> Result<GradeResult> {
         let mut diags = vec![];
         let mut all_diags = vec![];
-        let files: Vec<String> =
-            self.files
-                .iter()
-                .map(|f| match f.clone().into_string() {
-                    Ok(n) => Ok(n),
-                    Err(e) => Err(anyhow!("files array has something that's not a string: {}", e)),
-                })
-                .try_collect()?;
+        let files: Vec<String> = self
+            .files
+            .iter()
+            .map(|f| match f.clone().into_string() {
+                Ok(n) => Ok(n),
+                Err(e) => Err(anyhow!("files array has something that's not a string: {}", e)),
+            })
+            .try_collect()?;
         let out_of = self.out_of;
         let mut outputs = vec![];
         for name in &files {
@@ -722,10 +713,12 @@ impl DocsGrader {
                         get_source_context(diags, self.project, 1, 3, 6, false, None)?,
                     ];
 
-                    return Ok(GradeResult { requirement: self.req_name,
-                                            grade:       Grade::new(0.0, out_of),
-                                            reason:      String::from("See above."),
-                                            prompt:      Some(messages), });
+                    return Ok(GradeResult {
+                        requirement: self.req_name,
+                        grade:       Grade::new(0.0, out_of),
+                        reason:      String::from("See above."),
+                        prompt:      Some(messages),
+                    });
                 }
                 Err(e) => {
                     let messages = vec![
@@ -741,10 +734,12 @@ impl DocsGrader {
                             .into(),
                     ];
 
-                    return Ok(GradeResult { requirement: self.req_name,
-                                            grade:       Grade::new(0.0, out_of),
-                                            reason:      String::from("See above."),
-                                            prompt:      Some(messages), });
+                    return Ok(GradeResult {
+                        requirement: self.req_name,
+                        grade:       Grade::new(0.0, out_of),
+                        reason:      String::from("See above."),
+                        prompt:      Some(messages),
+                    });
                 }
             };
             outputs.push(output.clone());
@@ -770,24 +765,34 @@ impl DocsGrader {
         };
 
         let num_diags = diags.len();
-        eprintln!("{}",
-                  diags.table()
-                       .with(Panel::header(format!("Check javadoc for {}", files.join(", "))))
-                       .with(Panel::footer(format!("-{penalty} due to {num_diags} nits")))
-                       .with(Modify::new(Rows::new(1..)).with(Width::wrap(24).keep_words()))
-                       .with(Modify::new(Rows::first()).with(Alignment::center())
-                                                       .with(Alignment::center_vertical()),)
-                       .with(Modify::new(Rows::last()).with(Alignment::center())
-                                                      .with(Alignment::center_vertical()),)
-                       .with(tabled::Style::modern()));
+        eprintln!(
+            "{}",
+            diags
+                .table()
+                .with(Panel::header(format!("Check javadoc for {}", files.join(", "))))
+                .with(Panel::footer(format!("-{penalty} due to {num_diags} nits")))
+                .with(Modify::new(Rows::new(1..)).with(Width::wrap(24).keep_words()))
+                .with(
+                    Modify::new(Rows::first())
+                        .with(Alignment::center())
+                        .with(Alignment::center_vertical()),
+                )
+                .with(
+                    Modify::new(Rows::last())
+                        .with(Alignment::center())
+                        .with(Alignment::center_vertical()),
+                )
+                .with(tabled::Style::modern())
+        );
 
         let prompt = if num_diags > 0 {
             let context = get_source_context(all_diags, self.project, 1, 3, 6, false, None)?;
 
-            let mut outputs = outputs.iter()
-                                     .map(|output| format!("```\n{output}\n```"))
-                                     .collect::<Vec<String>>()
-                                     .join("\n\n---\n\n");
+            let mut outputs = outputs
+                .iter()
+                .map(|output| format!("```\n{output}\n```"))
+                .collect::<Vec<String>>()
+                .join("\n\n---\n\n");
 
             if outputs.len() > PROMPT_TRUNCATE {
                 outputs.truncate(PROMPT_TRUNCATE);
@@ -795,31 +800,32 @@ impl DocsGrader {
             }
 
             Some(vec![
-                ChatCompletionRequestSystemMessageArgs::default().content(
-                    SYSTEM_MESSAGE.to_string(),
-                )
-                                                                 .name("Instructor".to_string())
-                                                                 .build()?
-                                                                 .into(),
-                ChatCompletionRequestUserMessageArgs::default().content(outputs)
-                                                               .name("Student".to_string())
-                                                               .build()?
-                                                               .into(),
+                ChatCompletionRequestSystemMessageArgs::default()
+                    .content(SYSTEM_MESSAGE.to_string())
+                    .name("Instructor".to_string())
+                    .build()?
+                    .into(),
+                ChatCompletionRequestUserMessageArgs::default()
+                    .content(outputs)
+                    .name("Student".to_string())
+                    .build()?
+                    .into(),
                 context,
-                ChatCompletionRequestSystemMessageArgs::default().content(include_str!(
-                    "prompts/javadoc.md"
-                ).to_string())
-                                                                 .name("Instructor".to_string())
-                                                                 .build()?
-                                                                 .into(),
+                ChatCompletionRequestSystemMessageArgs::default()
+                    .content(include_str!("prompts/javadoc.md").to_string())
+                    .name("Instructor".to_string())
+                    .build()?
+                    .into(),
             ])
         } else {
             None
         };
-        Ok(GradeResult { requirement: self.req_name,
-                         grade: Grade::new(grade, out_of),
-                         reason: String::from("See above."),
-                         prompt })
+        Ok(GradeResult {
+            requirement: self.req_name,
+            grade: Grade::new(grade, out_of),
+            reason: String::from("See above."),
+            prompt,
+        })
     }
 }
 
@@ -848,9 +854,7 @@ impl ByUnitTestGrader {
     }
 
     /// Setter for test_files
-    pub fn set_test_files(mut self,
-                          test_files: Array)
-                          -> Self {
+    pub fn set_test_files(mut self, test_files: Array) -> Self {
         self.test_files = test_files;
         self
     }
@@ -861,9 +865,7 @@ impl ByUnitTestGrader {
     }
 
     /// Setter for expected_tests
-    pub fn set_expected_tests(mut self,
-                              expected_tests: Array)
-                              -> Self {
+    pub fn set_expected_tests(mut self, expected_tests: Array) -> Self {
         self.expected_tests = expected_tests;
         self
     }
@@ -874,9 +876,7 @@ impl ByUnitTestGrader {
     }
 
     /// Setter for project
-    pub fn set_project(mut self,
-                       project: Project)
-                       -> Self {
+    pub fn set_project(mut self, project: Project) -> Self {
         self.project = project;
         self
     }
@@ -887,9 +887,7 @@ impl ByUnitTestGrader {
     }
 
     /// Setter for out_of
-    pub fn set_out_of(mut self,
-                      out_of: f64)
-                      -> Self {
+    pub fn set_out_of(mut self, out_of: f64) -> Self {
         self.out_of = out_of;
         self
     }
@@ -900,9 +898,7 @@ impl ByUnitTestGrader {
     }
 
     /// Setter for req_name
-    pub fn set_req_name(mut self,
-                        req_name: String)
-                        -> Self {
+    pub fn set_req_name(mut self, req_name: String) -> Self {
         self.req_name = req_name;
         self
     }
@@ -914,13 +910,13 @@ impl ByUnitTestGrader {
     pub fn grade_by_tests(self) -> Result<GradeResult> {
         let convert_to_string = |f: Vec<Dynamic>| -> Result<Vec<String>> {
             f.iter()
-             .map(|f| match f.clone().into_string() {
-                 Ok(n) => Ok(n),
-                 Err(e) => Err(anyhow!("test_files array has something that's not a \
-                                        string: {}",
-                                       e)),
-             })
-             .try_collect()
+                .map(|f| match f.clone().into_string() {
+                    Ok(n) => Ok(n),
+                    Err(e) => {
+                        Err(anyhow!("test_files array has something that's not a string: {}", e))
+                    }
+                })
+                .try_collect()
         };
 
         let project = self.project.clone();
@@ -968,18 +964,20 @@ impl ByUnitTestGrader {
                 content.push_str("...[TRUNCATED]");
             }
 
-            ChatCompletionRequestUserMessageArgs::default().content(content)
-                                                           .name("Student".to_string())
-                                                           .build()
-                                                           .unwrap()
-                                                           .into()
+            ChatCompletionRequestUserMessageArgs::default()
+                .content(content)
+                .name("Student".to_string())
+                .build()
+                .unwrap()
+                .into()
         };
         let new_system_message = |content: String| {
-            ChatCompletionRequestSystemMessageArgs::default().content(content)
-                                                             .name("Instructor".to_string())
-                                                             .build()
-                                                             .unwrap()
-                                                             .into()
+            ChatCompletionRequestSystemMessageArgs::default()
+                .content(content)
+                .name("Instructor".to_string())
+                .build()
+                .unwrap()
+                .into()
         };
 
         let process_junit_stacktrace = |stacktrace: String| {
@@ -997,15 +995,13 @@ impl ByUnitTestGrader {
 
                 if let Ok(diag) = parser::junit_stacktrace_line_ref(line) {
                     if project.identify(&diag.file_name).is_ok() {
-                        updated_stacktrace.push(line.replace("\\\\", "\\")
-                                                    .replace("\\\"", "\"")
-                                                    .to_string());
+                        updated_stacktrace
+                            .push(line.replace("\\\\", "\\").replace("\\\"", "\"").to_string());
                     }
                     all_diags.push(diag);
                 } else {
-                    updated_stacktrace.push(line.replace("\\\\", "\\")
-                                                .replace("\\\"", "\"")
-                                                .to_string());
+                    updated_stacktrace
+                        .push(line.replace("\\\\", "\\").replace("\\\"", "\"").to_string());
                 }
             }
 
@@ -1018,22 +1014,27 @@ impl ByUnitTestGrader {
             reasons.push("Tests will not be run until above is fixed.".into());
             let reasons = reasons.join("\n");
             let messages = vec![initial_message, new_user_message(reasons.clone())];
-            Ok(GradeResult { requirement: req_name,
-                             grade:       Grade::new(0.0, out_of),
-                             reason:      reasons,
-                             prompt:      Some(messages), })
+            Ok(GradeResult {
+                requirement: req_name,
+                grade:       Grade::new(0.0, out_of),
+                reason:      reasons,
+                prompt:      Some(messages),
+            })
         } else {
             let mut num_tests_passed = 0.0;
             let mut num_tests_total = 0.0;
             let mut messages = vec![initial_message.clone()];
 
             for test_file in test_files {
-                let res = match project.identify(test_file.as_str())?
-                                       .test(Vec::new(), Some(&project))
+                let res = match project
+                    .identify(test_file.as_str())?
+                    .test(Vec::new(), Some(&project))
                 {
                     Ok(res) => res,
-                    Err(JavaFileError::FailedTests { test_results,
-                                                     diags, }) => {
+                    Err(JavaFileError::FailedTests {
+                        test_results,
+                        diags,
+                    }) => {
                         let (updated_stacktrace, _) =
                             process_junit_stacktrace(test_results.clone());
 
@@ -1062,26 +1063,18 @@ impl ByUnitTestGrader {
                     }
                     Err(JavaFileError::DuringCompilation { stacktrace, diags }) => {
                         let out = format!("Compiler error -\n```\n{}\n```", stacktrace);
-                        messages.extend(vec![new_user_message(out.clone()),
-                                             get_source_context(diags,
-                                                                project.clone(),
-                                                                3,
-                                                                6,
-                                                                6,
-                                                                false,
-                                                                None)?,]);
+                        messages.extend(vec![
+                            new_user_message(out.clone()),
+                            get_source_context(diags, project.clone(), 3, 6, 6, false, None)?,
+                        ]);
                         out
                     }
                     Err(JavaFileError::AtRuntime { output, diags }) => {
                         let out = format!("Error at runtime -\n```\n{}\n```", output);
-                        messages.extend(vec![new_user_message(out.clone()),
-                                             get_source_context(diags,
-                                                                project.clone(),
-                                                                3,
-                                                                6,
-                                                                6,
-                                                                false,
-                                                                None)?,]);
+                        messages.extend(vec![
+                            new_user_message(out.clone()),
+                            get_source_context(diags, project.clone(), 3, 6, 6, false, None)?,
+                        ]);
                         out
                     }
                 };
@@ -1110,11 +1103,12 @@ impl ByUnitTestGrader {
                 0.0
             };
 
-            Ok(GradeResult { requirement: req_name,
-                             grade:       Grade::new(grade, out_of),
-                             reason:      format!("- {num_tests_passed}/{num_tests_total} tests \
-                                                   passing."),
-                             prompt:      Some(messages), })
+            Ok(GradeResult {
+                requirement: req_name,
+                grade:       Grade::new(grade, out_of),
+                reason:      format!("- {num_tests_passed}/{num_tests_total} tests passing."),
+                prompt:      Some(messages),
+            })
         }
     }
 }
@@ -1168,49 +1162,37 @@ impl UnitTestGrader {
     }
 
     /// A setter for the name of the requirement.
-    pub fn set_req_name(mut self,
-                        req_name: String)
-                        -> Self {
+    pub fn set_req_name(mut self, req_name: String) -> Self {
         self.req_name = req_name;
         self
     }
 
     /// A setter for the maximum possible grade.
-    pub fn set_out_of(mut self,
-                      out_of: f64)
-                      -> Self {
+    pub fn set_out_of(mut self, out_of: f64) -> Self {
         self.out_of = out_of;
         self
     }
 
     /// A setter for the list of test classes to run.
-    pub fn set_target_test(mut self,
-                           target_test: Array)
-                           -> Self {
+    pub fn set_target_test(mut self, target_test: Array) -> Self {
         self.target_test = target_test;
         self
     }
 
     /// A setter for the list of classes to mutate.
-    pub fn set_target_class(mut self,
-                            target_class: Array)
-                            -> Self {
+    pub fn set_target_class(mut self, target_class: Array) -> Self {
         self.target_class = target_class;
         self
     }
 
     /// A setter for the list of methods to exclude from mutation.
-    pub fn set_excluded_methods(mut self,
-                                excluded_methods: Array)
-                                -> Self {
+    pub fn set_excluded_methods(mut self, excluded_methods: Array) -> Self {
         self.excluded_methods = excluded_methods;
         self
     }
 
     /// A setter for the list of classes to avoid mutating.
-    pub fn set_avoid_calls_to(mut self,
-                              avoid_calls_to: Array)
-                              -> Self {
+    pub fn set_avoid_calls_to(mut self, avoid_calls_to: Array) -> Self {
         self.avoid_calls_to = avoid_calls_to;
         self
     }
@@ -1227,73 +1209,78 @@ impl UnitTestGrader {
         let project = Project::new()?;
 
         eprintln!("Running Mutation tests -");
-        let target_test: Vec<String> =
-            target_test.iter()
-                       .map(|f| match f.clone().into_string() {
-                           Ok(n) => Ok(n),
-                           Err(e) => Err(anyhow!("target_test array has something that's not a \
-                                                  string: {}",
-                                                 e)),
-                       })
-                       .try_collect()?;
-        let target_class: Vec<String> =
-            target_class.iter()
-                        .map(|f| match f.clone().into_string() {
-                            Ok(n) => Ok(n),
-                            Err(e) => Err(anyhow!("target_class array has something that's not \
-                                                   a string: {}",
-                                                  e)),
-                        })
-                        .try_collect()?;
-        let excluded_methods: Vec<String> = excluded_methods.iter()
-                                                            .map(|f| match f.clone().into_string() {
-                                                                Ok(n) => Ok(n),
-                                                                Err(e) => Err(anyhow!(
-                    "excluded_methods array has something that's not a string: {}",
-                    e
-                )),
-                                                            })
-                                                            .try_collect()?;
-        let avoid_calls_to: Vec<String> =
-            avoid_calls_to.iter()
-                          .map(|f| match f.clone().into_string() {
-                              Ok(n) => Ok(n),
-                              Err(e) => Err(anyhow!("avoid_calls_to array has something that's \
-                                                     not a string: {}",
-                                                    e)),
-                          })
-                          .try_collect()?;
+        let target_test: Vec<String> = target_test
+            .iter()
+            .map(|f| match f.clone().into_string() {
+                Ok(n) => Ok(n),
+                Err(e) => {
+                    Err(anyhow!("target_test array has something that's not a string: {}", e))
+                }
+            })
+            .try_collect()?;
+        let target_class: Vec<String> = target_class
+            .iter()
+            .map(|f| match f.clone().into_string() {
+                Ok(n) => Ok(n),
+                Err(e) => {
+                    Err(anyhow!("target_class array has something that's not a string: {}", e))
+                }
+            })
+            .try_collect()?;
+        let excluded_methods: Vec<String> = excluded_methods
+            .iter()
+            .map(|f| match f.clone().into_string() {
+                Ok(n) => Ok(n),
+                Err(e) => {
+                    Err(anyhow!("excluded_methods array has something that's not a string: {}", e))
+                }
+            })
+            .try_collect()?;
+        let avoid_calls_to: Vec<String> = avoid_calls_to
+            .iter()
+            .map(|f| match f.clone().into_string() {
+                Ok(n) => Ok(n),
+                Err(e) => {
+                    Err(anyhow!("avoid_calls_to array has something that's not a string: {}", e))
+                }
+            })
+            .try_collect()?;
 
-        let child = Command::new(java_path()?).args(["--class-path",
-                                                     classpath()?.as_str(),
-                                                     "org.pitest.mutationtest.commandline.\
-                                                      MutationCoverageReport",
-                                                     "--reportDir",
-                                                     "test_reports",
-                                                     "--failWhenNoMutations",
-                                                     "true",
-                                                     "--threads",
-                                                     "6",
-                                                     "--targetClasses",
-                                                     target_class.join(",").as_str(),
-                                                     "--targetTests",
-                                                     target_test.join(",").as_str(),
-                                                     "--sourceDirs",
-                                                     [SOURCE_DIR.to_str().unwrap_or("."),
-                                                      ROOT_DIR.to_str().unwrap_or(".")].join(",")
-                                                                                       .as_str(),
-                                                     "--timestampedReports",
-                                                     "false",
-                                                     "--outputFormats",
-                                                     "HTML,CSV",
-                                                     "--mutators",
-                                                     "STRONGER",
-                                                     "--excludedMethods",
-                                                     excluded_methods.join(",").as_str(),
-                                                     "--avoidCallsTo",
-                                                     avoid_calls_to.join(",").as_str()])
-                                              .output()
-                                              .context("Failed to spawn javac process.")?;
+        let child = Command::new(java_path()?)
+            .args([
+                "--class-path",
+                classpath()?.as_str(),
+                "org.pitest.mutationtest.commandline.MutationCoverageReport",
+                "--reportDir",
+                "test_reports",
+                "--failWhenNoMutations",
+                "true",
+                "--threads",
+                "6",
+                "--targetClasses",
+                target_class.join(",").as_str(),
+                "--targetTests",
+                target_test.join(",").as_str(),
+                "--sourceDirs",
+                [
+                    SOURCE_DIR.to_str().unwrap_or("."),
+                    ROOT_DIR.to_str().unwrap_or("."),
+                ]
+                .join(",")
+                .as_str(),
+                "--timestampedReports",
+                "false",
+                "--outputFormats",
+                "HTML,CSV",
+                "--mutators",
+                "STRONGER",
+                "--excludedMethods",
+                excluded_methods.join(",").as_str(),
+                "--avoidCallsTo",
+                avoid_calls_to.join(",").as_str(),
+            ])
+            .output()
+            .context("Failed to spawn javac process.")?;
 
         if child.status.success() {
             fs::create_dir_all("test_reports")?;
@@ -1304,9 +1291,8 @@ impl UnitTestGrader {
 
             for line in reader.lines() {
                 let line = line?;
-                let parse_result = parser::mutation_report_row(&line).context("While parsing \
-                                                                               test_reports/\
-                                                                               mutations.csv");
+                let parse_result = parser::mutation_report_row(&line)
+                    .context("While parsing test_reports/mutations.csv");
 
                 match parse_result {
                     Ok(r) => {
@@ -1336,47 +1322,46 @@ impl UnitTestGrader {
                 }
 
                 Some(vec![
-                    ChatCompletionRequestSystemMessageArgs::default().content(
-                        SYSTEM_MESSAGE.to_string(),
-                    )
-                                                                     .name("Instructor".to_string())
-                                                                     .build()
-                                                                     .context(
-                        "Failed to build system message",
-                    )?
-                                                                     .into(),
-                    ChatCompletionRequestUserMessageArgs::default().content(feedback)
-                                                                   .name("Student".to_string())
-                                                                   .build()
-                                                                   .context(
-                        "Failed to build user message",
-                    )?
-                                                                   .into(),
+                    ChatCompletionRequestSystemMessageArgs::default()
+                        .content(SYSTEM_MESSAGE.to_string())
+                        .name("Instructor".to_string())
+                        .build()
+                        .context("Failed to build system message")?
+                        .into(),
+                    ChatCompletionRequestUserMessageArgs::default()
+                        .content(feedback)
+                        .name("Student".to_string())
+                        .build()
+                        .context("Failed to build user message")?
+                        .into(),
                     context,
-                    ChatCompletionRequestSystemMessageArgs::default().content(format!(
-                        include_str!("prompts/mutation_testing.md"),
-                        test = target_test.join(", "),
-                        class = target_class.join(", ")
-                    ))
-                                                                     .name("Instructor".to_string())
-                                                                     .build()
-                                                                     .context(
-                        "Failed to build system message",
-                    )?
-                                                                     .into(),
+                    ChatCompletionRequestSystemMessageArgs::default()
+                        .content(format!(
+                            include_str!("prompts/mutation_testing.md"),
+                            test = target_test.join(", "),
+                            class = target_class.join(", ")
+                        ))
+                        .name("Instructor".to_string())
+                        .build()
+                        .context("Failed to build system message")?
+                        .into(),
                 ])
             } else {
                 None
             };
 
-            Ok(GradeResult { requirement: req_name,
-                             grade: Grade::new((out_of as u32).saturating_sub(penalty).into(),
-                                               out_of),
-                             reason: format!("-{penalty} Penalty due to surviving mutations"),
-                             prompt })
+            Ok(GradeResult {
+                requirement: req_name,
+                grade: Grade::new((out_of as u32).saturating_sub(penalty).into(), out_of),
+                reason: format!("-{penalty} Penalty due to surviving mutations"),
+                prompt,
+            })
         } else {
-            let mut output = [String::from_utf8(child.stderr)?,
-                              String::from_utf8(child.stdout)?].concat();
+            let mut output = [
+                String::from_utf8(child.stderr)?,
+                String::from_utf8(child.stdout)?,
+            ]
+            .concat();
             eprintln!("{output}");
             if output.len() > PROMPT_TRUNCATE {
                 output.truncate(PROMPT_TRUNCATE);
@@ -1385,42 +1370,40 @@ impl UnitTestGrader {
 
             let prompt = if !output.is_empty() {
                 Some(vec![
-                    ChatCompletionRequestSystemMessageArgs::default().content(
-                        SYSTEM_MESSAGE.to_string(),
-                    )
-                                                                     .name("Instructor".to_string())
-                                                                     .build()
-                                                                     .context(
-                        "Failed to build system message",
-                    )?
-                                                                     .into(),
-                    ChatCompletionRequestUserMessageArgs::default().content(output)
-                                                                   .name("Student".to_string())
-                                                                   .build()
-                                                                   .context(
-                        "Failed to build user message",
-                    )?
-                                                                   .into(),
-                    ChatCompletionRequestSystemMessageArgs::default().content(format!(
-                        include_str!("prompts/mutation_testing_2.md"),
-                        test = target_test.join(", "),
-                        class = target_class.join(", ")
-                    ))
-                                                                     .name("Instructor".to_string())
-                                                                     .build()
-                                                                     .context(
-                        "Failed to build system message",
-                    )?
-                                                                     .into(),
+                    ChatCompletionRequestSystemMessageArgs::default()
+                        .content(SYSTEM_MESSAGE.to_string())
+                        .name("Instructor".to_string())
+                        .build()
+                        .context("Failed to build system message")?
+                        .into(),
+                    ChatCompletionRequestUserMessageArgs::default()
+                        .content(output)
+                        .name("Student".to_string())
+                        .build()
+                        .context("Failed to build user message")?
+                        .into(),
+                    ChatCompletionRequestSystemMessageArgs::default()
+                        .content(format!(
+                            include_str!("prompts/mutation_testing_2.md"),
+                            test = target_test.join(", "),
+                            class = target_class.join(", ")
+                        ))
+                        .name("Instructor".to_string())
+                        .build()
+                        .context("Failed to build system message")?
+                        .into(),
                 ])
             } else {
                 None
             };
-            Ok(GradeResult { requirement: req_name,
-                             grade: Grade::new(0.0, out_of),
-                             reason: String::from("Something went wrong while running \
-                                                   mutation tests, skipping."),
-                             prompt })
+            Ok(GradeResult {
+                requirement: req_name,
+                grade: Grade::new(0.0, out_of),
+                reason: String::from(
+                    "Something went wrong while running mutation tests, skipping.",
+                ),
+                prompt,
+            })
         }
     }
 }
@@ -1446,9 +1429,7 @@ impl ByHiddenTestGrader {
     }
 
     /// sets the `url` field.
-    pub fn set_url(mut self,
-                   url: String)
-                   -> Self {
+    pub fn set_url(mut self, url: String) -> Self {
         self.url = url;
         self
     }
@@ -1459,9 +1440,7 @@ impl ByHiddenTestGrader {
     }
 
     /// sets the `test_class_name` field
-    pub fn set_test_class_name(mut self,
-                               test_class_name: String)
-                               -> Self {
+    pub fn set_test_class_name(mut self, test_class_name: String) -> Self {
         self.test_class_name = test_class_name;
         self
     }
@@ -1472,9 +1451,7 @@ impl ByHiddenTestGrader {
     }
 
     /// sets the `out_of` field
-    pub fn set_out_of(mut self,
-                      out_of: f64)
-                      -> Self {
+    pub fn set_out_of(mut self, out_of: f64) -> Self {
         self.out_of = out_of;
         self
     }
@@ -1485,9 +1462,7 @@ impl ByHiddenTestGrader {
     }
 
     /// sets the `req_name` field
-    pub fn set_req_name(mut self,
-                        req_name: String)
-                        -> Self {
+    pub fn set_req_name(mut self, req_name: String) -> Self {
         self.req_name = req_name;
         self
     }
@@ -1501,11 +1476,10 @@ impl ByHiddenTestGrader {
         let out_of = self.out_of();
         let req_name = self.req_name();
 
-        let test_source =
-            reqwest::blocking::get(&url).context(format!("Failed to download {url}"))?
-                                        .bytes()
-                                        .context(format!("Failed to get response as bytes: \
-                                                          {url}"))?;
+        let test_source = reqwest::blocking::get(&url)
+            .context(format!("Failed to download {url}"))?
+            .bytes()
+            .context(format!("Failed to get response as bytes: {url}"))?;
 
         let path = ROOT_DIR.join(format!("{test_class_name}.java"));
         let mut file = fs::File::create(&path)?;
@@ -1519,11 +1493,13 @@ impl ByHiddenTestGrader {
             }
         };
 
-        let grader = ByUnitTestGrader { test_files: vec![Dynamic::from(test_class_name)],
-                                        expected_tests: Array::new(),
-                                        project,
-                                        out_of,
-                                        req_name };
+        let grader = ByUnitTestGrader {
+            test_files: vec![Dynamic::from(test_class_name)],
+            expected_tests: Array::new(),
+            project,
+            out_of,
+            req_name,
+        };
 
         let out = match grader.grade_by_tests() {
             Ok(o) => o,
@@ -1707,27 +1683,27 @@ enum SLOFileType {
     SourceAndTest,
 }
 
-async fn generate_combined_slo_report(slo_responses: Vec<(&str,
-                                           Result<CreateChatCompletionResponse,
-                                                  OpenAIError>)>)
-                                      -> Result<String> {
+async fn generate_combined_slo_report(
+    slo_responses: Vec<(&str, Result<CreateChatCompletionResponse, OpenAIError>)>,
+) -> Result<String> {
     let mut individual_feedbacks = Vec::new();
 
     for (name, resp) in slo_responses {
         match resp {
             Ok(response) => {
-                let content = response.choices
-                                      .first()
-                                      .and_then(|choice| choice.message.content.clone())
-                                      .unwrap_or_default();
+                let content = response
+                    .choices
+                    .first()
+                    .and_then(|choice| choice.message.content.clone())
+                    .unwrap_or_default();
 
                 individual_feedbacks.push(format!("SLO: {}\n\n{}", name, content));
             }
             Err(e) => {
                 // Log the error or handle it as appropriate for your use case
                 eprintln!("Error processing SLO '{}': {:?}", name, e);
-                individual_feedbacks.push(format!("SLO: {}\n\nError: Unable to process this SLO.",
-                                                  name));
+                individual_feedbacks
+                    .push(format!("SLO: {}\n\nError: Unable to process this SLO.", name));
             }
         }
     }
@@ -1747,34 +1723,37 @@ async fn generate_combined_slo_report(slo_responses: Vec<(&str,
     );
 
     let messages = vec![
-             ChatCompletionRequestSystemMessageArgs::default().content(
-            "You are an AI assistant tasked with creating a concise, well-structured report that \
-             combines feedback from multiple Student Learning Outcomes (SLOs). Your goal is to \
-             provide a comprehensive overview of the student's performance across all SLOs, \
-             highlighting strengths, areas for improvement, and specific recommendations.
+        ChatCompletionRequestSystemMessageArgs::default()
+            .content(
+                "You are an AI assistant tasked with creating a concise, well-structured report \
+                 that combines feedback from multiple Student Learning Outcomes (SLOs). Your goal \
+                 is to provide a comprehensive overview of the student's performance across all \
+                 SLOs, highlighting strengths, areas for improvement, and specific \
+                 recommendations.
                  
                  The report should also serve as an effective code review, offering actionable \
-             insights that the student can use to enhance their code quality and programming \
-             skills.
+                 insights that the student can use to enhance their code quality and programming \
+                 skills.
                  
                  The student is the intended audience for this report, so talk directly to them in \
-             a friendly, constructive manner. Use clear, concise language and provide specific \
-             code examples to support your feedback. Especially when making recommendations, \
-             explain the reasoning behind your suggestions and offer guidance on how the student \
-             can implement them effectively.",
-        )
-                                                              .name("Instructor")
-                                                              .build()?
-                                                              .into(),
-             ChatCompletionRequestUserMessageArgs::default().content(format!(
-            "Please create a combined report based on the following individual SLO \
-             feedbacks:\n\n{}",
-            combined_feedback
-        ))
-                                                            .name("Student")
-                                                            .build()?
-                                                            .into(),
-        ];
+                 a friendly, constructive manner. Use clear, concise language and provide \
+                 specific code examples to support your feedback. Especially when making \
+                 recommendations, explain the reasoning behind your suggestions and offer \
+                 guidance on how the student can implement them effectively.",
+            )
+            .name("Instructor")
+            .build()?
+            .into(),
+        ChatCompletionRequestUserMessageArgs::default()
+            .content(format!(
+                "Please create a combined report based on the following individual SLO \
+                 feedbacks:\n\n{}",
+                combined_feedback
+            ))
+            .name("Student")
+            .build()?
+            .into(),
+    ];
 
     let response = openai_client
         .chat()
@@ -1790,10 +1769,11 @@ async fn generate_combined_slo_report(slo_responses: Vec<(&str,
         })
         .await?;
 
-    response.choices
-            .first()
-            .and_then(|choice| choice.message.content.clone())
-            .ok_or_else(|| anyhow::anyhow!("No content in OpenAI response"))
+    response
+        .choices
+        .first()
+        .and_then(|choice| choice.message.content.clone())
+        .ok_or_else(|| anyhow::anyhow!("No content in OpenAI response"))
 }
 
 /// Generates SLO responses for a given project.
@@ -1816,35 +1796,49 @@ async fn generate_slo_responses(
     test_files: &[String],
     project_title: &str,
     project_description: &str,
-    enabled_slos: &HashSet<String> /* New parameter */)
-    -> Result<Vec<(&'static str, Result<CreateChatCompletionResponse, OpenAIError>)>> {
-    let slos = vec![("slo_algorithmic_solutions",
-                     "Algorithmic Solutions",
-                     ALGORITHMIC_SOLUTIONS_SLO.as_str(),
-                     SLOFileType::Source),
-                    ("slo_code_readability",
-                     "Code Readability and Formatting",
-                     CODE_READABILITY_SLO.as_str(),
-                     SLOFileType::SourceAndTest),
-                    ("slo_comments",
-                     "Comments",
-                     COMMENTS_WRITTEN_SLO.as_str(),
-                     SLOFileType::SourceAndTest),
-                    ("slo_error_handling",
-                     "Error Handling",
-                     ERROR_HANDLING_SLO.as_str(),
-                     SLOFileType::SourceAndTest),
-                    ("slo_logic", "Logic", LOGIC_SLO.as_str(), SLOFileType::SourceAndTest),
-                    ("slo_naming_conventions",
-                     "Naming Conventions",
-                     NAMING_CONVENTIONS_SLO.as_str(),
-                     SLOFileType::SourceAndTest),
-                    ("slo_oop_programming",
-                     "Object Oriented Programming",
-                     OBJECT_ORIENTED_PROGRAMMING_SLO.as_str(),
-                     SLOFileType::SourceAndTest),
-                    ("slo_syntax", "Syntax", SYNTAX_SLO.as_str(), SLOFileType::SourceAndTest),
-                    ("slo_testing", "Testing", TESTING_SLO.as_str(), SLOFileType::Test),];
+    enabled_slos: &HashSet<String>, // New parameter
+) -> Result<Vec<(&'static str, Result<CreateChatCompletionResponse, OpenAIError>)>> {
+    let slos = vec![
+        (
+            "slo_algorithmic_solutions",
+            "Algorithmic Solutions",
+            ALGORITHMIC_SOLUTIONS_SLO.as_str(),
+            SLOFileType::Source,
+        ),
+        (
+            "slo_code_readability",
+            "Code Readability and Formatting",
+            CODE_READABILITY_SLO.as_str(),
+            SLOFileType::SourceAndTest,
+        ),
+        (
+            "slo_comments",
+            "Comments",
+            COMMENTS_WRITTEN_SLO.as_str(),
+            SLOFileType::SourceAndTest,
+        ),
+        (
+            "slo_error_handling",
+            "Error Handling",
+            ERROR_HANDLING_SLO.as_str(),
+            SLOFileType::SourceAndTest,
+        ),
+        ("slo_logic", "Logic", LOGIC_SLO.as_str(), SLOFileType::SourceAndTest),
+        (
+            "slo_naming_conventions",
+            "Naming Conventions",
+            NAMING_CONVENTIONS_SLO.as_str(),
+            SLOFileType::SourceAndTest,
+        ),
+        (
+            "slo_oop_programming",
+            "Object Oriented Programming",
+            OBJECT_ORIENTED_PROGRAMMING_SLO.as_str(),
+            SLOFileType::SourceAndTest,
+        ),
+        ("slo_syntax", "Syntax", SYNTAX_SLO.as_str(), SLOFileType::SourceAndTest),
+        ("slo_testing", "Testing", TESTING_SLO.as_str(), SLOFileType::Test),
+    ];
 
     let mut slo_requests = Vec::new();
 
@@ -1854,33 +1848,41 @@ async fn generate_slo_responses(
         }
 
         let relevant_files: Vec<File> = match slo_file_type {
-            SLOFileType::Source => source_files.iter()
-                                               .filter_map(|x| project.identify(x).ok())
-                                               .collect(),
-            SLOFileType::Test => test_files.iter()
-                                           .filter_map(|x| project.identify(x).ok())
-                                           .collect(),
-            SLOFileType::SourceAndTest => source_files.iter()
-                                                      .chain(test_files.iter())
-                                                      .filter_map(|x| project.identify(x).ok())
-                                                      .collect(),
+            SLOFileType::Source => source_files
+                .iter()
+                .filter_map(|x| project.identify(x).ok())
+                .collect(),
+            SLOFileType::Test => test_files
+                .iter()
+                .filter_map(|x| project.identify(x).ok())
+                .collect(),
+            SLOFileType::SourceAndTest => source_files
+                .iter()
+                .chain(test_files.iter())
+                .filter_map(|x| project.identify(x).ok())
+                .collect(),
         };
 
         let relevant_file_codes: Vec<String> =
             relevant_files.iter().map(|x| x.parser().code()).collect();
 
-        ensure!(!relevant_file_codes.is_empty(),
-                "No relevant files ({:?}) with source code found for SLO {}",
-                slo_file_type,
-                slo_name);
+        ensure!(
+            !relevant_file_codes.is_empty(),
+            "No relevant files ({:?}) with source code found for SLO {}",
+            slo_file_type,
+            slo_name
+        );
 
-        let mut student_message =
-            vec![format!("# Submission for {project_title}\n\nDescription: {project_description}")];
+        let mut student_message = vec![format!(
+            "# Submission for {project_title}\n\nDescription: {project_description}"
+        )];
 
         for (file, code) in relevant_files.iter().zip(relevant_file_codes.iter()) {
-            student_message.push(format!("\n\n## Contents of {file_name}\n\n```java\n{code}\n```",
-                                         file_name = file.proper_name(),
-                                         code = code));
+            student_message.push(format!(
+                "\n\n## Contents of {file_name}\n\n```java\n{code}\n```",
+                file_name = file.proper_name(),
+                code = code
+            ));
         }
 
         let student_message = student_message.join("\n\n");
@@ -1898,7 +1900,7 @@ async fn generate_slo_responses(
         ];
 
         slo_requests.push(async move {
-                        let openai_client = OpenAIClient::with_config(
+            let openai_client = OpenAIClient::with_config(
                 OpenAIConfig::new()
                     .with_api_base(
                         std::env::var("OPENAI_ENDPOINT")
@@ -1910,7 +1912,7 @@ async fn generate_slo_responses(
                     ),
             );
 
-                        let response = openai_client
+            let response = openai_client
                 .chat()
                 .create(CreateChatCompletionRequest {
                     model: std::env::var("OPENAI_MODEL")
@@ -1924,8 +1926,8 @@ async fn generate_slo_responses(
                 })
                 .await;
 
-                        (slo_name, response)
-                    });
+            (slo_name, response)
+        });
     }
 
     let slo_responses = futures::future::join_all(slo_requests).await;
@@ -1973,82 +1975,98 @@ async fn generate_slo_responses(
 ///       false.
 ///     - `slo_testing`: whether to provide feedback on Testing SLO. Defaults to
 ///       false.
-pub fn show_result(results: Array,
-                   gradescope_config: rhai::Map)
-                   -> Result<()> {
-    let results: Vec<GradeResult> = results.iter()
-                                           .map(|f| f.clone().cast::<GradeResult>())
-                                           .collect();
-    let source_files = gradescope_config.get("source_files")
-                                        .unwrap_or(&Dynamic::from(Array::new()))
-                                        .clone()
-                                        .cast::<Array>()
-                                        .iter()
-                                        .map(|f| f.clone().cast::<String>())
-                                        .collect::<Vec<String>>();
+pub fn show_result(results: Array, gradescope_config: rhai::Map) -> Result<()> {
+    let results: Vec<GradeResult> = results
+        .iter()
+        .map(|f| f.clone().cast::<GradeResult>())
+        .collect();
+    let source_files = gradescope_config
+        .get("source_files")
+        .unwrap_or(&Dynamic::from(Array::new()))
+        .clone()
+        .cast::<Array>()
+        .iter()
+        .map(|f| f.clone().cast::<String>())
+        .collect::<Vec<String>>();
 
-    let test_files = gradescope_config.get("test_files")
-                                      .unwrap_or(&Dynamic::from(Array::new()))
-                                      .clone()
-                                      .cast::<Array>()
-                                      .iter()
-                                      .map(|f| f.clone().cast::<String>())
-                                      .collect::<Vec<String>>();
+    let test_files = gradescope_config
+        .get("test_files")
+        .unwrap_or(&Dynamic::from(Array::new()))
+        .clone()
+        .cast::<Array>()
+        .iter()
+        .map(|f| f.clone().cast::<String>())
+        .collect::<Vec<String>>();
 
-    let project_title = gradescope_config.get("project_title")
-                                         .unwrap_or(&Dynamic::from(String::new()))
-                                         .clone()
-                                         .cast::<String>();
-    let project_description = gradescope_config.get("project_description")
-                                               .unwrap_or(&Dynamic::from(String::new()))
-                                               .clone()
-                                               .cast::<String>();
-    let pass_threshold = gradescope_config.get("pass_threshold")
-                                          .unwrap_or(&Dynamic::from(0.7))
-                                          .clone()
-                                          .cast::<f64>();
+    let project_title = gradescope_config
+        .get("project_title")
+        .unwrap_or(&Dynamic::from(String::new()))
+        .clone()
+        .cast::<String>();
+    let project_description = gradescope_config
+        .get("project_description")
+        .unwrap_or(&Dynamic::from(String::new()))
+        .clone()
+        .cast::<String>();
+    let pass_threshold = gradescope_config
+        .get("pass_threshold")
+        .unwrap_or(&Dynamic::from(0.7))
+        .clone()
+        .cast::<f64>();
 
     let get_or_default = |f: &str, d: bool| -> bool {
-        gradescope_config.get(f)
-                         .unwrap_or(&Dynamic::from(d))
-                         .clone()
-                         .cast::<bool>()
+        gradescope_config
+            .get(f)
+            .unwrap_or(&Dynamic::from(d))
+            .clone()
+            .cast::<bool>()
     };
     let show_table = get_or_default("show_table", true);
     let gradescope_json = get_or_default("results_json", false);
     let gradescope_feedback = get_or_default("feedback", false);
     let gradescope_debug = get_or_default("debug", false);
 
-    let enabled_slos: HashSet<String> =
-        vec!["slo_algorithmic_solutions",
-             "slo_code_readability",
-             "slo_comments",
-             "slo_error_handling",
-             "slo_logic",
-             "slo_naming_conventions",
-             "slo_oop_programming",
-             "slo_syntax",
-             "slo_testing",].into_iter()
-                            .filter(|&slo| get_or_default(slo, false))
-                            .map(String::from)
-                            .collect();
+    let enabled_slos: HashSet<String> = vec![
+        "slo_algorithmic_solutions",
+        "slo_code_readability",
+        "slo_comments",
+        "slo_error_handling",
+        "slo_logic",
+        "slo_naming_conventions",
+        "slo_oop_programming",
+        "slo_syntax",
+        "slo_testing",
+    ]
+    .into_iter()
+    .filter(|&slo| get_or_default(slo, false))
+    .map(String::from)
+    .collect();
 
-    let (grade, out_of) = results.iter().fold((0f64, 0f64), |acc, r| {
-                                            (acc.0 + r.grade.grade, acc.1 + r.grade.out_of)
-                                        });
+    let (grade, out_of) = results
+        .iter()
+        .fold((0f64, 0f64), |acc, r| (acc.0 + r.grade.grade, acc.1 + r.grade.out_of));
 
     if show_table {
-        eprintln!("{}",
-                  results.clone()
-                         .table()
-                         .with(Panel::header("Grading Overview"))
-                         .with(Panel::footer(format!("Total: {grade:.2}/{out_of:.2}")))
-                         .with(Modify::new(Rows::new(1..)).with(Width::wrap(24).keep_words()))
-                         .with(Modify::new(Rows::first()).with(Alignment::center())
-                                                         .with(Alignment::center_vertical()),)
-                         .with(Modify::new(Rows::last()).with(Alignment::center())
-                                                        .with(Alignment::center_vertical()),)
-                         .with(tabled::Style::modern()));
+        eprintln!(
+            "{}",
+            results
+                .clone()
+                .table()
+                .with(Panel::header("Grading Overview"))
+                .with(Panel::footer(format!("Total: {grade:.2}/{out_of:.2}")))
+                .with(Modify::new(Rows::new(1..)).with(Width::wrap(24).keep_words()))
+                .with(
+                    Modify::new(Rows::first())
+                        .with(Alignment::center())
+                        .with(Alignment::center_vertical()),
+                )
+                .with(
+                    Modify::new(Rows::last())
+                        .with(Alignment::center())
+                        .with(Alignment::center_vertical()),
+                )
+                .with(tabled::Style::modern())
+        );
     }
 
     if gradescope_json {
@@ -2063,21 +2081,19 @@ pub fn show_result(results: Array,
                 String::new()
             };
 
-            let test_case = GradescopeTestCase::builder().name(result.requirement())
-                                                         .name_format(GradescopeOutputFormat::Text)
-                                                         .max_score(result.out_of())
-                                                         .score(result.grade())
-                                                         .status(if result.grade()
-                                                                    > pass_threshold
-                                                                      * result.out_of()
-                                                                 {
-                                                                     GradescopeStatus::Passed
-                                                                 } else {
-                                                                     GradescopeStatus::Failed
-                                                                 })
-                                                         .output(feedback)
-                                                         .output_format(GradescopeOutputFormat::Md)
-                                                         .build();
+            let test_case = GradescopeTestCase::builder()
+                .name(result.requirement())
+                .name_format(GradescopeOutputFormat::Text)
+                .max_score(result.out_of())
+                .score(result.grade())
+                .status(if result.grade() > pass_threshold * result.out_of() {
+                    GradescopeStatus::Passed
+                } else {
+                    GradescopeStatus::Failed
+                })
+                .output(feedback)
+                .output_format(GradescopeOutputFormat::Md)
+                .build();
 
             test_cases.push(test_case);
         }
@@ -2085,46 +2101,54 @@ pub fn show_result(results: Array,
         if grade > pass_threshold * out_of && !enabled_slos.is_empty() {
             let runtime = RUNTIME.handle().clone();
 
-            ensure!(!project_title.is_empty(),
-                    "Project title must be specified to generate SLO feedback");
-            ensure!(!project_description.is_empty(),
-                    "Project description must be specified to generate SLO feedback");
+            ensure!(
+                !project_title.is_empty(),
+                "Project title must be specified to generate SLO feedback"
+            );
+            ensure!(
+                !project_description.is_empty(),
+                "Project description must be specified to generate SLO feedback"
+            );
 
             let slo_responses = runtime.block_on(async {
-                                           generate_slo_responses(&project,
-                                                                  &source_files,
-                                                                  &test_files,
-                                                                  &project_title,
-                                                                  &project_description,
-                                                                  &enabled_slos).await
-                                       })?;
+                generate_slo_responses(
+                    &project,
+                    &source_files,
+                    &test_files,
+                    &project_title,
+                    &project_description,
+                    &enabled_slos,
+                )
+                .await
+            })?;
 
             let combined_report =
                 runtime.block_on(async { generate_combined_slo_report(slo_responses).await })?;
 
-            test_cases.push(GradescopeTestCase::builder().name("Student Learning Outcomes \
-                                                                (SLOs) Feedback"
-                                                                                .to_string())
-                                                         .name_format(GradescopeOutputFormat::Text)
-                                                         .output(combined_report)
-                                                         .output_format(GradescopeOutputFormat::Md)
-                                                         .max_score(0f64)
-                                                         .score(0f64)
-                                                         .build());
+            test_cases.push(
+                GradescopeTestCase::builder()
+                    .name("Student Learning Outcomes (SLOs) Feedback".to_string())
+                    .name_format(GradescopeOutputFormat::Text)
+                    .output(combined_report)
+                    .output_format(GradescopeOutputFormat::Md)
+                    .max_score(0f64)
+                    .score(0f64)
+                    .build(),
+            );
         }
-        let submission =
-            GradescopeSubmission::builder().tests(Some(test_cases))
-                                           .test_output_format(GradescopeOutputFormat::Md)
-                                           .test_name_format(GradescopeOutputFormat::Text)
-                                           .stdout_visibility(GradescopeVisibility::Visible)
-                                           .visibility(GradescopeVisibility::Visible)
-                                           .build();
+        let submission = GradescopeSubmission::builder()
+            .tests(Some(test_cases))
+            .test_output_format(GradescopeOutputFormat::Md)
+            .test_name_format(GradescopeOutputFormat::Text)
+            .stdout_visibility(GradescopeVisibility::Visible)
+            .visibility(GradescopeVisibility::Visible)
+            .build();
 
         let mut file = fs::File::create(if gradescope_debug {
-                                            "./results.json"
-                                        } else {
-                                            "/autograder/results/results.json"
-                                        })?;
+            "./results.json"
+        } else {
+            "/autograder/results/results.json"
+        })?;
         file.write_all(serde_json::to_string_pretty(&submission)?.as_bytes())?;
     }
 
@@ -2163,9 +2187,7 @@ impl DiffGrader {
     }
 
     /// sets the `req_name` field
-    pub fn set_req_name(mut self,
-                        req_name: String)
-                        -> Self {
+    pub fn set_req_name(mut self, req_name: String) -> Self {
         self.req_name = req_name;
         self
     }
@@ -2176,9 +2198,7 @@ impl DiffGrader {
     }
 
     /// sets the `out_of` field
-    pub fn set_out_of(mut self,
-                      out_of: f64)
-                      -> Self {
+    pub fn set_out_of(mut self, out_of: f64) -> Self {
         self.out_of = out_of;
         self
     }
@@ -2189,9 +2209,7 @@ impl DiffGrader {
     }
 
     /// sets the `expected` field
-    pub fn set_expected(mut self,
-                        expected: Array)
-                        -> Self {
+    pub fn set_expected(mut self, expected: Array) -> Self {
         self.expected = expected;
         self
     }
@@ -2202,9 +2220,7 @@ impl DiffGrader {
     }
 
     /// sets the `actual` field
-    pub fn set_input(mut self,
-                     input: Array)
-                     -> Self {
+    pub fn set_input(mut self, input: Array) -> Self {
         self.input = input;
         self
     }
@@ -2215,9 +2231,7 @@ impl DiffGrader {
     }
 
     /// sets the `project` field
-    pub fn set_project(mut self,
-                       project: Project)
-                       -> Self {
+    pub fn set_project(mut self, project: Project) -> Self {
         self.project = project;
         self
     }
@@ -2228,9 +2242,7 @@ impl DiffGrader {
     }
 
     /// sets the `file` field
-    pub fn set_file(mut self,
-                    file: String)
-                    -> Self {
+    pub fn set_file(mut self, file: String) -> Self {
         self.file = file;
         self
     }
@@ -2241,9 +2253,7 @@ impl DiffGrader {
     }
 
     /// sets the `ignore_case` field
-    pub fn set_ignore_case(mut self,
-                           ignore_case: bool)
-                           -> Self {
+    pub fn set_ignore_case(mut self, ignore_case: bool) -> Self {
         self.ignore_case = ignore_case;
         self
     }
@@ -2251,10 +2261,14 @@ impl DiffGrader {
     #[generate_rhai_variant(Fallible)]
     /// Grades by diffing the `expected` and `actual` strings.
     pub fn grade_by_diff(&mut self) -> Result<GradeResult> {
-        ensure!(!self.expected.is_empty() & !self.input.is_empty(),
-                "At least one test case (input-expected pair) must be provided");
-        ensure!(self.expected.len() == self.input.len(),
-                "expected and input case arrays must be of the same length");
+        ensure!(
+            !self.expected.is_empty() & !self.input.is_empty(),
+            "At least one test case (input-expected pair) must be provided"
+        );
+        ensure!(
+            self.expected.len() == self.input.len(),
+            "expected and input case arrays must be of the same length"
+        );
 
         let file = self.project.identify(&self.file)?;
         let mut prompts = vec![];
@@ -2289,11 +2303,12 @@ impl DiffGrader {
                                 .into(),
                             get_source_context(diags, self.project.clone(), 3, 6, 6, false, None)?,
                         ];
-                        return Ok(GradeResult { requirement: self.req_name.clone(),
-                                                grade:       Grade::new(0.0, self.out_of),
-                                                reason:
-                                                    "Error running file for some cases.".to_string(),
-                                                prompt:      Some(messages), });
+                        return Ok(GradeResult {
+                            requirement: self.req_name.clone(),
+                            grade:       Grade::new(0.0, self.out_of),
+                            reason:      "Error running file for some cases.".to_string(),
+                            prompt:      Some(messages),
+                        });
                     }
                     Err(JavaFileError::DuringCompilation { stacktrace, diags }) => {
                         let messages = vec![
@@ -2336,12 +2351,13 @@ impl DiffGrader {
                                 .context("Failed to build user message")?
                                 .into(),
                         ];
-                        return Ok(GradeResult { requirement: self.req_name.clone(),
-                                                grade:       Grade::new(0.0, self.out_of),
-                                                reason:      "Unknown error while running file \
-                                                              for some cases."
-                                                                              .to_string(),
-                                                prompt:      Some(messages), });
+                        return Ok(GradeResult {
+                            requirement: self.req_name.clone(),
+                            grade:       Grade::new(0.0, self.out_of),
+                            reason:      "Unknown error while running file for some cases."
+                                .to_string(),
+                            prompt:      Some(messages),
+                        });
                     }
                 };
 
@@ -2380,16 +2396,18 @@ impl DiffGrader {
             }
 
             if !is_equal {
-                let prompt = format!("Comparing expected and actual output for \
-                                      {}:\n```{inp}Expected:\n{}\nActual:\n{}\n```\n",
-                                     file.file_name(),
-                                     expected,
-                                     actual,
-                                     inp = if self.input.is_empty() {
-                                         String::new()
-                                     } else {
-                                         format!("\nInput:\n`{}`\n", input)
-                                     },);
+                let prompt = format!(
+                    "Comparing expected and actual output for \
+                     {}:\n```{inp}Expected:\n{}\nActual:\n{}\n```\n",
+                    file.file_name(),
+                    expected,
+                    actual,
+                    inp = if self.input.is_empty() {
+                        String::new()
+                    } else {
+                        format!("\nInput:\n`{}`\n", input)
+                    },
+                );
 
                 eprintln!("{prompt}");
                 prompts.push(prompt);
@@ -2397,39 +2415,45 @@ impl DiffGrader {
         }
 
         if prompts.is_empty() {
-            Ok(GradeResult { requirement: self.req_name.clone(),
-                             grade:       Grade { grade:  self.out_of,
-                                                  out_of: self.out_of, },
-                             reason:      "Got expected output".to_string(),
-                             prompt:      None, })
+            Ok(GradeResult {
+                requirement: self.req_name.clone(),
+                grade:       Grade {
+                    grade:  self.out_of,
+                    out_of: self.out_of,
+                },
+                reason:      "Got expected output".to_string(),
+                prompt:      None,
+            })
         } else {
-            let context = format!("{prompt}\n\nSource code:\n```java\n{code}\n```\nMy tests are \
-                                   failing due to the above.",
-                                  prompt = prompts.join("\n\n"),
-                                  code = file.parser().code());
+            let context = format!(
+                "{prompt}\n\nSource code:\n```java\n{code}\n```\nMy tests are failing due to the \
+                 above.",
+                prompt = prompts.join("\n\n"),
+                code = file.parser().code()
+            );
 
-            Ok(GradeResult { requirement: self.req_name.clone(),
-                             grade:       Grade { grade:  0.0,
-                                                  out_of: self.out_of, },
-                             reason:      "See above.".to_string(),
-                             prompt:      Some(vec![
-                ChatCompletionRequestSystemMessageArgs::default().content(
-                    SYSTEM_MESSAGE.to_string(),
-                )
-                                                                 .name("Instructor".to_string())
-                                                                 .build()
-                                                                 .context(
-                    "Failed to build system message",
-                )?
-                                                                 .into(),
-                ChatCompletionRequestSystemMessageArgs::default().content(context)
-                                                                 .name("Student".to_string())
-                                                                 .build()
-                                                                 .context(
-                    "Failed to build system message",
-                )?
-                                                                 .into(),
-            ]), })
+            Ok(GradeResult {
+                requirement: self.req_name.clone(),
+                grade:       Grade {
+                    grade:  0.0,
+                    out_of: self.out_of,
+                },
+                reason:      "See above.".to_string(),
+                prompt:      Some(vec![
+                    ChatCompletionRequestSystemMessageArgs::default()
+                        .content(SYSTEM_MESSAGE.to_string())
+                        .name("Instructor".to_string())
+                        .build()
+                        .context("Failed to build system message")?
+                        .into(),
+                    ChatCompletionRequestSystemMessageArgs::default()
+                        .content(context)
+                        .name("Student".to_string())
+                        .build()
+                        .context("Failed to build system message")?
+                        .into(),
+                ]),
+            })
         }
     }
 }
@@ -2459,22 +2483,25 @@ fn generate_single_feedback(result: &GradeResult) -> Result<String> {
     if result.grade.grade < result.grade.out_of {
         let id = uuid::Uuid::new_v4().to_string();
         let mut result = result.clone();
-        let body = PromptRow { id:               id.clone(),
-                               messages:         result.prompt(),
-                               requirement_name: result.requirement(),
-                               reason:           result.reason(),
-                               grade:            result.grade.to_string(),
-                               status:           "not_started".into(), };
+        let body = PromptRow {
+            id:               id.clone(),
+            messages:         result.prompt(),
+            requirement_name: result.requirement(),
+            reason:           result.reason(),
+            grade:            result.grade.to_string(),
+            status:           "not_started".into(),
+        };
 
         let messages = serde_json::to_string(&body)?;
 
         // Post to the database
         rt.block_on(async {
-              POSTGREST_CLIENT.from("prompts")
-                              .insert(messages)
-                              .execute()
-                              .await
-          })?;
+            POSTGREST_CLIENT
+                .from("prompts")
+                .insert(messages)
+                .execute()
+                .await
+        })?;
 
         // Return feedback URL
         Ok(format!(
@@ -2484,8 +2511,9 @@ fn generate_single_feedback(result: &GradeResult) -> Result<String> {
             id
         ))
     } else {
-        Ok(String::from("This type of feedback cannot be generated \
-                         for submissions without penalty."))
+        Ok(String::from(
+            "This type of feedback cannot be generated for submissions without penalty.",
+        ))
     }
 }
 
@@ -2540,9 +2568,7 @@ impl Query {
     }
 
     /// Sets the query to run.
-    pub fn set_query(mut self,
-                     query: String)
-                     -> Self {
+    pub fn set_query(mut self, query: String) -> Self {
         self.query = query;
         self
     }
@@ -2553,9 +2579,7 @@ impl Query {
     }
 
     /// Sets the captures to extract from the query.
-    pub fn set_capture(mut self,
-                       capture: String)
-                       -> Self {
+    pub fn set_capture(mut self, capture: String) -> Self {
         self.capture = capture;
         self
     }
@@ -2566,9 +2590,7 @@ impl Query {
     }
 
     /// Set the function to filter the results of the query.
-    pub fn set_filter(mut self,
-                      filter: FnPtr)
-                      -> Self {
+    pub fn set_filter(mut self, filter: FnPtr) -> Self {
         self.filter = Some(filter);
         self
     }
@@ -2590,8 +2612,10 @@ pub enum QueryError {
     #[error("The file selected (`{0}`) to run the query on could not be found.")]
     FileNotFound(String),
     /// The query could not be run.
-    #[error("This query could not be run, likely due to a syntax \
-             error.\nQuery:\n```\n{q}\n```\nError:\n```\n{e}\n```")]
+    #[error(
+        "This query could not be run, likely due to a syntax \
+         error.\nQuery:\n```\n{q}\n```\nError:\n```\n{e}\n```"
+    )]
     DuringQueryExecution {
         /// The query that could not be run.
         q: String,
@@ -2600,8 +2624,10 @@ pub enum QueryError {
     },
     /// No matches found for a previously selected capture, all subsequent
     /// queries will return nothing.
-    #[error("No matches found for a previously selected capture: `{0}`, all subsequent queries \
-             will return nothing.")]
+    #[error(
+        "No matches found for a previously selected capture: `{0}`, all subsequent queries will \
+         return nothing."
+    )]
     NoMatchesFound(String),
     /// Unknown error.
     #[error("Unknown error: {0}")]
@@ -2651,9 +2677,7 @@ impl QueryGrader {
     }
 
     /// Sets the name of the requirement.
-    pub fn set_req_name(mut self,
-                        req_name: String)
-                        -> Self {
+    pub fn set_req_name(mut self, req_name: String) -> Self {
         self.req_name = req_name;
         self
     }
@@ -2664,9 +2688,7 @@ impl QueryGrader {
     }
 
     /// Sets the "out of" grade for the requirement.
-    pub fn set_out_of(mut self,
-                      out_of: f64)
-                      -> Self {
+    pub fn set_out_of(mut self, out_of: f64) -> Self {
         self.out_of = out_of;
         self
     }
@@ -2677,9 +2699,7 @@ impl QueryGrader {
     }
 
     /// Sets the file to run the query on.
-    pub fn set_file(mut self,
-                    file: String)
-                    -> Self {
+    pub fn set_file(mut self, file: String) -> Self {
         self.file = file;
         self
     }
@@ -2690,9 +2710,7 @@ impl QueryGrader {
     }
 
     /// Sets the project to run the query on.
-    pub fn set_project(mut self,
-                       project: Project)
-                       -> Self {
+    pub fn set_project(mut self, project: Project) -> Self {
         self.project = project;
         self
     }
@@ -2714,9 +2732,7 @@ impl QueryGrader {
     }
 
     /// Sets the constraint of the query to "must match exactly n times".
-    pub fn must_match_exactly_n_times(mut self,
-                                      n: usize)
-                                      -> Self {
+    pub fn must_match_exactly_n_times(mut self, n: usize) -> Self {
         self.constraint = QueryConstraint::MustMatchExactlyNTimes(n);
         self
     }
@@ -2733,9 +2749,7 @@ impl QueryGrader {
     }
 
     /// Sets the reason to share with the student.
-    pub fn set_reason(mut self,
-                      reason: String)
-                      -> Self {
+    pub fn set_reason(mut self, reason: String) -> Self {
         self.reason = reason;
         self
     }
@@ -2743,16 +2757,16 @@ impl QueryGrader {
     #[generate_rhai_variant(Fallible)]
     /// Adds a query to run.
     /// If no file has been selected, this will throw an error.
-    pub fn query(#[allow(unused_mut)] mut self,
-                 q: String)
-                 -> Result<Self, QueryError> {
+    pub fn query(#[allow(unused_mut)] mut self, q: String) -> Result<Self, QueryError> {
         if self.file.is_empty() {
             return Err(QueryError::NoFileSelected);
         }
 
-        self.queries.push(Query { query:   q,
-                                  capture: String::new(),
-                                  filter:  None, });
+        self.queries.push(Query {
+            query:   q,
+            capture: String::new(),
+            filter:  None,
+        });
 
         Ok(self)
     }
@@ -2760,9 +2774,7 @@ impl QueryGrader {
     #[generate_rhai_variant(Fallible)]
     /// Adds a capture to the last query.
     /// If no queries have been added, this will throw an error.
-    pub fn capture(#[allow(unused_mut)] mut self,
-                   c: String)
-                   -> Result<Self, QueryError> {
+    pub fn capture(#[allow(unused_mut)] mut self, c: String) -> Result<Self, QueryError> {
         if let Some(last) = self.queries.last_mut() {
             *last = last.clone().set_capture(c);
             Ok(self)
@@ -2774,9 +2786,7 @@ impl QueryGrader {
     #[generate_rhai_variant(Fallible)]
     /// Adds a capture to the last query.
     /// If no queries have been added, this will throw an error.
-    pub fn filter(#[allow(unused_mut)] mut self,
-                  f: FnPtr)
-                  -> Result<Self, QueryError> {
+    pub fn filter(#[allow(unused_mut)] mut self, f: FnPtr) -> Result<Self, QueryError> {
         if let Some(last) = self.queries.last_mut() {
             *last = last.clone().set_filter(f);
             Ok(self)
@@ -2786,156 +2796,142 @@ impl QueryGrader {
     }
 
     /// Selects entire method body and returns
-    pub fn method_body_with_name(mut self,
-                                 method_name: String)
-                                 -> Self {
-        self.queries
-            .push(Query { query:   format!(include_str!("queries/method_body_with_name.scm"),
-                                           method_name),
-                          capture: "body".to_string(),
-                          filter:  None, });
+    pub fn method_body_with_name(mut self, method_name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(include_str!("queries/method_body_with_name.scm"), method_name),
+            capture: "body".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects entire method body and returns
-    pub fn method_body_with_return_type(mut self,
-                                        return_type: String)
-                                        -> Self {
-        self.queries.push(Query { query:   format!(
-            include_str!("queries/method_body_with_return_type.scm"),
-            return_type
-        ),
-                                  capture: "body".to_string(),
-                                  filter:  None, });
+    pub fn method_body_with_return_type(mut self, return_type: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(include_str!("queries/method_body_with_return_type.scm"), return_type),
+            capture: "body".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects and returns the entire main method
     pub fn main_method(mut self) -> Self {
-        self.queries
-            .push(Query { query:   include_str!("queries/main_method.scm").to_string(),
-                          capture: "body".to_string(),
-                          filter:  None, });
+        self.queries.push(Query {
+            query:   include_str!("queries/main_method.scm").to_string(),
+            capture: "body".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects entire class body with name
-    pub fn class_body_with_name(mut self,
-                                class_name: String)
-                                -> Self {
-        self.queries
-            .push(Query { query:   format!(include_str!("queries/class_with_name.scm"), class_name),
-                          capture: "body".to_string(),
-                          filter:  None, });
+    pub fn class_body_with_name(mut self, class_name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(include_str!("queries/class_with_name.scm"), class_name),
+            capture: "body".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects local variable declaration statements
     pub fn local_variables(mut self) -> Self {
-        self.queries
-            .push(Query { query:   String::from("((local_variable_declaration) @var)"),
-                          capture: "var".to_string(),
-                          filter:  None, });
+        self.queries.push(Query {
+            query:   String::from("((local_variable_declaration) @var)"),
+            capture: "var".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects local variable declaration statements with supplied name
-    pub fn local_variables_with_name(mut self,
-                                     name: String)
-                                     -> Self {
-        self.queries.push(Query { query:
-                                      format!(include_str!("queries/local_variable_with_name.scm"),
-                                              name),
-                                  capture: "body".to_string(),
-                                  filter:  None, });
+    pub fn local_variables_with_name(mut self, name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(include_str!("queries/local_variable_with_name.scm"), name),
+            capture: "body".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects local variable declaration statements with supplied type
-    pub fn local_variables_with_type(mut self,
-                                     type_name: String)
-                                     -> Self {
-        self.queries.push(Query { query:   format!(
-            include_str!("queries/local_variable_with_type.scm"),
-            type_name
-        ),
-                                  capture: "body".to_string(),
-                                  filter:  None, });
+    pub fn local_variables_with_type(mut self, type_name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(include_str!("queries/local_variable_with_type.scm"), type_name),
+            capture: "body".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects if statements (entire, including else if and else)
     pub fn if_statements(mut self) -> Self {
-        self.queries
-            .push(Query { query:   String::from("((if_statement) @if)"),
-                          capture: "if".to_string(),
-                          filter:  None, });
+        self.queries.push(Query {
+            query:   String::from("((if_statement) @if)"),
+            capture: "if".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects for loops
     pub fn for_loops(mut self) -> Self {
-        self.queries
-            .push(Query { query:   String::from("((for_statement) @for)"),
-                          capture: "for".to_string(),
-                          filter:  None, });
+        self.queries.push(Query {
+            query:   String::from("((for_statement) @for)"),
+            capture: "for".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects while loops
     pub fn while_loops(mut self) -> Self {
-        self.queries
-            .push(Query { query:   String::from("((while_statement) @while)"),
-                          capture: "while".to_string(),
-                          filter:  None, });
+        self.queries.push(Query {
+            query:   String::from("((while_statement) @while)"),
+            capture: "while".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects method invocations
     pub fn method_invocations(mut self) -> Self {
-        self.queries
-            .push(Query { query:   include_str!("queries/method_invocation.scm").to_string(),
-                          capture: "body".to_string(),
-                          filter:  None, });
+        self.queries.push(Query {
+            query:   include_str!("queries/method_invocation.scm").to_string(),
+            capture: "body".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects method invocations with supplied name
-    pub fn method_invocations_with_name(mut self,
-                                        name: String)
-                                        -> Self {
-        self.queries.push(Query { query:   format!(
-            include_str!("queries/method_invocations_with_name.scm"),
-            name
-        ),
-                                  capture: "body".to_string(),
-                                  filter:  None, });
+    pub fn method_invocations_with_name(mut self, name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(include_str!("queries/method_invocations_with_name.scm"), name),
+            capture: "body".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects method invocations with supplied arguments
-    pub fn method_invocations_with_arguments(mut self,
-                                             name: String)
-                                             -> Self {
-        self.queries.push(Query { query:   format!(
-            include_str!("queries/method_invocations_with_arguments.scm"),
-            name
-        ),
-                                  capture: "body".to_string(),
-                                  filter:  None, });
+    pub fn method_invocations_with_arguments(mut self, name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(include_str!("queries/method_invocations_with_arguments.scm"), name),
+            capture: "body".to_string(),
+            filter:  None,
+        });
         self
     }
 
     /// Selects method invocations with supplied object
-    pub fn method_invocations_with_object(mut self,
-                                          name: String)
-                                          -> Self {
-        self.queries.push(Query { query:   format!(
-            include_str!("queries/method_invocations_with_object.scm"),
-            name
-        ),
-                                  capture: "body".to_string(),
-                                  filter:  None, });
+    pub fn method_invocations_with_object(mut self, name: String) -> Self {
+        self.queries.push(Query {
+            query:   format!(include_str!("queries/method_invocations_with_object.scm"), name),
+            capture: "body".to_string(),
+            filter:  None,
+        });
         self
     }
 
@@ -2949,27 +2945,30 @@ impl QueryGrader {
         let ast = std::sync::Arc::clone(&SCRIPT_AST);
         let ast = ast.lock().unwrap();
 
-        let first =
-            self.queries
-                .first()
-                .ok_or_else(|| QueryError::NoMatchesFound("No queries to run".to_string()))?;
+        let first = self
+            .queries
+            .first()
+            .ok_or_else(|| QueryError::NoMatchesFound("No queries to run".to_string()))?;
 
-        let file = self.project
-                       .identify(self.file())
-                       .map_err(|_| QueryError::FileNotFound(self.file().to_string()))?;
+        let file = self
+            .project
+            .identify(self.file())
+            .map_err(|_| QueryError::FileNotFound(self.file().to_string()))?;
 
         let mut matches: Vec<String> = match file.query(&first.query()) {
             Ok(m) => {
                 if first.capture().is_empty() {
                     return Err(QueryError::NoCaptureSelected(format!("{:#?}", first)));
                 }
-                let result = m.iter()
-                              .filter_map(|map| map.get(&first.capture()))
-                              .cloned();
+                let result = m
+                    .iter()
+                    .filter_map(|map| map.get(&first.capture()))
+                    .cloned();
 
                 let result: Vec<String> = if let Some(f) = first.filter() {
-                    result.filter(|x| f.call(&engine, &ast, (x.clone(),)).unwrap_or(false))
-                          .collect()
+                    result
+                        .filter(|x| f.call(&engine, &ast, (x.clone(),)).unwrap_or(false))
+                        .collect()
                 } else {
                     result.collect()
                 };
@@ -2982,8 +2981,10 @@ impl QueryGrader {
                 result
             }
             Err(e) => {
-                return Err(QueryError::DuringQueryExecution { q: first.query(),
-                                                              e: format!("{:#?}", e), });
+                return Err(QueryError::DuringQueryExecution {
+                    q: first.query(),
+                    e: format!("{:#?}", e),
+                });
             }
         };
 
@@ -3005,17 +3006,17 @@ impl QueryGrader {
             let mut new_matches = vec![];
 
             for code in matches {
-                let parser = Parser::new(code).context(format!("Failed to create parser for \
-                                                                query: `{}`",
-                                                               q.query()))?;
+                let parser = Parser::new(code)
+                    .context(format!("Failed to create parser for query: `{}`", q.query()))?;
 
                 match parser.query(&q.query()) {
                     Ok(m) => {
                         let result = m.iter().filter_map(|map| map.get(&q.capture())).cloned();
 
                         let mut result: Vec<String> = if let Some(f) = q.filter() {
-                            result.filter(|x| f.call(&engine, &ast, (x.clone(),)).unwrap_or(false))
-                                  .collect()
+                            result
+                                .filter(|x| f.call(&engine, &ast, (x.clone(),)).unwrap_or(false))
+                                .collect()
                         } else {
                             result.collect()
                         };
@@ -3023,8 +3024,10 @@ impl QueryGrader {
                         new_matches.append(&mut result)
                     }
                     Err(e) => {
-                        return Err(QueryError::DuringQueryExecution { q: q.query(),
-                                                                      e: format!("{:#?}", e), });
+                        return Err(QueryError::DuringQueryExecution {
+                            q: q.query(),
+                            e: format!("{:#?}", e),
+                        });
                     }
                 };
             }
@@ -3040,8 +3043,10 @@ impl QueryGrader {
     /// constraints.
     pub fn grade_by_query(self) -> Result<GradeResult> {
         let reason = if self.reason.trim().is_empty() {
-            eprintln!("Warning: No reason provided for query grading. Feedback to student will \
-                       not be very helpful.");
+            eprintln!(
+                "Warning: No reason provided for query grading. Feedback to student will not be \
+                 very helpful."
+            );
             match self.constraint {
                 QueryConstraint::MustMatchAtLeastOnce => {
                     "Query Constraint: Must match at least once.".to_string()
@@ -3061,151 +3066,142 @@ impl QueryGrader {
                 r.into_iter().map(|s| s.cast()).collect()
             }
             Err(e) => {
-                return Ok(GradeResult { requirement: self.req_name.clone(),
-                                        grade: Grade { grade:  0.0,
-                                                       out_of: self.out_of, },
-                                        reason,
-                                        prompt: Some(vec![
-                    ChatCompletionRequestSystemMessageArgs::default().content(
-                        SYSTEM_MESSAGE.to_string(),
-                    )
-                                                                     .name("Instructor".to_string())
-                                                                     .build()
-                                                                     .context(
-                        "Failed to build system message",
-                    )?
-                                                                     .into(),
-                    ChatCompletionRequestSystemMessageArgs::default().content(format!(
-                        "Something went wrong when using treesitter queries to grade `{}`. Error \
-                         message:\n\n```\n{}\n```\n",
-                        self.file, e
-                    ))
-                                                                     .name("Instructor".to_string())
-                                                                     .build()
-                                                                     .context(
-                        "Failed to build system message",
-                    )?
-                                                                     .into(),
-                ]) });
+                return Ok(GradeResult {
+                    requirement: self.req_name.clone(),
+                    grade: Grade {
+                        grade:  0.0,
+                        out_of: self.out_of,
+                    },
+                    reason,
+                    prompt: Some(vec![
+                        ChatCompletionRequestSystemMessageArgs::default()
+                            .content(SYSTEM_MESSAGE.to_string())
+                            .name("Instructor".to_string())
+                            .build()
+                            .context("Failed to build system message")?
+                            .into(),
+                        ChatCompletionRequestSystemMessageArgs::default()
+                            .content(format!(
+                                "Something went wrong when using treesitter queries to grade \
+                                 `{}`. Error message:\n\n```\n{}\n```\n",
+                                self.file, e
+                            ))
+                            .name("Instructor".to_string())
+                            .build()
+                            .context("Failed to build system message")?
+                            .into(),
+                    ]),
+                });
             }
         };
 
         match self.constraint {
             QueryConstraint::MustMatchAtLeastOnce => {
                 if result.is_empty() {
-                    Ok(GradeResult { requirement: self.req_name.clone(),
-                                     grade: Grade { grade:  0.0,
-                                                    out_of: self.out_of, },
-                                     reason,
-                                     prompt: Some(vec![
-                        ChatCompletionRequestSystemMessageArgs::default().content(
-                            SYSTEM_MESSAGE.to_string(),
-                        )
-                                                                         .name(
-                            "Instructor".to_string(),
-                        )
-                                                                         .build()
-                                                                         .context(
-                            "Failed to build system message",
-                        )?
-                                                                         .into(),
-                        ChatCompletionRequestSystemMessageArgs::default().content(format!(
-                            "For file `{}`: {}.",
-                            self.file, self.reason
-                        ))
-                                                                         .name(
-                            "Instructor".to_string(),
-                        )
-                                                                         .build()
-                                                                         .context(
-                            "Failed to build system message",
-                        )?
-                                                                         .into(),
-                    ]) })
+                    Ok(GradeResult {
+                        requirement: self.req_name.clone(),
+                        grade: Grade {
+                            grade:  0.0,
+                            out_of: self.out_of,
+                        },
+                        reason,
+                        prompt: Some(vec![
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(SYSTEM_MESSAGE.to_string())
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(format!("For file `{}`: {}.", self.file, self.reason))
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
+                        ]),
+                    })
                 } else {
-                    Ok(GradeResult { requirement: self.req_name.clone(),
-                                     grade: Grade { grade:  self.out_of,
-                                                    out_of: self.out_of, },
-                                     reason,
-                                     prompt: None })
+                    Ok(GradeResult {
+                        requirement: self.req_name.clone(),
+                        grade: Grade {
+                            grade:  self.out_of,
+                            out_of: self.out_of,
+                        },
+                        reason,
+                        prompt: None,
+                    })
                 }
             }
             QueryConstraint::MustMatchExactlyNTimes(n) => {
                 if result.len() == n {
-                    Ok(GradeResult { requirement: self.req_name.clone(),
-                                     grade: Grade { grade:  self.out_of,
-                                                    out_of: self.out_of, },
-                                     reason,
-                                     prompt: None })
+                    Ok(GradeResult {
+                        requirement: self.req_name.clone(),
+                        grade: Grade {
+                            grade:  self.out_of,
+                            out_of: self.out_of,
+                        },
+                        reason,
+                        prompt: None,
+                    })
                 } else {
-                    Ok(GradeResult { requirement: self.req_name.clone(),
-                                     grade: Grade { grade:  0.0,
-                                                    out_of: self.out_of, },
-                                     reason,
-                                     prompt: Some(vec![
-                        ChatCompletionRequestSystemMessageArgs::default().content(
-                            SYSTEM_MESSAGE.to_string(),
-                        )
-                                                                         .name(
-                            "Instructor".to_string(),
-                        )
-                                                                         .build()
-                                                                         .context(
-                            "Failed to build system message",
-                        )?
-                                                                         .into(),
-                        ChatCompletionRequestSystemMessageArgs::default().content(format!(
-                            "For file `{}`: {}",
-                            self.file, self.reason
-                        ))
-                                                                         .name(
-                            "Instructor".to_string(),
-                        )
-                                                                         .build()
-                                                                         .context(
-                            "Failed to build system message",
-                        )?
-                                                                         .into(),
-                    ]) })
+                    Ok(GradeResult {
+                        requirement: self.req_name.clone(),
+                        grade: Grade {
+                            grade:  0.0,
+                            out_of: self.out_of,
+                        },
+                        reason,
+                        prompt: Some(vec![
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(SYSTEM_MESSAGE.to_string())
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(format!("For file `{}`: {}", self.file, self.reason))
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
+                        ]),
+                    })
                 }
             }
             QueryConstraint::MustNotMatch => {
                 if result.is_empty() {
-                    Ok(GradeResult { requirement: self.req_name.clone(),
-                                     grade: Grade { grade:  self.out_of,
-                                                    out_of: self.out_of, },
-                                     reason,
-                                     prompt: None })
+                    Ok(GradeResult {
+                        requirement: self.req_name.clone(),
+                        grade: Grade {
+                            grade:  self.out_of,
+                            out_of: self.out_of,
+                        },
+                        reason,
+                        prompt: None,
+                    })
                 } else {
-                    Ok(GradeResult { requirement: self.req_name.clone(),
-                                     grade: Grade { grade:  0.0,
-                                                    out_of: self.out_of, },
-                                     reason,
-                                     prompt: Some(vec![
-                        ChatCompletionRequestSystemMessageArgs::default().content(
-                            SYSTEM_MESSAGE.to_string(),
-                        )
-                                                                         .name(
-                            "Instructor".to_string(),
-                        )
-                                                                         .build()
-                                                                         .context(
-                            "Failed to build system message",
-                        )?
-                                                                         .into(),
-                        ChatCompletionRequestSystemMessageArgs::default().content(format!(
-                            "For file `{}`: {}",
-                            self.file, self.reason
-                        ))
-                                                                         .name(
-                            "Instructor".to_string(),
-                        )
-                                                                         .build()
-                                                                         .context(
-                            "Failed to build system message",
-                        )?
-                                                                         .into(),
-                    ]) })
+                    Ok(GradeResult {
+                        requirement: self.req_name.clone(),
+                        grade: Grade {
+                            grade:  0.0,
+                            out_of: self.out_of,
+                        },
+                        reason,
+                        prompt: Some(vec![
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(SYSTEM_MESSAGE.to_string())
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
+                            ChatCompletionRequestSystemMessageArgs::default()
+                                .content(format!("For file `{}`: {}", self.file, self.reason))
+                                .name("Instructor".to_string())
+                                .build()
+                                .context("Failed to build system message")?
+                                .into(),
+                        ]),
+                    })
                 }
             }
         }
@@ -3217,14 +3213,15 @@ impl QueryGrader {
 /// Allows registering custom types with Rhai.
 impl CustomType for Grade {
     fn build(mut builder: rhai::TypeBuilder<Self>) {
-        builder.with_name("Grade")
-               .with_fn("grade", Self::grade)
-               .with_fn("grade", Self::set_grade)
-               .with_fn("out_of", Self::out_of)
-               .with_fn("out_of", Self::set_out_of)
-               .with_fn("new_grade", Self::new)
-               .with_fn("from_string", Self::grade_from_string_script)
-               .with_fn("to_string", Self::to_string);
+        builder
+            .with_name("Grade")
+            .with_fn("grade", Self::grade)
+            .with_fn("grade", Self::set_grade)
+            .with_fn("out_of", Self::out_of)
+            .with_fn("out_of", Self::set_out_of)
+            .with_fn("new_grade", Self::new)
+            .with_fn("from_string", Self::grade_from_string_script)
+            .with_fn("to_string", Self::to_string);
     }
 }
 
@@ -3233,16 +3230,17 @@ impl CustomType for Grade {
 /// Allows registering custom types with Rhai.
 impl CustomType for GradeResult {
     fn build(mut builder: rhai::TypeBuilder<Self>) {
-        builder.with_name("GradeResult")
-               .with_fn("requirement", Self::requirement)
-               .with_fn("requirement", Self::set_requirement)
-               .with_fn("grade", Self::grade)
-               .with_fn("grade", Self::set_grade)
-               .with_fn("out_of", Self::out_of)
-               .with_fn("out_of", Self::set_out_of)
-               .with_fn("reason", Self::reason)
-               .with_fn("reason", Self::set_reason)
-               .with_fn("new_grade_result", Self::default);
+        builder
+            .with_name("GradeResult")
+            .with_fn("requirement", Self::requirement)
+            .with_fn("requirement", Self::set_requirement)
+            .with_fn("grade", Self::grade)
+            .with_fn("grade", Self::set_grade)
+            .with_fn("out_of", Self::out_of)
+            .with_fn("out_of", Self::set_out_of)
+            .with_fn("reason", Self::reason)
+            .with_fn("reason", Self::set_reason)
+            .with_fn("new_grade_result", Self::default);
     }
 }
 
@@ -3252,19 +3250,20 @@ impl CustomType for GradeResult {
 impl CustomType for DocsGrader {
     /// Builds a custom type to be registered with Rhai
     fn build(mut builder: rhai::TypeBuilder<Self>) {
-        builder.with_name("DocsGrader")
-               .with_fn("req_name", Self::req_name)
-               .with_fn("req_name", Self::set_req_name)
-               .with_fn("project", Self::project)
-               .with_fn("project", Self::set_project)
-               .with_fn("files", Self::files)
-               .with_fn("files", Self::set_files)
-               .with_fn("out_of", Self::out_of)
-               .with_fn("out_of", Self::set_out_of)
-               .with_fn("penalty", Self::penalty)
-               .with_fn("penalty", Self::set_penalty)
-               .with_fn("new_docs_grader", Self::default)
-               .with_fn("run", Self::grade_docs_script);
+        builder
+            .with_name("DocsGrader")
+            .with_fn("req_name", Self::req_name)
+            .with_fn("req_name", Self::set_req_name)
+            .with_fn("project", Self::project)
+            .with_fn("project", Self::set_project)
+            .with_fn("files", Self::files)
+            .with_fn("files", Self::set_files)
+            .with_fn("out_of", Self::out_of)
+            .with_fn("out_of", Self::set_out_of)
+            .with_fn("penalty", Self::penalty)
+            .with_fn("penalty", Self::set_penalty)
+            .with_fn("new_docs_grader", Self::default)
+            .with_fn("run", Self::grade_docs_script);
     }
 }
 
@@ -3274,19 +3273,20 @@ impl CustomType for DocsGrader {
 impl CustomType for ByUnitTestGrader {
     /// Builds a custom type to be registered with Rhai
     fn build(mut builder: rhai::TypeBuilder<Self>) {
-        builder.with_name("ByUnitTestGrader")
-               .with_fn("test_files", Self::test_files)
-               .with_fn("test_files", Self::set_test_files)
-               .with_fn("project", Self::project)
-               .with_fn("project", Self::set_project)
-               .with_fn("expected_tests", Self::expected_tests)
-               .with_fn("expected_tests", Self::set_expected_tests)
-               .with_fn("out_of", Self::out_of)
-               .with_fn("out_of", Self::set_out_of)
-               .with_fn("req_name", Self::req_name)
-               .with_fn("req_name", Self::set_req_name)
-               .with_fn("new_by_unit_test_grader", Self::default)
-               .with_fn("run", Self::grade_by_tests_script);
+        builder
+            .with_name("ByUnitTestGrader")
+            .with_fn("test_files", Self::test_files)
+            .with_fn("test_files", Self::set_test_files)
+            .with_fn("project", Self::project)
+            .with_fn("project", Self::set_project)
+            .with_fn("expected_tests", Self::expected_tests)
+            .with_fn("expected_tests", Self::set_expected_tests)
+            .with_fn("out_of", Self::out_of)
+            .with_fn("out_of", Self::set_out_of)
+            .with_fn("req_name", Self::req_name)
+            .with_fn("req_name", Self::set_req_name)
+            .with_fn("new_by_unit_test_grader", Self::default)
+            .with_fn("run", Self::grade_by_tests_script);
     }
 }
 
@@ -3296,21 +3296,22 @@ impl CustomType for ByUnitTestGrader {
 impl CustomType for UnitTestGrader {
     /// Builds a custom type to be registered with Rhai
     fn build(mut builder: rhai::TypeBuilder<Self>) {
-        builder.with_name("UnitTestGrader")
-               .with_fn("req_name", Self::get_req_name)
-               .with_fn("req_name", Self::set_req_name)
-               .with_fn("out_of", Self::get_out_of)
-               .with_fn("out_of", Self::set_out_of)
-               .with_fn("target_test", Self::get_target_test)
-               .with_fn("target_test", Self::set_target_test)
-               .with_fn("target_class", Self::get_target_class)
-               .with_fn("target_class", Self::set_target_class)
-               .with_fn("excluded_methods", Self::get_excluded_methods)
-               .with_fn("excluded_methods", Self::set_excluded_methods)
-               .with_fn("avoid_calls_to", Self::get_avoid_calls_to)
-               .with_fn("avoid_calls_to", Self::set_avoid_calls_to)
-               .with_fn("new_unit_test_grader", Self::default)
-               .with_fn("run", Self::grade_unit_tests_script);
+        builder
+            .with_name("UnitTestGrader")
+            .with_fn("req_name", Self::get_req_name)
+            .with_fn("req_name", Self::set_req_name)
+            .with_fn("out_of", Self::get_out_of)
+            .with_fn("out_of", Self::set_out_of)
+            .with_fn("target_test", Self::get_target_test)
+            .with_fn("target_test", Self::set_target_test)
+            .with_fn("target_class", Self::get_target_class)
+            .with_fn("target_class", Self::set_target_class)
+            .with_fn("excluded_methods", Self::get_excluded_methods)
+            .with_fn("excluded_methods", Self::set_excluded_methods)
+            .with_fn("avoid_calls_to", Self::get_avoid_calls_to)
+            .with_fn("avoid_calls_to", Self::set_avoid_calls_to)
+            .with_fn("new_unit_test_grader", Self::default)
+            .with_fn("run", Self::grade_unit_tests_script);
     }
 }
 
@@ -3320,17 +3321,18 @@ impl CustomType for UnitTestGrader {
 impl CustomType for ByHiddenTestGrader {
     /// Builds a custom type to be registered with Rhai.
     fn build(mut builder: rhai::TypeBuilder<Self>) {
-        builder.with_name("ByHiddenTestGrader")
-               .with_fn("url", Self::url)
-               .with_fn("url", Self::set_url)
-               .with_fn("test_class_name", Self::test_class_name)
-               .with_fn("test_class_name", Self::set_test_class_name)
-               .with_fn("out_of", Self::out_of)
-               .with_fn("out_of", Self::set_out_of)
-               .with_fn("req_name", Self::req_name)
-               .with_fn("req_name", Self::set_req_name)
-               .with_fn("new_by_hidden_test_grader", Self::default)
-               .with_fn("run", Self::grade_by_hidden_tests_script);
+        builder
+            .with_name("ByHiddenTestGrader")
+            .with_fn("url", Self::url)
+            .with_fn("url", Self::set_url)
+            .with_fn("test_class_name", Self::test_class_name)
+            .with_fn("test_class_name", Self::set_test_class_name)
+            .with_fn("out_of", Self::out_of)
+            .with_fn("out_of", Self::set_out_of)
+            .with_fn("req_name", Self::req_name)
+            .with_fn("req_name", Self::set_req_name)
+            .with_fn("new_by_hidden_test_grader", Self::default)
+            .with_fn("run", Self::grade_by_hidden_tests_script);
     }
 }
 
@@ -3340,23 +3342,24 @@ impl CustomType for ByHiddenTestGrader {
 impl CustomType for DiffGrader {
     /// Builds a custom type to be registered with Rhai.
     fn build(mut builder: rhai::TypeBuilder<Self>) {
-        builder.with_name("DiffGrader")
-               .with_fn("req_name", Self::req_name)
-               .with_fn("req_name", Self::set_req_name)
-               .with_fn("out_of", Self::out_of)
-               .with_fn("out_of", Self::set_out_of)
-               .with_fn("expected", Self::expected)
-               .with_fn("expected", Self::set_expected)
-               .with_fn("input", Self::input)
-               .with_fn("input", Self::set_input)
-               .with_fn("project", Self::project)
-               .with_fn("project", Self::set_project)
-               .with_fn("file", Self::file)
-               .with_fn("file", Self::set_file)
-               .with_fn("ignore_case", Self::ignore_case)
-               .with_fn("ignore_case", Self::set_ignore_case)
-               .with_fn("new_diff_grader", Self::default)
-               .with_fn("run", Self::grade_by_diff_script);
+        builder
+            .with_name("DiffGrader")
+            .with_fn("req_name", Self::req_name)
+            .with_fn("req_name", Self::set_req_name)
+            .with_fn("out_of", Self::out_of)
+            .with_fn("out_of", Self::set_out_of)
+            .with_fn("expected", Self::expected)
+            .with_fn("expected", Self::set_expected)
+            .with_fn("input", Self::input)
+            .with_fn("input", Self::set_input)
+            .with_fn("project", Self::project)
+            .with_fn("project", Self::set_project)
+            .with_fn("file", Self::file)
+            .with_fn("file", Self::set_file)
+            .with_fn("ignore_case", Self::ignore_case)
+            .with_fn("ignore_case", Self::set_ignore_case)
+            .with_fn("new_diff_grader", Self::default)
+            .with_fn("run", Self::grade_by_diff_script);
     }
 }
 
@@ -3366,12 +3369,13 @@ impl CustomType for DiffGrader {
 impl CustomType for Query {
     /// Builds a custom type to be registered with Rhai.
     fn build(mut builder: rhai::TypeBuilder<Self>) {
-        builder.with_name("Query")
-               .with_fn("new_query", Self::new)
-               .with_fn("query", Self::query)
-               .with_fn("query", Self::set_query)
-               .with_fn("capture", Self::capture)
-               .with_fn("capture", Self::set_capture);
+        builder
+            .with_name("Query")
+            .with_fn("new_query", Self::new)
+            .with_fn("query", Self::query)
+            .with_fn("query", Self::set_query)
+            .with_fn("capture", Self::capture)
+            .with_fn("capture", Self::set_capture);
     }
 }
 
@@ -3381,45 +3385,41 @@ impl CustomType for Query {
 impl CustomType for QueryGrader {
     /// Builds a custom type to be registered with Rhai.
     fn build(mut builder: rhai::TypeBuilder<Self>) {
-        builder.with_name("QueryGrader")
-               .with_fn("req_name", Self::req_name)
-               .with_fn("req_name", Self::set_req_name)
-               .with_fn("out_of", Self::out_of)
-               .with_fn("out_of", Self::set_out_of)
-               .with_fn("file", Self::file)
-               .with_fn("file", Self::set_file)
-               .with_fn("project", Self::project)
-               .with_fn("project", Self::set_project)
-               .with_fn("queries", Self::queries)
-               .with_fn("query", Self::query_script)
-               .with_fn("capture", Self::capture_script)
-               .with_fn("reason", Self::reason)
-               .with_fn("reason", Self::set_reason)
-               .with_fn("must_match_at_least_once", Self::must_match_at_least_once)
-               .with_fn("must_match_exactly_n_times",
-                        Self::must_match_exactly_n_times)
-               .with_fn("must_not_match", Self::must_not_match)
-               .with_fn("method_body_with_name", Self::method_body_with_name)
-               .with_fn("method_body_with_return_type",
-                        Self::method_body_with_return_type)
-               .with_fn("main_method", Self::main_method)
-               .with_fn("class_body_with_name", Self::class_body_with_name)
-               .with_fn("local_variables", Self::local_variables)
-               .with_fn("local_variables_with_name", Self::local_variables_with_name)
-               .with_fn("local_variables_with_type", Self::local_variables_with_type)
-               .with_fn("if_statements", Self::if_statements)
-               .with_fn("for_loops", Self::for_loops)
-               .with_fn("while_loops", Self::while_loops)
-               .with_fn("method_invocations", Self::method_invocations)
-               .with_fn("method_invocations_with_name",
-                        Self::method_invocations_with_name)
-               .with_fn("method_invocations_with_arguments",
-                        Self::method_invocations_with_arguments)
-               .with_fn("method_invocations_with_object",
-                        Self::method_invocations_with_object)
-               .with_fn("filter", Self::filter_script)
-               .with_fn("run_query", Self::run_query_script)
-               .with_fn("run", Self::grade_by_query_script)
-               .with_fn("new_query_grader", Self::default);
+        builder
+            .with_name("QueryGrader")
+            .with_fn("req_name", Self::req_name)
+            .with_fn("req_name", Self::set_req_name)
+            .with_fn("out_of", Self::out_of)
+            .with_fn("out_of", Self::set_out_of)
+            .with_fn("file", Self::file)
+            .with_fn("file", Self::set_file)
+            .with_fn("project", Self::project)
+            .with_fn("project", Self::set_project)
+            .with_fn("queries", Self::queries)
+            .with_fn("query", Self::query_script)
+            .with_fn("capture", Self::capture_script)
+            .with_fn("reason", Self::reason)
+            .with_fn("reason", Self::set_reason)
+            .with_fn("must_match_at_least_once", Self::must_match_at_least_once)
+            .with_fn("must_match_exactly_n_times", Self::must_match_exactly_n_times)
+            .with_fn("must_not_match", Self::must_not_match)
+            .with_fn("method_body_with_name", Self::method_body_with_name)
+            .with_fn("method_body_with_return_type", Self::method_body_with_return_type)
+            .with_fn("main_method", Self::main_method)
+            .with_fn("class_body_with_name", Self::class_body_with_name)
+            .with_fn("local_variables", Self::local_variables)
+            .with_fn("local_variables_with_name", Self::local_variables_with_name)
+            .with_fn("local_variables_with_type", Self::local_variables_with_type)
+            .with_fn("if_statements", Self::if_statements)
+            .with_fn("for_loops", Self::for_loops)
+            .with_fn("while_loops", Self::while_loops)
+            .with_fn("method_invocations", Self::method_invocations)
+            .with_fn("method_invocations_with_name", Self::method_invocations_with_name)
+            .with_fn("method_invocations_with_arguments", Self::method_invocations_with_arguments)
+            .with_fn("method_invocations_with_object", Self::method_invocations_with_object)
+            .with_fn("filter", Self::filter_script)
+            .with_fn("run_query", Self::run_query_script)
+            .with_fn("run", Self::grade_by_query_script)
+            .with_fn("new_query_grader", Self::default);
     }
 }

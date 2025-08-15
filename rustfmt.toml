@@ -17,11 +17,14 @@ reorder_modules = true
 # Force Unix line endings
 newline_style = "Unix"
 
+# Ensure formatting assumptions match the crate edition
+edition = "2024"
+
 # The target maximum width of a line
 max_width = 100
 
-# Indentation style: "Visual" can give a more column-like alignment
-indent_style = "Visual"
+# Prefer standard block indentation instead of visual alignment
+indent_style = "Block"
 
 ########################################################
 # Alignment & Layout
@@ -35,14 +38,11 @@ struct_field_align_threshold = 20
 # version supports it and doesn't warn, set it:
 enum_discrim_align_threshold = 20
 
-# Layout for function parameters: "Tall" (default), "Compressed", or "Vertical".
-# "Vertical" is somewhat more “columnar” if you have multiple parameters.
-fn_params_layout = "Vertical"
+# Parameter layout: use the default, more conservative multi-line style
+fn_params_layout = "Tall"
 
-# No stable option for controlling function call alignment beyond
-# `fn_call_width` + `indent_style = "Visual"`
-# so let’s set fn_call_width to a smaller threshold, forcing wrapping:
-fn_call_width = 60
+# Allow slightly wider function calls before wrapping to reduce awkward nesting
+fn_call_width = 80
 
 ########################################################
 # Comments & Code Blocks
