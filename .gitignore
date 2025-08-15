@@ -11,3 +11,6 @@ rustc-ice-*
 # Added by cargo
 
 target
+
+# Untrack PLAN doc
+PLAN.md
