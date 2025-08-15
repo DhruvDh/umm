@@ -105,15 +105,15 @@ pub fn grade(name_or_path: &str) -> Result<()> {
                                                                 from {script_url} to text."))?
         }
     };
-    let ast = engine.compile(script)?;
+    let compiled_ast = engine.compile(script)?;
     {
-        let ast = std::sync::Arc::clone(&SCRIPT_AST);
-        let mut ast = ast.lock().unwrap();
-        *ast = ast.clone();
+        let ast_cell = std::sync::Arc::clone(&SCRIPT_AST);
+        let mut ast_lock = ast_cell.lock().unwrap();
+        *ast_lock = compiled_ast.clone();
     }
 
     // Run the script
-    engine.run_ast(&ast)?;
+    engine.run_ast(&compiled_ast)?;
 
     Ok(())
 }

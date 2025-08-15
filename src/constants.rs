@@ -76,7 +76,7 @@ pub const COURSE: &str = "ITSC 2214";
 pub const PROMPT_TRUNCATE: usize = 15000;
 
 /// file name for JUnit platform console standard jar
-pub const JUNIT_PLATFORM: &str = "junit-platform-console-standalone-1.9.0-RC1.jar";
+pub const JUNIT_PLATFORM: &str = "junit-platform-console-standalone-1.10.2.jar";
 
 /// Tree-sitter query that returns imports made
 /// * `path`: java name of the import as it appears in the source code.
