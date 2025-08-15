@@ -132,37 +132,35 @@ peg::parser! {
               test_method:mutation_test_examined_path()?
               whitespace()?
                 {
-                let test = test_method.unwrap_or_else(|| panic!("Had trouble parsing last column for mutation at {source_file_name}#{source_method}:{line_no}"));
-                let mut test_file_name;
-                let mut test_method;
+                // Be lenient with the optional last CSV column.
+                let test = test_method.unwrap_or_else(std::vec::Vec::new);
+                let mut test_file_name = String::from("NA");
+                let mut test_method_name = String::from("None");
 
-    if test.len() == 3 {
-                    let splitter = if test.get(1).unwrap().contains("[runner:") { "[runner:" } else { "[class:" };
-                    test_file_name = test.get(1)
-                                .unwrap()
-                                .to_string()
-                                .split_once(splitter)
-                                .unwrap_or_else(|| panic!("had trouble parsing test_file_class for mutation at {source_file_name}#{source_method}:{line_no}"))
-                                .1
-                                .replace(']', "");
+                if test.len() >= 3 {
+                    let raw_class = test.get(1).cloned().unwrap_or_default();
+                    let raw_method = test.get(2).cloned().unwrap_or_default();
 
-                    let splitter = if test.get(2).unwrap().contains("[test:") { "[test:" } else { "[method:" };
-                    test_method = test.get(2)
-                                    .unwrap()
-                                    .to_string()
-                                    .split_once(splitter)
-                                    .unwrap_or_else(|| panic!("Had trouble parsing test_file_method for mutation at {source_file_name}#{source_method}:{line_no}"))
-                                    .1
-                                    .replace("()]", "");
-                } else {
-                    test_file_name = "NA".to_string();
-                    test_method = "None".to_string()
+                    let splitter_class = if raw_class.contains("[runner:") { "[runner:" } else { "[class:" };
+                    if let Some((_, rhs)) = raw_class.split_once(splitter_class) {
+                        test_file_name = rhs.replace(']', "");
+                    } else {
+                        test_file_name = raw_class;
+                    }
+
+                    let splitter_method = if raw_method.contains("[test:") { "[test:" } else { "[method:" };
+                    if let Some((_, rhs)) = raw_method.split_once(splitter_method) {
+                        test_method_name = rhs.replace("()]", "");
+                    } else {
+                        test_method_name = raw_method;
+                    }
                 }
+
                 let mutator = mutation
-                                .to_string()
-                                .split_once(".mutators.")
-                                .expect("Could not split mutators while parsing mutations.csv.")
-                                .1.to_string();
+                    .to_string()
+                    .split_once(".mutators.")
+                    .map(|(_, r)| r.to_string())
+                    .unwrap_or_else(|| mutation.to_string());
 
                 MutationDiagnostic::builder()
                     .line_number(line_no)
@@ -170,7 +168,7 @@ peg::parser! {
                     .source_file_name(source_file_name)
                     .source_method(source_method)
                     .test_file_name(test_file_name)
-                    .test_method(test_method)
+                    .test_method(test_method_name)
                     .result(result)
                     .build()
             }
@@ -217,5 +215,39 @@ peg::parser! {
                 {
                     LineRef { line_number: d as usize, file_name: c }
                 }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::parser;
+
+    #[test]
+    fn mutation_row_parses_with_none() {
+        // Minimal row with 'none' in test column should not panic and should parse.
+        let line = "Foo,Bar,org.pitest.mutationtest.engine.gregor.mutators.MathMutator,method,42,\
+                    SURVIVED,none";
+        let diag = parser::mutation_report_row(line).expect("should parse mutation row with none");
+        let lr: crate::grade::LineRef = diag.clone().into();
+        assert_eq!(lr.line_number, 42);
+        assert_eq!(lr.file_name(), "Bar");
+        let v = serde_json::to_value(&diag).unwrap();
+        assert_eq!(v["result"], "SURVIVED");
+    }
+
+    #[test]
+    fn mutation_row_parses_with_class_and_method() {
+        // Typical PIT style last column with class and method hints.
+        let line = "Foo,Source,org.pitest.mutationtest.engine.gregor.mutators.\
+                    ConditionalsBoundaryMutator,method,7,KILLED,a/[class:MyTest]/[method:\
+                    testAdds()]";
+        let diag =
+            parser::mutation_report_row(line).expect("should parse mutation row with class/method");
+        let lr: crate::grade::LineRef = diag.clone().into();
+        assert_eq!(lr.line_number, 7);
+        let v = serde_json::to_value(&diag).unwrap();
+        assert_eq!(v["result"], "KILLED");
+        assert_eq!(v["test_file_name"], "MyTest");
+        assert_eq!(v["test_method"], "testAdds");
     }
 }
