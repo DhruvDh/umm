@@ -7,8 +7,8 @@
 
 use proc_macro::TokenStream;
 use proc_macro_error::proc_macro_error;
-use quote::{format_ident, quote, ToTokens};
-use syn::{parse_macro_input, punctuated::Punctuated, FnArg, Token};
+use quote::{ToTokens, format_ident, quote};
+use syn::{FnArg, Token, parse_macro_input, punctuated::Punctuated};
 
 #[proc_macro_error]
 #[proc_macro_attribute]

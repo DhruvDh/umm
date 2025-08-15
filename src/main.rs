@@ -24,7 +24,7 @@ use anyhow::Result;
 use bpaf::*;
 use dotenvy::dotenv;
 use self_update::cargo_crate_version;
-use tracing::{metadata::LevelFilter, Level};
+use tracing::{Level, metadata::LevelFilter};
 use tracing_subscriber::{fmt, prelude::*, util::SubscriberInitExt};
 use umm::{
     clean,

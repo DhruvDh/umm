@@ -9,7 +9,7 @@ use std::{
     process::{Command, Output, Stdio},
 };
 
-use anyhow::{anyhow, bail, Context, Result};
+use anyhow::{Context, Result, anyhow, bail};
 use futures::{
     future::{join_all, try_join_all},
     stream::FuturesUnordered,
@@ -25,12 +25,12 @@ use tree_sitter::{Query, QueryCursor, Tree};
 use umm_derive::generate_rhai_variant;
 
 use crate::{
+    Dict,
     constants::*,
     grade::{JavacDiagnostic, LineRef},
     parsers::parser,
     util::*,
     vscode::{self},
-    Dict,
 };
 
 /// Types of Java files -
@@ -525,8 +525,7 @@ impl File {
                                           BUILD_DIR.to_str().unwrap(),
                                           self.path.as_path().to_str().unwrap(),
                                           "-Xdiags:verbose",
-                                          "-Xdoclint"
-                                          /* "-Xlint", */])
+                                          "-Xdoclint" /* "-Xlint", */])
                                    .output()
                                    .context("Failed to spawn javac process.")
     }
@@ -951,7 +950,6 @@ impl File {
     ///
     /// Returns the output from JUnit as a string. There are parsers in
     /// ['parsers module'][crate::parsers::parser] that helps parse this output.
-
     /// Get a reference to the file's kind.
     pub fn kind(&self) -> &FileType {
         &self.kind
@@ -1158,10 +1156,10 @@ impl Project {
             for file in self.files.iter() {
                 if let Some(imports) = &file.imports {
                     for import in imports {
-                        if let Some(path) = import.get(&String::from("path")) {
-                            if path.starts_with("org.junit") {
-                                break 'outer true;
-                            }
+                        if let Some(path) = import.get(&String::from("path"))
+                           && path.starts_with("org.junit")
+                        {
+                            break 'outer true;
                         }
                     }
                 }
@@ -1373,11 +1371,11 @@ impl Project {
                    vscode::Task::builder().label("Clean library and target folders".to_string())
                                           .r#type(vscode::Type::Shell)
                                           .command("${config:ummBinaryPath}")
-                                          .args(vec![vscode::Args::builder().value("clean")
-                                                                            .quoting(
-            vscode::ArgQuoting::Escape,
-        )
-                                                                            .build()])
+                                          .args(vec![
+            vscode::Args::builder().value("clean")
+                                   .quoting(vscode::ArgQuoting::Escape)
+                                   .build(),
+        ])
                                           .depends_on(default_depends_on.clone())
                                           .depends_order(default_depends_order)
                                           .build(),
@@ -1387,11 +1385,11 @@ impl Project {
                    vscode::Task::builder().label("Reset project metadata".into())
                                           .r#type(vscode::Type::Shell)
                                           .command("${config:ummBinaryPath}")
-                                          .args(vec![vscode::Args::builder().value("reset")
-                                                                            .quoting(
-            vscode::ArgQuoting::Escape,
-        )
-                                                                            .build()])
+                                          .args(vec![
+            vscode::Args::builder().value("reset")
+                                   .quoting(vscode::ArgQuoting::Escape)
+                                   .build(),
+        ])
                                           .depends_on(default_depends_on.clone())
                                           .depends_order(default_depends_order)
                                           .build(),
@@ -1401,11 +1399,11 @@ impl Project {
                    vscode::Task::builder().label("Check health of the project".into())
                                           .r#type(vscode::Type::Shell)
                                           .command("${config:ummBinaryPath}")
-                                          .args(vec![vscode::Args::builder().value("check-health")
-                                                                            .quoting(
-            vscode::ArgQuoting::Escape,
-        )
-                                                                            .build()])
+                                          .args(vec![
+            vscode::Args::builder().value("check-health")
+                                   .quoting(vscode::ArgQuoting::Escape)
+                                   .build(),
+        ])
                                           .depends_on(default_depends_on.clone())
                                           .depends_order(default_depends_order)
                                           .build(),
@@ -1415,11 +1413,11 @@ impl Project {
                    vscode::Task::builder().label("Update umm executable".into())
                                           .r#type(vscode::Type::Shell)
                                           .command("${config:ummBinaryPath}")
-                                          .args(vec![vscode::Args::builder().value("update")
-                                                                            .quoting(
-            vscode::ArgQuoting::Escape,
-        )
-                                                                            .build()])
+                                          .args(vec![
+            vscode::Args::builder().value("update")
+                                   .quoting(vscode::ArgQuoting::Escape)
+                                   .build(),
+        ])
                                           .depends_on(default_depends_on.clone())
                                           .depends_order(default_depends_order)
                                           .build(),

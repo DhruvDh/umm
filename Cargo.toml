@@ -5,8 +5,8 @@ members = ["umm_derive"]
 
 [package]
 name = "umm"
-version = "0.2.1"
-edition = "2021"
+version = "0.2.2"
+edition = "2024"
 default-run = "umm"
 license = "MIT"
 description = "A java build tool and scriptable autograder that generates feedback."

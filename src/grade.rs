@@ -10,8 +10,9 @@ use std::{
     process::Command,
 };
 
-use anyhow::{anyhow, ensure, Context, Result};
+use anyhow::{Context, Result, anyhow, ensure};
 use async_openai::{
+    Client as OpenAIClient,
     config::OpenAIConfig,
     error::OpenAIError,
     types::{
@@ -19,7 +20,6 @@ use async_openai::{
         ChatCompletionRequestUserMessageArgs, CreateChatCompletionRequest,
         CreateChatCompletionResponse,
     },
-    Client as OpenAIClient,
 };
 use colored::Colorize;
 use itertools::Itertools;
@@ -27,16 +27,17 @@ use rhai::FnPtr;
 #[allow(deprecated)]
 use rhai::{Array, CustomType, Dynamic, EvalAltResult};
 use serde::{Deserialize, Serialize};
-use similar::{utils::diff_unicode_words, Algorithm, ChangeTag};
+use similar::{Algorithm, ChangeTag, utils::diff_unicode_words};
 use snailquote::unescape;
 use tabled::{
-    display::ExpandedDisplay, object::Rows, Alignment, Modify, Panel, TableIteratorExt, Tabled,
-    Width,
+    Alignment, Modify, Panel, TableIteratorExt, Tabled, Width, display::ExpandedDisplay,
+    object::Rows,
 };
 use typed_builder::TypedBuilder;
 use umm_derive::generate_rhai_variant;
 
 use crate::{
+    Dict,
     constants::{
         ALGORITHMIC_SOLUTIONS_SLO, CODE_READABILITY_SLO, COMMENTS_WRITTEN_SLO, ERROR_HANDLING_SLO,
         LOGIC_SLO, METHOD_CALL_QUERY, NAMING_CONVENTIONS_SLO, OBJECT_ORIENTED_PROGRAMMING_SLO,
@@ -47,7 +48,6 @@ use crate::{
     java::{File, FileType, JavaFileError, Parser, Project},
     parsers::parser,
     util::{classpath, java_path},
-    Dict,
 };
 #[derive(Debug, Hash, PartialEq, Eq)]
 /// A struct representing a line in a stack trace
@@ -549,7 +549,7 @@ pub fn get_source_context<T: Into<LineRef>>(line_refs: Vec<T>,
                                          let body = r.get("body").unwrap().to_string();
                                          let body_lines =
                                              body.lines().map(String::from).collect::<Vec<_>>();
-                                         if body_lines.first().is_some() {
+                                         if !body_lines.is_empty() {
                                              let start_line_number =
                                                  source_code_lines.iter()
                                                                   .find_position(|x| {
@@ -1746,8 +1746,7 @@ async fn generate_combined_slo_report(slo_responses: Vec<(&str,
             ),
     );
 
-    let messages =
-        vec![
+    let messages = vec![
              ChatCompletionRequestSystemMessageArgs::default().content(
             "You are an AI assistant tasked with creating a concise, well-structured report that \
              combines feedback from multiple Student Learning Outcomes (SLOs). Your goal is to \
@@ -2984,7 +2983,7 @@ impl QueryGrader {
             }
             Err(e) => {
                 return Err(QueryError::DuringQueryExecution { q: first.query(),
-                                                              e: format!("{:#?}", e), })
+                                                              e: format!("{:#?}", e), });
             }
         };
 
@@ -3025,7 +3024,7 @@ impl QueryGrader {
                     }
                     Err(e) => {
                         return Err(QueryError::DuringQueryExecution { q: q.query(),
-                                                                      e: format!("{:#?}", e), })
+                                                                      e: format!("{:#?}", e), });
                     }
                 };
             }
@@ -3087,7 +3086,7 @@ impl QueryGrader {
                         "Failed to build system message",
                     )?
                                                                      .into(),
-                ]) })
+                ]) });
             }
         };
 
